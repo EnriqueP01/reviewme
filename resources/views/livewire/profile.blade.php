@@ -1,0 +1,89 @@
+<div class="max-w-7xl mx-auto px-6 py-16">
+    <!-- Profile Hero -->
+    <div class="relative mb-20">
+        <div class="flex flex-col md:flex-row items-center gap-12">
+            <!-- Avatar Monolith -->
+            <div class="relative group">
+                <div class="absolute inset-0 bg-primary/20 blur-3xl rounded-full opacity-0 group-hover:opacity-100 transition-opacity duration-700"></div>
+                <div class="w-48 h-48 rounded-round-4 bg-surface-container flex items-center justify-center text-primary relative z-10 overflow-hidden border border-outline-variant/10">
+                    <span class="font-display font-bold text-6xl italic">{{ substr($user->name, 0, 1) }}</span>
+                    <!-- Scanline effect -->
+                    <div class="absolute inset-0 bg-gradient-to-b from-transparent via-primary/5 to-transparent pointer-events-none animate-pulse"></div>
+                </div>
+            </div>
+
+            <!-- Identity -->
+            <div class="flex-grow space-y-6 text-center md:text-left">
+                <div>
+                    <h1 class="font-display text-5xl font-bold tracking-tight text-on-surface">{{ $user->name }}</h1>
+                    <p class="text-on-surface-variant text-xl mt-2 font-display italic tracking-wide">{{ $stats['level'] }}</p>
+                </div>
+                
+                <div class="flex flex-wrap justify-center md:justify-start gap-4">
+                    @foreach($stats as $label => $value)
+                        @if($label !== 'level')
+                            <div class="bg-surface-low border border-outline-variant/5 px-6 py-3 rounded-round-4">
+                                <span class="block text-[10px] uppercase tracking-widest text-on-surface-variant font-bold mb-1">{{ $label }}</span>
+                                <span class="block font-display font-bold text-lg text-on-surface">{{ $value }}</span>
+                            </div>
+                        @endif
+                    @endforeach
+                </div>
+            </div>
+            
+            <div class="hidden lg:block w-px h-32 bg-outline-variant/10"></div>
+            
+            <div class="flex flex-col gap-3">
+                <x-ui.button variant="primary">Edit Profile</x-ui.button>
+                <x-ui.button variant="ghost">Share Portfolio</x-ui.button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Activity & Grid -->
+    <div class="grid grid-cols-1 lg:grid-cols-3 gap-12">
+        <!-- Sidebar: Details -->
+        <div class="space-y-8">
+            <x-ui.card tonal="container" padding="p-8">
+                <h3 class="font-display font-bold text-lg text-on-surface mb-6">About Curator</h3>
+                <p class="text-on-surface-variant leading-relaxed text-sm">
+                    Passionate about micro-optimizations and clean architectural patterns. Currently exploring the intersection of PHP and physics-based UI.
+                </p>
+                <div class="mt-8 pt-8 border-t border-outline-variant/10 space-y-4">
+                    <div class="flex justify-between text-sm">
+                        <span class="text-on-surface-variant">Location</span>
+                        <span class="text-on-surface">Remote (Void)</span>
+                    </div>
+                    <div class="flex justify-between text-sm">
+                        <span class="text-on-surface-variant">Member since</span>
+                        <span class="text-on-surface">{{ $stats['joined'] }}</span>
+                    </div>
+                </div>
+            </x-ui.card>
+        </div>
+
+        <!-- Main Column: Activity -->
+        <div class="lg:col-span-2 space-y-12">
+            <h3 class="font-display font-bold text-2xl text-on-surface">Recent Curations</h3>
+            
+            <div class="space-y-6">
+                @foreach($recent_activity as $activity)
+                    <x-ui.card tonal="low" class="group hover:bg-surface-high/50">
+                        <div class="flex items-center justify-between">
+                            <div class="flex items-center gap-6">
+                                <div class="w-3 h-3 rounded-full bg-secondary"></div>
+                                <div>
+                                    <h4 class="font-display font-bold text-on-surface group-hover:text-primary transition-colors">{{ $activity['title'] }}</h4>
+                                    <p class="text-on-surface-variant text-xs mt-1">{{ $activity['date'] }}</p>
+                                </div>
+                            </div>
+                            <div class="text-primary font-mono font-bold">{{ $activity['karma'] }} Karma</div>
+                        </div>
+                    </x-ui.card>
+                @endforeach
+            </div>
+            
+            <x-ui.button variant="ghost" class="w-full">Load More History</x-ui.button>
+        </div>
+    </div>
+</div>
