@@ -2,26 +2,29 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
-use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\MorphMany;
 
 class Review extends Model
 {
-    protected $fillable = ['post_id', 'user_id', 'content', 'suggestion_code', 'is_reference'];
+    use HasFactory;
+
+    protected $fillable = ['snippet_id', 'user_id', 'line_number', 'content'];
+
+    public function snippet(): BelongsTo
+    {
+        return $this->belongsTo(Snippet::class);
+    }
 
     public function user(): BelongsTo
     {
         return $this->belongsTo(User::class);
     }
 
-    public function post(): BelongsTo
+    public function reactions(): MorphMany
     {
-        return $this->belongsTo(Post::class);
-    }
-
-    public function boosts(): HasMany
-    {
-        return $this->hasMany(Boost::class);
+        return $this->morphMany(Reaction::class, 'reactable');
     }
 }

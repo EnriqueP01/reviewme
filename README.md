@@ -88,6 +88,38 @@ git add . ; git commit -m "feat: description" ; git push origin main
 
 ---
 
+---
+
+## 📜 Charte de Développement (Antigravity)
+
+Ce projet utilise des règles d'automatisation et de contrôle qualité via l'agent **Antigravity**. Voici les directives à respecter :
+
+### 🛡️ Principes Fondamentaux
+*   **Langue :** Français obligatoire (explications, rapports, commits).
+*   **Méthode KISS :** Simplicité et lisibilité avant tout.
+*   **Standards :** Respect strict des fichiers de configuration locaux (`.editorconfig`, `.styleci.yml`, `phpstan.neon`, etc.).
+*   **Traçabilité :** Documentation systématique des choix techniques dans [DECISIONS.md](./DECISIONS.md).
+*   **Robustesse & Ops :** 
+    *   Mise à jour systématique de `.env.example` si le `.env` change.
+    *   Toute modification de schéma s'effectue via une **migration Laravel**.
+    *   Gestion d'erreurs proactive et utilisation des Logs Laravel.
+*   **Tests :** Rangement exclusif dans `tests/`.
+
+### 📥 Workflow de Synchronisation (`/pull`)
+1.  **Diff Review :** Analyse de l'impact des changements sur l'architecture globale.
+2.  **Synchro Env :** Vérification automatique et mise à jour des dépendances (`npm install`, `composer install`).
+3.  **Conflits & Validation :** Résolution proactive des conflits et vérification que les tests passent au vert après merge.
+
+### 📤 Workflow de Publication (`/push`)
+1.  **Pre-Push Scan :** Chasse aux bugs, suppression des `console.log` / `var_dump` et vérification de la logique.
+2.  **Doc Architecture :** Vérification et mise à jour du fichier `DECISIONS.md`.
+3.  **Commit & Push :** Signature des commits via la convention `Conventional Commits` et génération des commandes terminal.
+
+### 🚀 Analyse & Optimisation (`/opti`)
+Analyse **100% technique et factuelle** (sans analogies) axée sur la performance algorithmique, la sécurité et la maintenabilité des nouvelles fonctionnalités.
+
+---
+
 ## 📄 Documentation
 Les concepts détaillés et les User Journeys sont disponibles dans le dossier [us/](./us/).
 

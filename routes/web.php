@@ -19,4 +19,7 @@ Route::middleware('auth')->group(function () {
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 });
 
+Route::get('/auth/github', [App\Http\Controllers\Auth\GithubAuthController::class, 'redirect'])->name('login.github');
+Route::get('/auth/github/callback', [App\Http\Controllers\Auth\GithubAuthController::class, 'callback']);
+
 require __DIR__.'/auth.php';
