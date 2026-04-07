@@ -1,6 +1,6 @@
-# Journal de Décisions - VibeMe
+# Journal de Décisions - ReviewMe
 
-## 2026-04-08 : Implémentation Core VibeCode
+## 2026-04-08 : Implémentation Core ReviewMe
 
 ### Choix Technique : GitHub Login Obligatoire
 **Décision** : Utiliser uniquement GitHub OAuth pour l'authentification.

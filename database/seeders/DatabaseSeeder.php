@@ -20,7 +20,7 @@ class DatabaseSeeder extends Seeder
         // 1. Créer quelques utilisateurs spécifiques
         $admin = User::factory()->create([
             'name' => 'Lead Dev',
-            'email' => 'lead@vibecode.io',
+            'email' => 'lead@reviewme.io',
             'reputation_score' => 9999,
         ]);
 
