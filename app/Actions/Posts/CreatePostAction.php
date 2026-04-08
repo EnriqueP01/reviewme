@@ -41,13 +41,14 @@ final class CreatePostAction
                 'lens' => $data['lens'],
             ]);
 
-            foreach ($data['files'] as $file) {
+            foreach ($data['files'] as $index => $file) {
                 Snippet::create([
                     'post_id' => $post->id,
                     'version_number' => 1,
                     'code_content' => e($file['content']),
                     'description' => $file['description'] ?? null,
                     'language' => $file['language'] ?? 'php',
+                    'sort_order' => $index,
                 ]);
             }
 

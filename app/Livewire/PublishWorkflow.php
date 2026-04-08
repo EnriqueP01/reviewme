@@ -73,6 +73,24 @@ class PublishWorkflow extends Component
         $this->files = array_values($this->files);
     }
 
+    public function moveUp($index)
+    {
+        if ($index > 0) {
+            $temp = $this->files[$index - 1];
+            $this->files[$index - 1] = $this->files[$index];
+            $this->files[$index] = $temp;
+        }
+    }
+
+    public function moveDown($index)
+    {
+        if ($index < count($this->files) - 1) {
+            $temp = $this->files[$index + 1];
+            $this->files[$index + 1] = $this->files[$index];
+            $this->files[$index] = $temp;
+        }
+    }
+
     public function nextStep()
     {
         if ($this->step === 1) {
