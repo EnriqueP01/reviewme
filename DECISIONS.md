@@ -133,9 +133,13 @@
     - **Sécurisation métier** : Extension des tests unitaires sur les Actions de réaction et de réputation.
 - **Impact** : Feed ultra-réactif (réduction des requêtes SQL) et zéro régression possible sur le système de Karma.
 
-## 2026-04-09-18 : Environnement de Test Haute-Fidélité (MasterSeeder)
+## 2026-04-09-19 : Standardisation de la Qualité Continue (Quality Gate)
 - **Auteur** : Antigravity
 - **Statut** : ✅ Implémenté
-- **Contexte** : Besoin d'un jeu de données réaliste pour tester l'intégralité des flux collaboratifs (Labs, conversations, multi-fichiers).
-- **Décision** : Création du `MasterTestSeeder` incluant des utilisateurs multi-profils, des Labs avec rôles et des threads de revue de code simulés.
-- **Impact** : Validation facilitée de l'expérience utilisateur complète et documentation simplifiée pour les nouveaux développeurs.
+- **Contexte** : Détection de régressions sur l'i18n (chaînes en dur) et de crashs UI (undefined keys) lors de l'audit SEO/Performance.
+- **Décision** : 
+    1. **Quality Gate** : Création de la règle `.agents/rules/quality.md` imposant l'i18n systématique, le code défensif (coalescence null) et les meta-tags SEO.
+    2. **Stabilité UI** : Refonte du composant `ui/card` avec gestion sécurisée des variantes chromatiques.
+    3. **Pérennité i18n** : Assainissement complet des dictionnaires JSON pour éviter les doublons.
+- **Impact** : Éradication des erreurs 500 sur les composants UI, site bilingue 100% cohérent et visibilité SEO accrue (Twitter Cards).
+
