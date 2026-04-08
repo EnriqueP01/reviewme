@@ -86,7 +86,7 @@ class PublishWorkflow extends Component
             $this->validate([
                 'files' => 'required|array|min:1',
                 'files.*.name' => 'required|string',
-                'files.*.content' => 'required|string',
+                'files.*.content' => 'required|string|max:524288',
             ]);
         }
 

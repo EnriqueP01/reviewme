@@ -46,10 +46,7 @@ final class GroupManager extends Component
     public function deleteGroup(int $id)
     {
         $group = Group::findOrFail($id);
-        
-        if ($group->owner_id !== Auth::id()) {
-            abort(403);
-        }
+        $this->authorize('delete', $group);
 
         $group->delete();
         session()->flash('success', 'Lab supprimé.');
@@ -79,12 +76,7 @@ final class GroupManager extends Component
         if (!$this->selectedGroupId) return;
 
         $group = Group::findOrFail($this->selectedGroupId);
-        
-        // Autorise seulement proprio ou modo
-        $userRole = $group->members()->where('user_id', Auth::id())->first()?->pivot?->role;
-        if ($group->owner_id !== Auth::id() && $userRole !== 'moderator') {
-            abort(403);
-        }
+        $this->authorize('addMember', $group);
 
         if (!$group->members()->where('user_id', $userId)->exists()) {
             $group->members()->attach($userId, ['role' => 'member']);
@@ -98,13 +90,9 @@ final class GroupManager extends Component
         if (!$this->selectedGroupId) return;
 
         $group = Group::findOrFail($this->selectedGroupId);
+        $memberToRemove = User::findOrFail($userId);
         
-        if ($group->owner_id !== Auth::id() && Auth::id() !== $userId) {
-            abort(403);
-        }
-
-        // On ne peut pas supprimer le proprio
-        if ($group->owner_id === $userId) return;
+        $this->authorize('removeMember', [$group, $memberToRemove]);
 
         $group->members()->detach($userId);
     }
@@ -118,9 +106,11 @@ final class GroupManager extends Component
             ->withCount('members')
             ->get();
 
-        $selectedGroup = $this->selectedGroupId 
-            ? Group::with('members')->findOrFail($this->selectedGroupId) 
-            : null;
+        $selectedGroup = null;
+        if ($this->selectedGroupId) {
+            $selectedGroup = Group::with('members')->findOrFail($this->selectedGroupId);
+            $this->authorize('view', $selectedGroup);
+        }
 
         return view('livewire.labs.group-manager', [
             'ownedGroups' => $ownedGroups,
