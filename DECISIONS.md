@@ -152,10 +152,21 @@
 - **Auteur** : Antigravity
 - **Statut** : ✅ Implémenté
 - **Décision** : 
-    1. **Stabilité du Drag & Drop** : Basculement vers une gestion dynamique des indices via Sélecteurs DOM (Alpine) combinée à l'action atomique `$wire.reorderFiles`.
+    1. **Stabilité du Drag & Drop** : Basculement vers une gestion dynamique des indices via Sélecteurs DOM combinée à l'action atomique `$wire.reorderFiles`.
     2. **Liberté Polyglotte** : Passage d'un affichage statique du langage à un sélecteur manuel (`select`).
     3. **Expansion de Détection** : Support de 24+ langages (Rust, Go, Swift, Dart, etc.).
 - **Impact** : Expérience utilisateur fluide et réduction des erreurs de saisie.
+
+## 2026-04-09-25 : Ergonomie Avancée du Tri (Drop Gaps & Auto-Scroll)
+- **Auteur** : Antigravity
+- **Statut** : ✅ Implémenté
+- **Contexte** : Impossibilité de déposer précisément entre deux fichiers et absence de défilement automatique lors du tri de longues listes.
+- **Décision** :
+    1. **Drop Gaps** : Insertion de zones de drop réactives entre chaque fragment pour permettre un positionnement "avant/après" explicite.
+    2. **Moteur Auto-Scroll** : Implémentation d'un intervalle Alpine synchronisé sur la position `clientY` du curseur pour scroller la fenêtre dynamiquement lors du drag.
+    3. **Sanitisation Script** : Correction des conflits de guillemets dans les attributs `x-data` pour éviter les fuites de code dans le HTML.
+- **Impact** : Manipulation d'artefacts complexes (10+ fichiers) désormais fluide et sans frottement.
+
 
 ## 2026-04-09-23 : Harmonisation Sémantique & Standardisation Professionnelle
 - **Auteur** : Antigravity

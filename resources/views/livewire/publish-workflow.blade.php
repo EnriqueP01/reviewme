@@ -71,18 +71,50 @@
                 <div 
                     class="space-y-4"
                     x-data="{ 
-                        draggingIndex: null, 
+                        draggingIndex: null,
+                        dragOverGap: null,
+                        autoScrollInterval: null,
                         handleDrop(fromIndex, toIndex) {
-                            if (fromIndex === toIndex || fromIndex === null) return;
-                            const order = Array.from({length: document.querySelectorAll('[wire\\:key^=\"file-fragment-\"]').length}, (_, i) => i);
+                            if (fromIndex === null) return;
+                            // toIndex est ici la position cible
+                            const order = Array.from({length: document.querySelectorAll('[wire\\:id]').length ? {{ count($files) }} : 0}, (_, i) => i);
                             const [movedItem] = order.splice(fromIndex, 1);
-                            order.splice(toIndex, 0, movedItem);
+                            
+                            // Si on déplace vers le bas, l'indice cible doit être ajusté car le retrait a décalé les suivants
+                            let target = toIndex;
+                            if (fromIndex < toIndex) target--;
+                            
+                            order.splice(target, 0, movedItem);
                             $wire.reorderFiles(order);
                             this.draggingIndex = null;
+                            this.dragOverGap = null;
+                        },
+                        startAutoScroll(e) {
+                            if (this.autoScrollInterval) return;
+                            this.autoScrollInterval = setInterval(() => {
+                                if (this.draggingIndex === null) {
+                                    clearInterval(this.autoScrollInterval);
+                                    this.autoScrollInterval = null;
+                                    return;
+                                }
+                                const threshold = 100;
+                                if (window.lastY < threshold) window.scrollBy(0, -10);
+                                if (window.lastY > window.innerHeight - threshold) window.scrollBy(0, 10);
+                            }, 50);
                         }
                     }"
+                    @dragover="window.lastY = $event.clientY; startAutoScroll($event)"
+                    @dragend="draggingIndex = null; clearInterval(autoScrollInterval); autoScrollInterval = null"
                 >
                     @foreach($files as $index => $file)
+                        <!-- Drop Gap (Before) -->
+                        <div 
+                            @dragover.prevent="dragOverGap = {{ $index }}"
+                            @dragleave="dragOverGap = null"
+                            @drop.prevent="handleDrop(draggingIndex, {{ $index }})"
+                            class="h-1 transition-all duration-300 rounded-round-4"
+                            :class="{ 'h-12 bg-primary/10 border-2 border-dashed border-primary/40 my-2': dragOverGap === {{ $index }} }"
+                        ></div>
                         <div 
                             wire:key="file-fragment-{{ $index }}"
                             draggable="true"
@@ -176,6 +208,15 @@
                             </x-ui.card>
                         </div>
                     @endforeach
+
+                    <!-- Final Drop Gap (After Last) -->
+                    <div 
+                        @dragover.prevent="dragOverGap = {{ count($files) }}"
+                        @dragleave="dragOverGap = null"
+                        @drop.prevent="handleDrop(draggingIndex, {{ count($files) }})"
+                        class="h-1 transition-all duration-300 rounded-round-4"
+                        :class="{ 'h-12 bg-primary/10 border-2 border-dashed border-primary/40 my-2': dragOverGap === {{ count($files) }} }"
+                    ></div>
                 </div>
                 </div>
             </div>
