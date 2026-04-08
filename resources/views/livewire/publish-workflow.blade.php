@@ -165,7 +165,7 @@
                             class="transition-all duration-500"
                             :class="{ 'opacity-30 scale-95 blur-sm': draggingIndex !== null && draggingIndex !== {{ $index }} }"
                         >
-                            <x-ui.card tonal="container" padding="p-0" class="relative group overflow-hidden border border-outline-variant/10 hover:border-primary/30 transition-all duration-500 {{ session()->has('warning-'.$index) ? 'border-secondary/50 ring-1 ring-secondary/20' : '' }}">
+                            <x-ui.card tonal="container" padding="p-0" class="relative group overflow-hidden border border-outline-variant/10 hover:border-primary/30 transition-all duration-500 {{ ($file['is_duplicate'] ?? false) ? 'border-secondary/50 ring-1 ring-secondary/20' : '' }}">
                                 <!-- Header / Drag Handle -->
                                 <div class="p-4 bg-surface-high/50 flex items-center justify-between cursor-grab active:cursor-grabbing border-b border-outline-variant/5">
                                     <div class="flex items-center gap-4">
@@ -175,7 +175,7 @@
                                         <div class="flex flex-col">
                                             <div class="flex items-center gap-2">
                                                 <span class="text-[10px] uppercase tracking-widest font-bold text-on-surface-variant">{{ __('Fragment') }} #{{ $index + 1 }}</span>
-                                                @if(session()->has('warning-'.$index))
+                                                @if($file['is_duplicate'] ?? false)
                                                     <span class="text-[9px] bg-secondary/20 text-secondary px-2 py-0.5 rounded-full font-bold uppercase tracking-tight">{{ __('Duplicate') }}</span>
                                                 @endif
                                             </div>

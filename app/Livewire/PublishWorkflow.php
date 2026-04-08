@@ -92,16 +92,10 @@ class PublishWorkflow extends Component
 
     public function importFile($index, $name, $content)
     {
-        // Check for duplicates
-        foreach ($this->files as $i => $file) {
-            if ($i !== $index && $file['name'] === $name && !empty($name)) {
-                session()->flash('warning-' . $index, __('Duplicate filename detected.'));
-            }
-        }
-
         $this->files[$index]['name'] = $name;
         $this->files[$index]['content'] = $content;
         $this->detectLanguage($index);
+        $this->checkDuplicates();
     }
 
     public function importMultipleFiles($filesData)
@@ -116,8 +110,25 @@ class PublishWorkflow extends Component
                 'name' => $data['name'],
                 'content' => $data['content'],
                 'language' => $this->getLanguageByExtension($data['name']),
-                'description' => ''
+                'description' => '',
+                'is_duplicate' => false
             ];
+        }
+        $this->checkDuplicates();
+    }
+
+    protected function checkDuplicates()
+    {
+        $names = [];
+        foreach ($this->files as $index => &$file) {
+            $file['is_duplicate'] = false;
+            if (!empty($file['name'])) {
+                if (isset($names[$file['name']])) {
+                    $file['is_duplicate'] = true;
+                    $this->files[$names[$file['name']]]['is_duplicate'] = true;
+                }
+                $names[$file['name']] = $index;
+            }
         }
     }
 
@@ -136,13 +147,14 @@ class PublishWorkflow extends Component
 
         return [
             'lines' => $lines,
-            'size' => $kb > 0 ? $kb . ' KB' : $bytes . ' B'
+            'size' => $kb > 0 ? $kb . ' KB' : $bytes . ' B',
+            'is_duplicate' => $this->files[$index]['is_duplicate'] ?? false
         ];
     }
 
     public function addFile()
     {
-        $this->files[] = ['name' => '', 'content' => '', 'language' => 'php', 'description' => ''];
+        $this->files[] = ['name' => '', 'content' => '', 'language' => 'php', 'description' => '', 'is_duplicate' => false];
     }
 
     public function removeFile($index)
