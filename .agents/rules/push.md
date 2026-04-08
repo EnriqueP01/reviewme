@@ -2,25 +2,41 @@
 trigger: always_on
 ---
 
-Agis comme notre Tech Lead et Contrôleur Qualité Git. Nous avons terminé notre session de Vibe Coding et nous nous préparons à faire un git push.
-Ta mission : Vérifier mon code local avant l'envoi et préparer le commit.
+Agis comme notre Tech Lead et Contrôleur Qualité Git. Nous avons terminé notre session de Vibe Coding et nous nous préparons à faire un git push suivant le workflow conventionnel.
 
-Étape 1 : Analyse des modifications (Pre-Push Review)
-Scanne tous les fichiers modifiés, ajoutés ou supprimés (ton "diff" local).
-Fais-moi un résumé clair de ce qui s'apprête à être envoyé.
+Ta mission : Sécuriser, documenter et déployer les modifications du jour sur les branches appropriées.
 
-Étape 2 : Chasse aux bugs & Clean up
-Analyse ce code non poussé : bugs potentiels, oublis (console.log, dumps), logique fragile.
-Action : Donne immédiatement les extraits de code corrigés pour qu'ils soient intégrés avant le commit.
+### Étape 1 : Analyse des modifications (Pre-Push Review)
+Scanne tous les fichiers modifiés, ajoutés ou supprimés.
+Fais-moi un résumé technique par composant (Models, Actions, UI).
 
-Étape 3 : Documentation & Traçabilité
-Vérifie si les changements impactent l'architecture ou les choix techniques.
-Action : Si nécessaire, génère l'entrée correspondante pour le fichier `DECISIONS.md`.
+### Étape 2 : Chasse aux bugs & État de santé
+Analyse le code pour détecter :
+- Bugs logiques ou régressions.
+- Oublis (console.log, dd, dumps).
+- Manque de validation des inputs.
+Action : Donne immédiatement les extraits de code corrigés.
 
-Étape 4 : Préparation du Push (Ready for Terminal)
-Rédige un message de commit structuré (`Conventional Commits`, ex: `feat:`, `fix:`, `refactor:`).
-Fournis le bloc de commandes Git complet que je n'aurai plus qu'à copier/coller.
+### Étape 3 : Documentation (DECISIONS.md)
+Vérifie si les changements impactent l'architecture.
+Action : Génère l'entrée pour `DECISIONS.md` avec le format strict.
 
-Règle d'or :
-* **Reste 100% technique et proactif**. Pas de solutions vagues, donne du code prêt à l'emploi.
-* **Règles & Workflows** : Vérifie systématiquement si des fichiers dans `.agents/rules/` ou `.agents/workflows/` ont été modifiés. Si c'est le cas, ajoute-les impérativement au commit (`git add .agents/`). Tu dois garantir que le "cerveau" du projet (ses règles) évolue en même temps que son code.
+### Étape 4 : Déploiement Conventionnel (Ready for Terminal)
+Génère le message de commit au format : `<type>(<scope>): <description>`
+Types autorisés : `feat`, `fix`, `docs`, `style`, `refactor`, `test`, `chore`.
+
+Propose le bloc de commande Git suivant :
+1. `git checkout -b <type>/nom-de-la-tache` (Nomenclature par préfixe pour le tri).
+2. `git add .`
+3. `git commit -m "<type>(<scope>): description"`
+4. `git push origin <type>/nom-de-la-tache`
+5. `git checkout dev`
+6. `git pull origin dev` (Sécurité pré-merge)
+7. `git merge <type>/nom-de-la-tache`
+8. `git push origin dev`
+9. `git branch -d <type>/nom-de-la-tache` (Nettoyage local)
+
+### Règle d'or :
+* **Nomenclature Atomique** : Utilise toujours des préfixes (`feat/`, `fix/`) pour que les outils de Git puissent trier et ranger les branches secondaires dans des dossiers, les séparant visuellement des branches principales (`main`, `dev`).
+* **Zéro Spill sur Main** : La branche `main` est réservée exclusivement aux releases de production. Toute modification doit IMPÉRATIVEMENT passer par `dev`.
+* **Règles & Workflows** : Ajoute systématiquement toute modification de `.agents/` au commit.
