@@ -16,7 +16,10 @@ trigger: always_on
 ## Architecture & Traçabilité
 * **Workflow** : Respecte strictement le processus de branchement et de synchronisation défini dans `.agents/rules/workflow.md`.
 * **Journal de Décisions** : Pour chaque changement, mets à jour `DECISIONS.md` avec le format strict incluant l'**Auteur** et le contexte technique.
-* **Intégrité Frontend** : Applique la "No-Spill Policy" pour éviter toute modification accidentelle de l'UI non demandée.
+* **Intégrité Frontend (Strict No-Spill Policy)** : 
+    * Ne modifie JAMAIS un élément visuel (Logo, animations CSS, palettes de couleurs, espacements) si ce n'est pas l'objet explicite du prompt.
+    * Interdiction de supprimer ou d'altérer des animations existantes ou des assets graphiques (SVG, PNG) sans demande directe.
+    * Toute "amélioration esthétique" spontanée est considérée comme une régression. Reste focalise sur la logique et la stabilité.
 * **Organisation** : Maintiens une architecture propre. Les tests doivent être rangés dans `tests/`.
 
 ## Sécurité, Robustesse & Ops
