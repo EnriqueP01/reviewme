@@ -7,6 +7,7 @@ use App\Models\Reaction;
 use Livewire\Component;
 use Illuminate\Support\Facades\Auth;
 use Livewire\WithPagination;
+use Livewire\Attributes\Layout;
 
 class Feed extends Component
 {
@@ -22,7 +23,7 @@ class Feed extends Component
 
     public function vote($postId, $direction)
     {
-        if (!auth()->check()) {
+        if (!Auth::check()) {
             return redirect()->route('login');
         }
 
@@ -30,7 +31,7 @@ class Feed extends Component
         $type = $direction === 'up' ? 'mindblown' : 'optimisable';
 
         $existing = Reaction::where([
-            'user_id' => auth()->id(),
+            'user_id' => Auth::id(),
             'reactable_id' => $post->id,
             'reactable_type' => Post::class,
         ])->first();
@@ -40,7 +41,7 @@ class Feed extends Component
             $existing->delete();
         } else {
             Reaction::updateOrCreate([
-                'user_id' => auth()->id(),
+                'user_id' => Auth::id(),
                 'reactable_id' => $post->id,
                 'reactable_type' => Post::class,
             ], [
@@ -49,9 +50,11 @@ class Feed extends Component
         }
     }
 
+    #[Layout('layouts.app')]
     public function render()
     {
-        $userId = auth()->id();
+
+        $userId = Auth::id();
         $query = Post::with(['user', 'snippets'])
             ->withCount([
                 'reactions as up_count' => function($q) { $q->where('type', 'mindblown'); },
