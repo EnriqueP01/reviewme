@@ -100,8 +100,18 @@ body {
     background-color: #12131b !important;
 }
 
+.bg-solid-blur {
+    background-color: rgba(18, 19, 27, 0.9) !important;
+    backdrop-filter: blur(24px) !important;
+}
+
 .bg-solid-container {
     background-color: #1a1b23 !important;
+}
+
+.bg-solid-container-blur {
+    background-color: rgba(26, 27, 35, 0.9) !important;
+    backdrop-filter: blur(24px) !important;
 }
 
 /* The Lens Glows */

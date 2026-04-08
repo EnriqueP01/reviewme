@@ -51,7 +51,7 @@ Accepté
 
 ---
 
-## 2026-04-08-04 : Internationalisation & Système de Réputation
+## 2026-04-08-04 : Internationalisation & Système de Réputation / Métadonnées
 ### Choix Technique : Système de localisation JSON (i18n)
 **Décision** : Implémenter un système de traduction multilingue (FR/EN) via des fichiers JSON (`lang/en.json`, `lang/fr.json`).
 **Raison** : Flexibilité maximale pour l'ajout de langues et centralisation des chaînes de texte.
@@ -63,3 +63,18 @@ Accepté
 ### Choix Architecture : Enrichissement des Métadonnées "Vibe"
 **Décision** : Ajout de champs techniques obligatoires (`goal`, `context`, `lens`) au modèle `Post`.
 **Raison** : Cadre le feedback en forçant l'auteur à définir ses intentions (Performance, Élégance, Lisibilité).
+
+---
+
+## 2026-04-08-05 : Finalisation du Workflow de Publication & Landing Page
+### Statut
+Accepté
+### Choix Technique : Normalisation de la Résolution d'Auth
+**Décision** : Utilisation systématique de la Facade `Auth::id()` au lieu du helper `auth()->id()` dans les composants Livewire complexes.
+**Raison** : Évite les erreurs de résolution de méthode ("Undefined method id") rencontrées dans certains environnements PHP/Livewire lors de l'injection de dépendances.
+
+### Choix Produit : Réactivation de la Landing Page
+**Décision** : Rétablissement de la `welcome.blade.php` en tant que point d'entrée (`/`) et réactivation des routes d'inscription standard.
+**Raison** : Permettre une présentation marketing du projet et l'ouverture progressive de la plateforme au-delà de GitHub OAuth pour les phases de test.
+
+

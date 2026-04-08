@@ -5,6 +5,8 @@ namespace App\Livewire;
 use Livewire\Component;
 use Livewire\Attributes\Layout;
 
+use Illuminate\Support\Facades\Auth;
+
 class PublishWorkflow extends Component
 {
     public int $step = 1;
@@ -56,7 +58,7 @@ class PublishWorkflow extends Component
         ]);
 
         $post = \App\Models\Post::create([
-            'user_id' => auth()->id(),
+            'user_id' => Auth::id(),
             'title' => $this->title,
             'description' => $this->description,
             'visibility' => $this->visibility,

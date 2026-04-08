@@ -38,11 +38,20 @@
                 </a>
                 
                 <div class="flex items-center gap-8">
+                    <!-- Language Switcher -->
+                    <div class="flex items-center gap-2 px-3 py-1 bg-surface-high/30 rounded-full border border-outline-variant/10 text-[9px] font-black uppercase tracking-widest">
+                        <a href="{{ route('lang', 'fr') }}" class="transition-colors {{ app()->getLocale() == 'fr' ? 'text-primary' : 'text-on-surface-variant hover:text-on-surface' }}">FR</a>
+                        <span class="opacity-20">|</span>
+                        <a href="{{ route('lang', 'en') }}" class="transition-colors {{ app()->getLocale() == 'en' ? 'text-primary' : 'text-on-surface-variant hover:text-on-surface' }}">EN</a>
+                    </div>
+
                     @auth
-                        <a href="{{ url('/dashboard') }}" class="text-xs font-black uppercase tracking-[0.2em] text-on-surface hover:text-primary transition-colors">Access</a>
+                        <a href="{{ url('/dashboard') }}" class="text-xs font-black uppercase tracking-[0.2em] text-on-surface hover:text-primary transition-colors">{{ __('Access') }}</a>
                     @else
-                        <a href="{{ route('login') }}" class="text-xs font-black uppercase tracking-[0.2em] text-on-surface-variant hover:text-white transition-colors">SignIn</a>
-                        <x-ui.button variant="primary" size="sm" onclick="window.location.href='{{ route('register') }}'">Join</x-ui.button>
+                        <a href="{{ route('login') }}" class="text-xs font-black uppercase tracking-[0.2em] text-on-surface-variant hover:text-white transition-colors">{{ __('SignIn') }}</a>
+                        <x-ui.button variant="primary" size="sm" href="{{ route('register') }}">
+                            {{ __('Join') }}
+                        </x-ui.button>
                     @endauth
                 </div>
             </div>
@@ -53,7 +62,7 @@
             </main>
             
             <div class="py-10 text-on-surface-variant text-[10px] font-display uppercase tracking-[0.3em] flex justify-center opacity-40 animate-fade-in-up" style="animation-delay: 0.2s">
-                Advanced Artifact Evaluation Platform
+                {{ __('Advanced Artifact Evaluation Platform') }}
             </div>
         </div>
     </body>

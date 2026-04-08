@@ -20,7 +20,7 @@
                     <div class="flex flex-col items-center gap-3 sticky top-32">
                         <button 
                             @click="voted = voted === 1 ? 0 : 1"
-                            :class="voted === 1 ? 'bg-primary btn-primary-fix border-primary shadow-[0_0_20px_rgba(190,194,255,0.4)]' : 'bg-solid-container text-on-surface-variant hover:text-primary hover:border-primary/30 active:scale-90 shadow-sm'"
+                            :class="voted === 1 ? 'bg-primary btn-primary-fix border-primary shadow-[0_0_20px_rgba(190,194,255,0.4)]' : 'bg-solid-container-blur text-on-surface-variant hover:text-primary hover:border-primary/30 active:scale-90 shadow-sm'"
                             class="w-14 h-14 rounded-2xl border border-primary-subtle flex items-center justify-center transition-all duration-300 group/vote"
                         >
                             <svg class="w-6 h-6 transition-transform group-hover/vote:-translate-y-1" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M5 15l7-7 7 7"/></svg>
@@ -33,7 +33,7 @@
                         
                         <button 
                             @click="voted = voted === -1 ? 0 : -1"
-                            :class="voted === -1 ? 'bg-error text-white border-error shadow-[0_0_10px_rgba(239,68,68,0.4)]' : 'bg-solid-container text-on-surface-variant hover:text-error hover:border-error/30 active:scale-90 shadow-sm'"
+                            :class="voted === -1 ? 'bg-error text-white border-error shadow-[0_0_10px_rgba(239,68,68,0.4)]' : 'bg-solid-container-blur text-on-surface-variant hover:text-error hover:border-error/30 active:scale-90 shadow-sm'"
                             class="w-14 h-14 rounded-2xl border border-primary-subtle flex items-center justify-center transition-all duration-300 group/vote"
                         >
                             <svg class="w-6 h-6 transition-transform group-hover/vote:translate-y-1" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7"/></svg>
@@ -46,7 +46,7 @@
                         <div class="flex items-center justify-between">
                             <div class="flex items-center gap-5">
                                 <div class="relative group/avatar">
-                                    <div class="w-12 h-12 rounded-2xl bg-solid-container border border-primary/20 flex items-center justify-center text-sm font-black font-display text-primary italic overflow-hidden transition-all duration-500 group-hover/avatar:rotate-12 group-hover/avatar:scale-110 group-hover/avatar:border-primary/40 shadow-lg">
+                                    <div class="w-12 h-12 rounded-2xl bg-solid-container-blur border border-primary/20 flex items-center justify-center text-sm font-black font-display text-primary italic overflow-hidden transition-all duration-500 group-hover/avatar:rotate-12 group-hover/avatar:scale-110 group-hover/avatar:border-primary/40 shadow-lg">
                                         {{ strtoupper(substr($item['author'], 0, 1)) }}
                                         <div class="absolute inset-x-0 bottom-0 h-1/3 bg-primary/10"></div>
                                     </div>
