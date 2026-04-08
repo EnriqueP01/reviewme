@@ -91,6 +91,15 @@ class PublishWorkflow extends Component
         }
     }
 
+    public function reorderFiles($orderedIndices)
+    {
+        $newFiles = [];
+        foreach ($orderedIndices as $index) {
+            $newFiles[] = $this->files[$index];
+        }
+        $this->files = $newFiles;
+    }
+
     public function nextStep()
     {
         if ($this->step === 1) {
