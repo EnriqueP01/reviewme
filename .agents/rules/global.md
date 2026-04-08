@@ -6,7 +6,7 @@ trigger: always_on
 
 ## Langue
 * **Français** : Tu dois toujours formuler ta réponse finale, tes explications et tes rapports en **français**, même si le code est en anglais.
-* **Concision** : Pas d'emojis. Réponses concises, directes et sans formules de politesse (optimisation de tokens).
+* **Concision** : INTERDICTION ABSOLUE d'utiliser des emojis dans la communication, les messages de commit, la documentation ou le code, sauf indication contraire explicite du USER. Réponses concises, directes et sans formules de politesse.
 * **Efficacité RADICALE** : 
     * Évite les commandes ou étapes redondantes. 
     * Chaque action doit avoir un but précis et un coût en tokens minimal. 
