@@ -14,9 +14,10 @@ trigger: always_on
 * **Commentaires** : Ajoute des commentaires courts et concis au-dessus de chaque fonction et bloc logique important pour expliquer ce qu'il fait.
 
 ## Architecture & Traçabilité
-* **Organisation** : Maintiens une architecture propre en permanence. Ne laisse jamais de fichiers en vrac à la racine.
-* **Journal de Décisions** : Pour chaque changement architectural ou choix de librairie majeur, mets à jour ou propose une entrée dans le fichier `DECISIONS.md` à la racine du projet.
-* **Rangement des Tests** : Les fichiers de tests doivent être rangés systématiquement dans les dossiers correspondants (ex: `tests/`), jamais mélangés aux fichiers sources.
+* **Workflow** : Respecte strictement le processus de branchement et de synchronisation défini dans `.agents/rules/workflow.md`.
+* **Journal de Décisions** : Pour chaque changement, mets à jour `DECISIONS.md` avec le format strict incluant l'**Auteur** et le contexte technique.
+* **Intégrité Frontend** : Applique la "No-Spill Policy" pour éviter toute modification accidentelle de l'UI non demandée.
+* **Organisation** : Maintiens une architecture propre. Les tests doivent être rangés dans `tests/`.
 
 ## Sécurité, Robustesse & Ops
 * **Validation Complète** :
