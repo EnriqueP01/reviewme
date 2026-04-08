@@ -169,3 +169,11 @@
     1. **Palette Etendue** : Ajout de styles spécifiques dans `app.css` pour `architecture` (bleu), `refactor` (ambre), `ux` (rose) et `test` (indigo).
     2. **Normalisation CSS** : Injection de `strtolower()` dans la directive `@class` du template Blade pour garantir la correspondance entre les données (souvent en CamelCase ou Capitalized) et les utilitaires CSS minuscules.
 - **Impact** : Meilleure catégorisation visuelle immédiate des artefacts dans le flux.
+
+## 2026-04-09-30 : Correction d'Application Chromatique (CodeBlock Pins)
+- **Auteur** : Antigravity
+- **Statut** : ✅ Implémenté
+- **Contexte** : Les tags (Pins) présents à l'intérieur du composant d'exploration de code restaient blancs malgré l'application des couleurs sur les hashtags globaux.
+- **Décision** :
+    - **Uniformisation Blade** : Modification de `@class` dans `code-block.blade.php` pour inclure `strtolower()` sur l'attribut `$l`.
+- **Impact** : Application consistante des couleurs de Lens sur tous les points d'exposition de l'interface (HUD Code Explorer & Feed principal).

@@ -196,7 +196,7 @@
 
                 <div class="flex items-center gap-2">
                     @foreach($lenses as $l)
-                        <span @class(['px-3 py-1 rounded-lg text-[9px] font-black uppercase tracking-[0.2em] border transition-all duration-700 transform hover:scale-110', 'tag-lens-' . trim($l)])>
+                        <span @class(['px-3 py-1 rounded-lg text-[9px] font-black uppercase tracking-[0.2em] border transition-all duration-700 transform hover:scale-110', 'tag-lens-' . strtolower(trim($l))])>
                             {{ trim($l) }}
                         </span>
                     @endforeach
