@@ -160,3 +160,12 @@
         - Déplacement de l'icône d'artéfact dans la pilule d'inspection du `CodeBlock` (plus cohérent avec la hiérarchie visuelle).
         - Neutralisation du scrollbar horizontal lors des transitions d'onglets (CSS `overflow-x-hidden`).
 - **Impact** : Navigation plus stable, réduction des sauts de mise en page et temps de réponse perçu amélioré.
+
+## 2026-04-09-29 : Expansion de la Palette Chromatique des "Lens"
+- **Auteur** : Antigravity
+- **Statut** : ✅ Implémenté
+- **Contexte** : Manque de distinction visuelle entre les différents types de revues demandées (Security, Logic, Performance, etc.).
+- **Décision** : 
+    1. **Palette Etendue** : Ajout de styles spécifiques dans `app.css` pour `architecture` (bleu), `refactor` (ambre), `ux` (rose) et `test` (indigo).
+    2. **Normalisation CSS** : Injection de `strtolower()` dans la directive `@class` du template Blade pour garantir la correspondance entre les données (souvent en CamelCase ou Capitalized) et les utilitaires CSS minuscules.
+- **Impact** : Meilleure catégorisation visuelle immédiate des artefacts dans le flux.
