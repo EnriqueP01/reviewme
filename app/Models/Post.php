@@ -38,7 +38,7 @@ class Post extends Model
 
     public function snippets(): HasMany
     {
-        return $this->hasMany(Snippet::class)->orderBy('version_number', 'desc');
+        return $this->hasMany(Snippet::class)->orderBy('sort_order', 'asc')->orderBy('version_number', 'desc');
     }
 
     public function latestSnippet(): \Illuminate\Database\Eloquent\Relations\HasOne

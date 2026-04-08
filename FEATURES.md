@@ -11,7 +11,7 @@ ReviewMe est une plateforme de curation de code "haute-fidélité" conçue pour 
 
 ## 2. 🚀 Curation d'Artefacts (Publication)
 *   **Workflow en 3 Étapes** : 🟢 Opérationnel
-*   **Artefacts (Code)** : 🟢 Opérationnel (Multi-fichiers)
+*   **Artefacts (Code)** : 🟢 Opérationnel (Multi-fichiers & Réorganisation prioritaire)
 *   **Distribution** : 🟢 Opérationnel (Visibilité Labs/Public)
 
 ## 3. 🧪 Neural Labs (Collaboration Groupée)

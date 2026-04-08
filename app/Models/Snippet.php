@@ -11,7 +11,7 @@ class Snippet extends Model
 {
     use HasFactory;
 
-    protected $fillable = ['post_id', 'version_number', 'code_content', 'description', 'language'];
+    protected $fillable = ['post_id', 'version_number', 'code_content', 'description', 'language', 'sort_order'];
 
     public function post(): BelongsTo
     {

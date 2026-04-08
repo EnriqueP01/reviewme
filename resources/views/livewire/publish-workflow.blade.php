@@ -70,9 +70,23 @@
                 <div class="space-y-6">
                     @foreach($files as $index => $file)
                         <x-ui.card tonal="container" padding="p-6" class="space-y-4 relative group overflow-hidden">
-                            <button type="button" wire:click="removeFile({{ $index }})" class="absolute top-4 right-4 text-on-surface-variant hover:text-secondary opacity-0 group-hover:opacity-100 transition-all z-20">
-                                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M6 18L18 6M6 6l12 12"/></svg>
-                            </button>
+                            <div class="absolute top-4 right-4 flex items-center gap-2 opacity-0 group-hover:opacity-100 transition-all z-20">
+                                @if($index > 0)
+                                    <button type="button" wire:click="moveUp({{ $index }})" class="text-on-surface-variant hover:text-primary transition-colors p-1" title="{{ __('Move Up') }}">
+                                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M5 15l7-7 7 7"/></svg>
+                                    </button>
+                                @endif
+                                
+                                @if($index < count($files) - 1)
+                                    <button type="button" wire:click="moveDown({{ $index }})" class="text-on-surface-variant hover:text-primary transition-colors p-1" title="{{ __('Move Down') }}">
+                                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M19 9l-7 7-7-7"/></svg>
+                                    </button>
+                                @endif
+
+                                <button type="button" wire:click="removeFile({{ $index }})" class="text-on-surface-variant hover:text-secondary p-1" title="{{ __('Remove') }}">
+                                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M6 18L18 6M6 6l12 12"/></svg>
+                                </button>
+                            </div>
                             
                             <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
                                 <div class="col-span-1 md:col-span-2">
