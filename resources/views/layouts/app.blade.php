@@ -39,5 +39,14 @@
         </div>
 
         @livewireScripts
+        <script>
+            document.addEventListener('livewire:initialized', () => {
+                Livewire.on('vibe-action', (event) => {
+                    if (window.fx) {
+                        window.fx.play(event.type);
+                    }
+                });
+            });
+        </script>
     </body>
 </html>

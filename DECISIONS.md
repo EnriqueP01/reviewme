@@ -115,3 +115,33 @@ Accepté
 ### Choix Technique : Protection de l'Inégrité du DOM (Code Highlighter)
 **Décision** : Injection de caractères invisibles (Zero-Width Space) dans les attributs `wire:` et `x-` au sein des blocs de code affichés.
 **Raison** : Empêche le moteur Livewire de tenter de parser et d'exécuter des attributs contenus dans les snippets de code présentés pour revue, évitant ainsi des erreurs fatales de corruption du DOM.
+
+---
+
+## 2026-04-08-08 : Sécurisation, Recherche & Expérience Audio FX
+### Statut
+Accepté
+### Contexte
+Le système de réputation initial était limité (pas de gestion des retraits de votes) et la plateforme manquait de contrôles d'accès granulaires. L'expérience utilisateur manquait également de retour haptique/sonore pour renforcer l'aspect "Premium".
+### Décision
+Mise en œuvre d'une série d'améliorations structurelles et sensorielles pour finaliser la robustesse du produit.
+
+#### 1. Système de Karma Avancé :
+*   **Barème Différencié** : +10 points pour les feedbacks positifs (`mindblown`, `clean`, `security`) et -2 points pour les feedbacks `optimisable`.
+*   **Logique Atomique** : Migration de la logique de réputation vers une action dédiée `UpdateUserReputationAction`. Le calcul gère désormais les "Unvotes" (retrait de points) et les "Switches" de types (bascule propre entre positif et négatif).
+
+#### 2. Sécurité & Autorisations (Policies) :
+*   **Adoption des Policies** : Création de `PostPolicy` et `ReviewPolicy`.
+*   **Règle de Propriété** : Seuls les auteurs originaux peuvent désormais supprimer leurs reviews ou modifier leurs publications. Application de ces règles via `authorize()` dans les composants Livewire/Actions.
+
+#### 3. Recherche & Filtrage :
+*   **Recherche Debounced** : Intégration d'un champ de recherche dans le Feed utilisant `wire:model.live.debounce.300ms` filtrant par titre, description et nom de l'auteur.
+
+#### 4. Audio FX & UX Sensorielle :
+*   **Digital Soundscape** : Création d'un service JS `window.fx` générant des sons procéduraux (Oscillateurs Web Audio API) pour les interactions clés (survol, capture de code, vote, succès).
+*   **Code Highlighting** : Adoption manuelle d'une palette "Tokyo Night" dans le composant `code-block` pour simuler un rendu IDE haut de gamme sans dépendance lourde externe.
+
+### Conséquences
+*   **Intégrité des Données** : Le score de réputation (Karma) reflète désormais fidèlement l'état réel de la base de données.
+*   **Accessibilité** : Meilleur retour utilisateur grâce aux signaux sonores et haptiques.
+*   **Sécurité** : Protection contre les manipulations non autorisées via les routes Livewire.

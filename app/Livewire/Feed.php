@@ -1,9 +1,10 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Livewire;
 
 use App\Models\Post;
-use App\Models\Reaction;
 use Livewire\Component;
 use Illuminate\Support\Facades\Auth;
 use Livewire\WithPagination;
@@ -12,17 +13,28 @@ class Feed extends Component
 {
     use WithPagination;
 
-    public $sort = 'recent';
+    public string $sort = 'recent';
+    public string $search = '';
 
-    public function sortBy($method)
+    protected $queryString = [
+        'search' => ['except' => ''],
+        'sort' => ['except' => 'recent'],
+    ];
+
+    public function updatedSearch(): void
+    {
+        $this->resetPage();
+    }
+
+    public function sortBy(string $method): void
     {
         $this->sort = $method;
         $this->resetPage();
     }
 
-    public function vote($postId, $direction, \App\Actions\Reactions\ToggleReactionAction $toggleReaction)
+    public function vote(int $postId, string $direction, \App\Actions\Reactions\ToggleReactionAction $toggleReaction)
     {
-        if (!auth()->check()) {
+        if (!Auth::check()) {
             return redirect()->route('login');
         }
 
@@ -34,7 +46,7 @@ class Feed extends Component
 
     public function render()
     {
-        $userId = auth()->id();
+        $userId = Auth::id();
         $query = Post::with(['user', 'snippets'])
             ->withCount([
                 'reactions as up_count' => function($q) { $q->where('type', 'mindblown'); },
@@ -53,6 +65,17 @@ class Feed extends Component
                     $query->orWhere('user_id', $userId);
                 }
             });
+
+        // Application du filtre de recherche
+        if (!empty($this->search)) {
+            $query->where(function ($q) {
+                $q->where('title', 'like', '%' . $this->search . '%')
+                  ->orWhere('description', 'like', '%' . $this->search . '%')
+                  ->orWhereHas('user', function($qu) {
+                      $qu->where('name', 'like', '%' . $this->search . '%');
+                  });
+            });
+        }
 
         if ($this->sort === 'recent') {
             $query->latest();

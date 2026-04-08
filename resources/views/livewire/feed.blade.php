@@ -5,23 +5,39 @@
             <h2 class="font-display text-5xl font-black text-on-surface tracking-tight">{{ __('Perspectives') }}</h2>
             <p class="text-on-surface-variant text-base tracking-wide font-medium">{{ __('Synthetic analysis of architectural patterns.') }}</p>
         </div>
-        <div class="flex items-center gap-4 bg-surface-container rounded-full p-1 border border-outline-variant/20">
-            <x-ui.button 
-                variant="{{ $sort === 'trending' ? 'primary' : 'ghost' }}" 
-                size="sm" class="!px-6" pill 
-                wire:click="sortBy('trending')"
-                wire:loading.attr="disabled"
-            >
-                {{ __('Trending') }}
-            </x-ui.button>
-            <x-ui.button 
-                variant="{{ $sort === 'recent' ? 'primary' : 'ghost' }}" 
-                size="sm" class="!px-6" pill 
-                wire:click="sortBy('recent')"
-                wire:loading.attr="disabled"
-            >
-                {{ __('Recent') }}
-            </x-ui.button>
+
+        <div class="flex items-center gap-6">
+            <!-- Search bar -->
+            <div class="relative group">
+                <div class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
+                    <svg class="h-5 w-5 text-on-surface-variant/40 group-focus-within:text-primary transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/></svg>
+                </div>
+                <input 
+                    type="text" 
+                    wire:model.live.debounce.300ms="search" 
+                    placeholder="{{ __('Search vibes...') }}" 
+                    class="bg-surface-container-low border border-outline-variant/20 rounded-2xl py-2.5 pl-11 pr-6 text-sm text-on-surface placeholder-on-surface-variant/30 focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary/40 transition-all w-64 group-hover:w-80"
+                >
+            </div>
+
+            <div class="flex items-center gap-4 bg-surface-container rounded-full p-1 border border-outline-variant/20">
+                <x-ui.button 
+                    variant="{{ $sort === 'trending' ? 'primary' : 'ghost' }}" 
+                    size="sm" class="!px-6" pill 
+                    wire:click="sortBy('trending')"
+                    wire:loading.attr="disabled"
+                >
+                    {{ __('Trending') }}
+                </x-ui.button>
+                <x-ui.button 
+                    variant="{{ $sort === 'recent' ? 'primary' : 'ghost' }}" 
+                    size="sm" class="!px-6" pill 
+                    wire:click="sortBy('recent')"
+                    wire:loading.attr="disabled"
+                >
+                    {{ __('Recent') }}
+                </x-ui.button>
+            </div>
         </div>
     </div>
 

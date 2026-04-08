@@ -7,20 +7,36 @@
         'elegant' => 'text-primary bg-primary/10 border-primary/30 shadow-[0_0_20px_rgba(190,194,255,0.1)]',
     ];
     
-    // Improved highlighting
     $highlighted = $code;
     
     // Protection: Mask Livewire attributes to prevent DOM corruption
     $highlighted = str_replace(['wire:', 'x-'], ['wi&#8203;re:', 'x&#8203;-'], $highlighted);
 
-    $keywords = ['public', 'private', 'protected', 'function', 'class', 'const', 'let', 'var', 'if', 'else', 'return', 'import', 'export', 'final', 'namespace', 'use', 'static', 'throws', 'async', 'await', 'new', 'this'];
+    // Reserved Keywords - Tokyo Night Blue
+    $keywords = [
+        'public', 'private', 'protected', 'function', 'class', 'const', 'let', 'var', 
+        'if', 'else', 'return', 'import', 'export', 'final', 'namespace', 'use', 
+        'static', 'throws', 'async', 'await', 'new', 'this', 'extends', 'implements',
+        'try', 'catch', 'finally', 'throw', 'foreach', 'as', 'while', 'do', 'switch', 'case'
+    ];
     foreach($keywords as $word) {
-        $highlighted = preg_replace("/\b($word)\b/", '<span class="text-primary font-bold">$1</span>', $highlighted);
+        $highlighted = preg_replace("/\b($word)\b/", '<span class="text-[#7aa2f7] font-bold">$1</span>', $highlighted);
     }
-    $highlighted = preg_replace("/(\\$[a-zA-Z_]\w*)/", '<span class="text-secondary">$1</span>', $highlighted);
-    $highlighted = preg_replace("/(\w+)\s*\(/", '<span class="text-on-surface font-bold">$1</span>(', $highlighted);
-    $highlighted = preg_replace("/(['\"].*?['\"])/", '<span class="text-tertiary italic">$1</span>', $highlighted);
-    $highlighted = preg_replace("/(\/\/.*)/", '<span class="text-on-surface-variant font-medium opacity-40">$1</span>', $highlighted);
+    
+    // Variables - Salmon/Red
+    $highlighted = preg_replace("/(\\$[a-zA-Z_]\w*)/", '<span class="text-[#f7768e]">$1</span>', $highlighted);
+    
+    // Functions - Green/Cyan
+    $highlighted = preg_replace("/(\w+)\s*\(/", '<span class="text-[#7dcfff] font-bold">$1</span>(', $highlighted);
+    
+    // Strings - Yellow/Orange
+    $highlighted = preg_replace("/(['\"].*?['\"])/", '<span class="text-[#e0af68] italic">$1</span>', $highlighted);
+    
+    // Comments - Muted Purple
+    $highlighted = preg_replace("/(\/\/.*)/", '<span class="text-[#565f89] font-medium italic opacity-80">$1</span>', $highlighted);
+    
+    // Numbers - Orange
+    $highlighted = preg_replace("/\b(\d+)\b/", '<span class="text-[#ff9e64]">$1</span>', $highlighted);
     
     $lines = explode("\n", $highlighted);
 @endphp
@@ -30,6 +46,7 @@
     copy() {
         navigator.clipboard.writeText(`{{ $code }}`);
         this.copied = true;
+        window.fx.play('success');
         setTimeout(() => this.copied = false, 2000);
     }
 }" wire:ignore class="relative group/lens">

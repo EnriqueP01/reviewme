@@ -1,10 +1,12 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Tests\Feature;
 
 use App\Models\Post;
-use App\Models\Reaction;
 use App\Models\User;
+use App\Actions\Reactions\ToggleReactionAction;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
 
@@ -26,34 +28,71 @@ class ReputationSystemTest extends TestCase
         // 3. Création du réacteur
         $reactor = User::factory()->create();
 
-        // 4. Action : Le réacteur ajoute une réaction au post
-        Reaction::factory()->create([
-            'user_id' => $reactor->id,
-            'reactable_id' => $post->id,
-            'reactable_type' => Post::class,
-            'type' => 'clean'
-        ]);
+        // 4. Action via le pattern Action-Domain
+        $action = app(ToggleReactionAction::class);
+        $action->execute($reactor, $post, 'clean');
 
-        // 5. Vérification : Le score de l'auteur doit être de 10
+        // 5. Vérification
         $author->refresh();
-        $this->assertEquals(10, $author->reputation_score, "Le score de réputation de l'auteur devrait être de 10 après un like.");
+        $this->assertEquals(10, $author->reputation_score);
     }
 
     /**
-     * Test that multiple reactions stack up reputation.
+     * Test that reputation stacks with multiple reactions.
      */
     public function test_reputation_stacks_with_multiple_reactions()
     {
         $author = User::factory()->create(['reputation_score' => 0]);
         $post = Post::factory()->create(['user_id' => $author->id]);
+        $action = app(ToggleReactionAction::class);
 
-        // 3 réactions
-        Reaction::factory()->count(3)->create([
-            'reactable_id' => $post->id,
-            'reactable_type' => Post::class,
-        ]);
+        // 3 réacteurs différents
+        User::factory()->count(3)->create()->each(function ($user) use ($action, $post) {
+            $action->execute($user, $post, 'mindblown');
+        });
 
         $author->refresh();
         $this->assertEquals(30, $author->reputation_score);
+    }
+
+    /**
+     * Test that reputation is removed when reaction is toggled off.
+     */
+    public function test_reputation_is_removed_on_toggle_off()
+    {
+        $author = User::factory()->create(['reputation_score' => 0]);
+        $post = Post::factory()->create(['user_id' => $author->id]);
+        $reactor = User::factory()->create();
+        $action = app(ToggleReactionAction::class);
+
+        // Ajout
+        $action->execute($reactor, $post, 'mindblown');
+        $author->refresh();
+        $this->assertEquals(10, $author->reputation_score);
+
+        // Retrait (Toggle)
+        $action->execute($reactor, $post, 'mindblown');
+        $author->refresh();
+        $this->assertEquals(0, $author->reputation_score);
+    }
+
+    /**
+     * Test that reputation delta is correct on reaction switch.
+     */
+    public function test_reputation_delta_is_correct_on_switch()
+    {
+        $author = User::factory()->create(['reputation_score' => 0]);
+        $post = Post::factory()->create(['user_id' => $author->id]);
+        $reactor = User::factory()->create();
+        $action = app(ToggleReactionAction::class);
+
+        // Passage de 'optimisable' (-2) à 'mindblown' (+10)
+        $action->execute($reactor, $post, 'optimisable');
+        $author->refresh();
+        $this->assertEquals(-2, $author->reputation_score);
+
+        $action->execute($reactor, $post, 'mindblown');
+        $author->refresh();
+        $this->assertEquals(10, $author->reputation_score); // Delta (+12)
     }
 }

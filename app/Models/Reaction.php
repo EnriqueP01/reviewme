@@ -22,14 +22,4 @@ class Reaction extends Model
     {
         return $this->morphTo();
     }
-
-    protected static function booted()
-    {
-        static::created(function ($reaction) {
-            if ($reaction->reactable_type === Post::class) {
-                $post = $reaction->reactable;
-                $post->user->increment('reputation_score', 10);
-            }
-        });
-    }
 }

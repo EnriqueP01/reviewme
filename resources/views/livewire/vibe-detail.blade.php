@@ -80,15 +80,28 @@
 
                             <!-- Display Comments for this line -->
                             @foreach($currentSnippet->reviews->where('line_number', $num) as $review)
-                                <tr class="bg-surface-container/30">
+                                <tr class="bg-surface-container/30 group/review">
                                     <td></td>
                                     <td class="py-3 px-6 text-sm border-l-2 border-outline-variant/30">
-                                        <div class="flex gap-3">
-                                            <img src="{{ $review->user->avatar }}" class="w-6 h-6 rounded-full">
-                                            <div>
-                                                <span class="font-bold text-xs">{{ $review->user->name }}</span>
-                                                <p class="text-on-surface-variant mt-1">{{ $review->content }}</p>
+                                        <div class="flex items-start justify-between">
+                                            <div class="flex gap-3">
+                                                <img src="{{ $review->user->avatar }}" class="w-6 h-6 rounded-full border border-white/10 shadow-sm">
+                                                <div>
+                                                    <span class="font-bold text-xs text-primary">{{ $review->user->name }}</span>
+                                                    <p class="text-on-surface-variant mt-1 leading-relaxed">{{ $review->content }}</p>
+                                                </div>
                                             </div>
+                                            
+                                            @can('delete', $review)
+                                                <button 
+                                                    wire:click="deleteReview({{ $review->id }})"
+                                                    wire:confirm="{{ __('Delete this insight?') }}"
+                                                    @mouseenter="window.fx.play('hover')"
+                                                    class="opacity-0 group-hover/review:opacity-100 p-2 text-on-surface-variant/40 hover:text-error transition-all"
+                                                >
+                                                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/></svg>
+                                                </button>
+                                            @endcan
                                         </div>
                                     </td>
                                 </tr>
@@ -104,19 +117,19 @@
             <div class="bg-surface-container rounded-2xl p-6 border border-outline-variant">
                 <h3 class="font-display font-bold text-lg mb-6 text-primary">{{ __('Tech Reactions') }}</h3>
                 <div class="grid grid-cols-2 gap-3">
-                    <button wire:click="react('clean')" class="flex flex-col items-center p-4 rounded-xl border {{ $post->reactions->where('user_id', auth()->id())->where('type', 'clean')->count() ? 'bg-primary/20 border-primary' : 'bg-surface-container-high border-transparent' }} hover:border-primary transition-all">
+                    <button wire:click="react('clean')" @mouseenter="window.fx.play('hover')" class="flex flex-col items-center p-4 rounded-xl border {{ $post->reactions->where('user_id', auth()->id())->where('type', 'clean')->count() ? 'bg-primary/20 border-primary' : 'bg-surface-container-high border-transparent' }} hover:border-primary transition-all">
                         <span class="text-2xl mb-1">✨</span>
                         <span class="text-[10px] font-bold uppercase tracking-wider">{{ __('Clean Code') }}</span>
                     </button>
-                    <button wire:click="react('optimisable')" class="flex flex-col items-center p-4 rounded-xl border {{ $post->reactions->where('user_id', auth()->id())->where('type', 'optimisable')->count() ? 'bg-primary/20 border-primary' : 'bg-surface-container-high border-transparent' }} hover:border-primary transition-all">
+                    <button wire:click="react('optimisable')" @mouseenter="window.fx.play('hover')" class="flex flex-col items-center p-4 rounded-xl border {{ $post->reactions->where('user_id', auth()->id())->where('type', 'optimisable')->count() ? 'bg-primary/20 border-primary' : 'bg-surface-container-high border-transparent' }} hover:border-primary transition-all">
                         <span class="text-2xl mb-1">🚀</span>
                         <span class="text-[10px] font-bold uppercase tracking-wider">{{ __('Optimisable') }}</span>
                     </button>
-                    <button wire:click="react('mindblown')" class="flex flex-col items-center p-4 rounded-xl border {{ $post->reactions->where('user_id', auth()->id())->where('type', 'mindblown')->count() ? 'bg-primary/20 border-primary' : 'bg-surface-container-high border-transparent' }} hover:border-primary transition-all">
+                    <button wire:click="react('mindblown')" @mouseenter="window.fx.play('hover')" class="flex flex-col items-center p-4 rounded-xl border {{ $post->reactions->where('user_id', auth()->id())->where('type', 'mindblown')->count() ? 'bg-primary/20 border-primary' : 'bg-surface-container-high border-transparent' }} hover:border-primary transition-all">
                         <span class="text-2xl mb-1">🤯</span>
                         <span class="text-[10px] font-bold uppercase tracking-wider">{{ __('Mindblown') }}</span>
                     </button>
-                    <button wire:click="react('security')" class="flex flex-col items-center p-4 rounded-xl border {{ $post->reactions->where('user_id', auth()->id())->where('type', 'security')->count() ? 'bg-primary/20 border-primary' : 'bg-surface-container-high border-transparent' }} hover:border-primary transition-all">
+                    <button wire:click="react('security')" @mouseenter="window.fx.play('hover')" class="flex flex-col items-center p-4 rounded-xl border {{ $post->reactions->where('user_id', auth()->id())->where('type', 'security')->count() ? 'bg-primary/20 border-primary' : 'bg-surface-container-high border-transparent' }} hover:border-primary transition-all">
                         <span class="text-2xl mb-1">🛡️</span>
                         <span class="text-[10px] font-bold uppercase tracking-wider">{{ __('Security') }}</span>
                     </button>
