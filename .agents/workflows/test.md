@@ -1,22 +1,20 @@
 ---
-description: fais les test
+description: Exécution des tests et réparation auto
 ---
 
-# Workflow: Suite de Tests Globale & Auto-Repair
+# Workflow: Tests & Auto-Repair (V2)
 
 **Déclencheur** : Commande `/test`
 
 **Étapes** :
-1.  **Analyse** : Scanne tout le code source du projet.
-2.  **Création/Mise à jour** : Pour chaque fichier source, assure qu'un fichier de test existe (créé ou mis à jour) à l'emplacement défini par les règles d'architecture.
-3.  **Boucle de Correction** :
-    * Lance les tests.
-    * **Tant qu'il y a des erreurs** :
-        * Analyse l'erreur.
-        * Corrige le code ou le test.
-        * Relance les tests.
-    * S'arrête quand tout est vert (succès).
-4.  **Rapport Final** : Génère un résumé indiquant :
-    * Les tests créés/modifiés.
-    * Les bugs corrigés durant la boucle.
-    * L'état final de la suite de tests.
+1.  **Préparation Environnement** :
+    *   Vérifie si une DB de test est configurée.
+    *   Suggère `php artisan migrate:fresh --seed` si le schéma a changé.
+2.  **Exécution** :
+    *   Exécute `php artisan test` (Pest/PHPUnit).
+3.  **Boucle de Réparation** :
+    *   En cas d'échec, analyse la stack trace de la première erreur.
+    *   Applique une correction ciblée sur le fichier source ou le test.
+    *   Relance jusqu'au succès total.
+4.  **Couverture** :
+    *   Optionnel : `php artisan test --coverage` (si Xdebug activé).

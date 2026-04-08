@@ -1,15 +1,19 @@
 ---
-description: fais npm run lint et corrige les erreurs
+description: Auto-correction Laravel (Pint) & JS (ESLint)
 ---
 
-# Workflow: Auto Lint & Fix (Global)
+# Workflow: Auto Lint & Fix (Laravel-Ready)
 
 **Déclencheur** : Commande `/lint`
 
 **Étapes** :
-1.  Exécute la commande de linting du projet (ex: `npm run lint`).
-2.  Si des erreurs ou warnings sont détectés :
-    * Applique les corrections nécessaires au code.
-    * Relance l'étape 1.
-3.  Répète la boucle jusqu'à ce que le linter ne renvoie plus aucune erreur.
-4.  Confirme à l'utilisateur : "Linting terminé, le code est propre."
+1.  **PHP Style (Laravel Pint)** :
+    *   Exécute `vendor/bin/pint` (ou `d-artisan pint` si Docker).
+    *   Corrige automatiquement les écarts de style PSR-12/Laravel.
+2.  **JS Style (ESLint/Prettier)** :
+    *   Exécute `npm run lint -- --fix`.
+3.  **Analyse Statique (PHPStan)** :
+    *   Exécute `vendor/bin/phpstan analyse`.
+    *   Si des erreurs de type sont trouvées, les lister précisément pour correction manuelle ou assistée.
+4.  **Confirmation** :
+    *   Affiche un résumé des fichiers formatés.
