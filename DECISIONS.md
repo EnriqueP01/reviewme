@@ -70,3 +70,11 @@
 - **Contexte** : Besoin de renforcer l'engagement utilisateur et de fournir des retours systémiques clairs.
 - **Décision** : Création du composant Toast HUD et de la Heatmap de contribution (Sync Density).
 - **Impact** : Gamification du profil et retour utilisateur instantané.
+
+## 2026-04-08-11 : Unicité de l'Identité & Restauration du Design Originel
+- **Auteur** : EnriqueP01
+- **Statut** : ✅ Implémenté
+- **Décision** : 
+    - **Identité** : Migration de la table `users` pour rendre le champ `name` unique et ajout de la règle de validation `Rule::unique` dans `ProfileUpdateRequest`.
+    - **Design** : Restauration du logo procédural ("R") et suppression des animations de transition globales (`fade-in-up`) jugées intrusives.
+- **Impact** : Prévention des doublons d'identité et retour à une esthétique plus sobre et fidèle à l'intention initiale.
