@@ -30,6 +30,12 @@
 
             <!-- Settings Dropdown -->
             <div class="hidden sm:flex sm:items-center sm:ms-6 gap-4">
+                <div class="flex items-center gap-2 px-3 py-1 bg-surface-high/50 rounded-round-2 border border-outline-variant/10">
+                    <a href="{{ route('lang', 'fr') }}" class="text-xs font-bold transition-colors {{ app()->getLocale() == 'fr' ? 'text-primary' : 'text-on-surface-variant hover:text-on-surface' }}">FR</a>
+                    <span class="text-outline-variant/30 text-[10px]">|</span>
+                    <a href="{{ route('lang', 'en') }}" class="text-xs font-bold transition-colors {{ app()->getLocale() == 'en' ? 'text-primary' : 'text-on-surface-variant hover:text-on-surface' }}">EN</a>
+                </div>
+
                 <a href="{{ route('publish') }}">
                     <x-ui.button variant="primary" size="sm" class="h-10">
                         {{ __('Post Review') }}

@@ -1,7 +1,7 @@
 <x-guest-layout>
     <div class="mb-8">
-        <h1 class="font-display text-2xl font-bold text-on-surface">Apply for Membership</h1>
-        <p class="text-on-surface-variant text-sm mt-1">Join the elite circle of code curators.</p>
+        <h1 class="font-display text-2xl font-bold text-on-surface">{{ __('Apply for Membership') }}</h1>
+        <p class="text-on-surface-variant text-sm mt-1">{{ __('Join the elite circle of code curators.') }}</p>
     </div>
 
     <form method="POST" action="{{ route('register') }}" class="space-y-6">
@@ -42,8 +42,8 @@
         </div>
 
         <div class="text-center pt-4">
-            <span class="text-on-surface-variant text-sm">Already a member?</span>
-            <a href="{{ route('login') }}" class="text-primary hover:text-primary/80 text-sm font-bold ml-1 transition-colors">Sign in here</a>
+            <span class="text-on-surface-variant text-sm">{{ __('Already a member?') }}</span>
+            <a href="{{ route('login') }}" class="text-primary hover:text-primary/80 text-sm font-bold ml-1 transition-colors">{{ __('Sign in here') }}</a>
         </div>
     </form>
 </x-guest-layout>

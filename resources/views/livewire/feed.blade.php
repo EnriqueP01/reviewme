@@ -1,12 +1,12 @@
 <div class="max-w-4xl mx-auto px-6 py-8">
     <div class="flex items-center justify-between mb-12">
         <div>
-            <h2 class="font-display text-3xl font-bold text-on-surface">Perspectives</h2>
-            <p class="text-on-surface-variant text-sm mt-1 italic">Hand-picked code architecture insights.</p>
+            <h2 class="font-display text-3xl font-bold text-on-surface">{{ __('Perspectives') }}</h2>
+            <p class="text-on-surface-variant text-sm mt-1 italic">{{ __('Hand-picked code architecture insights.') }}</p>
         </div>
         <div class="flex gap-2">
-            <x-ui.button variant="ghost" size="sm">Trending</x-ui.button>
-            <x-ui.button variant="ghost" size="sm">Recent</x-ui.button>
+            <x-ui.button variant="ghost" size="sm">{{ __('Trending') }}</x-ui.button>
+            <x-ui.button variant="ghost" size="sm">{{ __('Recent') }}</x-ui.button>
         </div>
     </div>
 
@@ -35,7 +35,7 @@
                                 <span class="text-sm font-medium text-on-surface">{{ $item['author'] }}</span>
                                 <span class="text-xs text-on-surface-variant">• {{ $item['time_ago'] }}</span>
                             </div>
-                            <x-ui.button variant="outline" size="sm">Curate</x-ui.button>
+                            <x-ui.button variant="outline" size="sm">{{ __('Curate') }}</x-ui.button>
                         </div>
 
                         <x-ui.code-block 

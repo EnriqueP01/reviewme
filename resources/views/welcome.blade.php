@@ -28,32 +28,37 @@
                             href="{{ url('/dashboard') }}"
                             class="inline-block px-5 py-1.5 dark:text-[#EDEDEC] border-[#19140035] hover:border-[#1915014a] border text-[#1b1b18] dark:border-[#3E3E3A] dark:hover:border-[#62605b] rounded-sm text-sm leading-normal"
                         >
-                            Dashboard
+                            {{ __('Dashboard') }}
                         </a>
                     @else
                         <a
                             href="{{ route('login') }}"
                             class="inline-block px-5 py-1.5 dark:text-[#EDEDEC] text-[#1b1b18] border border-transparent hover:border-[#19140035] dark:hover:border-[#3E3E3A] rounded-sm text-sm leading-normal"
                         >
-                            Log in
+                            {{ __('Log in') }}
                         </a>
 
                         @if (Route::has('register'))
                             <a
                                 href="{{ route('register') }}"
                                 class="inline-block px-5 py-1.5 dark:text-[#EDEDEC] border-[#19140035] hover:border-[#1915014a] border text-[#1b1b18] dark:border-[#3E3E3A] dark:hover:border-[#62605b] rounded-sm text-sm leading-normal">
-                                Register
+                                {{ __('Register') }}
                             </a>
                         @endif
                     @endauth
+                    <div class="ml-4 flex items-center gap-2 text-xs font-medium uppercase tracking-wider text-gray-500 dark:text-gray-400">
+                        <a href="{{ url('lang/fr') }}" class="{{ app()->getLocale() == 'fr' ? 'text-primary font-bold' : 'hover:text-gray-700 dark:hover:text-gray-300' }}">FR</a>
+                        <span class="text-gray-300 dark:text-gray-600">|</span>
+                        <a href="{{ url('lang/en') }}" class="{{ app()->getLocale() == 'en' ? 'text-primary font-bold' : 'hover:text-gray-700 dark:hover:text-gray-300' }}">EN</a>
+                    </div>
                 </nav>
             @endif
         </header>
         <div class="flex items-center justify-center w-full transition-opacity opacity-100 duration-750 lg:grow starting:opacity-0">
             <main class="flex max-w-[335px] w-full flex-col-reverse lg:max-w-4xl lg:flex-row">
                 <div class="text-[13px] leading-[20px] flex-1 p-6 pb-6 lg:p-20 lg:pb-10 bg-white dark:bg-[#161615] dark:text-[#EDEDEC] shadow-[inset_0px_0px_0px_1px_rgba(26,26,0,0.16)] dark:shadow-[inset_0px_0px_0px_1px_#fffaed2d] rounded-bl-lg rounded-br-lg lg:rounded-tl-lg lg:rounded-br-none">
-                    <h1 class="mb-1 font-medium">Let's get started</h1>
-                    <p class="mb-2 text-[#706f6c] dark:text-[#A1A09A]">With so many options available to you,<br /> we suggest you start with the following:</p>
+                    <h1 class="mb-1 font-medium">{{ __("Let's get started") }}</h1>
+                    <p class="mb-2 text-[#706f6c] dark:text-[#A1A09A]">{{ __("With so many options available to you, we suggest you start with the following:") }}</p>
                     <ul class="flex flex-col mb-4 lg:mb-6">
                         <li class="flex items-center gap-4 py-2 relative before:border-l before:border-[#e3e3e0] dark:before:border-[#3E3E3A] before:top-1/2 before:bottom-0 before:left-[0.4rem] before:absolute">
                             <span class="relative py-1 bg-white dark:bg-[#161615]">
@@ -62,9 +67,9 @@
                                 </span>
                             </span>
                             <span>
-                                Read the
+                                {{ __('Read the') }}
                                 <a href="https://laravel.com/docs" target="_blank" class="inline-flex items-center space-x-1 font-medium underline underline-offset-4 text-[#f53003] dark:text-[#FF4433] ml-1">
-                                    <span>Documentation</span>
+                                    <span>{{ __('Documentation') }}</span>
                                     <svg
                                         width="10"
                                         height="11"
@@ -89,9 +94,9 @@
                                 </span>
                             </span>
                             <span>
-                                Watch video tutorials at
+                                {{ __('Watch video tutorials at') }}
                                 <a href="https://laracasts.com" target="_blank" class="inline-flex items-center space-x-1 font-medium underline underline-offset-4 text-[#f53003] dark:text-[#FF4433] ml-1">
-                                    <span>Laracasts</span>
+                                    <span>{{ __('Laracasts') }}</span>
                                     <svg
                                         width="10"
                                         height="11"
@@ -113,7 +118,7 @@
                     <ul class="flex gap-3 text-sm leading-normal">
                         <li>
                             <a href="https://cloud.laravel.com" target="_blank" class="inline-block dark:bg-[#eeeeec] dark:border-[#eeeeec] dark:text-[#1C1C1A] dark:hover:bg-white dark:hover:border-white hover:bg-black hover:border-black px-5 py-1.5 bg-[#1b1b18] rounded-sm border border-black text-white text-sm leading-normal">
-                                Deploy now
+                                {{ __('Deploy now') }}
                             </a>
                         </li>
                     </ul>
@@ -121,7 +126,7 @@
                     <p class="mt-6 lg:mt-10 text-[#706f6c] dark:text-[#A1A09A]">
                         v{{ app()->version() }}
                         <a href="https://github.com/laravel/laravel/blob/13.x/CHANGELOG.md" target="_blank" class="inline-flex items-center space-x-1 font-medium underline underline-offset-4 text-[#f53003] dark:text-[#FF4433] ml-1">
-                            <span>View changelog</span>
+                            <span>{{ __('View changelog') }}</span>
                             <svg
                                 width="10"
                                 height="11"

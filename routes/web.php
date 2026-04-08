@@ -7,6 +7,13 @@ Route::get('/', function () {
     return redirect()->route('dashboard');
 });
 
+Route::get('lang/{locale}', function ($locale) {
+    if (in_array($locale, ['en', 'fr'])) {
+        session()->put('locale', $locale);
+    }
+    return redirect()->back();
+})->name('lang');
+
 Route::get('/dashboard', \App\Livewire\Feed::class)
     ->middleware(['auth', 'verified'])
     ->name('dashboard');
