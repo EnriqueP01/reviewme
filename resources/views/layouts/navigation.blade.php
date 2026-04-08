@@ -1,124 +1,142 @@
-<nav x-data="{ open: false }" class="bg-surface-container/80 backdrop-blur-xl sticky top-0 z-50">
-    <!-- Primary Navigation Menu -->
-    <div class="max-w-7xl mx-auto px-6 lg:px-8">
-        <div class="flex justify-between h-20">
-            <div class="flex items-center gap-12">
-                <!-- Logo -->
-                <div class="shrink-0 flex items-center">
-                    <a href="{{ route('dashboard') }}" class="flex items-center gap-3 group">
-                        <div class="w-10 h-10 bg-primary/20 rounded-round-4 flex items-center justify-center transition-all duration-500 group-hover:scale-110 group-hover:bg-primary/30">
-                            <span class="text-primary font-display font-bold text-xl leading-none">R</span>
+<nav x-data="{ open: false }" class="bg-surface/40 backdrop-blur-3xl sticky top-0 z-50 border-b border-subtle h-24 flex items-center transition-all duration-500">
+    <div class="max-w-7xl mx-auto px-12 w-full">
+        <div class="flex justify-between items-center">
+            <div class="flex items-center gap-20">
+                <!-- Logo: The Monolith Lens -->
+                <a href="{{ route('dashboard') }}" class="flex items-center gap-5 group">
+                    <div class="relative w-14 h-14 flex items-center justify-center">
+                        <!-- Animated geometric layers -->
+                        <div class="absolute inset-0 bg-primary/10 rounded-2xl rotate-45 group-hover:rotate-90 transition-all duration-700 ease-[cubic-bezier(0.34,1.56,0.64,1)] border border-primary/20 shadow-[0_0_30px_rgba(190,194,255,0.15)]"></div>
+                        <div class="absolute inset-1 bg-surface rounded-xl flex items-center justify-center border border-white/5">
+                             <span class="text-primary font-display font-black text-2xl tracking-tighter group-hover:scale-110 transition-transform">R</span>
                         </div>
-                        <span class="font-display font-bold text-xl tracking-tight text-on-surface group-hover:text-primary transition-colors">ReviewMe</span>
-                    </a>
-                </div>
+                        <div class="absolute -inset-1 border border-primary/0 group-hover:border-primary/20 rounded-2xl transition-all duration-500 scale-110 group-hover:scale-125 opacity-0 group-hover:opacity-100"></div>
+                    </div>
+                    <div class="flex flex-col">
+                        <span class="font-display font-black text-2xl tracking-tight text-on-surface group-hover:text-primary transition-colors duration-300">ReviewMe</span>
+                        <div class="flex items-center gap-2">
+                            <span class="w-1.5 h-1.5 rounded-full bg-secondary animate-pulse"></span>
+                            <span class="text-[9px] font-black uppercase tracking-[0.5em] text-on-surface-variant opacity-40">System Active</span>
+                        </div>
+                    </div>
+                </a>
 
                 <!-- Navigation Links -->
-                <div class="hidden space-x-8 sm:-my-px sm:flex h-full">
-                    <a href="{{ route('dashboard') }}" class="inline-flex items-center px-1 pt-1 font-display font-medium text-sm leading-5 transition-all duration-300 {{ request()->routeIs('dashboard') ? 'text-primary' : 'text-on-surface-variant hover:text-on-surface' }}">
-                        {{ __('Feed') }}
-                    </a>
-                    <!-- Placeholder for other links -->
-                    <a href="#" class="inline-flex items-center px-1 pt-1 font-display font-medium text-sm leading-5 text-on-surface-variant hover:text-on-surface transition-all duration-300">
-                        {{ __('Discover') }}
-                    </a>
-                    <a href="#" class="inline-flex items-center px-1 pt-1 font-display font-medium text-sm leading-5 text-on-surface-variant hover:text-on-surface transition-all duration-300">
-                        {{ __('Karma') }}
-                    </a>
+                <div class="hidden sm:flex items-center space-x-12">
+                    @foreach(['Network' => 'dashboard', 'Lens' => '#', 'Archives' => '#'] as $label => $route)
+                        <a href="{{ $route !== '#' ? route($route) : '#' }}" 
+                           class="relative group/link py-2 font-display font-black text-[10px] uppercase tracking-[0.3em] transition-all duration-300 {{ ($route !== '#' && request()->routeIs($route)) ? 'text-primary' : 'text-on-surface-variant hover:text-on-surface' }}">
+                            {{ __($label) }}
+                            <div class="absolute -bottom-1 left-0 w-0 h-px bg-primary transition-all duration-300 group-hover/link:w-full {{ ($route !== '#' && request()->routeIs($route)) ? 'w-full' : '' }}"></div>
+                        </a>
+                    @endforeach
                 </div>
             </div>
 
-            <!-- Settings Dropdown -->
-            <div class="hidden sm:flex sm:items-center sm:ms-6 gap-4">
+            <!-- Right Actions -->
+            <div class="hidden sm:flex items-center gap-10">
                 <a href="{{ route('publish') }}">
-                    <x-ui.button variant="primary" size="sm" class="h-10">
-                        {{ __('Post Review') }}
+                    <x-ui.button variant="primary" size="sm">
+                        <svg class="w-4 h-4 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M12 4v16m8-8H4"/></svg>
+                        Post Review
                     </x-ui.button>
                 </a>
 
-                <div class="ms-3 relative">
-                    <x-dropdown align="right" width="48">
+                <div class="h-10 w-px bg-white/5"></div>
+
+                <div class="relative" x-data="{ dropOpen: false }">
+                    <x-dropdown align="right" width="64" contentClasses="bg-transparent shadow-none">
                         <x-slot name="trigger">
-                            <button class="flex items-center gap-3 px-3 py-1.5 rounded-round-4 bg-surface-high hover:bg-surface-highest transition-all duration-300 group">
-                                <div class="w-8 h-8 rounded-full bg-secondary/20 flex items-center justify-center text-secondary font-bold text-xs">
+                            <button @click="dropOpen = !dropOpen" class="group relative focus:outline-none">
+                                <div class="w-12 h-12 rounded-2xl bg-surface-container-highest border border-white/5 flex items-center justify-center text-primary font-display italic font-black transition-all duration-500 group-hover:border-primary/40 group-hover:shadow-[0_0_25px_rgba(190,194,255,0.1)] group-hover:-translate-y-0.5 relative overflow-hidden">
+                                     <div class="absolute inset-0 bg-gradient-to-br from-primary/5 to-transparent"></div>
                                     {{ strtoupper(substr(Auth::user()->name, 0, 1)) }}
                                 </div>
-                                <div class="text-sm font-medium text-on-surface-variant group-hover:text-on-surface transition-colors">{{ Auth::user()->name }}</div>
-                                <svg class="w-4 h-4 text-on-surface-variant group-hover:text-on-surface transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
-                                </svg>
+                                <!-- Status Indicator -->
+                                <div class="absolute -bottom-1 -right-1 w-4 h-4 rounded-full bg-secondary border-4 border-surface group-hover:scale-110 transition-transform"></div>
                             </button>
                         </x-slot>
 
                         <x-slot name="content">
-                            <div class="px-4 py-2 border-b border-outline-variant/10">
-                                <p class="text-xs text-on-surface-variant uppercase tracking-widest font-bold">Curator</p>
-                            </div>
-                            <x-dropdown-link :href="route('profile')" class="text-on-surface hover:bg-surface-high">
-                                {{ __('My Portrait') }}
-                            </x-dropdown-link>
-                            
-                            <x-dropdown-link :href="route('profile.edit')" class="text-on-surface hover:bg-surface-high">
-                                {{ __('Configuration') }}
-                            </x-dropdown-link>
+                            <div class="mt-4 glass-panel overflow-hidden rounded-[2rem] border border-white/10 shadow-[0_30px_80px_-20px_rgba(0,0,0,0.8)] animate-fade-in-up">
+                                <!-- Profile Capsule -->
+                                <div class="relative p-8 bg-white/[0.03] border-b border-white/5">
+                                    <div class="absolute top-4 right-4 text-[8px] font-black uppercase tracking-widest text-primary/40">Verified Agent</div>
+                                    <div class="flex items-center gap-6">
+                                        <div class="w-16 h-16 rounded-2xl bg-primary text-on-primary flex items-center justify-center text-3xl font-display font-black italic shadow-2xl">
+                                             {{ strtoupper(substr(Auth::user()->name, 0, 1)) }}
+                                        </div>
+                                        <div class="flex flex-col">
+                                            <span class="text-sm font-black text-on-surface leading-none">{{ Auth::user()->name }}</span>
+                                            <span class="text-[10px] font-medium text-on-surface-variant mt-2 opacity-60">{{ Auth::user()->email }}</span>
+                                            <div class="mt-3 flex items-center gap-2">
+                                                <div class="h-1.5 w-16 bg-white/5 rounded-full overflow-hidden">
+                                                    <div class="h-full bg-primary w-2/3"></div>
+                                                </div>
+                                                <span class="text-[8px] font-black uppercase text-primary">Karma 850</span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
 
-                            <!-- Authentication -->
-                            <form method="POST" action="{{ route('logout') }}">
-                                @csrf
-                                <x-dropdown-link :href="route('logout')"
-                                        class="text-on-surface hover:bg-surface-high"
-                                        onclick="event.preventDefault();
-                                                    this.closest('form').submit();">
-                                    {{ __('Log Out') }}
-                                </x-dropdown-link>
-                            </form>
+                                <!-- Action Grid -->
+                                <div class="p-4 grid grid-cols-2 gap-2">
+                                    <a href="{{ route('profile') }}" class="flex flex-col items-center gap-3 p-4 rounded-2xl hover:bg-white/5 transition-all group/item">
+                                        <div class="w-10 h-10 rounded-xl bg-surface-container flex items-center justify-center text-on-surface-variant group-hover/item:text-primary transition-colors">
+                                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"/></svg>
+                                        </div>
+                                        <span class="text-[10px] font-black uppercase tracking-widest text-on-surface-variant group-hover/item:text-on-surface">Portrait</span>
+                                    </a>
+                                    <a href="{{ route('profile.edit') }}" class="flex flex-col items-center gap-3 p-4 rounded-2xl hover:bg-white/5 transition-all group/item">
+                                        <div class="w-10 h-10 rounded-xl bg-surface-container flex items-center justify-center text-on-surface-variant group-hover/item:text-primary transition-colors">
+                                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/></svg>
+                                        </div>
+                                        <span class="text-[10px] font-black uppercase tracking-widest text-on-surface-variant group-hover/item:text-on-surface">Config</span>
+                                    </a>
+                                </div>
+
+                                <!-- Footer Action -->
+                                <form method="POST" action="{{ route('logout') }}" class="p-2 border-t border-white/5">
+                                    @csrf
+                                    <button onclick="event.preventDefault(); this.closest('form').submit();" class="flex items-center justify-between w-full px-6 py-4 rounded-3xl hover:bg-error/10 text-on-surface-variant hover:text-error transition-all group/logout">
+                                        <span class="text-[10px] font-black uppercase tracking-wider">Decommission session</span>
+                                        <svg class="w-4 h-4 opacity-40 group-hover/logout:opacity-100 transition-opacity" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"/></svg>
+                                    </button>
+                                </form>
+                            </div>
                         </x-slot>
                     </x-dropdown>
                 </div>
             </div>
 
-            <!-- Hamburger -->
-            <div class="-me-2 flex items-center sm:hidden">
-                <button @click="open = ! open" class="p-2 rounded-round-4 text-on-surface-variant hover:text-on-surface hover:bg-surface-high transition-all">
+            <!-- Hamburger (Mobile) -->
+            <div class="sm:hidden">
+                <button @click="open = ! open" class="p-4 rounded-2xl bg-surface-container-high text-on-surface-variant border border-white/5">
                     <svg class="h-6 w-6" stroke="currentColor" fill="none" viewBox="0 0 24 24">
-                        <path :class="{'hidden': open, 'inline-flex': ! open }" class="inline-flex" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" />
-                        <path :class="{'hidden': ! open, 'inline-flex': open }" class="hidden" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+                        <path :class="{'hidden': open, 'inline-flex': ! open }" class="inline-flex" stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M4 8h16M4 16h16" />
+                        <path :class="{'hidden': ! open, 'inline-flex': open }" class="hidden" stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M6 18L18 6M6 6l12 12" />
                     </svg>
                 </button>
             </div>
         </div>
     </div>
 
-    <!-- Responsive Navigation Menu -->
-    <div :class="{'block': open, 'hidden': ! open}" class="hidden sm:hidden bg-surface-high">
-        <div class="pt-2 pb-3 space-y-1 px-4">
-            <x-responsive-nav-link :href="route('dashboard')" :active="request()->routeIs('dashboard')" class="text-on-surface">
-                {{ __('Feed') }}
-            </x-responsive-nav-link>
-        </div>
-
-        <!-- Responsive Settings Options -->
-        <div class="pt-4 pb-1 border-t border-outline-variant/10">
-            <div class="px-6">
-                <div class="font-display font-bold text-base text-on-surface">{{ Auth::user()->name }}</div>
-                <div class="font-medium text-sm text-on-surface-variant">{{ Auth::user()->email }}</div>
+    <!-- Responsive Menu -->
+    <div :class="{'translate-x-0': open, 'translate-x-full': !open}" class="fixed inset-y-0 right-0 w-80 bg-surface-container-highest/95 backdrop-blur-2xl z-[60] border-l border-white/5 transition-transform duration-500 transform ease-in-out sm:hidden">
+        <div class="p-10 space-y-10">
+            <div class="flex justify-between items-center">
+                <span class="font-display font-black text-xl uppercase tracking-widest text-primary">System</span>
+                <button @click="open = false" class="text-on-surface-variant"><svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M6 18L18 6M6 6l12 12"/></svg></button>
             </div>
-
-            <div class="mt-3 space-y-1">
-                <x-responsive-nav-link :href="route('profile.edit')" class="text-on-surface">
-                    {{ __('Profile') }}
-                </x-responsive-nav-link>
-
-                <!-- Authentication -->
-                <form method="POST" action="{{ route('logout') }}">
-                    @csrf
-                    <x-responsive-nav-link :href="route('logout')"
-                            class="text-on-surface"
-                            onclick="event.preventDefault();
-                                        this.closest('form').submit();">
-                        {{ __('Log Out') }}
-                    </x-responsive-nav-link>
-                </form>
+            <div class="space-y-6">
+                 <a href="{{ route('dashboard') }}" class="block text-3xl font-display font-black text-on-surface hover:text-primary transition-colors">Network</a>
+                 <a href="#" class="block text-3xl font-display font-black text-on-surface hover:text-primary transition-colors">Lens</a>
+                 <a href="#" class="block text-3xl font-display font-black text-on-surface hover:text-primary transition-colors">Archives</a>
+            </div>
+            <div class="pt-10 border-t border-white/5">
+                <a href="{{ route('publish') }}" class="block">
+                    <x-ui.button variant="primary" size="lg" class="w-full">Post Review</x-ui.button>
+                </a>
             </div>
         </div>
     </div>

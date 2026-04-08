@@ -11,29 +11,30 @@
         @vite(['resources/css/app.css', 'resources/js/app.js'])
         @livewireStyles
     </head>
-    <body class="bg-surface text-on-surface font-sans antialiased selection:bg-primary selection:text-on-primary">
-        <!-- Grid Texture Overlay -->
-        <div class="fixed inset-0 pointer-events-none bg-grid opacity-[0.03] z-0"></div>
+    <body class="bg-surface text-on-surface font-sans antialiased selection:bg-primary selection:text-on-primary overflow-x-hidden">
+        
+        <!-- Animated Background Elements -->
+        <x-ui.interactive-grid />
 
-        <div class="relative min-h-screen flex flex-col z-10">
+        <div class="relative min-h-screen flex flex-col z-10 transition-opacity duration-1000" x-init="$el.style.opacity = 1" style="opacity: 0">
             @include('layouts.navigation')
 
             <!-- Page Heading -->
             @isset($header)
-                <header class="py-12 px-6 max-w-7xl mx-auto w-full">
-                    <div class="font-display text-4xl font-bold tracking-tight text-on-surface">
+                <header class="py-16 px-6 max-w-7xl mx-auto w-full animate-fade-in-up">
+                    <div class="font-display text-5xl font-bold tracking-tight text-on-surface drop-shadow-sm">
                         {{ $header }}
                     </div>
                 </header>
             @endisset
 
             <!-- Page Content -->
-            <main class="flex-grow">
+            <main class="flex-grow animate-fade-in-up" style="animation-delay: 0.1s">
                 {{ $slot }}
             </main>
 
-            <footer class="py-12 px-6 border-t border-outline-variant/10 text-on-surface-variant text-sm text-center">
-                &copy; {{ date('Y') }} ReviewMe. Built for the elite.
+            <footer class="py-12 px-6 border-t border-outline-variant/10 text-on-surface-variant text-xs uppercase tracking-widest text-center opacity-50">
+                &copy; {{ date('Y') }} ReviewMe. <span class="mx-2">|</span> Built for the elite.
             </footer>
         </div>
 

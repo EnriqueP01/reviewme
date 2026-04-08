@@ -22,34 +22,34 @@
                 <div class="flex flex-wrap justify-center md:justify-start gap-4">
                     @foreach($stats as $label => $value)
                         @if($label !== 'level')
-                            <div class="bg-surface-low border border-outline-variant/5 px-6 py-3 rounded-round-4">
-                                <span class="block text-[10px] uppercase tracking-widest text-on-surface-variant font-bold mb-1">{{ $label }}</span>
-                                <span class="block font-display font-bold text-lg text-on-surface">{{ $value }}</span>
+                            <div class="bg-solid-container border border-primary/10 px-8 py-4 rounded-2xl shadow-xl group/stat hover:border-primary/30 transition-all">
+                                <span class="block text-[9px] uppercase tracking-[0.3em] text-on-surface-variant font-black mb-2 opacity-50">{{ $label }}</span>
+                                <span class="block font-display font-black text-2xl text-on-surface group-hover:text-primary transition-colors">{{ $value }}</span>
                             </div>
                         @endif
                     @endforeach
                 </div>
             </div>
             
-            <div class="hidden lg:block w-px h-32 bg-outline-variant/10"></div>
+            <div class="hidden lg:block w-px h-32 bg-primary/10"></div>
             
-            <div class="flex flex-col gap-3">
-                <x-ui.button variant="primary">Edit Profile</x-ui.button>
-                <x-ui.button variant="ghost">Share Portfolio</x-ui.button>
+            <div class="flex flex-col gap-4">
+                <x-ui.button variant="primary" size="sm">Edit Profile</x-ui.button>
+                <x-ui.button variant="ghost" size="sm">Share Portfolio</x-ui.button>
             </div>
         </div>
     </div>
 
     <!-- Activity & Grid -->
-    <div class="grid grid-cols-1 lg:grid-cols-3 gap-12">
+    <div class="grid grid-cols-1 lg:grid-cols-3 gap-16">
         <!-- Sidebar: Details -->
-        <div class="space-y-8">
-            <x-ui.card tonal="container" padding="p-8">
-                <h3 class="font-display font-bold text-lg text-on-surface mb-6">About Curator</h3>
-                <p class="text-on-surface-variant leading-relaxed text-sm">
+        <div class="space-y-12">
+            <div class="glass-panel p-10 rounded-[2.5rem] border-subtle">
+                <h3 class="font-display font-black text-xl text-on-surface mb-8 italic">About Curator</h3>
+                <p class="text-on-surface-variant leading-relaxed text-sm opacity-70">
                     Passionate about micro-optimizations and clean architectural patterns. Currently exploring the intersection of PHP and physics-based UI.
                 </p>
-                <div class="mt-8 pt-8 border-t border-outline-variant/10 space-y-4">
+                <div class="mt-10 pt-10 border-t border-primary/10 space-y-5">
                     <div class="flex justify-between text-sm">
                         <span class="text-on-surface-variant">Location</span>
                         <span class="text-on-surface">Remote (Void)</span>
@@ -59,7 +59,7 @@
                         <span class="text-on-surface">{{ $stats['joined'] }}</span>
                     </div>
                 </div>
-            </x-ui.card>
+            </div>
         </div>
 
         <!-- Main Column: Activity -->

@@ -1,41 +1,37 @@
 @import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300..700&family=Inter:wght@100..900&family=JetBrains+Mono:wght@100..800&display=swap');
 
 :root {
-    /* Core Palette - The Monolith */
+    /* The Monolith Palette — Derived from Stitch Project 1626673704536758218 */
     --surface: #12131b;
     --surface-bright: #383842;
     --surface-dim: #12131b;
+    --surface-variant: #33343d;
     --surface-container-lowest: #0d0e16;
     --surface-container-low: #1a1b23;
     --surface-container: #1e1f28;
     --surface-container-high: #292932;
     --surface-container-highest: #33343d;
     
-    /* The Lens - Identity Colors */
-    --primary: #bec2ff;
-    --primary-container: #5b63d3;
-    --on-primary: #151a92;
-    
-    --secondary: #4edea3;
+    /* The Lens Accents */
+    --primary: #bec2ff;           /* Indigo-Blue (Fidelity variant) */
+    --primary-container: #5b63d3; /* Deep Purple-Indigo */
+    --secondary: #4edea3;         /* Mint Green */
     --secondary-container: #00a572;
-    --on-secondary: #003824;
-    
-    --tertiary: #ffb95f;
+    --tertiary: #ffb95f;          /* Amber Gold */
     --tertiary-container: #9c6200;
-    --on-tertiary: #472a00;
     
-    /* Typography & Borders */
     --on-surface: #e3e1ed;
-    --on-surface-variant: #c6c5d5;
+    --on-surface-variant: #ababcf;
+    --on-primary: #000000; /* Solid black for absolute readability on primary (light) buttons */
+    
     --outline: #908f9e;
     --outline-variant: #454653;
     
-    /* Specials */
-    --glass-bg: rgba(51, 52, 61, 0.6);
-    --glass-blur: 16px;
-    
-    /* Animations */
-    --ease-spring: cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    /* UX Precision — Ultra Responsive */
+    --ease-standard: cubic-bezier(0.4, 0, 0.2, 1);
+    --transition-instant: 100ms var(--ease-standard);
+    --transition-fast: 150ms var(--ease-standard);
+    --transition-base: 300ms var(--ease-standard);
 }
 
 body {
@@ -43,21 +39,103 @@ body {
     color: var(--on-surface);
     font-family: 'Inter', sans-serif;
     -webkit-font-smoothing: antialiased;
+    overflow-x: hidden;
+    cursor: default;
 }
 
-h1, h2, h3, h4, .font-display {
+/* Base Texture: Geometric Grid (The Monolith Spirit) */
+.bg-grid-subtle {
+    background-image: radial-gradient(circle at 1px 1px, rgba(190, 194, 255, 0.25) 1px, transparent 0);
+    background-size: 32px 32px;
+}
+
+/* Premium Typography Patterns */
+.font-display {
     font-family: 'Space Grotesk', sans-serif;
-    letter-spacing: -0.02em;
+    letter-spacing: -0.04em;
 }
 
-code, pre, .font-mono {
-    font-family: 'JetBrains Mono', monospace;
+.font-editorial {
+    font-family: 'Inter', sans-serif;
+    letter-spacing: -0.01em;
+    line-height: 1.6;
 }
 
-/* Grid Texture Background */
-.bg-grid {
-    background-image: linear-gradient(var(--on-surface) 1px, transparent 1px),
-                      linear-gradient(90deg, var(--on-surface) 1px, transparent 1px);
-    background-size: 24px 24px;
-    opacity: 0.03;
+/* Staggered Entrance Utility */
+.stagger-in > * {
+    opacity: 0;
+    transform: translateY(10px);
+    animation: fade-in-up var(--transition-base) forwards;
+}
+
+.stagger-in > *:nth-child(1) { animation-delay: 50ms; }
+.stagger-in > *:nth-child(2) { animation-delay: 100ms; }
+.stagger-in > *:nth-child(3) { animation-delay: 150ms; }
+.stagger-in > *:nth-child(4) { animation-delay: 200ms; }
+
+@keyframes fade-in-up {
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* Glassmorphism System — NO MORE WHITE CONTOURS */
+.glass-panel {
+    background: rgba(12, 13, 18, 0.85);
+    backdrop-filter: blur(40px);
+    border: 1px solid rgba(190, 194, 255, 0.15); /* Themed primary-subtle border */
+    box-shadow: 0 40px 100px -20px rgba(0, 0, 0, 0.8);
+}
+
+.border-subtle {
+    border-color: rgba(190, 194, 255, 0.1);
+}
+
+.border-primary-subtle {
+    border-color: rgba(190, 194, 255, 0.2);
+}
+
+.bg-solid {
+    background-color: #12131b !important;
+}
+
+.bg-solid-container {
+    background-color: #1a1b23 !important;
+}
+
+/* The Lens Glows */
+.lens-glow-primary { box-shadow: 0 0 30px rgba(190, 194, 255, 0.1); }
+.lens-glow-secondary { box-shadow: 0 0 30px rgba(78, 222, 163, 0.1); }
+
+/* Button Texture Reset & High-Contrast Fix */
+button, .button {
+    background-image: none !important; /* Remove any inherited noise/grid */
+}
+
+.btn-primary-fix {
+    color: #000000 !important;
+    font-weight: 900 !important;
+    background-color: var(--primary);
+}
+
+.btn-secondary-fix {
+    color: #000000 !important;
+    font-weight: 900 !important;
+    background-color: var(--secondary);
+}
+
+/* Custom Scrollbar — Discrete & Pro */
+::-webkit-scrollbar {
+    width: 6px;
+}
+::-webkit-scrollbar-track {
+    background: var(--surface);
+}
+::-webkit-scrollbar-thumb {
+    background: var(--surface-container-highest);
+    border-radius: 10px;
+}
+::-webkit-scrollbar-thumb:hover {
+    background: var(--outline-variant);
 }
