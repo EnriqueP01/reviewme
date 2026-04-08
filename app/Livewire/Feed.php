@@ -46,47 +46,9 @@ class Feed extends Component
     }
 
     #[Layout('layouts.app')]
-    public function render()
+    public function render(\App\Actions\Posts\SearchPostsAction $searchPosts)
     {
-        $userId = Auth::id();
-        $query = Post::with(['user', 'snippets'])
-            ->withCount([
-                'reactions as up_count' => function($q) { $q->where('type', 'mindblown'); },
-                'reactions as down_count' => function($q) { $q->where('type', 'optimisable'); }
-            ])
-            ->with(['reactions' => function($query) use ($userId) {
-                if ($userId) {
-                    $query->where('user_id', $userId);
-                } else {
-                    $query->whereRaw('1 = 0');
-                }
-            }])
-            ->where(function ($query) use ($userId) {
-                $query->where('visibility', 'public');
-                if ($userId) {
-                    $query->orWhere('user_id', $userId);
-                }
-            });
-
-        // Application du filtre de recherche
-        if (!empty($this->search)) {
-            $query->where(function ($q) {
-                $q->where('title', 'like', '%' . $this->search . '%')
-                  ->orWhere('description', 'like', '%' . $this->search . '%')
-                  ->orWhereHas('user', function($qu) {
-                      $qu->where('name', 'like', '%' . $this->search . '%');
-                  });
-            });
-        }
-
-        if ($this->sort === 'recent') {
-            $query->latest();
-        } else {
-            // Sort by score using the withCount results
-            $query->orderByRaw('(up_count - down_count) DESC');
-        }
-
-        $posts = $query->paginate(10);
+        $posts = $searchPosts->execute($this->search, $this->sort)->paginate(10);
 
         $perspectives = collect($posts->items())->map(function ($post) {
             $latestSnippet = $post->snippets->first();

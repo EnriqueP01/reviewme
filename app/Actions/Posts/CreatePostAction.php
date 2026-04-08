@@ -43,7 +43,7 @@ final class CreatePostAction
                 Snippet::create([
                     'post_id' => $post->id,
                     'version_number' => 1,
-                    'code_content' => $file['content'],
+                    'code_content' => e($file['content']),
                     'language' => $file['language'] ?? 'javascript',
                 ]);
             }

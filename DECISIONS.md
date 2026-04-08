@@ -78,3 +78,18 @@
     - **Identité** : Migration de la table `users` pour rendre le champ `name` unique et ajout de la règle de validation `Rule::unique` dans `ProfileUpdateRequest`.
     - **Design** : Restauration du logo procédural ("R") et suppression des animations de transition globales (`fade-in-up`) jugées intrusives.
 - **Impact** : Prévention des doublons d'identité et retour à une esthétique plus sobre et fidèle à l'intention initiale.
+
+## 2026-04-08-12 : Optimisation Globale et Performance
+- **Auteur** : Antigravity
+- **Contexte** : Amélioration de la scalabilité et de la sécurité du projet.
+- **Décision** :
+    1. Introduction de `SearchPostsAction` pour découpler le filtrage des posts du composant Livewire.
+    2. Mise en cache (10 min) des statistiques de profil et de la heatmap pour réduire la charge SQL.
+    3. Nettoyage systématique (`e()`) des snippets de code lors de la création pour prévenir les injections XSS.
+- **Statut** : Appliqué.
+
+## 2026-04-08-13 : Protection de la Branche Main et Efficacité Radicale
+- **Auteur** : EnriqueP01
+- **Contexte** : Consolidation du workflow de développement et protection du design.
+- **Décision** : Interdiction absolue de push sur `main`, adoption d'un cycle de branchement obligatoire et directive d'économie de tokens.
+- **Statut** : Actif.
