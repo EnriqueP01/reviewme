@@ -30,6 +30,18 @@ php composer.phar dev
 ```
 *Cette commande lance simultanément le serveur de développement Laravel et le compilateur Vite.*
 
+### 🐳 Démarrage avec Docker (Recommandé pour MVP)
+Si vous préférez utiliser Docker, les fichiers de conteneurisation sont prêts :
+```bash
+# Construire et lancer les conteneurs (App, Web, DB)
+docker-compose up -d --build
+
+# Arrêter les conteneurs
+docker-compose down
+```
+L'application sera accessible sur : [http://localhost:8080](http://localhost:8080)
+La base de données MySQL est disponible sur le port `3306`.
+
 ---
 
 ## 🚀 Lancement du projet

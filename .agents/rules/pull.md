@@ -9,19 +9,23 @@ Ta mission : Sécuriser et nettoyer l'intégration des dernières branches.
 Examine toutes les branches récemment modifiées et intégrées dans le pull.
 Identifie précisément quels fichiers ont été touchés et quel est l'impact de ces modifications sur l'architecture globale du projet.
 
-Étape 2 : Synchronisation de l'Environnement (Dépendances)
-Vérifie si des fichiers de dépendances ont été modifiés (`package.json`, `composer.json`, `pubspec.yaml`, etc.).
-Action : Si des changements sont détectés, suggère immédiatement les commandes de mise à jour (ex: `npm install`, `composer install`).
+Étape 2 : Synchronisation de l'Environnement (Dépendances & Docker)
+Vérifie si des fichiers de dépendances (`package.json`, `composer.json`) ou des fichiers Docker (`Dockerfile`, `docker-compose.yml`) ont été modifiés.
+Action : Suggère immédiatement les commandes de mise à jour (`npm install`, `composer install`). Si les fichiers Docker sont impactés, propose systématiquement `docker-compose build --no-cache`.
 
-Étape 3 : Préparation du Merge & Conflits
+Étape 3 : Santé des Services (Docker Check)
+Vérifie l'état de l'orchestration locale.
+Action : Si des conteneurs sont arrêtés ou en erreur, propose `docker-compose up -d`.
+
+Étape 4 : Préparation du Merge & Conflits
 Anticipe la fusion (merge) de ces branches. Si tu détectes des conflits potentiels, liste-les.
 Action : Propose immédiatement le code de résolution le plus propre et performant.
 
-Étape 4 : Validation Logique (Tests Unitaires)
+Étape 5 : Validation Logique (Tests Unitaires)
 Analyse le code résultant pour vérifier qu'il ne casse pas la logique métier.
 Action : Identifie les risques de bugs et propose les corrections immédiates.
 
-Étape 5 : Qualité et Style (Linter)
+Étape 6 : Qualité et Style (Linter)
 Effectue une vérification rigoureuse en respectant les config locales (`.eslintrc`, `.styleci.yml`, etc.).
 Action : Fournis directement le code corrigé pour que tout soit parfaitement propre.
 
