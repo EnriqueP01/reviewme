@@ -30,7 +30,7 @@ class PublishWorkflowTest extends TestCase
             ->assertSet('step', 2)
             // Step 2
             ->set('files', [
-                ['name' => 'test.php', 'content' => '<?php echo "hello";', 'language' => 'php', 'description' => 'Un fichier de test', 'is_duplicate' => false]
+                ['id' => 'test_1', 'name' => 'test.php', 'content' => '<?php echo "hello";', 'language' => 'php', 'description' => 'Un fichier de test', 'is_duplicate' => false]
             ])
             ->call('nextStep')
             ->assertSet('step', 3)
@@ -107,9 +107,9 @@ class PublishWorkflowTest extends TestCase
         Livewire::actingAs($user)
             ->test(\App\Livewire\PublishWorkflow::class)
             ->set('files', [
-                ['name' => 'A.php', 'content' => 'A'],
-                ['name' => 'B.php', 'content' => 'B'],
-                ['name' => 'C.php', 'content' => 'C'],
+                ['id' => 'f1', 'name' => 'A.php', 'content' => 'A', 'is_duplicate' => false],
+                ['id' => 'f2', 'name' => 'B.php', 'content' => 'B', 'is_duplicate' => false],
+                ['id' => 'f3', 'name' => 'C.php', 'content' => 'C', 'is_duplicate' => false],
             ])
             ->call('reorderFiles', [2, 0, 1]) // C, A, B
             ->assertSet('files.0.name', 'C.php')

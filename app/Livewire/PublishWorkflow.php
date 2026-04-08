@@ -19,9 +19,14 @@ class PublishWorkflow extends Component
     public string $description = ''; // Full description
     
     // Step 2: Artifacts
-    public array $files = [
-        ['name' => '', 'content' => '', 'language' => 'php', 'description' => ''],
-    ];
+    public array $files = [];
+
+    public function mount()
+    {
+        $this->files = [
+            ['id' => uniqid('file_'), 'name' => '', 'content' => '', 'language' => 'php', 'description' => '', 'is_duplicate' => false],
+        ];
+    }
 
     protected array $extensionMap = [
         'php' => 'php',
@@ -107,6 +112,7 @@ class PublishWorkflow extends Component
 
         foreach ($filesData as $data) {
             $this->files[] = [
+                'id' => uniqid('file_'),
                 'name' => $data['name'],
                 'content' => $data['content'],
                 'language' => $this->getLanguageByExtension($data['name']),
@@ -154,7 +160,7 @@ class PublishWorkflow extends Component
 
     public function addFile()
     {
-        $this->files[] = ['name' => '', 'content' => '', 'language' => 'php', 'description' => '', 'is_duplicate' => false];
+        $this->files[] = ['id' => uniqid('file_'), 'name' => '', 'content' => '', 'language' => 'php', 'description' => '', 'is_duplicate' => false];
     }
 
     public function removeFile($index)
