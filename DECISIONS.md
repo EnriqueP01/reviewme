@@ -167,3 +167,16 @@
     3. **Télémétrie & Footer** : Implémentation d'un footer dynamique incluant l'uptime système et le statut des nœuds actifs.
     4. **Seeder Haute-Densité** : Expansion du seeder à 30+ artifacts avec structures de données réelles pour valider la scalabilité du Feed.
 - **Impact** : Expérience de lecture de code comparable aux meilleurs éditeurs (IDE-like) et feedback systémique accru.
+
+## 2026-04-09-23 : Harmonisation Sémantique & Standardisation Professionnelle
+- **Auteur** : Antigravity
+- **Statut** : ✅ Implémenté
+- **Contexte** : Utilisation de terminologies génériques ("Node_Origin", "Inspect pattern") jugées peu professionnelles. Défaut d'ergonomie sur les hitboxes de certains boutons HUD.
+- **Décision** :
+    1. **Refonte Lexicale Globale** : Migration vers un lexique "Enterprise-grade" :
+        - `NODE_ORIGIN` -> `SOURCE_ORIGIN`
+        - `Inspect Pattern` -> `Inspect Post`
+        - `Exploration_Details` -> `Artifact_Analysis`
+        - `Logic Body` -> `Logic_Implementation`
+    2. **Optimisation UX (Hitbox)** : Correction du bouton d'inspection dans le Feed. Neutralisation des `pointer-events` sur les icônes internes et passage en mode `static` pour garantir une zone de clic 100% fiable sans interférence du magnétisme Alpine.js.
+- **Impact** : Renforcement du positionnement premium de la plateforme et fluidité d'interaction accrue sur le flux principal.

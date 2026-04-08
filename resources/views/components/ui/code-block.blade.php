@@ -112,11 +112,11 @@
             <div class="flex-1 space-y-4 relative z-10">
                 <div class="flex items-center gap-3">
                     <span class="w-2 h-2 rounded-full bg-primary shadow-[0_0_10px_#bec2ff]"></span>
-                    <h4 class="text-[10px] font-black uppercase tracking-[0.4em] text-primary">{{ __('Exploration_Details') }}</h4>
+                    <h4 class="text-[10px] font-black uppercase tracking-[0.4em] text-primary">{{ __('Artifact_Analysis') }}</h4>
                 </div>
                 <!-- File Specific Meta -->
                 <div class="bg-white/5 p-4 rounded-xl border border-white/5">
-                    <div class="text-[9px] font-black uppercase tracking-widest text-on-surface-variant/40 mb-2">{{ __('Active_Artifact') }}</div>
+                    <div class="text-[9px] font-black uppercase tracking-widest text-on-surface-variant/40 mb-2">{{ __('Selected_Module') }}</div>
                     <div class="text-xs font-mono font-bold text-primary flex items-center gap-2">
                         <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M7 21h10a2 2 0 002-2V9.414a1 1 0 00-.293-.707l-5.414-5.414A1 1 0 0012.586 3H7a2 2 0 00-2 2v14a2 2 0 002 2z" stroke-width="2.5"/></svg>
                         <span x-text="snippets[activeTab].name"></span>
@@ -125,7 +125,7 @@
                 
                 @if($goals)
                     <div class="space-y-2 mt-4">
-                        <h5 class="text-[9px] font-black uppercase tracking-[0.2em] text-on-surface-variant/40">{{ __('Mission_Goals') }}</h5>
+                        <h5 class="text-[9px] font-black uppercase tracking-[0.2em] text-on-surface-variant/40">{{ __('Review_Objectives') }}</h5>
                         <p class="text-sm text-on-surface-variant font-medium leading-relaxed italic opacity-80 border-l-2 border-primary/10 pl-4">{{ $goals }}</p>
                     </div>
                 @endif
@@ -135,7 +135,7 @@
                 <div class="flex-1 space-y-4 relative z-10">
                     <div class="flex items-center gap-3">
                         <span class="w-2 h-2 rounded-full bg-secondary shadow-[0_0_10px_#4edea3]"></span>
-                        <h4 class="text-[10px] font-black uppercase tracking-[0.4em] text-secondary">{{ __('Global_Context') }}</h4>
+                        <h4 class="text-[10px] font-black uppercase tracking-[0.4em] text-secondary">{{ __('Application_Context') }}</h4>
                     </div>
                     <p class="text-sm text-on-surface-variant font-medium leading-relaxed opacity-80 border-l-2 border-secondary/10 pl-4">{{ $context }}</p>
                 </div>
@@ -164,7 +164,7 @@
                     </span>
                     <span class="text-[11px] font-mono font-bold text-on-surface tracking-wide flex items-center gap-2">
                         <span class="w-1 h-1 rounded-full bg-primary animate-pulse shadow-[0_0_10px_rgba(190,194,255,0.8)]"></span>
-                        {{ $title ?: 'UNNAMED_ARTIFACT' }}
+                        {{ $title ?: 'UNNAMED_MODULE' }}
                     </span>
                 </div>
             </div>

@@ -104,7 +104,7 @@
                                         </div>
                                         <div class="flex flex-col">
                                             <span class="text-[10px] uppercase tracking-widest font-bold text-on-surface-variant">{{ __('Fragment') }} #{{ $index + 1 }}</span>
-                                            <span class="text-sm font-medium text-on-surface">{{ $file['name'] ?: __('Untitled_Source') }}</span>
+                                            <span class="text-sm font-medium text-on-surface">{{ $file['name'] ?: __('Untitled_Module') }}</span>
                                         </div>
                                     </div>
 
@@ -156,7 +156,7 @@
                                             wire:model="files.{{ $index }}.content" 
                                             rows="8" 
                                             class="font-mono bg-surface-lowest border-none text-primary placeholder:text-primary/30 focus:ring-1 focus:ring-primary/50 rounded-round-4 transition-all duration-300 w-full resize-none p-4" 
-                                            placeholder="{{ __('Paste or drop code fragment...') }}"
+                                            placeholder="{{ __('Paste or drop code implementation...') }}"
                                             :class="{ 'ring-2 ring-secondary/50': draggingFile }"
                                         ></textarea>
                                         
