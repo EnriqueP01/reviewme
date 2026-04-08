@@ -28,7 +28,7 @@
 
             <!-- Page Heading -->
             @isset($header)
-                <header class="py-16 px-6 max-w-7xl mx-auto w-full animate-fade-in-up">
+                <header class="py-16 px-6 max-w-7xl mx-auto w-full">
                     <div class="font-display text-5xl font-bold tracking-tight text-on-surface drop-shadow-sm">
                         {{ $header }}
                     </div>
@@ -36,7 +36,7 @@
             @endisset
 
             <!-- Page Content -->
-            <main class="flex-grow animate-fade-in-up" style="animation-delay: 0.1s">
+            <main class="flex-grow">
                 {{ $slot }}
             </main>
 

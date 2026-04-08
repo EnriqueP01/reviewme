@@ -71,7 +71,15 @@
 - **Décision** : Création du composant Toast HUD et de la Heatmap de contribution (Sync Density).
 - **Impact** : Gamification du profil et retour utilisateur instantané.
 
-## 2026-04-08-11 : Optimisation Drastique du TTFB sur Windows
+## 2026-04-08-11 : Unicité de l'Identité & Restauration du Design Originel
+- **Auteur** : EnriqueP01
+- **Statut** : ✅ Implémenté
+- **Décision** : 
+    - **Identité** : Migration de la table `users` pour rendre le champ `name` unique et ajout de la règle de validation `Rule::unique` dans `ProfileUpdateRequest`.
+    - **Design** : Restauration du logo procédural ("R") et suppression des animations de transition globales (`fade-in-up`) jugées intrusives.
+- **Impact** : Prévention des doublons d'identité et retour à une esthétique plus sobre et fidèle à l'intention initiale.
+
+## 2026-04-08-12 : Optimisation Drastique du TTFB sur Windows
 - **Auteur** : Antigravity
 - **Statut** : ✅ Implémenté
 - **Contexte** : Latence de 7s au premier octet (TTFB) due à la résolution DNS IPv6 de Windows et au verrouillage des sessions fichiers.
@@ -80,3 +88,4 @@
     - Migration du driver de session de `file` vers `cookie`.
     - Suppression de l'import redondant Alpine.js dans `app.js`.
 - **Impact** : Réduction du temps de chargement de 80% (7s -> 1.2s).
+
