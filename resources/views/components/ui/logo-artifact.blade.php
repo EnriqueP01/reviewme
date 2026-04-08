@@ -1,4 +1,4 @@
-@props(['size' => 'w-32 h-32', 'font' => 'text-6xl'])
+@props(['size' => 'w-32 h-32'])
 
 <div class="relative group/logo {{ $size }}">
     <div class="relative w-full h-full flex items-center justify-center">
@@ -7,7 +7,11 @@
         <div class="absolute inset-[10%] bg-surface rounded-[20%] flex items-center justify-center border border-white/5 overflow-hidden">
              <!-- Scanner line effect -->
              <div class="absolute inset-0 bg-gradient-to-b from-transparent via-primary/5 to-transparent h-1/2 w-full animate-scan opacity-0 group-hover/logo:opacity-100"></div>
-             <span class="text-primary font-display font-black {{ $font }} tracking-tighter group-hover/logo:scale-125 transition-transform duration-700">R</span>
+             
+             <!-- Official RV Logo (PNG) -->
+             <div class="relative w-[75%] h-[75%] group-hover/logo:scale-125 transition-transform duration-700 pointer-events-none drop-shadow-[0_0_15px_rgba(190,194,255,0.4)]">
+                <img src="{{ asset('images/logo.png') }}" alt="ReviewMe Logo" class="w-full h-full object-contain">
+             </div>
         </div>
         
         <!-- Orbital particles -->
