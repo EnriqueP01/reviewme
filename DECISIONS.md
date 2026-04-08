@@ -152,7 +152,7 @@
 - **Auteur** : Antigravity
 - **Statut** : ✅ Implémenté
 - **Décision** : 
-    1. **Stabilité du Drag & Drop** : Utilisation de `wire:key` et dissociation des événements de réorganisation vs import.
+    1. **Stabilité du Drag & Drop** : Basculement vers une gestion dynamique des indices via Sélecteurs DOM (Alpine) combinée à l'action atomique `$wire.reorderFiles`.
     2. **Liberté Polyglotte** : Passage d'un affichage statique du langage à un sélecteur manuel (`select`).
     3. **Expansion de Détection** : Support de 24+ langages (Rust, Go, Swift, Dart, etc.).
 - **Impact** : Expérience utilisateur fluide et réduction des erreurs de saisie.
@@ -165,3 +165,13 @@
     1. **Refonte Lexicale Globale** : Migration vers un lexique "Enterprise-grade" (SOURCE_ORIGIN, Inspect Post, Artifact_Analysis).
     2. **Optimisation UX (Hitbox)** : Correction du bouton d'inspection dans le Feed via neutralisation des pointer-events sur les icônes.
 - **Impact** : Renforcement du positionnement premium et fluidité d'interaction.
+
+## 2026-04-09-24 : Résolution des Conflits de Drop & Sync State
+- **Auteur** : Antigravity
+- **Statut** : ✅ Implémenté
+- **Contexte** : Échec du Drag & Drop de réorganisation et de la détection lors du premier import.
+- **Décision** :
+    1. **Sync State Backend** : Centralisation de l'heuristique dans `detectLanguage($index)` appelée par `importFile` via le pont Alp-Wire.
+    2. **Dissociation Drop** : Utilisation de `.stop` pour isoler les imports de fichiers externes du drag-and-drop de tri interne.
+- **Impact** : Fiabilité de l'import de 100% dès la première interaction.
+

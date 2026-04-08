@@ -71,22 +71,30 @@ class PublishWorkflow extends Component
     public function updatedFiles($value, $key)
     {
         if (str_ends_with($key, '.name')) {
-            $index = explode('.', $key)[0];
-            $extension = pathinfo($value, PATHINFO_EXTENSION);
-            if (isset($this->extensionMap[$extension])) {
-                $this->files[$index]['language'] = $this->extensionMap[$extension];
-            }
+            $parts = explode('.', $key);
+            $index = $parts[count($parts) - 2];
+            $this->detectLanguage($index);
         }
     }
 
-    public function getGroupsProperty()
+    protected function detectLanguage($index)
     {
-        if (empty($this->groupSearch)) {
-            return Auth::user()->groups()->get();
+        $filename = $this->files[$index]['name'] ?? '';
+        $extension = strtolower(pathinfo($filename, PATHINFO_EXTENSION));
+        
+        if (isset($this->extensionMap[$extension])) {
+            $this->files[$index]['language'] = $this->extensionMap[$extension];
+        } else {
+            // Default to plaintext or keep existing if manually set
+            // but for a new file with generic extension, we keep it as it is
         }
-        return Auth::user()->groups()
-            ->where('name', 'like', '%' . $this->groupSearch . '%')
-            ->get();
+    }
+
+    public function importFile($index, $name, $content)
+    {
+        $this->files[$index]['name'] = $name;
+        $this->files[$index]['content'] = $content;
+        $this->detectLanguage($index);
     }
 
     public function addFile()

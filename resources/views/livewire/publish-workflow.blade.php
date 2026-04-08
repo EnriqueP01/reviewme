@@ -73,14 +73,12 @@
                     x-data="{ 
                         draggingIndex: null, 
                         handleDrop(fromIndex, toIndex) {
-                            if (fromIndex === toIndex) return;
-                            $wire.reorderFiles(this.getNewOrder(fromIndex, toIndex));
-                        },
-                        getNewOrder(fromIndex, toIndex) {
-                            let order = Array.from({length: {{ count($files) }}}, (_, i) => i);
+                            if (fromIndex === toIndex || fromIndex === null) return;
+                            const order = Array.from({length: document.querySelectorAll('[wire\\:key^=\"file-fragment-\"]').length}, (_, i) => i);
                             const [movedItem] = order.splice(fromIndex, 1);
                             order.splice(toIndex, 0, movedItem);
-                            return order;
+                            $wire.reorderFiles(order);
+                            this.draggingIndex = null;
                         }
                     }"
                 >
@@ -149,8 +147,7 @@
                                             if (file) {
                                                 const reader = new FileReader();
                                                 reader.onload = (e) => {
-                                                    @this.set('files.{{ $index }}.content', e.target.result);
-                                                    @this.set('files.{{ $index }}.name', file.name);
+                                                    $wire.importFile({{ $index }}, file.name, e.target.result);
                                                 };
                                                 reader.readAsText(file);
                                             }
