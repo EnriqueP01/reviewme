@@ -5,6 +5,7 @@ namespace App\Livewire;
 use App\Models\Post;
 use App\Models\Reaction;
 use Livewire\Component;
+use Illuminate\Support\Facades\Auth;
 use Livewire\WithPagination;
 
 class Feed extends Component
@@ -52,12 +53,15 @@ class Feed extends Component
     {
         $userId = auth()->id();
         $query = Post::with(['user', 'snippets'])
-            ->withCount('reactions')
+            ->withCount([
+                'reactions as up_count' => function($q) { $q->where('type', 'mindblown'); },
+                'reactions as down_count' => function($q) { $q->where('type', 'optimisable'); }
+            ])
             ->with(['reactions' => function($query) use ($userId) {
                 if ($userId) {
                     $query->where('user_id', $userId);
                 } else {
-                    $query->whereRaw('1 = 0'); // Don't load anything if guest
+                    $query->whereRaw('1 = 0');
                 }
             }])
             ->where(function ($query) use ($userId) {
@@ -70,8 +74,9 @@ class Feed extends Component
         if ($this->sort === 'recent') {
             $query->latest();
         } else {
-            // Trending = most reactions (already added withCount)
-            $query->orderBy('reactions_count', 'desc');
+            // Sort by score
+            $query->selectRaw('*, (SELECT COUNT(*) FROM reactions WHERE reactable_id = posts.id AND type = "mindblown") - (SELECT COUNT(*) FROM reactions WHERE reactable_id = posts.id AND type = "optimisable") as score')
+                  ->orderBy('score', 'desc');
         }
 
         $posts = $query->paginate(10);
@@ -83,7 +88,7 @@ class Feed extends Component
             return [
                 'id' => $post->id,
                 'author' => $post->user->name ?? 'Curator anonyme',
-                'points' => $post->reactions_count, // Optimized count
+                'points' => $post->up_count - $post->down_count,
                 'time_ago' => $post->created_at->diffForHumans(),
                 'title' => $post->title,
                 'snippet' => $latestSnippet->code_content ?? '// No code available',

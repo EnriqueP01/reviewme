@@ -73,16 +73,18 @@
         </div>
 
         <!-- Code Body -->
-        <div wire:ignore class="relative p-8 font-mono text-[14px] leading-relaxed overflow-x-auto bg-[#08080c] selection:bg-primary/20">
+        <div wire:ignore class="relative p-8 font-mono text-[14px] leading-relaxed bg-[#08080c] selection:bg-primary/20 overflow-hidden rounded-b-3xl">
             <!-- Noise Overlay -->
             <div class="absolute inset-0 opacity-[0.03] pointer-events-none" style="background-image: url('data:image/svg+xml,%3Csvg viewBox=\'0 0 256 256\' xmlns=\'http://www.w3.org/2000/svg\'%3E%3Cfilter id=\'noiseFilter\'%3E%3CfeTurbulence type=\'fractalNoise\' baseFrequency=\'0.65\' numOctaves=\'3\' stitchTiles=\'stitch\'/%3E%3C/filter%3E%3Crect width=\'100%25\' height=\'100%25\' filter=\'url(%23noiseFilter)\'/%3E%3C/svg%3E');"></div>
             
-            <pre class="relative z-10"><code class="block space-y-1.5">@foreach($lines as $index => $line)
-<div class="flex gap-10 group/line">
+            <div class="overflow-x-auto max-w-full custom-scrollbar">
+                <pre class="relative z-10"><code class="block space-y-1.5 min-w-max">@foreach($lines as $index => $line)
+<div class="flex gap-10 group/line pr-10">
     <span class="w-8 text-right text-on-surface-variant/20 select-none group-hover/line:text-primary transition-colors font-bold">{{ str_pad($index + 1, 2, '0', STR_PAD_LEFT) }}</span>
     <span class="flex-1 text-on-surface/90 font-medium">{!! $line !!}</span>
 </div>
 @endforeach</code></pre>
+            </div>
         </div>
     </div>
 </div>

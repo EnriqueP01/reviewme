@@ -9,36 +9,51 @@ use Illuminate\Support\Facades\Auth;
 class Profile extends Component
 {
     public $user;
-    public array $stats = [
-        'karma' => 12450,
-        'reviews' => 45,
-        'level' => 'Senior Curator',
-        'joined' => 'March 2026',
-    ];
-
-    public array $recent_activity = [
-        [
-            'type' => 'review',
-            'title' => 'Optimizing SVG rendering',
-            'date' => '2 days ago',
-            'karma' => '+450',
-        ],
-        [
-            'type' => 'comment',
-            'title' => 'Clean API handling',
-            'date' => '1 week ago',
-            'karma' => '+120',
-        ],
-    ];
+    public $perPage = 3;
 
     public function mount()
     {
         $this->user = Auth::user();
     }
 
+    public function loadMore()
+    {
+        $this->perPage += 3;
+    }
+
+    public function getStatsProperty()
+    {
+        $ups = \App\Models\Reaction::whereHasMorph('reactable', [\App\Models\Post::class], function($q) {
+                $q->where('user_id', $this->user->id);
+            })->where('type', 'mindblown')->count();
+            
+        $downs = \App\Models\Reaction::whereHasMorph('reactable', [\App\Models\Post::class], function($q) {
+                $q->where('user_id', $this->user->id);
+            })->where('type', 'optimisable')->count();
+
+        return [
+            'karma' => ($ups * 10) - ($downs * 2),
+            'posts' => $this->user->posts()->count(),
+            'joined' => $this->user->created_at->format('M Y'),
+            'level' => 'Senior Curator',
+        ];
+    }
+
+    public function getRecentActivityProperty()
+    {
+        return $this->user->posts()
+            ->withCount('reactions')
+            ->latest()
+            ->take($this->perPage)
+            ->get();
+    }
+
     #[Layout('layouts.app')]
     public function render()
     {
-        return view('livewire.profile');
+        return view('livewire.profile', [
+            'stats' => $this->stats,
+            'posts' => $this->recentActivity,
+        ]);
     }
 }

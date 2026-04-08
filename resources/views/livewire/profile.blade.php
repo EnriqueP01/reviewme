@@ -1,4 +1,11 @@
-<div class="max-w-7xl mx-auto px-6 py-16">
+<div class="max-w-7xl mx-auto px-6 py-16" x-data="{ 
+    copied: false,
+    share() {
+        navigator.clipboard.writeText(window.location.href);
+        this.copied = true;
+        setTimeout(() => this.copied = false, 3000);
+    }
+}">
     <!-- Profile Hero -->
     <div class="relative mb-20">
         <div class="flex flex-col md:flex-row items-center gap-12">
@@ -24,7 +31,9 @@
                         @if($label !== 'level')
                             <div class="bg-solid-container-blur border border-primary/10 px-8 py-4 rounded-2xl shadow-xl group/stat hover:border-primary/30 transition-all">
                                 <span class="block text-[9px] uppercase tracking-[0.3em] text-on-surface-variant font-black mb-2 opacity-50">{{ $label }}</span>
-                                <span class="block font-display font-black text-2xl text-on-surface group-hover:text-primary transition-colors">{{ $value }}</span>
+                                <span class="block font-display font-black text-2xl text-on-surface group-hover:text-primary transition-colors">
+                                    {{ is_numeric($value) ? number_format($value) : $value }}
+                                </span>
                             </div>
                         @endif
                     @endforeach
@@ -34,8 +43,13 @@
             <div class="hidden lg:block w-px h-32 bg-primary/10"></div>
             
             <div class="flex flex-col gap-4">
-                <x-ui.button variant="primary" size="sm">{{ __('Edit Profile') }}</x-ui.button>
-                <x-ui.button variant="ghost" size="sm">{{ __('Share Portfolio') }}</x-ui.button>
+                <a href="{{ route('profile.edit') }}" wire:navigate>
+                    <x-ui.button variant="primary" size="sm" class="w-full">{{ __('Edit Profile') }}</x-ui.button>
+                </a>
+                <x-ui.button variant="ghost" size="sm" @click="share()">
+                    <span x-show="!copied">{{ __('Share Portfolio') }}</span>
+                    <span x-show="copied" x-cloak class="text-secondary">{{ __('Link Secured') }}</span>
+                </x-ui.button>
             </div>
         </div>
     </div>
@@ -64,26 +78,42 @@
 
         <!-- Main Column: Activity -->
         <div class="lg:col-span-2 space-y-12">
-            <h3 class="font-display font-bold text-2xl text-on-surface">{{ __('Recent Curations') }}</h3>
+            <h3 class="font-display font-bold text-2xl text-on-surface">{{ __('Dispatch History') }}</h3>
             
             <div class="space-y-6">
-                @foreach($recent_activity as $activity)
-                    <x-ui.card tonal="low" class="group hover:bg-surface-high/50">
-                        <div class="flex items-center justify-between">
-                            <div class="flex items-center gap-6">
-                                <div class="w-3 h-3 rounded-full bg-secondary"></div>
-                                <div>
-                                    <h4 class="font-display font-bold text-on-surface group-hover:text-primary transition-colors">{{ $activity['title'] }}</h4>
-                                    <p class="text-on-surface-variant text-xs mt-1">{{ $activity['date'] }}</p>
+                @forelse($posts as $post)
+                    <a href="{{ route('vibe.detail', $post->id) }}" wire:navigate class="block">
+                        <x-ui.card tonal="low" class="group hover:bg-surface-high/50 transition-all border-none">
+                            <div class="flex items-center justify-between">
+                                <div class="flex items-center gap-6">
+                                    <div class="w-3 h-3 rounded-full bg-primary shadow-[0_0_10px_rgba(190,194,255,0.4)]"></div>
+                                    <div>
+                                        <h4 class="font-display font-bold text-on-surface group-hover:text-primary transition-colors text-lg">{{ $post->title }}</h4>
+                                        <p class="text-on-surface-variant text-[10px] uppercase tracking-widest mt-1 font-black opacity-40">{{ $post->created_at->diffForHumans() }}</p>
+                                    </div>
+                                </div>
+                                <div class="flex items-center gap-4">
+                                     <div class="text-on-surface-variant font-mono text-sm group-hover:text-primary transition-colors">
+                                        {{ number_format($post->reactions_count) }} <span class="text-[10px] uppercase tracking-tighter opacity-40 ml-1">Karma</span>
+                                     </div>
+                                     <svg class="w-5 h-5 text-on-surface-variant/20 group-hover:text-primary group-hover:translate-x-1 transition-all" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
                                 </div>
                             </div>
-                            <div class="text-primary font-mono font-bold">{{ $activity['karma'] }} {{ __('Karma') }}</div>
-                        </div>
-                    </x-ui.card>
-                @endforeach
+                        </x-ui.card>
+                    </a>
+                @empty
+                    <div class="py-20 text-center border-2 border-dashed border-outline-variant/10 rounded-3xl">
+                        <p class="text-on-surface-variant text-sm font-display italic">{{ __('No artifacts dispatched yet.') }}</p>
+                    </div>
+                @endforelse
             </div>
             
-            <x-ui.button variant="ghost" class="w-full">{{ __('Load More History') }}</x-ui.button>
+            @if($user->posts()->count() > $perPage)
+                <x-ui.button variant="ghost" class="w-full" wire:click="loadMore" wire:loading.attr="disabled">
+                    <span wire:loading.remove>{{ __('Load More History') }}</span>
+                    <span wire:loading>{{ __('Syncing...') }}</span>
+                </x-ui.button>
+            @endif
         </div>
     </div>
 </div>

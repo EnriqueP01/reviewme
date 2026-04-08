@@ -22,14 +22,12 @@
                 </a>
 
                 <div class="hidden sm:flex items-center space-x-12">
-                    @foreach(['Network' => 'dashboard', 'Lens' => '#', 'Archives' => '#'] as $label => $route)
-                        <a href="{{ $route !== '#' ? route($route) : '#' }}" 
-                           wire:navigate
-                           class="relative group/link py-2 font-display font-black text-[10px] uppercase tracking-[0.3em] transition-all duration-300 {{ ($route !== '#' && request()->routeIs($route)) ? 'text-primary' : 'text-on-surface-variant hover:text-on-surface' }}">
-                            {{ __($label) }}
-                            <div class="absolute -bottom-1 left-0 w-0 h-px bg-primary transition-all duration-300 group-hover/link:w-full {{ ($route !== '#' && request()->routeIs($route)) ? 'w-full' : '' }}"></div>
-                        </a>
-                    @endforeach
+                    <a href="{{ route('dashboard') }}" 
+                       wire:navigate
+                       class="relative group/link py-2 font-display font-black text-[10px] uppercase tracking-[0.3em] transition-all duration-300 {{ request()->routeIs('dashboard') ? 'text-primary' : 'text-on-surface-variant hover:text-on-surface' }}">
+                        {{ __('Feed') }}
+                        <div class="absolute -bottom-1 left-0 w-0 h-px bg-primary transition-all duration-300 group-hover/link:w-full {{ request()->routeIs('dashboard') ? 'w-full' : '' }}"></div>
+                    </a>
                 </div>
             </div>
 

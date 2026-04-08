@@ -31,30 +31,51 @@
             <article wire:key="post-{{ $item['id'] }}" class="group relative animate-fade-in-up" x-data="{ hovered: false }" @mouseenter="hovered = true" @mouseleave="hovered = false">
                 <div class="flex items-start gap-12">
                     <!-- Karma Lens (Vertical Sidebar) -->
-                    <div class="flex flex-col items-center gap-3 sticky top-32" x-data="{ localVoted: '{{ $item['my_vote'] }}' }">
+                    <div class="flex flex-col items-center gap-3 sticky top-32" 
+                         x-data="{ 
+                            voted: '{{ $item['my_vote'] ?: '' }}',
+                            score: {{ $item['points'] }},
+                            handleVote(dir) {
+                                if (dir === 'up') {
+                                    if (this.voted === 'up') { this.score--; this.voted = ''; }
+                                    else {
+                                        this.score += (this.voted === 'down' ? 2 : 1);
+                                        this.voted = 'up';
+                                    }
+                                } else {
+                                    if (this.voted === 'down') { this.score++; this.voted = ''; }
+                                    else {
+                                        this.score -= (this.voted === 'up' ? 2 : 1);
+                                        this.voted = 'down';
+                                    }
+                                }
+                            }
+                         }">
                         <button 
                             wire:click="vote({{ $item['id'] }}, 'up')"
                             wire:loading.attr="disabled"
-                            @click="localVoted = localVoted === 'up' ? null : 'up'"
-                            :class="localVoted === 'up' ? 'bg-primary btn-primary-fix border-primary shadow-[0_0_20px_rgba(190,194,255,0.4)]' : 'bg-solid-container-blur text-on-surface-variant hover:text-primary hover:border-primary/30 active:scale-90 shadow-sm'"
-                            class="w-14 h-14 rounded-2xl border border-primary-subtle flex items-center justify-center transition-all duration-300 group/vote"
+                            @click="handleVote('up')"
+                            :class="voted === 'up' ? 'bg-primary btn-primary-fix border-primary shadow-[0_0_25px_rgba(190,194,255,0.5)] scale-110' : 'bg-surface-container-low text-on-surface-variant hover:text-primary hover:border-primary/40 active:scale-95 border-primary/5'"
+                            class="w-14 h-14 rounded-2xl border flex items-center justify-center transition-all duration-300 group/vote"
                         >
-                            <svg class="w-6 h-6 transition-transform group-hover/vote:-translate-y-1" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M5 15l7-7 7 7"/></svg>
+                            <svg class="w-6 h-6 transition-transform group-hover/vote:-translate-y-1" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="3"><path stroke-linecap="round" stroke-linejoin="round" d="M5 15l7-7 7 7"/></svg>
                         </button>
                         
-                        <div class="py-1 flex flex-col items-center select-none">
-                            <span class="font-display font-black text-2xl text-primary tracking-tighter leading-none" :class="localVoted ? 'scale-110' : ''">{{ number_format($item['points']) }}</span>
-                            <span class="text-[9px] font-black uppercase tracking-[0.2em] text-on-surface-variant/40 mt-1">{{ __('Karma') }}</span>
+                        <div class="py-2 flex flex-col items-center select-none">
+                            <span class="font-display font-black text-3xl tracking-tighter transition-all duration-300"
+                                  :class="voted === 'up' ? 'text-primary' : (voted === 'down' ? 'text-error' : 'text-on-surface/50')"
+                                  x-text="score"></span>
+                            <span class="text-[8px] font-black uppercase tracking-[0.3em] text-on-surface-variant/30 mt-1">{{ __('Score') }}</span>
                         </div>
                         
                         <button 
                             wire:click="vote({{ $item['id'] }}, 'down')"
                             wire:loading.attr="disabled"
-                            @click="localVoted = localVoted === 'down' ? null : 'down'"
-                            :class="localVoted === 'down' ? 'bg-error text-white border-error shadow-[0_0_10px_rgba(239,68,68,0.4)]' : 'bg-solid-container-blur text-on-surface-variant hover:text-error hover:border-error/30 active:scale-90 shadow-sm'"
-                            class="w-14 h-14 rounded-2xl border border-primary-subtle flex items-center justify-center transition-all duration-300 group/vote"
+                            @click="handleVote('down')"
+                            :class="voted === 'down' ? 'bg-error text-white border-error shadow-[0_0_20px_rgba(239,68,68,0.4)] scale-110' : 'bg-surface-container-low text-on-surface-variant hover:text-error hover:border-error/40 active:scale-95 border-primary/5'"
+                            class="w-14 h-14 rounded-2xl border flex items-center justify-center transition-all duration-300 group/vote"
                         >
-                            <svg class="w-6 h-6 transition-transform group-hover/vote:translate-y-1" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7"/></svg>
+                            <svg class="w-6 h-6 transition-transform group-hover/vote:translate-y-1" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="3"><path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7"/></svg>
                         </button>
                     </div>
 
