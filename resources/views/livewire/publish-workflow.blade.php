@@ -102,80 +102,26 @@
                 </div>
 
                 <div class="space-y-6">
-                <div 
-                    class="space-y-4"
-                    x-data="{ 
-                        draggingIndex: null,
-                        dragOverGap: null,
-                        autoScrollInterval: null,
-                        handleDrop(fromIndex, toIndex) {
-                            if (fromIndex === null || fromIndex === toIndex) {
-                                this.draggingIndex = null;
-                                this.dragOverGap = null;
-                                return;
-                            }
-                            // toIndex est ici la position cible
-                            const order = Array.from({length: {{ count($files) }}}, (_, i) => i);
-                            const [movedItem] = order.splice(fromIndex, 1);
-                            
-                            // Si on déplace vers le bas, l'indice cible doit être ajusté car le retrait a décalé les suivants
-                            let target = toIndex;
-                            if (fromIndex < toIndex) target--;
-                            
-                            order.splice(target, 0, movedItem);
-                            $wire.reorderFiles(order);
-                            this.draggingIndex = null;
-                            this.dragOverGap = null;
-                        },
-                        startAutoScroll(e) {
-                            if (this.autoScrollInterval) return;
-                            this.autoScrollInterval = setInterval(() => {
-                                if (this.draggingIndex === null) {
-                                    clearInterval(this.autoScrollInterval);
-                                    this.autoScrollInterval = null;
-                                    return;
-                                }
-                                const threshold = 100;
-                                if (window.lastY < threshold) window.scrollBy(0, -10);
-                                if (window.lastY > window.innerHeight - threshold) window.scrollBy(0, 10);
-                            }, 50);
-                        }
-                    }"
-                    @dragover="window.lastY = $event.clientY; startAutoScroll($event)"
-                    @dragend="draggingIndex = null; clearInterval(autoScrollInterval); autoScrollInterval = null"
-                >
+                <div class="space-y-4">
                     @foreach($files as $index => $file)
                         @php $stats = $this->getFileStats($index); @endphp
-                        <!-- Drop Gap (Before) -->
-                        <div 
-                            @dragover.prevent="dragOverGap = {{ $index }}"
-                            @dragleave="dragOverGap = null"
-                            @drop.prevent="handleDrop(draggingIndex, {{ $index }})"
-                            class="h-1 transition-all duration-500 rounded-round-4"
-                            :class="{ 'h-16 bg-primary/10 border-2 border-dashed border-primary/40 my-4 scale-[1.02]': dragOverGap === {{ $index }} }"
-                        >
-                            <div x-show="dragOverGap === {{ $index }}" class="h-full flex items-center justify-center text-primary font-display font-bold text-xs tracking-widest animate-pulse">
-                                {{ __('INSERT ARCHIVE CLIP HERE') }}
-                            </div>
-                        </div>
                         <div 
                             wire:key="file-fragment-{{ $file['id'] }}"
                             id="file-fragment-{{ $file['id'] }}"
-                            draggable="true"
                             x-data="{ collapsed: {{ $index > 0 ? 'true' : 'false' }} }"
-                            @dragstart="draggingIndex = {{ $index }}; $el.style.opacity = '0.4'"
-                            @dragend="draggingIndex = null; $el.style.opacity = '1'"
-                            @dragover.prevent
-                            @drop.prevent="draggingIndex !== null ? handleDrop(draggingIndex, {{ $index }}) : null"
                             class="transition-all duration-500"
-                            :class="{ 'opacity-30 scale-95 blur-sm': draggingIndex !== null && draggingIndex !== {{ $index }} }"
                         >
                             <x-ui.card tonal="container" padding="p-0" class="relative group overflow-hidden border border-outline-variant/10 hover:border-primary/30 transition-all duration-500 {{ ($file['is_duplicate'] ?? false) ? 'border-secondary/50 ring-1 ring-secondary/20' : '' }}">
-                                <!-- Header / Drag Handle -->
-                                <div class="p-4 bg-surface-high/50 flex items-center justify-between cursor-grab active:cursor-grabbing border-b border-outline-variant/5">
+                                <!-- Header -->
+                                <div class="p-4 bg-surface-high/50 flex items-center justify-between border-b border-outline-variant/5">
                                     <div class="flex items-center gap-4">
-                                        <div class="text-on-surface-variant group-hover:text-primary transition-colors">
-                                            <svg class="w-5 h-5 font-bold" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M4 8h16M4 16h16"/></svg>
+                                        <div class="flex flex-col items-center justify-center -space-y-1">
+                                            <button type="button" wire:click="moveUp({{ $index }})" class="p-1 text-on-surface-variant/50 hover:text-primary transition-colors focus:outline-none disabled:opacity-20 disabled:cursor-not-allowed" @if($index == 0) disabled @endif>
+                                                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M5 15l7-7 7 7"/></svg>
+                                            </button>
+                                            <button type="button" wire:click="moveDown({{ $index }})" class="p-1 text-on-surface-variant/50 hover:text-primary transition-colors focus:outline-none disabled:opacity-20 disabled:cursor-not-allowed" @if($index == count($files) - 1) disabled @endif>
+                                                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M19 9l-7 7-7-7" style="transform: scaleY(-1); transform-origin: center;"/></svg>
+                                            </button>
                                         </div>
                                         <div class="flex flex-col">
                                             <div class="flex items-center gap-2">
@@ -212,13 +158,13 @@
                                 </div>
 
                                 <!-- Content (Collapsible) -->
-                                <div x-show="!collapsed && draggingIndex === null" x-collapse x-cloak class="p-6 space-y-6">
-                                    <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
-                                        <div class="col-span-1 md:col-span-2">
+                                <div x-show="!collapsed" x-collapse x-cloak class="p-6 space-y-6">
+                                    <div class="flex flex-col md:flex-row gap-6">
+                                        <div class="flex-1">
                                             <x-input-label :value="__('Filename') . ' *'" />
-                                            <x-text-input wire:model.live="files.{{ $index }}.name" placeholder="core_logic.php" />
+                                            <x-text-input wire:model.live="files.{{ $index }}.name" placeholder="core_logic.php" class="w-full" />
                                         </div>
-                                        <div>
+                                        <div class="w-full md:w-48">
                                             <x-input-label :value="__('Detected Engine')" />
                                             <select 
                                                 wire:model.live="files.{{ $index }}.language"
@@ -231,54 +177,24 @@
                                         </div>
                                     </div>
 
-                                    <div 
-                                        x-data="{ draggingFile: false }"
-                                        @dragover.prevent.stop="draggingFile = true"
-                                        @dragleave.prevent.stop="draggingFile = false"
-                                        @drop.prevent.stop="
-                                            draggingFile = false;
-                                            const file = $event.dataTransfer.files[0];
-                                            if (file) {
-                                                const reader = new FileReader();
-                                                reader.onload = (e) => {
-                                                    $wire.importFile({{ $index }}, file.name, e.target.result);
-                                                };
-                                                reader.readAsText(file);
-                                            }
-                                        "
-                                        class="relative"
-                                    >
+                                    <div class="relative w-full">
                                         <x-input-label :value="__('Logic Body') . ' *'" />
                                         <textarea 
                                             wire:model="files.{{ $index }}.content" 
-                                            rows="8" 
-                                            class="font-mono bg-surface-lowest border-none text-primary placeholder:text-primary/30 focus:ring-1 focus:ring-primary/50 rounded-round-4 transition-all duration-300 w-full resize-none p-4" 
-                                            placeholder="{{ __('Paste or drop code implementation...') }}"
-                                            :class="{ 'ring-2 ring-secondary/50': draggingFile }"
+                                            rows="12" 
+                                            class="font-mono text-sm bg-surface-lowest flex-1 w-full border border-outline-variant/5 text-primary placeholder:text-primary/30 focus:ring-1 focus:ring-primary/50 rounded-round-4 transition-all duration-300 resize-y p-4 block" 
+                                            placeholder="{{ __('Paste code implementation here...') }}"
                                         ></textarea>
-                                        
-                                        <div x-show="draggingFile" class="absolute inset-0 bg-secondary/10 border-2 border-dashed border-secondary rounded-round-4 flex items-center justify-center pointer-events-none transition-all duration-300">
-                                            <span class="text-secondary font-bold">{{ __('Drop to Import Content') }}</span>
-                                        </div>
                                     </div>
 
-                                    <div>
+                                    <div class="w-full">
                                         <x-input-label :value="__('Contextual Note (Optional)')" />
-                                        <textarea wire:model="files.{{ $index }}.description" rows="2" class="bg-surface-low border-none text-on-surface-variant placeholder:text-on-surface-variant/30 focus:ring-2 focus:ring-primary/30 rounded-round-4 transition-all duration-300 w-full resize-none p-3 text-sm" placeholder="{{ __('What is unique about this file?') }}"></textarea>
+                                        <textarea wire:model="files.{{ $index }}.description" rows="2" class="bg-surface-low border border-outline-variant/5 text-on-surface-variant placeholder:text-on-surface-variant/30 focus:ring-2 focus:ring-primary/30 rounded-round-4 transition-all duration-300 w-full resize-y p-3 text-sm" placeholder="{{ __('What is unique about this file?') }}"></textarea>
                                     </div>
                                 </div>
                             </x-ui.card>
                         </div>
                     @endforeach
-
-                    <!-- Final Drop Gap (After Last) -->
-                    <div 
-                        @dragover.prevent="dragOverGap = {{ count($files) }}"
-                        @dragleave="dragOverGap = null"
-                        @drop.prevent="handleDrop(draggingIndex, {{ count($files) }})"
-                        class="h-1 transition-all duration-300 rounded-round-4"
-                        :class="{ 'h-12 bg-primary/10 border-2 border-dashed border-primary/40 my-2': dragOverGap === {{ count($files) }} }"
-                    ></div>
                 </div>
                 </div>
             </div>
