@@ -26,18 +26,18 @@ class VibeDetail extends Component
         $this->activeLine = $line;
     }
 
-    public function saveComment()
+    public function saveComment(\App\Actions\Reviews\StoreReviewAction $storeReview)
     {
         $this->validate([
             'commentContent' => 'required|min:3',
         ]);
 
-        Review::create([
-            'snippet_id' => $this->selectedVersion,
-            'user_id' => auth()->id(),
-            'line_number' => $this->activeLine,
-            'content' => $this->commentContent,
-        ]);
+        $storeReview->execute(
+            auth()->user(),
+            (int) $this->selectedVersion,
+            $this->activeLine !== null ? (int) $this->activeLine : null,
+            $this->commentContent
+        );
 
         $this->commentContent = '';
         $this->activeLine = null;
@@ -46,15 +46,9 @@ class VibeDetail extends Component
         session()->flash('message', 'Review ajoutée !');
     }
 
-    public function react($type)
+    public function react(string $type, \App\Actions\Reactions\ToggleReactionAction $toggleReaction)
     {
-        Reaction::updateOrCreate([
-            'user_id' => auth()->id(),
-            'reactable_id' => $this->post->id,
-            'reactable_type' => Post::class,
-        ], [
-            'type' => $type
-        ]);
+        $toggleReaction->execute(auth()->user(), $this->post, $type);
 
         $this->post->load('reactions');
     }

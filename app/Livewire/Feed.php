@@ -20,7 +20,7 @@ class Feed extends Component
         $this->resetPage();
     }
 
-    public function vote($postId, $direction)
+    public function vote($postId, $direction, \App\Actions\Reactions\ToggleReactionAction $toggleReaction)
     {
         if (!auth()->check()) {
             return redirect()->route('login');
@@ -29,24 +29,7 @@ class Feed extends Component
         $post = Post::findOrFail($postId);
         $type = $direction === 'up' ? 'mindblown' : 'optimisable';
 
-        $existing = Reaction::where([
-            'user_id' => auth()->id(),
-            'reactable_id' => $post->id,
-            'reactable_type' => Post::class,
-        ])->first();
-
-        if ($existing && $existing->type === $type) {
-            // Unvote if same button clicked
-            $existing->delete();
-        } else {
-            Reaction::updateOrCreate([
-                'user_id' => auth()->id(),
-                'reactable_id' => $post->id,
-                'reactable_type' => Post::class,
-            ], [
-                'type' => $type
-            ]);
-        }
+        $toggleReaction->execute(Auth::user(), $post, $type);
     }
 
     public function render()

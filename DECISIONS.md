@@ -66,6 +66,26 @@ Accepté
 
 ---
 
+## 2026-04-08-07 : Migration vers une Architecture Orientée Actions (Action-Domain)
+### Statut
+Accepté
+### Contexte
+L'application utilisait initialement une architecture MVC standard, concentrant la logique métier complexe dans les contrôleurs et les composants Livewire ("Fat Controllers"). Cela compliquait la réutilisation de la logique et les tests unitaires isolés.
+### Décision
+Adoption du pattern **Action** pour encapsuler chaque opération métier dans une classe dédiée unique (`app/Actions`).
+#### Règles de mise en œuvre :
+1. **Responsabilité Unique (SRP)** : Un contrôleur ne doit gérer que la requête/réponse. Toute manipulation de données passe par une Action.
+2. **Organisation par Domaine** : Les actions sont regroupées par domaine métier (`Auth`, `Profile`, `Posts`, `Reactions`).
+3. **Interface Standard** : Utilisation de signatures de méthode explicites (ex: `execute()`) avec typage strict pour garantir la robustesse.
+4. **Découplage UI/Métier** : Les composants Livewire délèguent systématiquement le traitement lourd aux Actions, permettant de tester la logique sans dépendance au frontend.
+### Conséquences
+- **Maintenabilité** : Code plus lisible et facile à faire évoluer.
+- **Réutilisabilité** : Les mêmes actions peuvent être appelées depuis le Web, une API, ou des commandes CLI Artisan.
+- **Sécurité** : Utilisation systématique de transactions SQL dans les actions complexes (`CreatePostAction`).
+- **Testabilité** : Couverture de tests unitaires simplifiée sur des classes pures sans état HTTP.
+
+---
+
 ## 2026-04-08-05 : Finalisation du Workflow de Publication & Landing Page
 ### Statut
 Accepté

@@ -2,11 +2,11 @@
 
 namespace App\Http\Controllers\Auth;
 
+use App\Actions\Auth\HandleGithubCallbackAction;
 use App\Http\Controllers\Controller;
-use App\Models\User;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Log;
 use Laravel\Socialite\Facades\Socialite;
-use Illuminate\Support\Str;
 
 class GithubAuthController extends Controller
 {
@@ -21,27 +21,19 @@ class GithubAuthController extends Controller
     /**
      * Gère l'utilisateur de retour de GitHub.
      */
-    public function callback()
+    public function callback(HandleGithubCallbackAction $handleGithubCallback)
     {
         try {
+            /** @var \Laravel\Socialite\Two\User $githubUser */
             $githubUser = Socialite::driver('github')->user();
 
-            $user = User::updateOrCreate([
-                'github_id' => $githubUser->getId(),
-            ], [
-                'name' => $githubUser->getNickname() ?? $githubUser->getName(),
-                'email' => $githubUser->getEmail(),
-                'avatar' => $githubUser->getAvatar(),
-                'bio' => $githubUser->user['bio'] ?? null,
-                'password' => bcrypt(Str::random(24)),
-                'email_verified_at' => now(), // On considère que GitHub a déjà vérifié l'email
-            ]);
+            $user = $handleGithubCallback->execute($githubUser);
 
             Auth::login($user);
 
             return redirect()->intended('/dashboard');
         } catch (\Exception $e) {
-            \Illuminate\Support\Facades\Log::error('GitHub Auth Error: ' . $e->getMessage());
+            Log::error('GitHub Auth Error: ' . $e->getMessage());
             return redirect('/login')->with('error', 'Erreur lors de la connexion avec GitHub : ' . $e->getMessage());
         }
     }

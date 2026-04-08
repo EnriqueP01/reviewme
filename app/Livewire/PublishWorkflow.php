@@ -48,33 +48,24 @@ class PublishWorkflow extends Component
     public string $description = '';
     public string $visibility = 'public';
 
-    public function submit()
+    public function submit(\App\Actions\Posts\CreatePostAction $createPost)
     {
-        $this->validate([
+        $validated = $this->validate([
             'title' => 'required|string|max:255',
             'description' => 'required|string',
             'files' => 'required|array|min:1',
             'files.*.content' => 'required|string',
         ]);
 
-        $post = \App\Models\Post::create([
-            'user_id' => Auth::id(),
+        $createPost->execute(Auth::user(), [
             'title' => $this->title,
             'description' => $this->description,
             'visibility' => $this->visibility,
             'goal' => $this->goal,
             'context' => $this->context,
             'lens' => $this->lens,
+            'files' => $this->files,
         ]);
-
-        foreach ($this->files as $file) {
-            \App\Models\Snippet::create([
-                'post_id' => $post->id,
-                'version_number' => 1,
-                'code_content' => $file['content'],
-                'language' => $file['language'] ?? 'php',
-            ]);
-        }
 
         session()->flash('success', 'Vibe publiée avec succès !');
         return redirect()->to(route('dashboard'));
