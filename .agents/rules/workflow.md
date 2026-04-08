@@ -26,7 +26,7 @@ Pour CHAQUE demande de modification de code, tu dois impérativement suivre cet 
 ## 3. Traçabilité (DECISIONS.md)
 * **Format d'Entrée GGF** (Global Governance Format) : Chaque décision doit être enregistrée avec l'auteur.
     - Format : `## YYYY-MM-DD-ID : [Titre]`
-    - **Auteur** : [Ton Nom d'IA (ex: Antigravity) ou le pseudo de l'Utilisateur]
+    - **Auteur** : [Ton Nom d'IA (Antigravity) ou le nom du compte de l'utilisateur (ex: EnriqueP01)]
     - **Contexte** : [...]
     - **Décision** : [...]
     - **Impact** : [...]

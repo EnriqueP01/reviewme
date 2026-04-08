@@ -10,13 +10,13 @@
 - **Impact** : Expérience utilisateur bilingue et immersive, prête pour une audience internationale.
 
 ## 2026-04-08-02 : Conteneurisation & Orchestration (US35/US36)
-- **Auteur** : Team
+- **Auteur** : EnriqueP01
 - **Statut** : Accepté
 - **Décision** : Utiliser un `Dockerfile` multi-étapes et découpler Nginx, PHP-FPM et MySQL via Docker Compose.
 - **Impact** : Déploiement standardisé et maintenance isolée des services.
 
 ## 2026-04-08-03 : Implémentation Core ReviewMe
-- **Auteur** : Team
+- **Auteur** : EnriqueP01
 - **Statut** : Accepté
 - **Décision** : Chat GitHub OAuth obligatoire, stockage SQLite (local), et versioning des snippets séparé des Posts.
 - **Impact** : Simplification de l'onboarding développeur et traçabilité du code.
@@ -28,7 +28,7 @@
 - **Impact** : Plateforme prête pour une audience globale et gamifiée.
 
 ## 2026-04-08-05 : Finalisation du Workflow de Publication & Landing Page
-- **Auteur** : Team
+- **Auteur** : EnriqueP01
 - **Statut** : Accepté
 - **Décision** : Normalisation `Auth::id()`, rétablissement de la landing page marketing.
 - **Impact** : Stabilité des sessions et meilleure présentation du produit.
