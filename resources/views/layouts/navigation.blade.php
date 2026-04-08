@@ -3,15 +3,9 @@
         <div class="flex justify-between items-center">
             <div class="flex items-center gap-20">
                 <!-- Logo: The Monolith Lens -->
+                <!-- Logo: The Monolith Artifact -->
                 <a href="{{ route('dashboard') }}" class="flex items-center gap-5 group">
-                    <div class="relative w-14 h-14 flex items-center justify-center">
-                        <!-- Animated geometric layers -->
-                        <div class="absolute inset-0 bg-primary/10 rounded-2xl rotate-45 group-hover:rotate-90 transition-all duration-700 ease-[cubic-bezier(0.34,1.56,0.64,1)] border border-primary/20 shadow-[0_0_30px_rgba(190,194,255,0.15)]"></div>
-                        <div class="absolute inset-1 bg-surface rounded-xl flex items-center justify-center border border-white/5">
-                             <span class="text-primary font-display font-black text-2xl tracking-tighter group-hover:scale-110 transition-transform">R</span>
-                        </div>
-                        <div class="absolute -inset-1 border border-primary/0 group-hover:border-primary/20 rounded-2xl transition-all duration-500 scale-110 group-hover:scale-125 opacity-0 group-hover:opacity-100"></div>
-                    </div>
+                    <x-ui.logo-artifact size="w-14 h-14" font="text-2xl" />
                     <div class="flex flex-col">
                         <span class="font-display font-black text-2xl tracking-tight text-on-surface group-hover:text-primary transition-colors duration-300">ReviewMe</span>
                         <div class="flex items-center gap-2">
@@ -35,11 +29,28 @@
 
             <!-- Right Actions -->
             <div class="hidden sm:flex items-center gap-10">
-                <!-- Language Switcher -->
-                <div class="flex items-center gap-2 px-3 py-1 bg-surface-high/50 rounded-full border border-outline-variant/10">
-                    <a href="{{ route('lang', 'fr') }}" class="text-[9px] font-black uppercase tracking-widest transition-colors {{ app()->getLocale() == 'fr' ? 'text-primary' : 'text-on-surface-variant hover:text-on-surface' }}">FR</a>
-                    <span class="text-outline-variant/30 text-[10px]">|</span>
-                    <a href="{{ route('lang', 'en') }}" class="text-[9px] font-black uppercase tracking-widest transition-colors {{ app()->getLocale() == 'en' ? 'text-primary' : 'text-on-surface-variant hover:text-on-surface' }}">EN</a>
+                <!-- Language Switcher: High Contrast Precision -->
+                <div class="relative flex items-center p-1 bg-surface-container-low/50 rounded-xl border border-white/5 backdrop-blur-md"
+                     x-data="{ locale: '{{ app()->getLocale() }}' }">
+                    <!-- Highlight Layer: Solid & Glowing -->
+                    <div class="absolute inset-y-1 transition-all duration-500 ease-[cubic-bezier(0.34,1.56,0.64,1)] bg-primary rounded-lg shadow-[0_0_20px_rgba(190,194,255,0.25)]"
+                         :class="locale === 'fr' ? 'translate-x-0 w-8' : 'translate-x-[36px] w-8'">
+                    </div>
+                    
+                    <div class="flex items-center gap-1">
+                        <a href="{{ route('lang', 'fr') }}" 
+                           @click="locale = 'fr'"
+                           class="relative z-10 w-8 h-7 flex items-center justify-center text-[10px] font-black transition-colors duration-300"
+                           :class="locale === 'fr' ? 'text-surface' : 'text-on-surface-variant hover:text-on-surface'">
+                           FR
+                        </a>
+                        <a href="{{ route('lang', 'en') }}" 
+                           @click="locale = 'en'"
+                           class="relative z-10 w-8 h-7 flex items-center justify-center text-[10px] font-black transition-colors duration-300"
+                           :class="locale === 'en' ? 'text-surface' : 'text-on-surface-variant hover:text-on-surface'">
+                           EN
+                        </a>
+                    </div>
                 </div>
 
                 <a href="{{ route('publish') }}">
