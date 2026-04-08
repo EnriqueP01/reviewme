@@ -13,7 +13,12 @@ class Feed extends Component
     public function render()
     {
         $posts = Post::with(['user', 'snippets'])
-            ->where('visibility', 'public')
+            ->where(function ($query) {
+                $query->where('visibility', 'public');
+                if (auth()->check()) {
+                    $query->orWhere('user_id', auth()->id());
+                }
+            })
             ->latest()
             ->paginate(10);
 
