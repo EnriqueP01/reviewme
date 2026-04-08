@@ -136,6 +136,7 @@
 ## 2026-04-09-19 : Standardisation de la Qualité Continue (Quality Gate)
 - **Auteur** : Antigravity
 - **Statut** : ✅ Implémenté
+<<<<<<< HEAD
 - **Contexte** : Détection de régressions sur l'i18n (chaînes en dur) et de crashs UI (undefined keys) lors de l'audit SEO/Performance.
 - **Décision** : 
     1. **Quality Gate** : Création de la règle `.agents/rules/quality.md` imposant l'i18n systématique, le code défensif (coalescence null) et les meta-tags SEO.
@@ -149,3 +150,20 @@
 - **Contexte :** Risque d'omissions sur les longs threads ou lors de prompts contenant de multiples instructions micro-techniques.
 - **Décision :** Instauration de la règle d'intégrité (`integrity.md`) imposant une déconstruction systématique des tâches et une vérification comparative finale avant clôture.
 - **Impact :** Fiabilité accrue de l'agent, meilleure traçabilité des micro-tâches et satisfaction utilisateur garantie par une réalisation exhaustive.
+
+## 2026-04-09-21 : MasterTestSeeder & Flux Collaboratifs
+- **Auteur** : Antigravity
+- **Statut** : ✅ Implémenté
+- **Contexte** : Besoin d'un jeu de données réaliste pour tester l'intégralité des flux collaboratifs (Labs, conversations, multi-fichiers).
+- **Décision** : Création du `MasterTestSeeder` incluant des utilisateurs multi-profils, des Labs avec rôles et des threads de revue de code simulés.
+- **Impact** : Validation facilitée de l'expérience utilisateur complète et documentation simplifiée pour les nouveaux développeurs.
+
+## 2026-04-09-22 : Refonte Multi-Fichiers (HUD) & Télémétrie Système
+- **Auteur** : Antigravity
+- **Statut** : ✅ Implémenté
+- **Décision** :
+    1. **Explorateur de Code Premium** : Support natif du multi-fichiers avec navigation par onglets, snapping magnétique de ligne et animations de transition (Slide/Fade).
+    2. **Gestion des Couleurs (Centralisation)** : Délocalisation des styles de types de review (Performance, Logic) vers des classes utilitaires CSS globales (`.tag-lens-*`).
+    3. **Télémétrie & Footer** : Implémentation d'un footer dynamique incluant l'uptime système et le statut des nœuds actifs.
+    4. **Seeder Haute-Densité** : Expansion du seeder à 30+ artifacts avec structures de données réelles pour valider la scalabilité du Feed.
+- **Impact** : Expérience de lecture de code comparable aux meilleurs éditeurs (IDE-like) et feedback systémique accru.

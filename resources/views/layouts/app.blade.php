@@ -50,9 +50,7 @@
                 {{ $slot }}
             </main>
 
-            <footer class="py-12 px-6 border-t border-outline-variant/10 text-on-surface-variant text-xs uppercase tracking-widest text-center opacity-50">
-                &copy; {{ date('Y') }} ReviewMe. <span class="mx-2">|</span> {{ __('Built for the elite.') }}
-            </footer>
+            <x-ui.footer />
         </div>
 
         @livewireScripts
