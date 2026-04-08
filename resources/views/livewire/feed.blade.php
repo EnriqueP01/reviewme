@@ -33,9 +33,16 @@
                     <!-- Karma Lens (Vertical Sidebar) -->
                     <div class="flex flex-col items-center gap-3 sticky top-32" 
                          x-data="{ 
-                            voted: '{{ $item['my_vote'] ?: '' }}',
-                            score: {{ $item['points'] }},
-                            handleVote(dir) {
+                             voted: '{{ $item['my_vote'] ?: '' }}',
+                             score: {{ $item['points'] }},
+                             isVoting: false,
+                             handleVote(dir) {
+                                if (this.isVoting) return;
+                                this.isVoting = true;
+
+                                // Feedback Haptique & Sonore
+                                window.haptic.play(dir);
+
                                 if (dir === 'up') {
                                     if (this.voted === 'up') { this.score--; this.voted = ''; }
                                     else {
@@ -49,7 +56,10 @@
                                         this.voted = 'down';
                                     }
                                 }
-                            }
+
+                                // Libérer le verrou après la réponse serveur (simulé ici par un mini-timeout pour fluidité ou via événement Livewire)
+                                setTimeout(() => { this.isVoting = false; }, 300);
+                             }
                          }">
                         <button 
                             wire:click="vote({{ $item['id'] }}, 'up')"

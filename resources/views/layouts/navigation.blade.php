@@ -145,9 +145,7 @@
                 <button @click="open = false" class="text-on-surface-variant"><svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M6 18L18 6M6 6l12 12"/></svg></button>
             </div>
             <div class="space-y-6">
-                 <a href="{{ route('dashboard') }}" class="block text-3xl font-display font-black text-on-surface hover:text-primary transition-colors">Network</a>
-                 <a href="#" class="block text-3xl font-display font-black text-on-surface hover:text-primary transition-colors">Lens</a>
-                 <a href="#" class="block text-3xl font-display font-black text-on-surface hover:text-primary transition-colors">Archives</a>
+                 <a href="{{ route('dashboard') }}" class="block text-3xl font-display font-black text-on-surface hover:text-primary transition-colors">Feed</a>
             </div>
             <div class="pt-10 border-t border-white/5">
                 <a href="{{ route('publish') }}" class="block">
