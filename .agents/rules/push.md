@@ -32,7 +32,7 @@ Propose le bloc de commande Git suivant :
 4. `git push origin <type>/nom-de-la-tache`
 5. `git checkout dev`
 6. `git pull origin dev` (Sécurité pré-merge)
-7. `git merge <type>/nom-de-la-tache`
+7. `git merge --no-ff <type>/nom-de-la-tache` -m "merge: fusion de la branche <type>/nom-de-la-tache"
 8. `git push origin dev`
 
 ### Règle d'or :
