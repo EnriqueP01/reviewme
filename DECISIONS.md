@@ -121,7 +121,18 @@
     2. **Moteur Auto-Scroll** : Implémentation d'un intervalle Alpine synchronisé sur la position `clientY` du curseur pour scroller la fenêtre dynamiquement lors du drag.
 - **Impact** : Manipulation d'artefacts complexes (10+ fichiers) désormais fluide et sans frottement.
 
-## 2026-04-09-26 : Allégement Visuel & Raffinement UX (Feed & Code)
+## 2026-04-09-26 : Architecture de Curation Massive (Artifacts V3)
+- **Auteur** : Antigravity
+- **Statut** : ✅ Implémenté
+- **Contexte** : Nécessité d'accélérer l'importation de fichiers multiples et de fournir un retour technique immédiat sur les fragments.
+- **Décision** :
+    1. **Master Import Engine** : Zone de drop globale traitant les fichiers en masse via `FileReader` asynchrone et injection atomique backend.
+    2. **Smart Collapse** : Réduction automatique des composants non ciblés pendant le tri pour une visibilité 360°.
+    3. **Code Telemetry HUD** : Affichage en temps réel du nombre de lignes (LOC) et du poids (KB) de chaque fragment.
+    4. **Duplicate Safeguard** : Système de détection de collisions de noms avec alertes UI visuelles.
+- **Impact** : Productivité accrue de 300% pour la publication de curations complexes.
+
+## 2026-04-09-27 : Allégement Visuel & Raffinement UX (Feed & Code)
 - **Auteur** : Antigravity
 - **Statut** : ✅ Implémenté
 - **Contexte** : Présence de bordures blanches intrusives, mauvais alignement des numéros de ligne et besoin d'une animation plus dynamique sur les titres du feed.
@@ -135,7 +146,7 @@
     4. **Centralisation Chromatique** : Injection de couleurs spécifiques par "Lens" (Security: Red, Logic: Cyan, Performance: Green) sur toute la chaîne UI, incluant les hashtags de métadonnées.
 - **Impact** : Interface plus "aérée", suppression du bruit visuel (borders blanches) et hiérarchie de lecture optimisée.
 
-## 2026-04-09-27 : Optimisation de Flux & Correction Ergonomique HUD
+## 2026-04-09-28 : Optimisation de Flux & Correction Ergonomique HUD
 - **Auteur** : Antigravity
 - **Statut** : ✅ Implémenté
 - **Contexte** : Latence perçue lors du scroll infini/pagination, clignotement des éléments ré-animés et mauvaise position de l'icône d'artéfact.

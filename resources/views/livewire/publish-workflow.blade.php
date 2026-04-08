@@ -62,9 +62,43 @@
                 <div class="flex justify-between items-end">
                     <div class="space-y-2">
                         <h2 class="font-display text-3xl font-bold text-on-surface tracking-tight">{{ __('The Artifacts') }}</h2>
-                        <p class="text-on-surface-variant italic">{{ __('Input the files you wish to have curated. Drag & drop files directly into code blocks.') }}</p>
+                        <p class="text-on-surface-variant italic">{{ __('Input the files you wish to have curated. Drag & drop files directly into code blocks or use the master zone.') }}</p>
                     </div>
-                    <x-ui.button type="button" variant="ghost" wire:click="addFile" size="sm">+ {{ __('Add Fragment') }}</x-ui.button>
+                    <div class="flex gap-4">
+                        <x-ui.button type="button" variant="ghost" wire:click="addFile" size="sm">+ {{ __('Add Fragment') }}</x-ui.button>
+                    </div>
+                </div>
+
+                <!-- Master Drop Zone -->
+                <div 
+                    x-data="{ active: false }"
+                    @dragover.prevent="active = true"
+                    @dragleave.prevent="active = false"
+                    @drop.prevent="
+                        active = false;
+                        const files = Array.from($event.dataTransfer.files);
+                        let filesData = [];
+                        let processed = 0;
+                        files.forEach(file => {
+                            const reader = new FileReader();
+                            reader.onload = (e) => {
+                                filesData.push({ name: file.name, content: e.target.result });
+                                processed++;
+                                if (processed === files.length) {
+                                    $wire.importMultipleFiles(filesData);
+                                }
+                            };
+                            reader.readAsText(file);
+                        });
+                    "
+                    class="relative h-24 border-2 border-dashed border-outline-variant/20 rounded-round-4 flex flex-col items-center justify-center transition-all duration-300 group hover:border-primary/40 hover:bg-primary/5"
+                    :class="{ 'border-primary bg-primary/10 scale-[1.01]': active }"
+                >
+                    <div class="flex items-center gap-3 text-on-surface-variant group-hover:text-primary transition-colors">
+                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12"/></svg>
+                        <span class="font-display font-bold uppercase tracking-widest text-xs">{{ __('Master Import Zone') }}</span>
+                    </div>
+                    <span class="text-[10px] text-on-surface-variant/50 mt-1">{{ __('Drop all files here to automate fragment generation') }}</span>
                 </div>
 
                 <div class="space-y-6">
@@ -107,14 +141,19 @@
                     @dragend="draggingIndex = null; clearInterval(autoScrollInterval); autoScrollInterval = null"
                 >
                     @foreach($files as $index => $file)
+                        @php $stats = $this->getFileStats($index); @endphp
                         <!-- Drop Gap (Before) -->
                         <div 
                             @dragover.prevent="dragOverGap = {{ $index }}"
                             @dragleave="dragOverGap = null"
                             @drop.prevent="handleDrop(draggingIndex, {{ $index }})"
-                            class="h-1 transition-all duration-300 rounded-round-4"
-                            :class="{ 'h-12 bg-primary/10 border-2 border-dashed border-primary/40 my-2': dragOverGap === {{ $index }} }"
-                        ></div>
+                            class="h-1 transition-all duration-500 rounded-round-4"
+                            :class="{ 'h-16 bg-primary/10 border-2 border-dashed border-primary/40 my-4 scale-[1.02]': dragOverGap === {{ $index }} }"
+                        >
+                            <div x-show="dragOverGap === {{ $index }}" class="h-full flex items-center justify-center text-primary font-display font-bold text-xs tracking-widest animate-pulse">
+                                {{ __('INSERT ARCHIVE CLIP HERE') }}
+                            </div>
+                        </div>
                         <div 
                             wire:key="file-fragment-{{ $index }}"
                             draggable="true"
@@ -123,21 +162,39 @@
                             @dragend="draggingIndex = null; $el.style.opacity = '1'"
                             @dragover.prevent
                             @drop.prevent="draggingIndex !== null ? handleDrop(draggingIndex, {{ $index }}) : null"
-                            class="transition-all duration-300"
-                            :class="{ 'scale-[0.98] blur-[1px] opacity-50': draggingIndex !== null && draggingIndex !== {{ $index }} }"
+                            class="transition-all duration-500"
+                            :class="{ 'opacity-30 scale-95 blur-sm': draggingIndex !== null && draggingIndex !== {{ $index }} }"
                         >
-                            <x-ui.card tonal="container" padding="p-0" class="relative group overflow-hidden border border-outline-variant/10 hover:border-primary/30 transition-colors">
+                            <x-ui.card tonal="container" padding="p-0" class="relative group overflow-hidden border border-outline-variant/10 hover:border-primary/30 transition-all duration-500 {{ ($file['is_duplicate'] ?? false) ? 'border-secondary/50 ring-1 ring-secondary/20' : '' }}">
                                 <!-- Header / Drag Handle -->
                                 <div class="p-4 bg-surface-high/50 flex items-center justify-between cursor-grab active:cursor-grabbing border-b border-outline-variant/5">
                                     <div class="flex items-center gap-4">
                                         <div class="text-on-surface-variant group-hover:text-primary transition-colors">
-                                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 8h16M4 16h16"/></svg>
+                                            <svg class="w-5 h-5 font-bold" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M4 8h16M4 16h16"/></svg>
                                         </div>
                                         <div class="flex flex-col">
-                                            <span class="text-[10px] uppercase tracking-widest font-bold text-on-surface-variant">{{ __('Fragment') }} #{{ $index + 1 }}</span>
+                                            <div class="flex items-center gap-2">
+                                                <span class="text-[10px] uppercase tracking-widest font-bold text-on-surface-variant">{{ __('Fragment') }} #{{ $index + 1 }}</span>
+                                                @if($file['is_duplicate'] ?? false)
+                                                    <span class="text-[9px] bg-secondary/20 text-secondary px-2 py-0.5 rounded-full font-bold uppercase tracking-tight">{{ __('Duplicate') }}</span>
+                                                @endif
+                                            </div>
                                             <span class="text-sm font-medium text-on-surface">{{ $file['name'] ?: __('Untitled_Module') }}</span>
                                         </div>
                                     </div>
+
+                                    <div class="flex items-center gap-4">
+                                        <!-- Inline Stats HUD -->
+                                        <div class="hidden md:flex items-center gap-4 px-4 border-r border-outline-variant/10">
+                                            <div class="flex flex-col items-end">
+                                                <span class="text-[9px] text-on-surface-variant/50 uppercase font-bold">{{ __('Lines') }}</span>
+                                                <span class="text-xs font-mono text-primary">{{ $stats['lines'] }}</span>
+                                            </div>
+                                            <div class="flex flex-col items-end">
+                                                <span class="text-[9px] text-on-surface-variant/50 uppercase font-bold">{{ __('Weight') }}</span>
+                                                <span class="text-xs font-mono text-on-surface">{{ $stats['size'] }}</span>
+                                            </div>
+                                        </div>
 
                                     <div class="flex items-center gap-2">
                                         <button type="button" @click="collapsed = !collapsed" class="p-2 text-on-surface-variant hover:text-primary transition-all">
@@ -150,7 +207,7 @@
                                 </div>
 
                                 <!-- Content (Collapsible) -->
-                                <div x-show="!collapsed" x-collapse x-cloak class="p-6 space-y-6">
+                                <div x-show="!collapsed && draggingIndex === null" x-collapse x-cloak class="p-6 space-y-6">
                                     <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
                                         <div class="col-span-1 md:col-span-2">
                                             <x-input-label :value="__('Filename') . ' *'" />

@@ -95,11 +95,66 @@ class PublishWorkflow extends Component
         $this->files[$index]['name'] = $name;
         $this->files[$index]['content'] = $content;
         $this->detectLanguage($index);
+        $this->checkDuplicates();
+    }
+
+    public function importMultipleFiles($filesData)
+    {
+        // If the first file is empty, replace it, otherwise append
+        if (count($this->files) === 1 && empty($this->files[0]['name']) && empty($this->files[0]['content'])) {
+            $this->files = [];
+        }
+
+        foreach ($filesData as $data) {
+            $this->files[] = [
+                'name' => $data['name'],
+                'content' => $data['content'],
+                'language' => $this->getLanguageByExtension($data['name']),
+                'description' => '',
+                'is_duplicate' => false
+            ];
+        }
+        $this->checkDuplicates();
+    }
+
+    protected function checkDuplicates()
+    {
+        $names = [];
+        foreach ($this->files as $index => &$file) {
+            $file['is_duplicate'] = false;
+            if (!empty($file['name'])) {
+                if (isset($names[$file['name']])) {
+                    $file['is_duplicate'] = true;
+                    $this->files[$names[$file['name']]]['is_duplicate'] = true;
+                }
+                $names[$file['name']] = $index;
+            }
+        }
+    }
+
+    protected function getLanguageByExtension($filename)
+    {
+        $extension = strtolower(pathinfo($filename, PATHINFO_EXTENSION));
+        return $this->extensionMap[$extension] ?? 'php';
+    }
+
+    public function getFileStats($index)
+    {
+        $content = $this->files[$index]['content'] ?? '';
+        $lines = empty($content) ? 0 : count(explode("\n", $content));
+        $bytes = strlen($content);
+        $kb = round($bytes / 1024, 1);
+
+        return [
+            'lines' => $lines,
+            'size' => $kb > 0 ? $kb . ' KB' : $bytes . ' B',
+            'is_duplicate' => $this->files[$index]['is_duplicate'] ?? false
+        ];
     }
 
     public function addFile()
     {
-        $this->files[] = ['name' => '', 'content' => '', 'language' => 'php', 'description' => ''];
+        $this->files[] = ['name' => '', 'content' => '', 'language' => 'php', 'description' => '', 'is_duplicate' => false];
     }
 
     public function removeFile($index)
