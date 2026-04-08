@@ -68,77 +68,112 @@
                 </div>
 
                 <div class="space-y-6">
+                <div 
+                    class="space-y-4"
+                    x-data="{ 
+                        draggingIndex: null, 
+                        handleDrop(fromIndex, toIndex) {
+                            if (fromIndex === toIndex) return;
+                            $wire.reorderFiles(this.getNewOrder(fromIndex, toIndex));
+                        },
+                        getNewOrder(fromIndex, toIndex) {
+                            let order = Array.from({length: {{ count($files) }}}, (_, i) => i);
+                            const [movedItem] = order.splice(fromIndex, 1);
+                            order.splice(toIndex, 0, movedItem);
+                            return order;
+                        }
+                    }"
+                >
                     @foreach($files as $index => $file)
-                        <x-ui.card tonal="container" padding="p-6" class="space-y-4 relative group overflow-hidden">
-                            <div class="absolute top-4 right-4 flex items-center gap-2 opacity-0 group-hover:opacity-100 transition-all z-20">
-                                @if($index > 0)
-                                    <button type="button" wire:click="moveUp({{ $index }})" class="text-on-surface-variant hover:text-primary transition-colors p-1" title="{{ __('Move Up') }}">
-                                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M5 15l7-7 7 7"/></svg>
-                                    </button>
-                                @endif
-                                
-                                @if($index < count($files) - 1)
-                                    <button type="button" wire:click="moveDown({{ $index }})" class="text-on-surface-variant hover:text-primary transition-colors p-1" title="{{ __('Move Down') }}">
-                                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M19 9l-7 7-7-7"/></svg>
-                                    </button>
-                                @endif
+                        <div 
+                            draggable="true"
+                            x-data="{ collapsed: {{ $index > 0 ? 'true' : 'false' }} }"
+                            @dragstart="draggingIndex = {{ $index }}; $el.style.opacity = '0.4'"
+                            @dragend="draggingIndex = null; $el.style.opacity = '1'"
+                            @dragover.prevent
+                            @drop.prevent="handleDrop(draggingIndex, {{ $index }})"
+                            class="transition-all duration-300"
+                            :class="{ 'scale-[0.98] blur-[1px] opacity-50': draggingIndex !== null && draggingIndex !== {{ $index }} }"
+                        >
+                            <x-ui.card tonal="container" padding="p-0" class="relative group overflow-hidden border border-outline-variant/10 hover:border-primary/30 transition-colors">
+                                <!-- Header / Drag Handle -->
+                                <div class="p-4 bg-surface-high/50 flex items-center justify-between cursor-grab active:cursor-grabbing border-b border-outline-variant/5">
+                                    <div class="flex items-center gap-4">
+                                        <div class="text-on-surface-variant group-hover:text-primary transition-colors">
+                                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 8h16M4 16h16"/></svg>
+                                        </div>
+                                        <div class="flex flex-col">
+                                            <span class="text-[10px] uppercase tracking-widest font-bold text-on-surface-variant">{{ __('Fragment') }} #{{ $index + 1 }}</span>
+                                            <span class="text-sm font-medium text-on-surface">{{ $file['name'] ?: __('Untitled_Source') }}</span>
+                                        </div>
+                                    </div>
 
-                                <button type="button" wire:click="removeFile({{ $index }})" class="text-on-surface-variant hover:text-secondary p-1" title="{{ __('Remove') }}">
-                                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M6 18L18 6M6 6l12 12"/></svg>
-                                </button>
-                            </div>
-                            
-                            <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
-                                <div class="col-span-1 md:col-span-2">
-                                    <x-input-label :value="__('Filename') . ' *'" />
-                                    <x-text-input wire:model.live="files.{{ $index }}.name" placeholder="core_logic.php" />
-                                </div>
-                                <div>
-                                    <x-input-label :value="__('Detected Engine')" />
-                                    <div class="flex items-center h-[46px] px-4 bg-surface-high rounded-round-4 text-on-surface-variant font-mono text-sm uppercase tracking-widest border border-outline-variant/10">
-                                        {{ $file['language'] }}
+                                    <div class="flex items-center gap-2">
+                                        <button type="button" @click="collapsed = !collapsed" class="p-2 text-on-surface-variant hover:text-primary transition-all">
+                                            <svg class="w-5 h-5 transition-transform duration-300" :class="{ 'rotate-180': !collapsed }" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>
+                                        </button>
+                                        <button type="button" wire:click="removeFile({{ $index }})" class="p-2 text-on-surface-variant hover:text-secondary transition-all">
+                                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
+                                        </button>
                                     </div>
                                 </div>
-                            </div>
 
-                            <div 
-                                x-data="{ dragging: false }"
-                                @dragover.prevent="dragging = true"
-                                @dragleave.prevent="dragging = false"
-                                @drop.prevent="
-                                    dragging = false;
-                                    const file = $event.dataTransfer.files[0];
-                                    if (file) {
-                                        const reader = new FileReader();
-                                        reader.onload = (e) => {
-                                            @this.set('files.{{ $index }}.content', e.target.result);
-                                            @this.set('files.{{ $index }}.name', file.name);
-                                        };
-                                        reader.readAsText(file);
-                                    }
-                                "
-                                class="relative"
-                            >
-                                <x-input-label :value="__('Logic Body (Paste or Drag & Drop)') . ' *'" />
-                                <textarea 
-                                    wire:model="files.{{ $index }}.content" 
-                                    rows="8" 
-                                    class="font-mono bg-surface-lowest border-none text-primary placeholder:text-primary/30 focus:ring-1 focus:ring-primary/50 rounded-round-4 transition-all duration-300 w-full resize-none p-4" 
-                                    placeholder="{{ __('Paste or drop code fragment...') }}"
-                                    :class="{ 'ring-2 ring-secondary/50': dragging }"
-                                ></textarea>
-                                
-                                <div x-show="dragging" class="absolute inset-0 bg-secondary/10 border-2 border-dashed border-secondary rounded-round-4 flex items-center justify-center pointer-events-none transition-all duration-300">
-                                    <span class="text-secondary font-bold">{{ __('Drop to Import Content') }}</span>
+                                <!-- Content (Collapsible) -->
+                                <div x-show="!collapsed" x-collapse x-cloak class="p-6 space-y-6">
+                                    <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                                        <div class="col-span-1 md:col-span-2">
+                                            <x-input-label :value="__('Filename') . ' *'" />
+                                            <x-text-input wire:model.live="files.{{ $index }}.name" placeholder="core_logic.php" />
+                                        </div>
+                                        <div>
+                                            <x-input-label :value="__('Detected Engine')" />
+                                            <div class="flex items-center h-[46px] px-4 bg-surface-high rounded-round-4 text-on-surface-variant font-mono text-sm uppercase tracking-widest border border-outline-variant/10">
+                                                {{ $file['language'] }}
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div 
+                                        x-data="{ draggingFile: false }"
+                                        @dragover.prevent.stop="draggingFile = true"
+                                        @dragleave.prevent.stop="draggingFile = false"
+                                        @drop.prevent.stop="
+                                            draggingFile = false;
+                                            const file = $event.dataTransfer.files[0];
+                                            if (file) {
+                                                const reader = new FileReader();
+                                                reader.onload = (e) => {
+                                                    @this.set('files.{{ $index }}.content', e.target.result);
+                                                    @this.set('files.{{ $index }}.name', file.name);
+                                                };
+                                                reader.readAsText(file);
+                                            }
+                                        "
+                                        class="relative"
+                                    >
+                                        <x-input-label :value="__('Logic Body') . ' *'" />
+                                        <textarea 
+                                            wire:model="files.{{ $index }}.content" 
+                                            rows="8" 
+                                            class="font-mono bg-surface-lowest border-none text-primary placeholder:text-primary/30 focus:ring-1 focus:ring-primary/50 rounded-round-4 transition-all duration-300 w-full resize-none p-4" 
+                                            placeholder="{{ __('Paste or drop code fragment...') }}"
+                                            :class="{ 'ring-2 ring-secondary/50': draggingFile }"
+                                        ></textarea>
+                                        
+                                        <div x-show="draggingFile" class="absolute inset-0 bg-secondary/10 border-2 border-dashed border-secondary rounded-round-4 flex items-center justify-center pointer-events-none transition-all duration-300">
+                                            <span class="text-secondary font-bold">{{ __('Drop to Import Content') }}</span>
+                                        </div>
+                                    </div>
+
+                                    <div>
+                                        <x-input-label :value="__('Contextual Note (Optional)')" />
+                                        <textarea wire:model="files.{{ $index }}.description" rows="2" class="bg-surface-low border-none text-on-surface-variant placeholder:text-on-surface-variant/30 focus:ring-2 focus:ring-primary/30 rounded-round-4 transition-all duration-300 w-full resize-none p-3 text-sm" placeholder="{{ __('What is unique about this file?') }}"></textarea>
+                                    </div>
                                 </div>
-                            </div>
-
-                            <div>
-                                <x-input-label :value="__('Contextual Note for this Fragment (Optional)')" />
-                                <textarea wire:model="files.{{ $index }}.description" rows="2" class="bg-surface-low border-none text-on-surface-variant placeholder:text-on-surface-variant/30 focus:ring-2 focus:ring-primary/30 rounded-round-4 transition-all duration-300 w-full resize-none p-3 text-sm" placeholder="{{ __('What is unique about this file?') }}"></textarea>
-                            </div>
-                        </x-ui.card>
+                            </x-ui.card>
+                        </div>
                     @endforeach
+                </div>
                 </div>
             </div>
         @elseif($step == 3)
