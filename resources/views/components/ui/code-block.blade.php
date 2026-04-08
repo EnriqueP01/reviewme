@@ -4,8 +4,15 @@
     $typeColors = [
         'performance' => 'text-secondary bg-secondary/10 border-secondary/30 shadow-[0_0_20px_rgba(78,222,163,0.1)]',
         'readability' => 'text-tertiary bg-tertiary/10 border-tertiary/30 shadow-[0_0_20px_rgba(255,185,95,0.1)]',
-        'elegant' => 'text-primary bg-primary/10 border-primary/30 shadow-[0_0_20px_rgba(190,194,255,0.1)]',
+        'elegant'     => 'text-primary bg-primary/10 border-primary/30 shadow-[0_0_20px_rgba(190,194,255,0.1)]',
+        'security'    => 'text-error bg-error/10 border-error/30 shadow-[0_0_20px_rgba(255,107,107,0.1)]',
+        'clarity'     => 'text-cyan-400 bg-cyan-400/10 border-cyan-400/30 shadow-[0_0_20px_rgba(34,211,238,0.1)]',
+        'clean'       => 'text-emerald-400 bg-emerald-400/10 border-emerald-400/30 shadow-[0_0_20px_rgba(52,211,153,0.1)]',
+        'mindblown'   => 'text-purple-400 bg-purple-400/10 border-purple-400/30 shadow-[0_0_20px_rgba(192,132,252,0.1)]',
     ];
+
+    $typeClass = $typeColors[$type] ?? $typeColors['elegant'];
+
     
     $highlighted = $code;
     
@@ -69,7 +76,7 @@
             </div>
             
             <div class="flex items-center gap-8">
-                <span @class(['px-3 py-1 rounded-full text-[9px] font-black uppercase tracking-widest border transition-all duration-300', $typeColors[$type]])>
+                <span @class(['px-3 py-1 rounded-full text-[9px] font-black uppercase tracking-widest border transition-all duration-300', $typeClass])>
                     {{ $type }}
                 </span>
                 
