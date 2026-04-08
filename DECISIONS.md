@@ -95,3 +95,17 @@ Accepté
 ### Choix Technique : Protection de l'Inégrité du DOM (Code Highlighter)
 **Décision** : Injection de caractères invisibles (Zero-Width Space) dans les attributs `wire:` et `x-` au sein des blocs de code affichés.
 **Raison** : Empêche le moteur Livewire de tenter de parser et d'exécuter des attributs contenus dans les snippets de code présentés pour revue, évitant ainsi des erreurs fatales de corruption du DOM.
+
+---
+
+## 2026-04-08-07 : Micro-interactions & Sécurité Transactionnelle UI
+### Statut
+Accepté
+### Choix Technique : Feedback Haptique via Web Audio API
+**Décision** : Implémentation d'une classe `HapticFeedback` simulant des clics physiques via des oscillateurs audio très courts (50ms).
+**Raison** : Renforce la sensation de "monolithe physique" du design system sans dépendre de l'API de vibration système (souvent restreinte sur mobile).
+
+### Choix Technique : Verrouillage Anti-Replay (Voting Lock)
+**Décision** : Utilisation d'un flag Alpine.js `isVoting` pour désactiver les interactions durant l'aller-retour serveur.
+**Raison** : Empêche le spam de votes et garantit la cohérence des compteurs de points entre l'état local et la base de données.
+
