@@ -144,7 +144,7 @@
     </div>
 
     <!-- The Monolith Container -->
-    <div @class(['glass-panel rounded-3xl overflow-hidden border border-white/5 transition-all duration-700 group-hover/lens:border-primary/30 group-hover/lens:shadow-[0_45px_120px_-20px_rgba(0,0,0,0.9)]'])>
+    <div @class(['glass-panel rounded-3xl overflow-hidden border border-white/5 transition-all duration-700 group-hover/lens:border-primary/20 group-hover/lens:shadow-[0_45px_120px_-20px_rgba(0,0,0,0.9)]'])>
         
         <!-- Lens Header -->
         <div class="flex items-center justify-between px-6 py-4 bg-white/[0.04] border-b border-white/5 relative z-20">
@@ -160,7 +160,6 @@
                         @if($context)
                             <span class="inline-block max-w-[0px] group-hover/inspect:max-w-[150px] truncate align-bottom text-primary/70 transition-all duration-700 opacity-0 group-hover/inspect:opacity-100 -translate-x-2 group-hover/inspect:translate-x-0 font-mono italic">{{ $context }}</span>
                         @endif
-                        {{ __('SOURCE_LOGIC') }}
                     </span>
                     <span class="text-[11px] font-mono font-bold text-on-surface tracking-wide flex items-center gap-2">
                         <span class="w-1 h-1 rounded-full bg-primary animate-pulse shadow-[0_0_10px_rgba(190,194,255,0.8)]"></span>
@@ -170,13 +169,13 @@
             </div>
 
             <!-- Tabs Navigation (File Explorer) -->
-            <div class="flex-grow flex items-center justify-center px-8 overflow-hidden">
-                <div class="flex items-center gap-1 bg-black/40 rounded-xl p-0.5 border border-white/5 max-w-full overflow-x-auto no-scrollbar scroll-smooth">
+            <div class="flex-grow flex items-center justify-center px-8">
+                <div class="flex items-center gap-1 bg-black/40 rounded-xl p-0.5 max-w-full overflow-x-auto no-scrollbar scroll-smooth">
                     <template x-for="(snippet, index) in snippets" :key="index">
                         <button 
                             @click="activeTab = index; if(window.fx) window.fx.play('click')"
-                            :class="activeTab === index ? 'bg-primary/20 text-primary border-primary/20 shadow-[0_0_20px_rgba(190,194,255,0.15)] scale-105' : 'text-on-surface-variant/40 hover:text-on-surface-variant hover:bg-white/5 border-transparent'"
-                            class="px-5 py-2 rounded-lg text-[10px] font-black font-mono tracking-widest border transition-all duration-500 whitespace-nowrap"
+                            :class="activeTab === index ? 'bg-primary/20 text-primary shadow-[0_0_15px_rgba(190,194,255,0.1)]' : 'text-on-surface-variant/30 hover:text-on-surface-variant hover:bg-white/5'"
+                            class="px-5 py-2 rounded-lg text-[10px] font-black font-mono tracking-widest transition-all duration-500 whitespace-nowrap"
                             x-text="snippet.name"
                         ></button>
                     </template>
@@ -235,7 +234,7 @@
                     <div class="font-mono text-[12px] leading-[2rem] relative z-10 space-y-0.5">
                         <template x-for="(line, lIndex) in snippet.lines" :key="lIndex">
                             <div class="flex items-start group/line hover:bg-white/[0.03] -mx-6 px-6 transition-all duration-300 snap-start snap-always scroll-mt-0">
-                                <div class="w-10 shrink-0 text-right pr-4 select-none text-on-surface-variant/20 group-hover/line:text-primary transition-colors font-bold text-[10px] pt-1">
+                                <div class="w-12 shrink-0 text-right pr-6 select-none text-on-surface-variant/10 group-hover/line:text-primary transition-colors font-bold text-[10px]">
                                     <span x-text="lIndex + 1"></span>
                                 </div>
                                 <div class="flex-1 whitespace-pre-wrap break-all text-on-surface/90 font-medium tracking-wide group-hover/line:text-white transition-colors" x-html="line || '&nbsp;'">

@@ -129,7 +129,7 @@
                                         <span class="text-xs font-mono font-bold text-primary tracking-wider font-black">@<span>{{ $post->user->name }}</span></span>
                                     </div>
                                     <span class="text-[10px] uppercase tracking-[0.2em] text-on-surface-variant font-black opacity-40 mt-1 flex items-center gap-2">
-                                        {{ __('SOURCE_ORIGIN') }} <span class="w-0.5 h-0.5 rounded-full bg-on-surface-variant/20"></span> {{ $post->created_at->diffForHumans() }}
+{{ $post->created_at->diffForHumans() }}
                                     </span>
                                 </div>
                             </div>
@@ -142,23 +142,33 @@
                             </div>
                         </div>
 
-                        <!-- Content Headers -->
-                        <div class="space-y-4">
-                            <h3 class="text-4xl font-display font-black text-on-surface leading-[1.2] tracking-tighter group-hover:text-primary transition-colors duration-500">
-                                {{ $post->title }}
-                            </h3>
-                            <div class="space-y-3">
-                                @if($post->short_description)
-                                    <p class="text-lg text-on-surface font-semibold leading-relaxed max-w-4xl opacity-90">
-                                        {{ $post->short_description }}
-                                    </p>
-                                @endif
-                                @if($post->description && $post->description !== $post->short_description)
-                                    <p class="text-base text-on-surface-variant font-medium leading-relaxed max-w-4xl opacity-60">
-                                        {{ $post->description }}
-                                    </p>
-                                @endif
-                            </div>
+                        <!-- Content Headers (Dynamic Expansion) -->
+                        <div class="relative group/header overflow-hidden cursor-default">
+                             <div class="flex items-start gap-6 transition-all duration-700 ease-[cubic-bezier(0.23,1,0.32,1)] group-hover:translate-y-[-4px]">
+                                <div class="shrink-0 w-12 h-12 rounded-2xl bg-primary/10 border border-primary/10 flex items-center justify-center text-primary group-hover:bg-primary/20 group-hover:border-primary/40 transition-all duration-500 shadow-lg">
+                                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>
+                                </div>
+                                <div class="flex-grow min-h-[48px] flex flex-col justify-center">
+                                    <h3 class="text-3xl font-display font-black text-on-surface leading-tight tracking-tighter group-active:scale-[0.98] transition-all duration-500">
+                                        {{ $post->title }}
+                                    </h3>
+                                    
+                                    <div class="max-h-0 opacity-0 group-hover:max-h-32 group-hover:opacity-100 transition-all duration-700 ease-in-out overflow-hidden">
+                                        <div class="pt-4 space-y-3">
+                                            @if($post->short_description)
+                                                <p class="text-lg text-on-surface font-semibold leading-relaxed max-w-4xl opacity-90">
+                                                    {{ $post->short_description }}
+                                                </p>
+                                            @endif
+                                            @if($post->description && $post->description !== $post->short_description)
+                                                <p class="text-base text-on-surface-variant font-medium leading-relaxed max-w-4xl opacity-60">
+                                                    {{ $post->description }}
+                                                </p>
+                                            @endif
+                                        </div>
+                                    </div>
+                                </div>
+                             </div>
                         </div>
 
                         <!-- The Code Lens (Primary Display: Multi-file Explorer) -->
@@ -176,9 +186,9 @@
                         <div class="flex items-center gap-8 pt-6 border-t border-white/[0.03]">
                              <div class="flex gap-2">
                                 @foreach(explode(',', $post->lens ?? 'Review') as $l)
-                                    <span @class(['px-4 py-1.5 rounded-xl text-[10px] font-black uppercase tracking-[0.2em] border transition-all hover:scale-110 cursor-default', 'tag-lens-' . trim($l)])>#{{ strtoupper(trim($l)) }}</span>
+                                    <span @class(['px-4 py-1.5 rounded-xl text-[9px] font-black uppercase tracking-[0.2em] transition-all hover:scale-105 cursor-default', 'tag-lens-' . trim($l)])>#{{ strtoupper(trim($l)) }}</span>
                                 @endforeach
-                                <span class="px-4 py-1.5 rounded-xl bg-surface-container-highest text-[10px] font-black uppercase tracking-[0.2em] text-on-surface-variant border border-white/5 hover:border-secondary/30 transition-colors cursor-default">#{{ strtoupper($post->latestSnippet->language ?? 'PHP') }}</span>
+                                <span class="px-4 py-1.5 rounded-xl bg-surface-container-highest text-[9px] font-black uppercase tracking-[0.2em] text-on-surface-variant/60 border border-white/[0.03] hover:border-secondary/30 transition-colors cursor-default">#{{ strtoupper($post->latestSnippet->language ?? 'PHP') }}</span>
                              </div>
                              <div class="flex-grow"></div>
                              <div class="flex items-center gap-8 text-[10px] font-black uppercase tracking-[0.3em] text-on-surface-variant/30">
@@ -205,14 +215,14 @@
             <div class="absolute top-0 left-0 w-full h-px bg-gradient-to-r from-transparent via-primary/30 to-transparent opacity-40 transition-opacity group-hover/pagination:opacity-100"></div>
             
             <div class="flex flex-col">
-                <span class="text-[10px] font-black uppercase tracking-[0.4em] text-primary mb-1">{{ __('Network Status') }}</span>
-                <div class="flex items-center gap-3">
-                    <div class="flex items-baseline gap-1.5">
+                <span class="text-[10px] font-black uppercase tracking-[0.4em] text-primary mb-1">{{ __('Result') }}</span>
+                <div class="flex items-center gap-4">
+                    <div class="flex items-baseline gap-1.5 opacity-80">
+                        <span class="text-[10px] font-bold text-on-surface-variant/40 tracking-widest uppercase">{{ __('Showing') }}</span>
                         <span class="text-2xl font-display font-black text-on-surface tracking-tighter">{{ $posts->firstItem() ?? 0 }}-{{ $posts->lastItem() ?? 0 }}</span>
-                        <span class="text-xs font-bold text-on-surface-variant/40 tracking-widest uppercase">of</span>
+                        <span class="text-[10px] font-bold text-on-surface-variant/40 tracking-widest uppercase">of</span>
                         <span class="text-2xl font-display font-black text-on-surface tracking-tighter">{{ $posts->total() }}</span>
                     </div>
-                    <span class="text-[9px] font-mono font-bold text-on-surface-variant/20 tracking-widest ml-4 px-3 py-1 bg-white/5 rounded-lg">{{ __('REGISTRY_ENTRIES') }}</span>
                 </div>
             </div>
 
@@ -221,12 +231,14 @@
                     .pagination-container nav { @apply flex items-center gap-2; }
                     .pagination-container .relative.z-0 { @apply !shadow-none !border-none !flex !gap-2; }
                     .pagination-container span[aria-current="page"] span { 
-                        @apply !bg-primary !text-on-primary !rounded-xl !border-none !w-12 !h-12 !flex !items-center !justify-center !text-sm !font-black !font-display !shadow-[0_0_20px_rgba(190,194,255,0.4)] !scale-110 !transition-all;
+                        @apply !bg-primary !text-on-primary !rounded-xl !border-none !w-11 !h-11 !flex !items-center !justify-center !text-sm !font-black !font-display !shadow-[0_0_20px_rgba(190,194,255,0.3)] !scale-105 !transition-all;
                     }
                     .pagination-container a, .pagination-container span[aria-disabled="true"] { 
-                        @apply !bg-white/5 !text-on-surface-variant/60 !rounded-xl !border !border-white/5 !max-w-none !w-12 !h-12 !flex !items-center !justify-center !text-sm !font-bold !font-display !transition-all hover:!bg-white/10 hover:!text-white hover:!border-white/10;
+                        @apply !bg-white/[0.03] !text-on-surface-variant/40 !rounded-xl !border !border-white/5 !max-w-none !w-11 !h-11 !flex !items-center !justify-center !text-sm !font-bold !font-display !transition-all hover:!bg-white/[0.08] hover:!text-white hover:!border-white/10;
                     }
-                    .pagination-container svg { @apply !w-5 !h-5; }
+                    .pagination-container span[aria-disabled="true"] { @apply !opacity-20 !cursor-not-allowed; }
+                    .pagination-container nav { @apply border border-white/5 rounded-2xl p-1 bg-black/20; }
+                    .pagination-container svg { @apply !w-4 !h-4; }
                 </style>
                 {{ $posts->links() }}
             </div>
