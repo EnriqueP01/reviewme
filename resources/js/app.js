@@ -1,8 +1,8 @@
 import './bootstrap';
 
-import Alpine from 'alpinejs';
+// Note: Alpine.js est déjà géré par Livewire 3. 
+// Nous n'avons pas besoin de l'importer manuellement ici.
 
-window.Alpine = Alpine;
 
 // Service Audio Premium & Haptique
 window.fx = {

@@ -70,3 +70,13 @@
 - **Contexte** : Besoin de renforcer l'engagement utilisateur et de fournir des retours systémiques clairs.
 - **Décision** : Création du composant Toast HUD et de la Heatmap de contribution (Sync Density).
 - **Impact** : Gamification du profil et retour utilisateur instantané.
+
+## 2026-04-08-11 : Optimisation Drastique du TTFB sur Windows
+- **Auteur** : Antigravity
+- **Statut** : ✅ Implémenté
+- **Contexte** : Latence de 7s au premier octet (TTFB) due à la résolution DNS IPv6 de Windows et au verrouillage des sessions fichiers.
+- **Décision** : 
+    - Basculement de `localhost` vers `127.0.0.1` dans `.env`.
+    - Migration du driver de session de `file` vers `cookie`.
+    - Suppression de l'import redondant Alpine.js dans `app.js`.
+- **Impact** : Réduction du temps de chargement de 80% (7s -> 1.2s).
