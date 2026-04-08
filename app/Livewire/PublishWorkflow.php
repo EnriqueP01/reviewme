@@ -92,9 +92,52 @@ class PublishWorkflow extends Component
 
     public function importFile($index, $name, $content)
     {
+        // Check for duplicates
+        foreach ($this->files as $i => $file) {
+            if ($i !== $index && $file['name'] === $name && !empty($name)) {
+                session()->flash('warning-' . $index, __('Duplicate filename detected.'));
+            }
+        }
+
         $this->files[$index]['name'] = $name;
         $this->files[$index]['content'] = $content;
         $this->detectLanguage($index);
+    }
+
+    public function importMultipleFiles($filesData)
+    {
+        // If the first file is empty, replace it, otherwise append
+        if (count($this->files) === 1 && empty($this->files[0]['name']) && empty($this->files[0]['content'])) {
+            $this->files = [];
+        }
+
+        foreach ($filesData as $data) {
+            $this->files[] = [
+                'name' => $data['name'],
+                'content' => $data['content'],
+                'language' => $this->getLanguageByExtension($data['name']),
+                'description' => ''
+            ];
+        }
+    }
+
+    protected function getLanguageByExtension($filename)
+    {
+        $extension = strtolower(pathinfo($filename, PATHINFO_EXTENSION));
+        return $this->extensionMap[$extension] ?? 'php';
+    }
+
+    public function getFileStats($index)
+    {
+        $content = $this->files[$index]['content'] ?? '';
+        $lines = empty($content) ? 0 : count(explode("\n", $content));
+        $bytes = strlen($content);
+        $kb = round($bytes / 1024, 1);
+
+        return [
+            'lines' => $lines,
+            'size' => $kb > 0 ? $kb . ' KB' : $bytes . ' B'
+        ];
     }
 
     public function addFile()
