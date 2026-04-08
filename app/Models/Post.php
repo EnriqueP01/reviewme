@@ -12,7 +12,7 @@ class Post extends Model
 {
     use HasFactory;
 
-    protected $fillable = ['user_id', 'group_id', 'title', 'description', 'visibility'];
+    protected $fillable = ['user_id', 'group_id', 'title', 'description', 'visibility', 'goal', 'context', 'lens'];
 
     public function user(): BelongsTo
     {
@@ -29,11 +29,9 @@ class Post extends Model
         return $this->hasMany(Snippet::class)->orderBy('version_number', 'desc');
     }
 
-    public function latestSnippet(): BelongsTo
+    public function latestSnippet(): \Illuminate\Database\Eloquent\Relations\HasOne
     {
-        // On récupère le snippet avec le numéro de version le plus élevé
-        return $this->belongsTo(Snippet::class, 'id', 'post_id')
-                    ->latest('version_number');
+        return $this->hasOne(Snippet::class)->latestOfMany('version_number');
     }
 
     public function reactions(): MorphMany

@@ -17,8 +17,9 @@
     ];
     
     $classes = $baseClasses . ' ' . $variants[$variant] . ' ' . $sizes[$size];
+    $tag = $attributes->has('href') ? 'a' : 'button';
 @endphp
 
-<button {{ $attributes->merge(['class' => $classes]) }}>
+<{{ $tag }} {{ $attributes->merge(['class' => $classes]) }}>
     {{ $slot }}
-</button>
+</{{ $tag }}>

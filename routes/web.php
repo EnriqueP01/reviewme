@@ -21,6 +21,7 @@ Route::get('/dashboard', \App\Livewire\Feed::class)
 Route::middleware('auth')->group(function () {
     Route::get('/profile', \App\Livewire\Profile::class)->name('profile');
     Route::get('/publish', \App\Livewire\PublishWorkflow::class)->name('publish');
+    Route::get('/vibe/{postId}', \App\Livewire\VibeDetail::class)->name('vibe.detail');
     Route::get('/settings', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');

@@ -35,7 +35,7 @@
                                 <span class="text-sm font-medium text-on-surface">{{ $item['author'] }}</span>
                                 <span class="text-xs text-on-surface-variant">• {{ $item['time_ago'] }}</span>
                             </div>
-                            <x-ui.button variant="outline" size="sm">{{ __('Curate') }}</x-ui.button>
+                            <x-ui.button variant="outline" size="sm" as="a" href="{{ route('vibe.detail', $item['id']) }}">{{ __('Curate') }}</x-ui.button>
                         </div>
 
                         <x-ui.code-block 

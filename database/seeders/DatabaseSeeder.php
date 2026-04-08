@@ -38,6 +38,9 @@ class DatabaseSeeder extends Seeder
             $posts = Post::factory(rand(2, 4))->create([
                 'user_id' => $user->id,
                 'group_id' => rand(0, 1) ? $groups->random()->id : null,
+                'goal' => 'Improve architectural patterns and clean code.',
+                'context' => 'This is a legacy module being refactored for the VibeCode platform.',
+                'lens' => collect(['elegant', 'performance', 'readability'])->random(),
             ]);
 
             $posts->each(function ($post) use ($user) {

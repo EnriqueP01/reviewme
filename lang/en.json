@@ -36,5 +36,22 @@
     "Email Address": "Email Address",
     "Confirm Password": "Confirm Password",
     "Already a member?": "Already a member?",
-    "Sign in here": "Sign in here"
+    "Sign in here": "Sign in here",
+    "Version": "Version",
+    "Share your insight on this line...": "Share your insight on this line...",
+    "Cancel": "Cancel",
+    "Tech Reactions": "Tech Reactions",
+    "Clean Code": "Clean Code",
+    "Optimisable": "Optimisable",
+    "Mindblown": "Mindblown",
+    "Security": "Security",
+    "Vibe Author": "Vibe Author",
+    "Define your Vibe and its creative core.": "Define your Vibe and its creative core.",
+    "Vibe Title": "Vibe Title",
+    "e.g., The Recursive Elegant BFS": "e.g., The Recursive Elegant BFS",
+    "Catchy Summary": "Catchy Summary",
+    "Briefly hook the curators...": "Briefly hook the curators...",
+    "Select Visibility": "Select Visibility",
+    "Public (Open for Curation)": "Public (Open for Curation)",
+    "Private (Solo Reflection)": "Private (Solo Reflection)"
 }

@@ -60,6 +60,9 @@ class PublishWorkflow extends Component
             'title' => $this->title,
             'description' => $this->description,
             'visibility' => $this->visibility,
+            'goal' => $this->goal,
+            'context' => $this->context,
+            'lens' => $this->lens,
         ]);
 
         foreach ($this->files as $file) {

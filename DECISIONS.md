@@ -52,3 +52,17 @@
 ### Choix Technique : Automatisation Ops Antigravity
 - **Décision** : Mise en place d'une règle de gestion Docker (`docker.md`) et intégration du cycle de vie Docker dans le workflow de synchronisation (`pull.md`).
 - **Raison** : Garantit que l'environnement de développement reste "sain" et à jour après chaque fusion de code, tout en automatisant les tâches répétitives comme le nettoyage d'images orphelines.
+
+## 2026-04-08 (Ops) : Consolidation Backend & Système de Réputation
+
+### Choix Technique : Système de Réputation Automatisé
+- **Décision** : Implémentation d'un "hook" Eloquent sur le modèle `Reaction` pour incrémenter le score de réputation de l'auteur d'un post (+10 points par réaction).
+- **Raison** : Gamification immédiate de la plateforme. Cela valorise les auteurs dont le code suscite l'intérêt (Curation) et encourage la production de contenu de qualité.
+
+### Choix Architecture : Enrichissement des Métadonnées "Vibe"
+- **Décision** : Ajout de champs techniques obligatoires (`goal`, `context`, `lens`) au modèle `Post`.
+- **Raison** : Pour qu'une revue de code soit efficace, le curateur doit comprendre l'intention de l'auteur. Ces champs forcent l'utilisateur à définir ses objectifs (Performance, Élégance, Lisibilité), ce qui cadre mieux le processus de feedback.
+
+### Choix Technique : Correction Polymorphisme UI Button
+- **Décision** : Rendre le composant Blade `x-ui.button` polymorphe en fonction de la présence de l'attribut `href`.
+- **Raison** : Permet d'utiliser le même style visuel premium pour les liens de navigation (balise `<a>`) et les actions de formulaire (balise `<button>`), tout en maintenant un code propre et réutilisable.

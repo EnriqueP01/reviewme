@@ -7,11 +7,28 @@
                 <div>
                     <h1 class="text-3xl font-bold font-display text-on-surface">{{ $post->title }}</h1>
                     <p class="text-on-surface-variant text-sm mt-2">{{ $post->description }}</p>
+                    
+                    @if($post->goal || $post->context)
+                        <div class="mt-6 p-4 bg-primary/5 border border-primary/10 rounded-xl">
+                            @if($post->goal)
+                                <div class="mb-2">
+                                    <span class="text-[10px] uppercase tracking-widest font-bold text-primary">{{ __('Goal') }}</span>
+                                    <p class="text-sm text-on-surface">{{ $post->goal }}</p>
+                                </div>
+                            @endif
+                            @if($post->context)
+                                <div>
+                                    <span class="text-[10px] uppercase tracking-widest font-bold text-primary">{{ __('Context') }}</span>
+                                    <p class="text-xs text-on-surface-variant">{{ $post->context }}</p>
+                                </div>
+                            @endif
+                        </div>
+                    @endif
                 </div>
                 <div class="flex gap-2">
                     <select wire:model.live="selectedVersion" class="bg-surface-container border-none text-on-surface rounded-xl text-sm px-4">
                         @foreach($post->snippets as $s)
-                            <option value="{{ $s->id }}">Version {{ $s->version_number }}</option>
+                            <option value="{{ $s->id }}">{{ __('Version') }} {{ $s->version_number }}</option>
                         @endforeach
                     </select>
                 </div>
@@ -49,12 +66,12 @@
                                     <td class="py-4 pr-6">
                                         <div x-transition class="bg-surface-container-high p-4 rounded-xl border border-primary/30 shadow-lg">
                                             <textarea wire:model="commentContent" 
-                                                      placeholder="Partage ton insight sur cette ligne..."
+                                                      placeholder="{{ __('Share your insight on this line...') }}"
                                                       class="w-full bg-surface-container-lowest border-none rounded-lg text-on-surface text-sm focus:ring-1 focus:ring-primary p-3"
                                                       rows="3"></textarea>
                                             <div class="flex justify-end mt-3 gap-2">
-                                                <button wire:click="$set('activeLine', null)" class="text-xs text-on-surface-variant hover:text-on-surface">Annuler</button>
-                                                <button wire:click="saveComment" class="bg-primary text-on-primary text-xs font-bold px-4 py-2 rounded-lg hover:brightness-110 transition-all shadow-md">Publier la review</button>
+                                                <button wire:click="$set('activeLine', null)" class="text-xs text-on-surface-variant hover:text-on-surface">{{ __('Cancel') }}</button>
+                                                <button wire:click="saveComment" class="bg-primary text-on-primary text-xs font-bold px-4 py-2 rounded-lg hover:brightness-110 transition-all shadow-md">{{ __('Post Review') }}</button>
                                             </div>
                                         </div>
                                     </td>
@@ -85,29 +102,29 @@
         <!-- Sidebar (Reactions & Social) -->
         <div class="space-y-8">
             <div class="bg-surface-container rounded-2xl p-6 border border-outline-variant">
-                <h3 class="font-display font-bold text-lg mb-6 text-primary">Tech Reactions</h3>
+                <h3 class="font-display font-bold text-lg mb-6 text-primary">{{ __('Tech Reactions') }}</h3>
                 <div class="grid grid-cols-2 gap-3">
                     <button wire:click="react('clean')" class="flex flex-col items-center p-4 rounded-xl border {{ $post->reactions->where('user_id', auth()->id())->where('type', 'clean')->count() ? 'bg-primary/20 border-primary' : 'bg-surface-container-high border-transparent' }} hover:border-primary transition-all">
                         <span class="text-2xl mb-1">✨</span>
-                        <span class="text-[10px] font-bold uppercase tracking-wider">Clean Code</span>
+                        <span class="text-[10px] font-bold uppercase tracking-wider">{{ __('Clean Code') }}</span>
                     </button>
                     <button wire:click="react('optimisable')" class="flex flex-col items-center p-4 rounded-xl border {{ $post->reactions->where('user_id', auth()->id())->where('type', 'optimisable')->count() ? 'bg-primary/20 border-primary' : 'bg-surface-container-high border-transparent' }} hover:border-primary transition-all">
                         <span class="text-2xl mb-1">🚀</span>
-                        <span class="text-[10px] font-bold uppercase tracking-wider">Optimisable</span>
+                        <span class="text-[10px] font-bold uppercase tracking-wider">{{ __('Optimisable') }}</span>
                     </button>
                     <button wire:click="react('mindblown')" class="flex flex-col items-center p-4 rounded-xl border {{ $post->reactions->where('user_id', auth()->id())->where('type', 'mindblown')->count() ? 'bg-primary/20 border-primary' : 'bg-surface-container-high border-transparent' }} hover:border-primary transition-all">
                         <span class="text-2xl mb-1">🤯</span>
-                        <span class="text-[10px] font-bold uppercase tracking-wider">Mindblown</span>
+                        <span class="text-[10px] font-bold uppercase tracking-wider">{{ __('Mindblown') }}</span>
                     </button>
                     <button wire:click="react('security')" class="flex flex-col items-center p-4 rounded-xl border {{ $post->reactions->where('user_id', auth()->id())->where('type', 'security')->count() ? 'bg-primary/20 border-primary' : 'bg-surface-container-high border-transparent' }} hover:border-primary transition-all">
                         <span class="text-2xl mb-1">🛡️</span>
-                        <span class="text-[10px] font-bold uppercase tracking-wider">Sécurité</span>
+                        <span class="text-[10px] font-bold uppercase tracking-wider">{{ __('Security') }}</span>
                     </button>
                 </div>
             </div>
 
             <div class="bg-surface-container rounded-2xl p-6 border border-outline-variant">
-                <h3 class="font-display font-bold text-lg mb-4">Vibe Author</h3>
+                <h3 class="font-display font-bold text-lg mb-4">{{ __('Vibe Author') }}</h3>
                 <div class="flex items-center gap-4">
                     <img src="{{ $post->user->avatar }}" class="w-12 h-12 rounded-full border-2 border-primary/30">
                     <div>

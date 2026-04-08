@@ -20,17 +20,27 @@
             <div class="space-y-8 animate-in fade-in slide-in-from-bottom-4 duration-500">
                 <div class="space-y-2">
                     <h2 class="font-display text-3xl font-bold text-on-surface tracking-tight">{{ __('Project Introspection') }}</h2>
-                    <p class="text-on-surface-variant italic">{{ __('What is the creative north star of this code?') }}</p>
+                    <p class="text-on-surface-variant italic">{{ __('Define your Vibe and its creative core.') }}</p>
                 </div>
 
                 <div class="space-y-6">
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <div>
+                            <x-input-label :value="__('Vibe Title')" />
+                            <x-text-input wire:model="title" placeholder="{{ __('e.g., The Recursive Elegant BFS') }}" />
+                        </div>
+                        <div>
+                            <x-input-label :value="__('Catchy Summary')" />
+                            <x-text-input wire:model="description" placeholder="{{ __('Briefly hook the curators...') }}" />
+                        </div>
+                    </div>
                     <div>
                         <x-input-label :value="__('Primary Goal')" />
-                        <x-text-input wire:model="goal" :placeholder="__('e.g., Implementing a recursive BFS for social graphs...')" />
+                        <x-text-input wire:model="goal" placeholder="{{ __('e.g., Implementing a recursive BFS for social graphs...') }}" />
                     </div>
                     <div>
                         <x-input-label :value="__('Atmospheric Context (Technical Debt, Constraints)')" />
-                        <textarea wire:model="context" rows="4" class="bg-surface-high border-none text-on-surface placeholder:text-on-surface-variant/50 focus:ring-2 focus:ring-primary/50 rounded-round-4 transition-all duration-300 w-full resize-none p-4" :placeholder="__('Explain the constraints...')"></textarea>
+                        <textarea wire:model="context" rows="4" class="bg-surface-high border-none text-on-surface placeholder:text-on-surface-variant/50 focus:ring-2 focus:ring-primary/50 rounded-round-4 transition-all duration-300 w-full resize-none p-4" placeholder="{{ __('Explain the constraints...') }}"></textarea>
                     </div>
                 </div>
             </div>
@@ -68,7 +78,7 @@
                             </div>
                             <div>
                                 <x-input-label :value="__('Content')" />
-                                <textarea wire:model="files.{{ $index }}.content" rows="6" class="font-mono bg-surface-lowest border-none text-primary placeholder:text-primary/30 focus:ring-1 focus:ring-primary/50 rounded-round-4 transition-all duration-300 w-full resize-none p-4" :placeholder="__('Paste your code here...')"></textarea>
+                                <textarea wire:model="files.{{ $index }}.content" rows="6" class="font-mono bg-surface-lowest border-none text-primary placeholder:text-primary/30 focus:ring-1 focus:ring-primary/50 rounded-round-4 transition-all duration-300 w-full resize-none p-4" placeholder="{{ __('Paste your code here...') }}"></textarea>
                             </div>
                         </x-ui.card>
                     @endforeach
@@ -96,6 +106,18 @@
                             </div>
                         </label>
                     @endforeach
+                </div>
+
+                <div class="pt-8 border-t border-outline-variant/10">
+                    <x-input-label :value="__('Select Visibility')" />
+                    <div class="flex gap-4 mt-2">
+                        @foreach(['public' => __('Public (Open for Curation)'), 'private' => __('Private (Solo Reflection)')] as $key => $val)
+                            <label class="flex items-center gap-2 cursor-pointer">
+                                <input type="radio" wire:model="visibility" value="{{ $key }}" class="text-primary focus:ring-primary bg-surface-high border-none">
+                                <span class="text-sm text-on-surface-variant">{{ $val }}</span>
+                            </label>
+                        @endforeach
+                    </div>
                 </div>
             </div>
         @endif
