@@ -78,3 +78,20 @@ Accepté
 **Raison** : Permettre une présentation marketing du projet et l'ouverture progressive de la plateforme au-delà de GitHub OAuth pour les phases de test.
 
 
+
+---
+
+## 2026-04-08-06 : Optimisation Performance & Stabilité Livewire 3
+### Statut
+Accepté
+### Choix Technique : Architecture SPA via `wire:navigate`
+**Décision** : Activation globale de `wire:navigate` sur l'ensemble de la navigation.
+**Raison** : Réduit drastiquement le temps de perception du chargement en ne téléchargeant que le contenu utile (AJAX) sans recharger les assets (CSS/JS).
+
+### Choix Technique : Résolution du Conflit d'Instances Alpine.js
+**Décision** : Suppression de l'instanciation manuelle d'Alpine dans `app.js`.
+**Raison** : Livewire 3 injecte et gère sa propre version d'Alpine.js. Une double instanciation provoquait des comportements erratiques sur les composants interactifs (boutons de vote, menus déroulants).
+
+### Choix Technique : Protection de l'Inégrité du DOM (Code Highlighter)
+**Décision** : Injection de caractères invisibles (Zero-Width Space) dans les attributs `wire:` et `x-` au sein des blocs de code affichés.
+**Raison** : Empêche le moteur Livewire de tenter de parser et d'exécuter des attributs contenus dans les snippets de code présentés pour revue, évitant ainsi des erreurs fatales de corruption du DOM.

@@ -57,7 +57,7 @@
                             @endif
                         </div>
 
-                        <x-ui.button variant="primary" class="w-full py-4 uppercase text-[10px] tracking-[0.2em]">
+                        <x-ui.button type="submit" variant="primary" class="w-full py-4 uppercase text-[10px] tracking-[0.2em]">
                             {{ __('Unlock Workspace') }}
                         </x-ui.button>
                     </form>

@@ -16,7 +16,7 @@
         <!-- Animated Background Elements -->
         <x-ui.interactive-grid />
 
-        <div class="relative min-h-screen flex flex-col z-10 transition-opacity duration-1000" x-init="$el.style.opacity = 1" style="opacity: 0">
+        <div class="relative min-h-screen flex flex-col z-10">
             @include('layouts.navigation')
 
             <!-- Page Heading -->
