@@ -143,3 +143,9 @@
     3. **Pérennité i18n** : Assainissement complet des dictionnaires JSON pour éviter les doublons.
 - **Impact** : Éradication des erreurs 500 sur les composants UI, site bilingue 100% cohérent et visibilité SEO accrue (Twitter Cards).
 
+## 2026-04-09-20 : Protocole d'Intégrité de Réalisation
+- **Auteur :** Antigravity
+- **Statut :** ✅ Implémenté
+- **Contexte :** Risque d'omissions sur les longs threads ou lors de prompts contenant de multiples instructions micro-techniques.
+- **Décision :** Instauration de la règle d'intégrité (`integrity.md`) imposant une déconstruction systématique des tâches et une vérification comparative finale avant clôture.
+- **Impact :** Fiabilité accrue de l'agent, meilleure traçabilité des micro-tâches et satisfaction utilisateur garantie par une réalisation exhaustive.
