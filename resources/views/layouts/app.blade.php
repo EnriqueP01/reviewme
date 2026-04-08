@@ -6,6 +6,13 @@
         <meta name="csrf-token" content="{{ csrf_token() }}">
 
         <title>{{ config('app.name', 'ReviewMe') }} — The Digital Curator</title>
+        <meta name="description" content="{{ __('Hand-picked code architecture insights and collaborative curation for elite developers.') }}">
+        
+        <!-- Open Graph / Social -->
+        <meta property="og:type" content="website">
+        <meta property="og:title" content="ReviewMe — The Digital Curator">
+        <meta property="og:description" content="{{ __('Forge better code through collaborative curation.') }}">
+        <meta name="theme-color" content="#bec2ff">
 
         <!-- Scripts & Styles -->
         @vite(['resources/css/app.css', 'resources/js/app.js'])
@@ -48,5 +55,7 @@
                 });
             });
         </script>
+
+        <x-ui.toast />
     </body>
 </html>

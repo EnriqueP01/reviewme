@@ -39,6 +39,17 @@ class Profile extends Component
         ];
     }
 
+    public function getContributionsProperty()
+    {
+        // Récupère le nombre de posts par jour pour les 365 derniers jours
+        return \App\Models\Post::where('user_id', $this->user->id)
+            ->where('created_at', '>=', now()->subDays(365))
+            ->selectRaw('DATE(created_at) as date, count(*) as count')
+            ->groupBy('date')
+            ->pluck('count', 'date')
+            ->toArray();
+    }
+
     public function getRecentActivityProperty()
     {
         return $this->user->posts()
@@ -54,6 +65,7 @@ class Profile extends Component
         return view('livewire.profile', [
             'stats' => $this->stats,
             'posts' => $this->recentActivity,
+            'contributions' => $this->contributions,
         ]);
     }
 }

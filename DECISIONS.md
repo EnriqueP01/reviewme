@@ -15,7 +15,17 @@ Refonte complète de l'UI basée sur le design system "The Monolith & The Lens" 
 ### Conséquences
 - Amélioration significative du contraste et de la lisibilité des données (WCAG AA).
 - Structure de composants Blade plus robuste et réutilisable.
-- Expérience utilisateur plus "vivante" grâce aux micro-interactions Alpine.js.
+- **Impact** : Expérience utilisateur bilingue et immersive, prête pour une audience internationale.
+
+## 2026-04-08-10 : Implémentation du Système HUD et Heatmap d'Activité
+
+- **Contexte** : Besoin de renforcer l'engagement utilisateur et de fournir des retours systémiques clairs.
+- **Décision** :
+    - Création d'un composant de notification "Toast HUD" écoutant des événements Livewire globaux.
+    - Ajout d'une Heatmap de contribution (Sync Density) sur le profil.
+    - Enrichissement du moteur Audio FX pour supporter les notifications système.
+- **Statut** : ✅ Implémenté
+- **Impact** : Gamification du profil et retour utilisateur instantané (audio + visuel) sur les actions critiques.
 
 ---
 

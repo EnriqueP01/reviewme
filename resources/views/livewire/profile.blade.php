@@ -78,6 +78,52 @@
 
         <!-- Main Column: Activity -->
         <div class="lg:col-span-2 space-y-12">
+            <!-- Contribution Heatmap -->
+            <div class="glass-panel p-10 rounded-[2.5rem] border-subtle overflow-hidden">
+                <div class="flex items-center justify-between mb-8">
+                    <h3 class="font-display font-bold text-xl text-on-surface italic">{{ __('Sync Density') }}</h3>
+                    <div class="flex items-center gap-2">
+                        <span class="text-[9px] text-on-surface-variant uppercase tracking-widest opacity-40">{{ __('Less') }}</span>
+                        <div class="flex gap-1">
+                            <div class="w-2.5 h-2.5 rounded-sm bg-surface-highest"></div>
+                            <div class="w-2.5 h-2.5 rounded-sm bg-primary/30"></div>
+                            <div class="w-2.5 h-2.5 rounded-sm bg-primary/60"></div>
+                            <div class="w-2.5 h-2.5 rounded-sm bg-primary"></div>
+                        </div>
+                        <span class="text-[9px] text-on-surface-variant uppercase tracking-widest opacity-40">{{ __('More') }}</span>
+                    </div>
+                </div>
+
+                <div class="flex flex-wrap gap-1.5" x-data="{
+                    days: Array.from({length: 365}, (_, i) => {
+                        const d = new Date();
+                        d.setDate(d.getDate() - (364 - i));
+                        const dateStr = d.toISOString().split('T')[0];
+                        return {
+                            date: dateStr,
+                            count: {{ json_encode($contributions) }}[dateStr] || 0
+                        };
+                    })
+                }">
+                    <template x-for="day in days" :key="day.date">
+                        <div 
+                            :title="day.date + ': ' + day.count + ' artifacts'"
+                            class="w-3 h-3 rounded-sm transition-all duration-500 hover:scale-150 hover:z-20 cursor-crosshair"
+                            :class="{
+                                'bg-surface-highest': day.count === 0,
+                                'bg-primary/30': day.count === 1,
+                                'bg-primary/60': day.count === 2,
+                                'bg-primary': day.count >= 3,
+                                'shadow-[0_0_8px_rgba(190,194,255,0.4)]': day.count >= 3
+                            }"
+                        ></div>
+                    </template>
+                </div>
+                <p class="mt-6 text-[10px] text-on-surface-variant font-mono opacity-40 uppercase tracking-widest">
+                    {{ count($contributions) }} {{ __('active nodes discovered in the last cycle') }}
+                </p>
+            </div>
+
             <h3 class="font-display font-bold text-2xl text-on-surface">{{ __('Dispatch History') }}</h3>
             
             <div class="space-y-6">

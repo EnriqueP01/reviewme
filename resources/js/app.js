@@ -62,8 +62,14 @@ window.fx = {
                     break;
                 case 'hover':
                     freq = 1200;
-                    duration = 0.02;
-                    volume = 0.01;
+                    duration = 0.01;
+                    volume = 0.005;
+                    break;
+                case 'scan':
+                    freq = 200;
+                    osc.frequency.exponentialRampToValueAtTime(1200, this.ctx.currentTime + 0.3);
+                    duration = 0.4;
+                    volume = 0.02;
                     break;
                 case 'error':
                     freq = 200;

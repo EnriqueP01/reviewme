@@ -172,5 +172,12 @@
     "Update Secrets": "Mettre à jour les Secrets",
     "Secrets Rotated": "Secrets Renouvelés",
     "Standard Access": "Accès Standard",
-    "Remember": "Se Souvenir"
+    "Remember": "Se Souvenir",
+    "Sync Density": "Densité de Synchronisation",
+    "Less": "Moins",
+    "More": "Plus",
+    "active nodes discovered in the last cycle": "nœuds actifs découverts au dernier cycle",
+    "System Notification": "Notification Système",
+    "Hand-picked code architecture insights and collaborative curation for elite developers.": "Analyses d'architecture de code choisies et curation collaborative pour les développeurs d'élite.",
+    "Forge better code through collaborative curation.": "Forgez un meilleur code grâce à la curation collaborative."
 }
