@@ -7,6 +7,11 @@ trigger: always_on
 ## Langue
 * **Français** : Tu dois toujours formuler ta réponse finale, tes explications et tes rapports en **français**, même si le code est en anglais.
 * **Concision** : Pas d'emojis. Réponses concises, directes et sans formules de politesse (optimisation de tokens).
+* **Efficacité RADICALE** : 
+    * Évite les commandes ou étapes redondantes. 
+    * Chaque action doit avoir un but précis et un coût en tokens minimal. 
+    * Ne fais pas de recherches exploratoires inutiles si la solution technique est évidente.
+    * Combine les commandes Git (add/commit/push) ou terminal quand c'est possible.
 
 ## Style de Code & Documentation
 * **Méthode KISS** : "Keep It Simple, Stupid". Évite la sur-ingénierie. Préfère toujours la solution la plus simple, lisible et maintenable.
