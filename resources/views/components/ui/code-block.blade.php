@@ -1,94 +1,215 @@
-@props(['language' => 'javascript', 'code' => '', 'title' => '', 'type' => 'elegant'])
+@props([
+    'snippets' => null, // Collection of snippets
+    'language' => 'php', 
+    'code' => '', 
+    'title' => '', 
+    'type' => 'elegant',
+    'goals' => null,
+    'context' => null
+])
 
 @php
-    $typeColors = [
-        'performance' => 'text-secondary bg-secondary/10 border-secondary/30 shadow-[0_0_20px_rgba(78,222,163,0.1)]',
-        'readability' => 'text-tertiary bg-tertiary/10 border-tertiary/30 shadow-[0_0_20px_rgba(255,185,95,0.1)]',
-        'elegant'     => 'text-primary bg-primary/10 border-primary/30 shadow-[0_0_20px_rgba(190,194,255,0.1)]',
-        'security'    => 'text-error bg-error/10 border-error/30 shadow-[0_0_20px_rgba(255,107,107,0.1)]',
-        'clarity'     => 'text-cyan-400 bg-cyan-400/10 border-cyan-400/30 shadow-[0_0_20px_rgba(34,211,238,0.1)]',
-        'clean'       => 'text-emerald-400 bg-emerald-400/10 border-emerald-400/30 shadow-[0_0_20px_rgba(52,211,153,0.1)]',
-        'mindblown'   => 'text-purple-400 bg-purple-400/10 border-purple-400/30 shadow-[0_0_20px_rgba(192,132,252,0.1)]',
-    ];
+    // If a collection of snippets is passed, initialize the data
+    $snippetList = $snippets ? $snippets->map(fn($s, $index) => [
+        'id' => $s->id,
+        'name' => $s->description ?: 'file_' . ($index + 1) . '.' . ($s->language === 'javascript' ? 'js' : $s->language),
+        'code' => $s->code_content,
+        'lang' => $s->language
+    ]) : collect([['id' => 0, 'name' => 'Source.' . $language, 'code' => $code, 'lang' => $language]]);
 
-    $typeClass = $typeColors[$type] ?? $typeColors['elegant'];
+    // Minimalistic Syntax Highlighter Engine
+    $highlight = function($text, $lang) {
+        $text = htmlspecialchars($text);
+        
+        // Strings
+        $text = preg_replace("/(&quot;.*?&quot;|&#039;.*?&#039;)/", '<span class="text-[#e0af68] italic">$1</span>', $text);
+        
+        // Comments
+        $text = preg_replace("/(\/\/.*)/", '<span class="text-[#565f89] italic opacity-70">$1</span>', $text);
+        $text = preg_replace("/(\/\*.*?\*\/)/s", '<span class="text-[#565f89] italic opacity-70">$1</span>', $text);
 
-    
-    $highlighted = $code;
-    
-    // Protection: Mask Livewire attributes to prevent DOM corruption
-    $highlighted = str_replace(['wire:', 'x-'], ['wi&#8203;re:', 'x&#8203;-'], $highlighted);
+        // Keywords
+        $keywords = [
+            'php' => ['public', 'private', 'protected', 'function', 'class', 'const', 'return', 'if', 'else', 'elseif', 'foreach', 'as', 'use', 'namespace', 'new', 'static', 'extends', 'implements', 'try', 'catch', 'finally', 'throw', 'echo', 'print', 'die', 'exit'],
+            'javascript' => ['export', 'import', 'const', 'let', 'var', 'function', 'async', 'await', 'return', 'if', 'else', 'for', 'while', 'switch', 'case', 'break', 'new', 'this', 'extends', 'class', 'from'],
+            'css' => ['@media', '@import', '@extend', '@mixin', '@include', 'important', 'hover', 'focus', 'active'],
+            'default' => ['if', 'else', 'return', 'class', 'new', 'var', 'let', 'const']
+        ];
+        
+        $currentKeywords = $keywords[strtolower($lang)] ?? $keywords['default'];
+        foreach($currentKeywords as $word) {
+            $text = preg_replace("/\b($word)\b/", '<span class="text-[#bb9af7] font-bold">$1</span>', $text);
+        }
 
-    // Reserved Keywords - Tokyo Night Blue
-    $keywords = [
-        'public', 'private', 'protected', 'function', 'class', 'const', 'let', 'var', 
-        'if', 'else', 'return', 'import', 'export', 'final', 'namespace', 'use', 
-        'static', 'throws', 'async', 'await', 'new', 'this', 'extends', 'implements',
-        'try', 'catch', 'finally', 'throw', 'foreach', 'as', 'while', 'do', 'switch', 'case'
-    ];
-    foreach($keywords as $word) {
-        $highlighted = preg_replace("/\b($word)\b/", '<span class="text-[#7aa2f7] font-bold">$1</span>', $highlighted);
-    }
+        // Logic & Control
+        $text = preg_replace("/\b(true|false|null)\b/i", '<span class="text-[#ff9e64] font-black">$1</span>', $text);
+        
+        // Numbers
+        $text = preg_replace("/\b(\d+)\b/", '<span class="text-[#ff9e64]">$1</span>', $text);
+
+        // Variables (PHP)
+        if ($lang === 'php') {
+            $text = preg_replace("/(\\$[a-zA-Z_]\w*)/", '<span class="text-[#f7768e]">$1</span>', $text);
+        }
+
+        // Functions
+        $text = preg_replace("/(\w+)\s*\(/", '<span class="text-[#7dcfff] font-bold">$1</span>(', $text);
+
+        // HTML Tags
+        if (in_array(strtolower($lang), ['html', 'blade', 'xml'])) {
+            $text = preg_replace("/(&lt;\/?[a-z0-9]+.*?&gt;)/i", '<span class="text-[#f7768e]">$1</span>', $text);
+        }
+
+        return $text;
+    };
+
+    // Pre-highlight everything and store in a collection for Alpine
+    $snippetData = $snippetList->map(function($s) use ($highlight) {
+        $hCode = $highlight($s['code'], $s['lang']);
+        return [
+            'id' => $s['id'],
+            'name' => $s['name'],
+            'lang' => $s['lang'],
+            'raw' => $s['code'],
+            'lines' => explode("\n", $hCode)
+        ];
+    });
     
-    // Variables - Salmon/Red
-    $highlighted = preg_replace("/(\\$[a-zA-Z_]\w*)/", '<span class="text-[#f7768e]">$1</span>', $highlighted);
-    
-    // Functions - Green/Cyan
-    $highlighted = preg_replace("/(\w+)\s*\(/", '<span class="text-[#7dcfff] font-bold">$1</span>(', $highlighted);
-    
-    // Strings - Yellow/Orange
-    $highlighted = preg_replace("/(['\"].*?['\"])/", '<span class="text-[#e0af68] italic">$1</span>', $highlighted);
-    
-    // Comments - Muted Purple
-    $highlighted = preg_replace("/(\/\/.*)/", '<span class="text-[#565f89] font-medium italic opacity-80">$1</span>', $highlighted);
-    
-    // Numbers - Orange
-    $highlighted = preg_replace("/\b(\d+)\b/", '<span class="text-[#ff9e64]">$1</span>', $highlighted);
-    
-    $lines = explode("\n", $highlighted);
+    $lenses = explode(',', $type ?? 'elegant');
 @endphp
 
 <div x-data="{ 
+    activeTab: 0,
+    showInfo: false,
+    snippets: {{ $snippetData->toJson() }},
     copied: false,
     copy() {
-        navigator.clipboard.writeText(`{{ $code }}`);
+        navigator.clipboard.writeText(this.snippets[this.activeTab].raw);
         this.copied = true;
-        window.fx.play('success');
+        if (window.fx) window.fx.play('success');
         setTimeout(() => this.copied = false, 2000);
     }
-}" wire:ignore class="relative group/lens">
+}" wire:ignore class="relative group/lens w-full">
+    
+    <!-- Info Overlay (Slide Down & Reveal) -->
+    <div 
+        x-show="showInfo" 
+        x-transition:enter="transition ease-out duration-500"
+        x-transition:enter-start="opacity-0 -translate-y-8 scale-95"
+        x-transition:enter-end="opacity-100 translate-y-0 scale-100"
+        x-transition:leave="transition ease-in duration-300"
+        x-transition:leave-start="opacity-100 translate-y-0 scale-100"
+        x-transition:leave-end="opacity-0 -translate-y-4 scale-95"
+        class="absolute top-20 right-10 left-10 z-30"
+        x-cloak
+        @mouseenter="showInfo = true"
+        @mouseleave="showInfo = false"
+    >
+        <div class="glass-panel p-8 rounded-3xl border border-primary/20 bg-[#0f111a]/95 backdrop-blur-[50px] shadow-[0_0_100px_rgba(0,0,0,0.8)] flex flex-col md:flex-row gap-12 overflow-hidden relative">
+            <!-- Decorative Glow -->
+            <div class="absolute -top-24 -right-24 w-64 h-64 bg-primary/10 blur-[80px] rounded-full pointer-events-none"></div>
+
+            <div class="flex-1 space-y-4 relative z-10">
+                <div class="flex items-center gap-3">
+                    <span class="w-2 h-2 rounded-full bg-primary shadow-[0_0_10px_#bec2ff]"></span>
+                    <h4 class="text-[10px] font-black uppercase tracking-[0.4em] text-primary">{{ __('Exploration_Details') }}</h4>
+                </div>
+                <!-- File Specific Meta -->
+                <div class="bg-white/5 p-4 rounded-xl border border-white/5">
+                    <div class="text-[9px] font-black uppercase tracking-widest text-on-surface-variant/40 mb-2">{{ __('Active_Artifact') }}</div>
+                    <div class="text-xs font-mono font-bold text-primary flex items-center gap-2">
+                        <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M7 21h10a2 2 0 002-2V9.414a1 1 0 00-.293-.707l-5.414-5.414A1 1 0 0012.586 3H7a2 2 0 00-2 2v14a2 2 0 002 2z" stroke-width="2.5"/></svg>
+                        <span x-text="snippets[activeTab].name"></span>
+                    </div>
+                </div>
+                
+                @if($goals)
+                    <div class="space-y-2 mt-4">
+                        <h5 class="text-[9px] font-black uppercase tracking-[0.2em] text-on-surface-variant/40">{{ __('Mission_Goals') }}</h5>
+                        <p class="text-sm text-on-surface-variant font-medium leading-relaxed italic opacity-80 border-l-2 border-primary/10 pl-4">{{ $goals }}</p>
+                    </div>
+                @endif
+            </div>
+
+            @if($context)
+                <div class="flex-1 space-y-4 relative z-10">
+                    <div class="flex items-center gap-3">
+                        <span class="w-2 h-2 rounded-full bg-secondary shadow-[0_0_10px_#4edea3]"></span>
+                        <h4 class="text-[10px] font-black uppercase tracking-[0.4em] text-secondary">{{ __('Global_Context') }}</h4>
+                    </div>
+                    <p class="text-sm text-on-surface-variant font-medium leading-relaxed opacity-80 border-l-2 border-secondary/10 pl-4">{{ $context }}</p>
+                </div>
+            @endif
+        </div>
+    </div>
+
     <!-- The Monolith Container -->
-    <div @class(['glass-panel rounded-3xl overflow-hidden border border-white/5 transition-all duration-500 group-hover/lens:border-primary/20 group-hover/lens:shadow-2xl translate-y-0 group-hover/lens:-translate-y-1'])>
+    <div @class(['glass-panel rounded-3xl overflow-hidden border border-white/5 transition-all duration-700 group-hover/lens:border-primary/30 group-hover/lens:shadow-[0_45px_120px_-20px_rgba(0,0,0,0.9)]'])>
         
         <!-- Lens Header -->
-        <div class="flex items-center justify-between px-8 py-5 bg-white/[0.04] border-b border-white/5">
-            <div class="flex items-center gap-6">
+        <div class="flex items-center justify-between px-6 py-4 bg-white/[0.04] border-b border-white/5 relative z-20">
+            <!-- Inspection Module -->
+            <div class="flex items-center gap-4 shrink-0 group/inspect cursor-pointer hover:bg-white/5 px-3 py-1.5 rounded-2xl transition-all" 
+                 @mouseenter="showInfo = true" @mouseleave="showInfo = false">
                 <div class="flex gap-2">
-                    <div class="w-3.5 h-3.5 rounded-full bg-[#ff5f56] shadow-[0_0_10px_rgba(255,95,86,0.3)]"></div>
-                    <div class="w-3.5 h-3.5 rounded-full bg-[#ffbd2e] shadow-[0_0_10px_rgba(255,189,46,0.2)]"></div>
-                    <div class="w-3.5 h-3.5 rounded-full bg-[#27c93f] shadow-[0_0_10px_rgba(39,201,63,0.3)]"></div>
+                    <div class="w-1.5 h-1.5 rounded-full bg-primary/80 shadow-[0_0_15px_rgba(190,194,255,0.4)] group-hover/inspect:scale-125 transition-transform duration-500"></div>
                 </div>
-                <div class="h-5 w-px bg-white/10 mx-1"></div>
-                <span class="text-[10px] font-black uppercase tracking-[0.3em] text-on-surface-variant flex items-center gap-3">
-                    <span class="w-2 h-2 rounded-full bg-primary animate-pulse"></span>
-                    Artifact: <span class="text-on-surface">{{ $title ?: 'UNNAMED_PATTERN' }}</span>
-                </span>
+                <div class="h-4 w-px bg-white/10 mx-1"></div>
+                <div class="flex flex-col">
+                    <span class="text-[8px] font-black uppercase tracking-[0.4em] text-on-surface-variant/40 leading-none mb-1 group-hover/inspect:text-primary transition-colors flex items-center gap-2">
+                        @if($context)
+                            <span class="inline-block max-w-[0px] group-hover/inspect:max-w-[150px] truncate align-bottom text-primary/70 transition-all duration-700 opacity-0 group-hover/inspect:opacity-100 -translate-x-2 group-hover/inspect:translate-x-0 font-mono italic">{{ $context }}</span>
+                        @endif
+                        {{ __('SOURCE_LOGIC') }}
+                    </span>
+                    <span class="text-[11px] font-mono font-bold text-on-surface tracking-wide flex items-center gap-2">
+                        <span class="w-1 h-1 rounded-full bg-primary animate-pulse shadow-[0_0_10px_rgba(190,194,255,0.8)]"></span>
+                        {{ $title ?: 'UNNAMED_ARTIFACT' }}
+                    </span>
+                </div>
+            </div>
+
+            <!-- Tabs Navigation (File Explorer) -->
+            <div class="flex-grow flex items-center justify-center px-8 overflow-hidden">
+                <div class="flex items-center gap-1 bg-black/40 rounded-xl p-0.5 border border-white/5 max-w-full overflow-x-auto no-scrollbar scroll-smooth">
+                    <template x-for="(snippet, index) in snippets" :key="index">
+                        <button 
+                            @click="activeTab = index; if(window.fx) window.fx.play('click')"
+                            :class="activeTab === index ? 'bg-primary/20 text-primary border-primary/20 shadow-[0_0_20px_rgba(190,194,255,0.15)] scale-105' : 'text-on-surface-variant/40 hover:text-on-surface-variant hover:bg-white/5 border-transparent'"
+                            class="px-5 py-2 rounded-lg text-[10px] font-black font-mono tracking-widest border transition-all duration-500 whitespace-nowrap"
+                            x-text="snippet.name"
+                        ></button>
+                    </template>
+                </div>
             </div>
             
-            <div class="flex items-center gap-8">
-                <span @class(['px-3 py-1 rounded-full text-[9px] font-black uppercase tracking-widest border transition-all duration-300', $typeClass])>
-                    {{ $type }}
-                </span>
+            <div class="flex items-center gap-4 shrink-0">
+                <button 
+                    @mouseenter="showInfo = true" @mouseleave="showInfo = false"
+                    :class="showInfo ? 'text-primary bg-primary/10 border-primary/20 scale-125' : 'text-on-surface-variant hover:text-primary hover:bg-white/5'"
+                    class="p-2.5 rounded-xl transition-all duration-500 border border-transparent"
+                >
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+                </button>
+                <div class="h-4 w-px bg-white/10 mx-1"></div>
+
+                <div class="flex items-center gap-2">
+                    @foreach($lenses as $l)
+                        <span @class(['px-3 py-1 rounded-lg text-[9px] font-black uppercase tracking-[0.2em] border transition-all duration-700 transform hover:scale-110', 'tag-lens-' . trim($l)])>
+                            {{ trim($l) }}
+                        </span>
+                    @endforeach
+                </div>
                 
-                <button @click="copy()" class="relative text-on-surface-variant hover:text-primary transition-all p-2 rounded-xl hover:bg-white/5 group/copy">
+                <button @click="copy()" class="relative text-on-surface-variant hover:text-primary transition-all p-2.5 rounded-xl hover:bg-white/5 group/copy">
                     <div class="flex items-center gap-2">
-                        <span x-show="!copied" class="text-[9px] font-black uppercase tracking-widest opacity-0 group-hover/copy:opacity-100 transition-all -translate-x-2 group-hover/copy:translate-x-0">Capture</span>
-                        <span x-show="copied" x-cloak class="text-[9px] font-black uppercase tracking-widest text-secondary">Secured</span>
+                        <span x-show="!copied" class="text-[8px] font-black uppercase tracking-widest opacity-0 group-hover/copy:opacity-100 transition-all -translate-x-2 group-hover/copy:translate-x-0">Copy</span>
+                        <span x-show="copied" x-cloak class="text-[8px] font-black uppercase tracking-widest text-secondary scale-110">Done</span>
                         
-                        <svg x-show="!copied" class="w-5 h-5 transition-transform group-hover/copy:scale-110" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
+                        <svg x-show="!copied" class="w-4 h-4 transition-transform group-hover/copy:scale-110" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
                             <path stroke-linecap="round" stroke-linejoin="round" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"/>
                         </svg>
-                        <svg x-show="copied" x-cloak class="w-5 h-5 text-secondary animate-bounce" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
+                        <svg x-show="copied" x-cloak class="w-4 h-4 text-secondary animate-bounce" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
                             <path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7" />
                         </svg>
                     </div>
@@ -96,19 +217,34 @@
             </div>
         </div>
 
-        <!-- Code Body -->
-        <div wire:ignore class="relative p-8 font-mono text-[14px] leading-relaxed bg-[#08080c] selection:bg-primary/20 overflow-hidden rounded-b-3xl">
-            <!-- Noise Overlay -->
-            <div class="absolute inset-0 opacity-[0.03] pointer-events-none" style="background-image: url('data:image/svg+xml,%3Csvg viewBox=\'0 0 256 256\' xmlns=\'http://www.w3.org/2000/svg\'%3E%3Cfilter id=\'noiseFilter\'%3E%3CfeTurbulence type=\'fractalNoise\' baseFrequency=\'0.65\' numOctaves=\'3\' stitchTiles=\'stitch\'/%3E%3C/filter%3E%3Crect width=\'100%25\' height=\'100%25\' filter=\'url(%23noiseFilter)\'/%3E%3C/svg%3E');"></div>
+        <!-- Code Body with Magnetic Scroll & Transitions -->
+        <div class="relative bg-[#0d0e14] selection:bg-primary/30 rounded-b-3xl min-h-[100px] max-h-[500px] overflow-y-auto custom-scrollbar scroll-smooth snap-y snap-mandatory" 
+             style="scrollbar-width: thin; scrollbar-color: rgba(190, 194, 255, 0.2) transparent;">
             
-            <div class="overflow-x-auto max-w-full custom-scrollbar">
-                <pre class="relative z-10"><code class="block space-y-1.5 min-w-max">@foreach($lines as $index => $line)
-<div class="flex gap-10 group/line pr-10">
-    <span class="w-8 text-right text-on-surface-variant/20 select-none group-hover/line:text-primary transition-colors font-bold">{{ str_pad($index + 1, 2, '0', STR_PAD_LEFT) }}</span>
-    <span class="flex-1 text-on-surface/90 font-medium">{!! $line !!}</span>
-</div>
-@endforeach</code></pre>
-            </div>
+            <template x-for="(snippet, sIndex) in snippets" :key="sIndex">
+                <div 
+                    x-show="activeTab === sIndex"
+                    x-transition:enter="transition ease-out duration-700"
+                    x-transition:enter-start="opacity-0 translate-x-8"
+                    x-transition:enter-end="opacity-100 translate-x-0"
+                    x-transition:leave="transition ease-in duration-300 absolute inset-0"
+                    x-transition:leave-start="opacity-100 translate-x-0"
+                    x-transition:leave-end="opacity-0 -translate-x-8"
+                    class="p-6"
+                >
+                    <div class="font-mono text-[12px] leading-[2rem] relative z-10 space-y-0.5">
+                        <template x-for="(line, lIndex) in snippet.lines" :key="lIndex">
+                            <div class="flex items-start group/line hover:bg-white/[0.03] -mx-6 px-6 transition-all duration-300 snap-start snap-always scroll-mt-0">
+                                <div class="w-10 shrink-0 text-right pr-4 select-none text-on-surface-variant/20 group-hover/line:text-primary transition-colors font-bold text-[10px] pt-1">
+                                    <span x-text="lIndex + 1"></span>
+                                </div>
+                                <div class="flex-1 whitespace-pre-wrap break-all text-on-surface/90 font-medium tracking-wide group-hover/line:text-white transition-colors" x-html="line || '&nbsp;'">
+                                </div>
+                            </div>
+                        </template>
+                    </div>
+                </div>
+            </template>
         </div>
     </div>
 </div>

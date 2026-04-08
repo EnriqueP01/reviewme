@@ -17,173 +17,125 @@ class MasterTestSeeder extends Seeder
     public function run(): void
     {
         // 1. Create the Main Users
-        $master = User::updateOrCreate(
-            ['email' => 'master@reviewme.com'],
-            [
+        $users = [
+            'master' => User::updateOrCreate(['email' => 'master@reviewme.com'], [
                 'name' => 'Master Curator',
                 'password' => Hash::make('password'),
-                'reputation_score' => 750,
-                'bio' => 'Architecte système spécialisé dans le Neural Link Paradigm.',
-                'avatar' => 'https://ui-avatars.com/api/?name=Master+Curator&background=0D8ABC&color=fff',
-            ]
-        );
-
-        $senior = User::updateOrCreate(
-            ['email' => 'senior@reviewme.com'],
-            [
+                'reputation_score' => 2500,
+                'bio' => 'Lead Architect @ Neural-X. I don\'t write code, I curate logic.',
+                'avatar' => 'https://api.dicebear.com/7.x/avataaars/svg?seed=Master&backgroundColor=0d0e14',
+            ]),
+            'senior' => User::updateOrCreate(['email' => 'senior@reviewme.com'], [
                 'name' => 'Senior Reviewer',
                 'password' => Hash::make('password'),
-                'reputation_score' => 1200,
-                'bio' => 'Ancien ingénieur Core chez PHP. Je vois les bugs avant qu\'ils ne soient écrits.',
-                'avatar' => 'https://ui-avatars.com/api/?name=Senior+Reviewer&background=6b46c1&color=fff',
-            ]
-        );
-
-        $junior = User::updateOrCreate(
-            ['email' => 'junior@reviewme.com'],
-            [
+                'reputation_score' => 1800,
+                'bio' => 'Ex-Core Maintainer. Silence is code, code is risk.',
+                'avatar' => 'https://api.dicebear.com/7.x/avataaars/svg?seed=Senior&backgroundColor=1a1b26',
+            ]),
+            'junior' => User::updateOrCreate(['email' => 'junior@reviewme.com'], [
                 'name' => 'Junior Coder',
                 'password' => Hash::make('password'),
-                'reputation_score' => 45,
-                'bio' => 'Apprend le métier. Aime les frameworks JS à la mode.',
-                'avatar' => 'https://ui-avatars.com/api/?name=Junior+Coder&background=f6e05e&color=000',
-            ]
-        );
+                'reputation_score' => 150,
+                'bio' => 'Exploring the intersection of AI and Frontend.',
+                'avatar' => 'https://api.dicebear.com/7.x/avataaars/svg?seed=Junior&backgroundColor=24283b',
+            ]),
+        ];
 
-        // 2. Create Labs (Groups)
-        $eliteForge = Group::updateOrCreate(
-            ['slug' => 'elite-forge'],
-            [
-                'name' => 'The Elite Forge',
-                'description' => 'Unité de recherche sur l\'optimisation algorithmique avancée.',
-                'owner_id' => $master->id,
-            ]
-        );
+        // 2. Create dynamic users for scale
+        for($i=1; $i<=10; $i++) {
+            $users[] = User::create([
+                'name' => "DevNode_$i",
+                'email' => "dev_$i@network.com",
+                'password' => Hash::make('password'),
+                'reputation_score' => rand(50, 1000),
+                'avatar' => "https://api.dicebear.com/7.x/avataaars/svg?seed=Dev$i",
+            ]);
+        }
 
-        $neuralNet = Group::updateOrCreate(
-            ['slug' => 'neural-network'],
-            [
-                'name' => 'The Neural Network',
-                'description' => 'Collaboration globale sur les interfaces matricielles.',
-                'owner_id' => $senior->id,
-            ]
-        );
+        // 3. Create Posts logic
+        $lenses = ['performance', 'logic', 'security', 'elegant', 'readability', 'clean', 'mindblown'];
+        $langs = ['php', 'javascript', 'css', 'blade', 'html'];
 
-        // Attach Users to Labs
-        DB::table('group_user')->updateOrInsert(['group_id' => $eliteForge->id, 'user_id' => $master->id], ['role' => 'moderateur']);
-        DB::table('group_user')->updateOrInsert(['group_id' => $eliteForge->id, 'user_id' => $senior->id], ['role' => 'membre']);
+        // --- HIGH QUALITY HAND-CRAFTED POSTS (Large, Medium, Small) ---
         
-        DB::table('group_user')->updateOrInsert(['group_id' => $neuralNet->id, 'user_id' => $senior->id], ['role' => 'moderateur']);
-        DB::table('group_user')->updateOrInsert(['group_id' => $neuralNet->id, 'user_id' => $master->id], ['role' => 'membre']);
-        DB::table('group_user')->updateOrInsert(['group_id' => $neuralNet->id, 'user_id' => $junior->id], ['role' => 'membre']);
-
-        // 3. Create Complex Posts for Master
-        // Post 1: Multi-file Public Artifact
-        $post1 = Post::create([
-            'user_id' => $master->id,
-            'title' => 'Neural Link Core V1',
-            'short_description' => 'Implémentation du pont neuronal entre le DOM et l\'Audio API.',
-            'description' => 'Cet artefact contient l\'orchestration complète du système HUD dynamique utilisé dans ReviewMe.',
-            'review_goals' => 'Vérifier la latence audio et l\'efficacité de la grille interactive.',
-            'improvement_goals' => 'Réduire le nombre de reflows CSS.',
+        // Large
+        $p1 = Post::create([
+            'user_id' => $users['master']->id,
+            'title' => 'Quantum State Orchestrator',
+            'short_description' => 'A complex state machine implementation for low-latency neural interfaces.',
+            'description' => 'This artifact replaces legacy centralized managers with a decentralized, event-streamed approach.',
+            'review_goals' => 'Analyze memory leaks and thread-safety.',
+            'improvement_goals' => 'Optimize bitwise operations.',
+            'context' => 'Neural-Core Project.',
             'visibility' => 'public',
             'lens' => 'performance,logic'
         ]);
+        foreach(['Dispatcher.php' => 'php', 'Serializer.js' => 'javascript', 'HUD.css' => 'css'] as $desc => $lang) {
+            Snippet::create(['post_id' => $p1->id, 'description' => $desc, 'language' => $lang, 'code_content' => "// Source code for $desc\n// Logic goes here..."]);
+        }
 
-        Snippet::create([
-            'post_id' => $post1->id,
-            'description' => 'Logique de synchronisation Audio',
-            'code_content' => "class AudioManager {\n  constructor() {\n    this.ctx = new AudioContext();\n    this.osc = this.ctx.createOscillator();\n  }\n  playBeep() {\n    this.osc.start();\n  }\n}",
-            'language' => 'javascript'
+        // Medium
+        $p2 = Post::create([
+            'user_id' => $users['senior']->id,
+            'title' => 'Vault Security Protocol',
+            'short_description' => 'Advanced JWT encryption and validation middleware.',
+            'description' => 'Refactoring EdDSA signatures.',
+            'review_goals' => 'Verify key rotation.',
+            'context' => 'Admin portal.',
+            'visibility' => 'public',
+            'lens' => 'security,logic'
         ]);
+        Snippet::create(['post_id' => $p2->id, 'description' => 'Auth.php', 'language' => 'php', 'code_content' => "// Security implementation..."]);
 
-        $snippetCSS = Snippet::create([
-            'post_id' => $post1->id,
-            'description' => 'Styles HUD Glassmorphism',
-            'code_content' => ".hud-toast {\n  filter: backdrop-blur(10px);\n  background: rgba(255, 255, 255, 0.1);\n  border: 1px solid rgba(255, 255, 255, 0.2);\n}",
-            'language' => 'css'
+        // Small
+        $p3 = Post::create([
+            'user_id' => $users['junior']->id,
+            'title' => 'Smooth Cursor Glow',
+            'short_description' => 'Mini fragment for hover effect.',
+            'description' => 'A CSS-based cursor glow effect using radial gradients and variable injection.',
+            'context' => 'Dashboard UI.',
+            'visibility' => 'public',
+            'lens' => 'elegant'
         ]);
+        Snippet::create(['post_id' => $p3->id, 'description' => 'Glow.js', 'language' => 'javascript', 'code_content' => "// Hover logic..."]);
 
-        // Post 2: Shared in a Lab (Elite Forge)
-        $post2 = Post::create([
-            'user_id' => $master->id,
-            'group_id' => $eliteForge->id,
-            'title' => 'Secret Sorting Algorithm',
-            'short_description' => 'Un algorithme de tri en O(log log n).',
-            'description' => 'Algorithme expérimental pour les structures de données massives.',
-            'visibility' => 'private',
-            'lens' => 'logic'
-        ]);
+        // 4. GENERATE 30+ ADDITIONAL POSTS
+        for($i=1; $i<=30; $i++) {
+            $user = (array_values($users))[rand(0, count($users)-1)];
+            $lensSelection = [ $lenses[rand(0, 6)] ];
+            if (rand(0, 3) > 2) $lensSelection[] = $lenses[rand(0, 6)]; // sometimes 2 lenses
+            
+            $post = Post::create([
+                'user_id' => $user->id,
+                'title' => "Artifact_Ref_" . strtoupper(bin2hex(random_bytes(3))),
+                'short_description' => "Refactoring segment $i for improved " . $lensSelection[0] . ".",
+                'description' => "Deep dive into the structural challenges of node $i.",
+                'review_goals' => "Evaluate the " . $lensSelection[0] . " metrics.",
+                'context' => "Production module segment $i.",
+                'visibility' => 'public',
+                'lens' => implode(',', array_unique($lensSelection))
+            ]);
 
-        Snippet::create([
-            'post_id' => $post2->id,
-            'code_content' => "function secretSort(arr) {\n  // Implementation restricted\n  return arr.sort();\n}",
-            'language' => 'javascript'
-        ]);
+            $numSnippets = rand(1, 4);
+            for($j=1; $j<=$numSnippets; $j++) {
+                $lang = $langs[rand(0, 4)];
+                Snippet::create([
+                    'post_id' => $post->id,
+                    'description' => "file_$j.$lang",
+                    'language' => $lang,
+                    'code_content' => "// Technical implementation $j\nfunction optimizeNode$i() {\n  return 0xFF;\n}"
+                ]);
+            }
 
-        // 4. Create a Post for the Junior that Master will review
-        $postJunior = Post::create([
-            'user_id' => $junior->id,
-            'group_id' => $neuralNet->id,
-            'title' => 'Mon premier essai en PHP',
-            'short_description' => 'Besoin d\'aide pour gérer ma base de données.',
-            'description' => 'J\'essaie de faire un forum mais c\'est très lent.',
-            'visibility' => 'private',
-            'lens' => 'logic'
-        ]);
-
-        $snippetJunior = Snippet::create([
-            'post_id' => $postJunior->id,
-            'code_content' => "foreach(\$users as \$user) {\n    \$posts = DB::query(\"SELECT * FROM posts WHERE user_id = \" . \$user->id);\n    // etc\n}",
-            'language' => 'php'
-        ]);
-
-        // 5. Interactions (Reviews & Reactions)
-        
-        // Senior reviews Master's CSS
-        Review::create([
-            'snippet_id' => $snippetCSS->id,
-            'user_id' => $senior->id,
-            'line_number' => 2,
-            'content' => 'Le backdrop-blur est très coûteux sur mobile, attention à la compatibilité Safari.'
-        ]);
-
-        // Master reviews Junior's PHP (Conversation start)
-        Review::create([
-            'snippet_id' => $snippetJunior->id,
-            'user_id' => $master->id,
-            'line_number' => 2,
-            'content' => 'Attention au N+1 et aux injections SQL ! Utilise l\'ORM Eloquent.'
-        ]);
-
-        // Junior answers to Master (Simulated conversation)
-        Review::create([
-            'snippet_id' => $snippetJunior->id,
-            'user_id' => $junior->id,
-            'line_number' => 2,
-            'content' => 'Merci Master ! Comment puis-je réécrire cela avec Eloquent ?'
-        ]);
-
-        // Reactions
-        Reaction::create([
-            'user_id' => $senior->id,
-            'reactable_id' => $post1->id,
-            'reactable_type' => Post::class,
-            'type' => 'mindblown'
-        ]);
-
-        Reaction::create([
-            'user_id' => $junior->id,
-            'reactable_id' => $post1->id,
-            'reactable_type' => Post::class,
-            'type' => 'clean'
-        ]);
-
-        Reaction::create([
-            'user_id' => $master->id,
-            'reactable_id' => $postJunior->id,
-            'reactable_type' => Post::class,
-            'type' => 'optimisable'
-        ]);
+            // Random reactions
+            if (rand(0, 1)) {
+                Reaction::create([
+                    'user_id' => $users['master']->id,
+                    'reactable_id' => $post->id,
+                    'reactable_type' => Post::class,
+                    'type' => $lenses[rand(0, 6)] === 'security' ? 'optimisable' : 'clean'
+                ]);
+            }
+        }
     }
 }
