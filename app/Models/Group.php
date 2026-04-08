@@ -16,9 +16,21 @@ final class Group extends Model
 
     protected $fillable = [
         'name',
+        'slug',
         'description',
         'owner_id',
     ];
+
+    /**
+     * Boot function to handle automatic slug generation.
+     */
+    protected static function boot()
+    {
+        parent::boot();
+        static::creating(function ($group) {
+            $group->slug = \Illuminate\Support\Str::slug($group->name);
+        });
+    }
 
     public function owner(): BelongsTo
     {

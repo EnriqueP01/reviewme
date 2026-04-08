@@ -28,12 +28,12 @@
                         <div>
                             <x-input-label :value="__('Artifact Title') . ' *'" />
                             <x-text-input wire:model="title" placeholder="{{ __('e.g., Memory Optimizer Engine') }}" />
-                            <x-input-error for="title" />
+                            <x-input-error :messages="$errors->get('title')" />
                         </div>
                         <div>
                             <x-input-label :value="__('Short Summary') . ' *'" />
                             <x-text-input wire:model="short_description" placeholder="{{ __('Briefly hook the curators...') }}" />
-                            <x-input-error for="short_description" />
+                            <x-input-error :messages="$errors->get('short_description')" />
                         </div>
                     </div>
 
@@ -41,12 +41,12 @@
                         <div>
                             <x-input-label :value="__('Target Review Goals') . ' *'" />
                             <textarea wire:model="review_goals" rows="3" class="bg-surface-high border-none text-on-surface placeholder:text-on-surface-variant/50 focus:ring-2 focus:ring-primary/50 rounded-round-4 transition-all duration-300 w-full resize-none p-4" placeholder="{{ __('What logic should be audited?') }}"></textarea>
-                            <x-input-error for="review_goals" />
+                            <x-input-error :messages="$errors->get('review_goals')" />
                         </div>
                         <div>
                             <x-input-label :value="__('Improvement Desires') . ' *'" />
                             <textarea wire:model="improvement_goals" rows="3" class="bg-surface-high border-none text-on-surface placeholder:text-on-surface-variant/50 focus:ring-2 focus:ring-primary/50 rounded-round-4 transition-all duration-300 w-full resize-none p-4" placeholder="{{ __('What do you want to elevate?') }}"></textarea>
-                            <x-input-error for="improvement_goals" />
+                            <x-input-error :messages="$errors->get('improvement_goals')" />
                         </div>
                     </div>
 
@@ -196,7 +196,7 @@
                                         {{ __('No Labs found for this identity.') }}
                                     </div>
                                 @endforelse
-                                <x-input-error for="groupId" />
+                                <x-input-error :messages="$errors->get('groupId')" />
                             </div>
                         </div>
                     @endif

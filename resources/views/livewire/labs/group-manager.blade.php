@@ -15,7 +15,7 @@
                         <div>
                             <x-input-label :value="__('Lab Designation')" />
                             <x-text-input wire:model="name" placeholder="{{ __('e.g., Core Intelligence Unit') }}" />
-                            <x-input-error for="name" />
+                            <x-input-error :messages="$errors->get('name')" />
                         </div>
                         <div>
                             <x-input-label :value="__('Mission Parameters')" />
