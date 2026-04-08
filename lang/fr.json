@@ -37,7 +37,6 @@
     "Select Target Lab Member": "Sélectionner le Groupe",
     "Search for a Lab group...": "Rechercher un groupe...",
     "No Labs found for this identity.": "Aucun groupe trouvé.",
-    "Regress Phase": "Retour",
     "Deploy Curation Artifact": "Publier la Revue",
     "Labs": "Groupes",
     "Neural Labs": "Mes Groupes",
@@ -133,5 +132,15 @@
     "Forge better code through collaborative curation.": "Forgez un meilleur code grâce à la curation collaborative.",
     "Neural Signature (Avatar)": "Signature Neurale (Avatar)",
     "Update your visual representation in the matrix.": "Mettez à jour votre représentation visuelle dans la matrice.",
-    "Search vibes...": "Rechercher des vibes..."
+    "Search vibes...": "Rechercher des vibes...",
+    "Built for the elite.": "Conçu pour l'élite.",
+    "Phase": "Phase",
+    "Next Phase": "Phase Suivante",
+    "Regress Phase": "Phase Précédente",
+    "Move Up": "Monter",
+    "Move Down": "Descendre",
+    "Remove": "Supprimer",
+    "Fragment": "Fragment",
+    "Untitled_Source": "Source_Sans_Titre",
+    "Logic Body": "Contenu du Code"
 }
