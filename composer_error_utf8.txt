@@ -1,0 +1,36 @@
+﻿php : Loading composer repositories with 
+package information
+Au caractère Ligne:1 : 1
++ php composer.phar update > 
+composer_error.txt 2>&1
++ ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+~~~~~~~~~
+    + CategoryInfo          : NotSpecified 
+   : (Loading compose...age information:S  
+  tring) [], RemoteException
+    + FullyQualifiedErrorId : NativeComman 
+   dError
+ 
+Updating dependencies
+Your requirements could not be resolved to 
+an installable set of packages.
+
+  Problem 1
+    - Root composer.json requires 
+spatie/laravel-shiki, it could not be 
+found in any version, there may be a typo 
+in the package name.
+
+Potential causes:
+ - A typo in the package name
+ - The package is not available in a 
+stable-enough version according to your 
+minimum-stability setting
+   see <https://getcomposer.org/doc/04-sche
+ma.md#minimum-stability> for more details.
+ - It's a private package and you forgot 
+to add a custom repository to find it
+
+Read <https://getcomposer.org/doc/articles/
+troubleshooting.md> for further common 
+problems.

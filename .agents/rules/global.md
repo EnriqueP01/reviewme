@@ -5,6 +5,7 @@ trigger: always_on
 
 ## Langue
 * **Français** : Tu dois toujours formuler ta réponse finale, tes explications et tes rapports en **français**, même si le code est en anglais.
+* **Concision** : Pas d'emojis. Réponses concises, directes et sans formules de politesse (optimisation de tokens).
 
 ## Style de Code & Documentation
 * **Méthode KISS** : "Keep It Simple, Stupid". Évite la sur-ingénierie. Préfère toujours la solution la plus simple, lisible et maintenable.

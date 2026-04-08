@@ -27,21 +27,22 @@ class GithubAuthController extends Controller
             $githubUser = Socialite::driver('github')->user();
 
             $user = User::updateOrCreate([
-                'github_id' => $githubUser->id,
+                'github_id' => $githubUser->getId(),
             ], [
                 'name' => $githubUser->getNickname() ?? $githubUser->getName(),
                 'email' => $githubUser->getEmail(),
                 'avatar' => $githubUser->getAvatar(),
                 'bio' => $githubUser->user['bio'] ?? null,
-                // On génère un mot de passe aléatoire car Socialite n'en fournit pas
                 'password' => bcrypt(Str::random(24)),
+                'email_verified_at' => now(), // On considère que GitHub a déjà vérifié l'email
             ]);
 
             Auth::login($user);
 
             return redirect()->intended('/dashboard');
         } catch (\Exception $e) {
-            return redirect('/login')->with('error', 'Erreur lors de la connexion avec GitHub.');
+            \Illuminate\Support\Facades\Log::error('GitHub Auth Error: ' . $e->getMessage());
+            return redirect('/login')->with('error', 'Erreur lors de la connexion avec GitHub : ' . $e->getMessage());
         }
     }
 }
