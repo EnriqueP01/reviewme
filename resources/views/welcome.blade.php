@@ -1,22 +1,26 @@
 <x-guest-layout>
     <!-- Hero Concept -->
-    <div class="relative w-full max-w-7xl mx-auto pt-32 pb-48 px-12 overflow-hidden">
+    <!-- Hero Concept -->
+    <div class="relative w-full max-w-7xl mx-auto pt-8 pb-16 px-12 overflow-hidden">
         <div class="flex flex-col lg:flex-row items-center gap-16">
             <div class="flex-1 text-left relative z-10">
-                <div class="inline-flex items-center gap-3 px-4 py-1.5 rounded-full bg-surface-container-high border border-outline-variant text-[10px] font-black uppercase tracking-widest text-primary mb-12 animate-fade-in-up">
-                    <span class="w-1.5 h-1.5 rounded-full bg-primary animate-pulse"></span>
-                    {{ __('Ask: "What do you think?"') }}
+                <div class="flex items-center gap-12 mb-10 animate-fade-in-up">
+                    <x-ui.logo-artifact size="w-24 h-24" font="text-4xl" />
+                    <div class="inline-flex items-center gap-3 px-4 py-1.5 rounded-full bg-surface-container-high border border-outline-variant text-[10px] font-black uppercase tracking-widest text-primary">
+                        <span class="w-1.5 h-1.5 rounded-full bg-primary animate-pulse"></span>
+                        {{ __('Ask: "What do you think?"') }}
+                    </div>
                 </div>
                 
-                <h1 class="text-7xl lg:text-9xl font-black mb-10 leading-[0.8] tracking-tighter animate-fade-in-up">
+                <h1 class="text-6xl lg:text-8xl font-black mb-8 leading-[0.85] tracking-tighter animate-fade-in-up">
                     {{ __('FORGE') }} <br/>
                     <span class="text-transparent bg-clip-text bg-gradient-to-b from-white to-white/40">{{ __('BETTER') }}</span> <br/>
                     {{ __('CODE.') }}
                 </h1>
                 
-                <p class="text-xl text-on-surface-variant max-w-xl mb-12 animate-fade-in-up font-medium leading-relaxed italic" style="animation-delay: 0.1s">
+                <p class="text-lg text-on-surface-variant max-w-lg mb-8 animate-fade-in-up font-medium leading-relaxed italic" style="animation-delay: 0.1s">
                     {{ __('Not a debugger. Not a stack overflow.') }} <br/>
-                    {{ __('A collaborative space for developers to share perspective and evolve their thinking.') }}
+                    {{ __('A collaborative space for developers to share perspective and evolve.') }}
                 </p>
                 
                 <div class="flex items-center gap-6 animate-fade-in-up" style="animation-delay: 0.2s">
@@ -39,24 +43,24 @@
                         </div>
                         <div class="text-[10px] font-mono text-white/40 uppercase tracking-widest">identity_validation.ts — v1</div>
                     </div>
-                    <div class="p-8 font-mono text-sm leading-relaxed overflow-hidden relative">
+                    <div class="p-8 font-mono text-sm leading-relaxed overflow-hidden relative min-h-[300px]">
                         <div class="absolute inset-0 bg-grid opacity-10"></div>
                         <div class="relative z-10 space-y-1">
                             <p class="text-on-surface-variant"><span class="text-secondary">export</span> <span class="text-primary">const</span> validateIdentity = (token: string) => {</p>
-                            <p class="text-on-surface-variant pl-4"><span class="text-primary-container bg-primary/20 px-1 rounded">/* {{ __('What do you think about this map?') }} */</span></p>
+                            <p class="text-on-surface-variant pl-4"><span class="text-primary-container bg-primary/20 px-1 rounded">/* {{ __('What do you think?') }} */</span></p>
                             <p class="text-on-surface-variant pl-4"><span class="text-primary">return</span> claims.reduce((acc, claim) => {</p>
                             <p class="text-on-surface-variant pl-8">...logic here</p>
                             <p class="text-on-surface-variant pl-4">}, {});</p>
                             <p class="text-on-surface-variant">};</p>
                         </div>
                         
-                        <!-- Inline Review Mock -->
-                        <div class="absolute right-10 top-1/2 -translate-y-1/2 w-64 glass-panel p-4 rounded-xl shadow-2xl border border-primary/30 translate-x-4 group-hover:translate-x-0 transition-transform">
-                            <div class="flex items-center gap-2 mb-2">
-                                <div class="w-5 h-5 rounded-full bg-secondary shadow-[0_0_10px_rgba(16,185,129,0.5)]"></div>
-                                <span class="text-[9px] font-black uppercase text-secondary">{{ __('Expert Opinion') }}</span>
+                        <!-- Inline Review Mock: Fixed Positioning -->
+                        <div class="absolute -right-4 top-1/2 -translate-y-1/2 w-64 glass-panel p-5 rounded-2xl shadow-[0_20px_50px_rgba(0,0,0,0.5)] border border-primary/30 translate-x-8 group-hover:translate-x-0 transition-all duration-500 opacity-0 group-hover:opacity-100">
+                            <div class="flex items-center gap-2 mb-3">
+                                <div class="w-5 h-5 rounded-full bg-secondary shadow-[0_0_15px_rgba(78,222,163,0.5)]"></div>
+                                <span class="text-[9px] font-black uppercase tracking-widest text-secondary">{{ __('Expert Opinion') }}</span>
                             </div>
-                            <p class="text-[11px] text-white leading-tight italic">"{{ __('This reduce feels robust, but have you considered using typed schemas here for better DX?') }}"</p>
+                            <p class="text-[11px] text-white/90 leading-relaxed italic">"{{ __('Robust, but have you considered using typed schemas?') }}"</p>
                         </div>
                     </div>
                 </div>
@@ -65,15 +69,15 @@
     </div>
 
     <!-- The Bento Concept Grid -->
-    <div id="concept" class="max-w-7xl mx-auto px-12 py-32">
-        <div class="grid grid-cols-1 md:grid-cols-12 gap-6 h-[800px]">
+    <div id="concept" class="max-w-7xl mx-auto px-12 py-16">
+        <div class="grid grid-cols-1 md:grid-cols-12 gap-6 h-[700px]">
             
             <!-- Target Audience Card -->
-            <div class="md:col-span-8 glass-panel rounded-3xl p-12 relative overflow-hidden group">
+            <div class="md:col-span-8 glass-panel rounded-3xl p-10 relative overflow-hidden group">
                 <div class="absolute inset-0 bg-grid opacity-5 group-hover:opacity-10 transition-opacity"></div>
                 <div class="absolute bottom-0 right-0 w-96 h-96 bg-primary/20 blur-[100px] rounded-full translate-x-1/2 translate-y-1/2"></div>
                 
-                <h2 class="text-4xl font-bold mb-8 relative z-10">{{ __('For Curators & Creators') }}</h2>
+                <h2 class="text-4xl font-bold mb-6 relative z-10">{{ __('For Curators & Creators') }}</h2>
                 <p class="text-lg text-on-surface-variant max-w-md relative z-10 italic">
                     {{ __('Whether you are a student hungry for perspective or a senior dev sharing wisdom, ReviewMe is your tactical layer.') }}
                 </p>

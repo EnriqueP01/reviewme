@@ -30,35 +30,40 @@
 
         <div class="relative min-h-screen flex flex-col z-10 w-full">
             <!-- Global Identity Bar -->
-            <div class="w-full flex justify-between items-center px-12 py-8 animate-fade-in-up">
-                <a href="/" class="flex items-center gap-3 group">
-                    <div class="w-10 h-10 bg-primary/20 rounded-lg flex items-center justify-center border border-primary/30 group-hover:scale-110 transition-transform">
-                        <span class="text-primary font-display font-bold text-xl">R</span>
-                    </div>
+            <div class="w-full flex justify-between items-center px-12 py-6 animate-fade-in-up">
+                <a href="/" class="flex items-center gap-4 group">
+                    <x-ui.logo-artifact size="w-10 h-10" font="text-xl" />
                     <span class="font-display font-bold text-xl tracking-tighter">ReviewMe</span>
                 </a>
                 
-                <div class="flex items-center gap-8">
-                    <!-- Language Switcher -->
-                    <div class="flex items-center gap-2 px-3 py-1 bg-surface-high/30 rounded-full border border-outline-variant/10 text-[9px] font-black uppercase tracking-widest">
-                        <a href="{{ route('lang', 'fr') }}" class="transition-colors {{ app()->getLocale() == 'fr' ? 'text-primary' : 'text-on-surface-variant hover:text-on-surface' }}">FR</a>
-                        <span class="opacity-20">|</span>
-                        <a href="{{ route('lang', 'en') }}" class="transition-colors {{ app()->getLocale() == 'en' ? 'text-primary' : 'text-on-surface-variant hover:text-on-surface' }}">EN</a>
+                <div class="flex items-center gap-10">
+                    <!-- Language Switcher: High Contrast Precision -->
+                    <div class="relative flex items-center p-1 bg-surface-container-low/50 rounded-xl border border-white/5 backdrop-blur-md"
+                         x-data="{ locale: '{{ app()->getLocale() }}' }">
+                        <div class="absolute inset-y-1 transition-all duration-500 ease-[cubic-bezier(0.34,1.56,0.64,1)] bg-primary rounded-lg shadow-[0_0_20px_rgba(190,194,255,0.2)]"
+                             :class="locale === 'fr' ? 'translate-x-0 w-8' : 'translate-x-[36px] w-8'">
+                        </div>
+                        <div class="flex items-center gap-1">
+                            <a href="{{ route('lang', 'fr') }}" @click="locale = 'fr'" class="relative z-10 w-8 h-7 flex items-center justify-center text-[10px] font-black transition-colors {{ app()->getLocale() == 'fr' ? 'text-surface' : 'text-on-surface-variant hover:text-on-surface' }}">FR</a>
+                            <a href="{{ route('lang', 'en') }}" @click="locale = 'en'" class="relative z-10 w-8 h-7 flex items-center justify-center text-[10px] font-black transition-colors {{ app()->getLocale() == 'en' ? 'text-surface' : 'text-on-surface-variant hover:text-on-surface' }}">EN</a>
+                        </div>
                     </div>
 
                     @auth
                         <a href="{{ url('/dashboard') }}" class="text-xs font-black uppercase tracking-[0.2em] text-on-surface hover:text-primary transition-colors">{{ __('Access') }}</a>
                     @else
-                        <a href="{{ route('login') }}" class="text-xs font-black uppercase tracking-[0.2em] text-on-surface-variant hover:text-white transition-colors">{{ __('SignIn') }}</a>
-                        <x-ui.button variant="primary" size="sm" href="{{ route('register') }}">
-                            {{ __('Join') }}
-                        </x-ui.button>
+                        <div class="flex items-center gap-6">
+                            <a href="{{ route('login') }}" class="text-xs font-black uppercase tracking-[0.2em] text-on-surface-variant hover:text-white transition-colors">{{ __('SignIn') }}</a>
+                            <x-ui.button variant="primary" size="sm" href="{{ route('register') }}">
+                                {{ __('Join') }}
+                            </x-ui.button>
+                        </div>
                     @endauth
                 </div>
             </div>
 
-            <!-- Main Content Area -->
-            <main class="flex-grow flex flex-col items-center justify-center px-6">
+            <!-- Main Content Area: Compact & Scalable -->
+            <main class="flex-grow flex flex-col items-center pt-8 px-6">
                 {{ $slot }}
             </main>
             
