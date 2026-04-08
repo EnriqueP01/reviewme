@@ -7,25 +7,28 @@ Une plateforme de revue de code axée sur la bienveillance, avec une hiérarchie
 
 ---
 
-## 🛠️ Installation & Configuration (Équipe)
+## 📋 Identifiants de Test (Mode Demo)
 
-Pour une installation rapide et sans erreur de PATH, utilise les scripts fournis :
-
-### 1. Première installation
-Ouvre PowerShell en tant qu'administrateur (si possible pour winget) et lance :
-```powershell
-./setup.ps1
-```
-*Ce script installe PHP, configure le PATH, installe les dépendances et prépare la base de données.*
-
-### 2. Lancement quotidien
-Pour travailler, lance simplement :
-```powershell
-./dev.ps1
-```
-*Cela lance simultanément le serveur Laravel et le compilateur Vite.*
+Pour explorer l'application avec des données réalistes (60+ vibes, reviews inline), utilisez ces accès :
+*   **Email** : `lead@reviewme.io`
+*   **Mot de passe** : `password`
 
 ---
+
+## 🛠️ Installation & Configuration (Équipe)
+
+### 1. Pré-requis
+*   **PHP 8.3** installé nativement.
+*   **Node.js & NPM**.
+*   **Composer**.
+*   Optionnel : SQLite (ou PostgreSQL local).
+
+### 2. Démarrage Rapide
+Ouvrez votre terminal et lancez la commande suivante :
+```powershell
+php composer.phar dev
+```
+*Cette commande lance simultanément le serveur de développement Laravel et le compilateur Vite.*
 
 ---
 
