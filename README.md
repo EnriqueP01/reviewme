@@ -1,140 +1,115 @@
 # ReviewMe 🚀
 
-> « La plateforme web de revue de code où la bienveillance est inscrite dans le code. »
+> « La plateforme de curation collaborative où le code devient un artefact vivant. »
 
 ## 🌟 Vision
-Une plateforme de revue de code axée sur la bienveillance, avec une hiérarchie de supervision pour guider les développeurs et un système de **"Boost"** uniquement positif. Projet optimisé pour le Web avec des animations physiques **Antigravity**.
+ReviewMe est un écosystème de revue de code d'élite axé sur la collaboration sécurisée et la bienveillance. Grâce au système de **Labs**, les équipes peuvent isoler leurs audits dans des unités privées, tout en bénéficiant d'une interface HUD futuriste et d'un feedback haptique/audio immersif.
 
 ---
 
-## 📋 Identifiants de Test (Mode Demo)
+## 📋 Identifiants de Test (Lab Mode)
 
-Pour explorer l'application avec des données réalistes (60+ vibes, reviews inline), utilisez ces accès :
-*   **Email** : `lead@reviewme.io`
+Explorez l'application avec des profils pré-configurés pour tester toutes les fonctionnalités :
+
+### 1. Master Curator (Profil Principal)
+*   **Rôle** : Administrateur de Labs, Multi-publieur.
+*   **Email** : `master@reviewme.com`
+*   **Mot de passe** : `password`
+*   **ID** : `515`
+
+### 2. Senior Reviewer (Contrôleur)
+*   **Rôle** : Expert en audit, donneur de feedback complexe.
+*   **Email** : `senior@reviewme.com`
+*   **Mot de passe** : `password`
+
+### 3. Junior Coder (Aide)
+*   **Rôle** : Auteur de code optimisable et questions sur le forum.
+*   **Email** : `junior@reviewme.com`
 *   **Mot de passe** : `password`
 
 ---
 
-## 🛠️ Installation & Configuration (Équipe)
+## 🛠️ Installation & Configuration
 
 ### 1. Pré-requis
-*   **PHP 8.3** installé nativement.
-*   **Node.js & NPM**.
+*   **PHP 8.3** (Extensions : SQLite, BCMath, GD).
+*   **Node.js & NPM / Bun**.
 *   **Composer**.
-*   Optionnel : SQLite (ou PostgreSQL local).
 
 ### 2. Démarrage Rapide
-Ouvrez votre terminal et lancez la commande suivante :
+Ouvrez votre terminal et lancez l'orchestrateur de développement :
 ```powershell
 php composer.phar dev
 ```
-*Cette commande lance simultanément le serveur de développement Laravel et le compilateur Vite.*
+*Note : Cette commande lance simultanément le serveur Laravel artisan et le compilateur Vite.*
 
-### 🐳 Démarrage avec Docker (Recommandé pour MVP)
-Si vous préférez utiliser Docker, les fichiers de conteneurisation sont prêts :
+### 🐳 Infrastructure Docker
+Le projet est prêt pour une isolation complète via Docker Compose :
 ```bash
-# Construire et lancer les conteneurs (App, Web, DB)
 docker-compose up -d --build
-
-# Arrêter les conteneurs
-docker-compose down
 ```
-L'application sera accessible sur : [http://localhost:8080](http://localhost:8080)
-La base de données MySQL est disponible sur le port `3306`.
+Accès local : [http://localhost:8080](http://localhost:8080)
 
 ---
 
-## 🚀 Lancement du projet
-
-Il est nécessaire de lancer deux terminaux en parallèle :
-
-### Terminal 1 : Backend (Laravel)
-```bash
-php artisan serve
-```
-Le site sera accessible sur : [http://localhost:8000](http://localhost:8000)
-
-### Terminal 2 : Frontend (Vite / Tailwind)
-```bash
-npm run dev
-```
+## 🏗️ Architecture (Action-Domain)
+ReviewMe utilise une architecture moderne **Orientée Actions** pour une testabilité maximale et un découplage total du frontend :
+*   **App\Actions** : Logique métier atomique (`CreatePostAction`, `SearchPostsAction`, `UpdateUserReputationAction`).
+*   **App\Livewire** : Composants SPA interactifs (`PublishWorkflow`, `GroupManager`).
+*   **App\Models** : `Post` (Artefact), `Group` (Lab), `Snippet`, `Review`, `Reaction` (Karma).
+*   **App\Policies** : Sécurité granulaire pour l'isolation des Labs.
 
 ---
 
-## 🏗️ Architecture
-Le projet suit une architecture **Clean** avec une couche de **Services** pour la logique métier :
-*   **App\Models** : `Post`, `Review`, `Group`, `Boost`.
-*   **App\Services** : `PostService`, `ReviewService`.
-*   **Frontend** : Laravel Breeze (Blade) + Tailwind CSS.
+## 🧬 Système de Labs & Curation
+1.  **Introspection** : Définition des buts de revue et du contexte technique.
+2.  **Artefacts** : Upload multi-fichiers, détection automatique de langage et annotations.
+3.  **Distribution** : Publication publique ou restreinte à un **Lab** spécifique (Groupe privé).
+4.  **Audit** : Revue ligne à ligne avec focus spécialisés (Clarity, Security, Performance).
 
 ---
 
+## 📋 Commandes de l'Agent Antigravity
+
+La plateforme est maintenue par des protocoles robotiques stricts :
+
+| Commande | Action | Usage |
+| :--- | :--- | :--- |
+| `/sync` | **Synchronisation** | Pull, install, migrations et nettoyage. |
+| `/lint` | **Qualité Code** | Auto-correction Laravel Pint & ESLint. |
+| `/test` | **Validation** | Exécution des tests et réparation auto. |
+| `/audit` | **Sécurité/SEO** | Diagnostic complet perf et sécurité. |
+| `/upgrade`| **Amélioration** | Analyse de dette technique et propositions. |
+| `/commit`| **Push** | Commit conventionnel après vérification qualité. |
 
 ---
 
-## 📋 Commandes Rapides (Copier-Coller)
-
-### 🚀 Lancement Direct (après installation)
+## 🛠️ Maintenance & Diagnostics
 ```powershell
-# Terminal 1 : Backend
-php artisan serve
+# Exécuter les tests de sécurité des Labs
+php artisan test tests/Feature/LabSecurityTest.php
 
-# Terminal 2 : Frontend
-npm run dev
-```
-
-### 🛠️ Maintenance & Reset Base de données
-```powershell
-# Tout réinitialiser (Database + Seeders)
+# Réinitialiser l'écosystème complet (Migrations + Global Seeders)
 php artisan migrate:fresh --seed
+
+# Initialiser uniquement les données de test avancées (Master, Labs, Conversations)
+php artisan db:seed --class=MasterTestSeeder
+
+# Nettoyer les résidus de déploiement
+php artisan optimize:clear
 ```
 
-### 💾 Workflow Git (Développement)
-```powershell
-# Ajouter, Commiter et Pusher
-git add . ; git commit -m "feat: description" ; git push origin main
-```
+---
+
+## 📜 Charte de Développement
+*   **Workflows Atomiques** : Une branche par fonctionnalité. **Interdiction de push sur `main`**.
+*   **Traçabilité** : Chaque décision technique est consignée dans [DECISIONS.md](./DECISIONS.md).
+*   **Langue** : Français obligatoire pour les rapports et documentations.
+*   **KISS** : Simplicité, performance et robustesse.
 
 ---
 
-## 💡 Astuces Développement
-*   **Logs Laravel** : `tail -f storage/logs/laravel.log`
-*   **Effacer le cache** : `php artisan optimize:clear`
-
----
-
----
-
-## 📜 Charte de Développement (Antigravity)
-
-Ce projet utilise des règles d'automatisation et de contrôle qualité via l'agent **Antigravity**. Voici les directives à respecter :
-
-### 🛡️ Principes Fondamentaux
-*   **Langue :** Français obligatoire (explications, rapports, commits).
-*   **Méthode KISS :** Simplicité et lisibilité avant tout.
-*   **Standards :** Respect strict des fichiers de configuration locaux (`.editorconfig`, `.styleci.yml`, `phpstan.neon`, etc.).
-*   **Traçabilité :** Documentation systématique des choix techniques dans [DECISIONS.md](./DECISIONS.md).
-*   **Robustesse & Ops :** 
-    *   Mise à jour systématique de `.env.example` si le `.env` change.
-    *   Toute modification de schéma s'effectue via une **migration Laravel**.
-    *   Gestion d'erreurs proactive et utilisation des Logs Laravel.
-*   **Tests :** Rangement exclusif dans `tests/`.
-
-### 📥 Workflow de Synchronisation (`/pull`)
-1.  **Diff Review :** Analyse de l'impact des changements sur l'architecture globale.
-2.  **Synchro Env :** Vérification automatique et mise à jour des dépendances (`npm install`, `composer install`).
-3.  **Conflits & Validation :** Résolution proactive des conflits et vérification que les tests passent au vert après merge.
-
-### 📤 Workflow de Publication (`/push`)
-1.  **Pre-Push Scan :** Chasse aux bugs, suppression des `console.log` / `var_dump` et vérification de la logique.
-2.  **Doc Architecture :** Vérification et mise à jour du fichier `DECISIONS.md`.
-3.  **Commit & Push :** Signature des commits via la convention `Conventional Commits` et génération des commandes terminal.
-
-### 🚀 Analyse & Optimisation (`/opti`)
-Analyse **100% technique et factuelle** (sans analogies) axée sur la performance algorithmique, la sécurité et la maintenabilité des nouvelles fonctionnalités.
-
----
-
-## 📄 Documentation
-Les concepts détaillés et les User Journeys sont disponibles dans le dossier [us/](./us/).
-
+## 📄 Documentation Supplémentaire
+*   [User Journeys](./us/us03_user_journeys.md)
+*   [Persona Profiling](./us/02_persona.md)
+*   [Architecture ADR](./DECISIONS.md)

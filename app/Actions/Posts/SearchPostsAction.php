@@ -20,8 +20,9 @@ final class SearchPostsAction
     public function execute(string $search = '', string $sort = 'recent'): Builder
     {
         $userId = Auth::id();
-        
-        $query = Post::with(['user', 'snippets'])
+        $group_ids = $userId ? Auth::user()->groups()->pluck('groups.id') : collect();
+
+        $query = Post::with(['user', 'latestSnippet'])
             ->withCount([
                 'reactions as up_count' => fn($q) => $q->where('type', 'mindblown'),
                 'reactions as down_count' => fn($q) => $q->where('type', 'optimisable')
@@ -33,11 +34,11 @@ final class SearchPostsAction
                     $query->whereRaw('1 = 0');
                 }
             }])
-            ->where(function ($query) use ($userId) {
+            ->where(function ($query) use ($userId, $group_ids) {
                 $query->where('visibility', 'public');
                 if ($userId) {
                     $query->orWhere('user_id', $userId)
-                          ->orWhereIn('group_id', Auth::user()->groups()->pluck('groups.id'));
+                          ->orWhereIn('group_id', $group_ids);
                 }
             });
 

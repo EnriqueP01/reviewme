@@ -113,3 +113,29 @@
     - **Branding** : Remplacement du logo textuel par l'actif `logo.png` (branding premium) et ajout d'icônes contextuelles (crayon pour l'édition).
     - **Search UX** : Refonte de la barre de recherche du feed avec effets de focus dégradé et expansion dynamique.
 - **Impact** : Personnalisation accrue des profils et cohérence visuelle haut de gamme.
+
+## 2026-04-09-16 : Optimisation de l'Architecture & Outillage de Qualité
+- **Auteur** : Antigravity
+- **Statut** : ✅ Implémenté
+- **Contexte** : Présence de code mort (PostService) et absence de scripts de maintenance automatisée.
+- **Décision** : 
+    - **Cleanup** : Suppression du service `PostService` au profit d'une architecture 100% orientée Actions.
+    - **Qualité (DX)** : Ajout des scripts `lint` et `format` (ESLint/Prettier/Pint) dans `package.json` et `composer.json`.
+    - **Tests** : Initialisation de la structure `tests/Unit` et ajout des premiers tests unitaires pour les Actions métier.
+- **Impact** : Réduction de la dette technique, uniformisation de la logique métier et automatisation de la qualité du code.
+
+## 2026-04-09-17 : Audit de Performance & Extension de la Couverture de Tests
+- **Auteur** : Antigravity
+- **Statut** : ✅ Implémenté
+- **Contexte** : Nécessité d'optimiser le Feed pour la montée en charge et de sécuriser la logique de réputation.
+- **Décision** : 
+    - **Optimisation SQL** : Ajout d'index stratégiques sur `posts` et refonte du Eager Loading (`latestSnippet`) pour réduire l'empreinte mémoire.
+    - **Sécurisation métier** : Extension des tests unitaires sur les Actions de réaction et de réputation.
+- **Impact** : Feed ultra-réactif (réduction des requêtes SQL) et zéro régression possible sur le système de Karma.
+
+## 2026-04-09-18 : Environnement de Test Haute-Fidélité (MasterSeeder)
+- **Auteur** : Antigravity
+- **Statut** : ✅ Implémenté
+- **Contexte** : Besoin d'un jeu de données réaliste pour tester l'intégralité des flux collaboratifs (Labs, conversations, multi-fichiers).
+- **Décision** : Création du `MasterTestSeeder` incluant des utilisateurs multi-profils, des Labs avec rôles et des threads de revue de code simulés.
+- **Impact** : Validation facilitée de l'expérience utilisateur complète et documentation simplifiée pour les nouveaux développeurs.
