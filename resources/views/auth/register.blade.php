@@ -54,7 +54,7 @@
                     </div>
 
                     <div class="pt-4">
-                        <x-ui.button variant="primary" class="w-full py-4 tracking-widest uppercase text-xs">
+                        <x-ui.button type="submit" variant="primary" class="w-full py-4 tracking-widest uppercase text-xs">
                             {{ __('Request Membership') }}
                         </x-ui.button>
                     </div>

@@ -6,34 +6,52 @@
             <p class="text-on-surface-variant text-base tracking-wide font-medium">{{ __('Synthetic analysis of architectural patterns.') }}</p>
         </div>
         <div class="flex items-center gap-4 bg-surface-container rounded-full p-1 border border-outline-variant/20">
-            <x-ui.button variant="primary" size="sm" class="!px-6" pill static>{{ __('Trending') }}</x-ui.button>
-            <x-ui.button variant="ghost" size="sm" class="!px-6" pill static>{{ __('Recent') }}</x-ui.button>
+            <x-ui.button 
+                variant="{{ $sort === 'trending' ? 'primary' : 'ghost' }}" 
+                size="sm" class="!px-6" pill 
+                wire:click="sortBy('trending')"
+                wire:loading.attr="disabled"
+            >
+                {{ __('Trending') }}
+            </x-ui.button>
+            <x-ui.button 
+                variant="{{ $sort === 'recent' ? 'primary' : 'ghost' }}" 
+                size="sm" class="!px-6" pill 
+                wire:click="sortBy('recent')"
+                wire:loading.attr="disabled"
+            >
+                {{ __('Recent') }}
+            </x-ui.button>
         </div>
     </div>
 
     <!-- Feed Content -->
     <div class="space-y-24">
         @foreach($perspectives as $item)
-            <article class="group relative animate-fade-in-up" x-data="{ hovered: false, voted: 0 }" @mouseenter="hovered = true" @mouseleave="hovered = false">
+            <article wire:key="post-{{ $item['id'] }}" class="group relative animate-fade-in-up" x-data="{ hovered: false }" @mouseenter="hovered = true" @mouseleave="hovered = false">
                 <div class="flex items-start gap-12">
                     <!-- Karma Lens (Vertical Sidebar) -->
-                    <div class="flex flex-col items-center gap-3 sticky top-32">
+                    <div class="flex flex-col items-center gap-3 sticky top-32" x-data="{ localVoted: '{{ $item['my_vote'] }}' }">
                         <button 
-                            @click="voted = voted === 1 ? 0 : 1"
-                            :class="voted === 1 ? 'bg-primary btn-primary-fix border-primary shadow-[0_0_20px_rgba(190,194,255,0.4)]' : 'bg-solid-container-blur text-on-surface-variant hover:text-primary hover:border-primary/30 active:scale-90 shadow-sm'"
+                            wire:click="vote({{ $item['id'] }}, 'up')"
+                            wire:loading.attr="disabled"
+                            @click="localVoted = localVoted === 'up' ? null : 'up'"
+                            :class="localVoted === 'up' ? 'bg-primary btn-primary-fix border-primary shadow-[0_0_20px_rgba(190,194,255,0.4)]' : 'bg-solid-container-blur text-on-surface-variant hover:text-primary hover:border-primary/30 active:scale-90 shadow-sm'"
                             class="w-14 h-14 rounded-2xl border border-primary-subtle flex items-center justify-center transition-all duration-300 group/vote"
                         >
                             <svg class="w-6 h-6 transition-transform group-hover/vote:-translate-y-1" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M5 15l7-7 7 7"/></svg>
                         </button>
                         
                         <div class="py-1 flex flex-col items-center select-none">
-                            <span class="font-display font-black text-2xl text-primary tracking-tighter leading-none" :class="voted !== 0 ? 'scale-110' : ''">{{ number_format($item['points']) }}</span>
+                            <span class="font-display font-black text-2xl text-primary tracking-tighter leading-none" :class="localVoted ? 'scale-110' : ''">{{ number_format($item['points']) }}</span>
                             <span class="text-[9px] font-black uppercase tracking-[0.2em] text-on-surface-variant/40 mt-1">{{ __('Karma') }}</span>
                         </div>
                         
                         <button 
-                            @click="voted = voted === -1 ? 0 : -1"
-                            :class="voted === -1 ? 'bg-error text-white border-error shadow-[0_0_10px_rgba(239,68,68,0.4)]' : 'bg-solid-container-blur text-on-surface-variant hover:text-error hover:border-error/30 active:scale-90 shadow-sm'"
+                            wire:click="vote({{ $item['id'] }}, 'down')"
+                            wire:loading.attr="disabled"
+                            @click="localVoted = localVoted === 'down' ? null : 'down'"
+                            :class="localVoted === 'down' ? 'bg-error text-white border-error shadow-[0_0_10px_rgba(239,68,68,0.4)]' : 'bg-solid-container-blur text-on-surface-variant hover:text-error hover:border-error/30 active:scale-90 shadow-sm'"
                             class="w-14 h-14 rounded-2xl border border-primary-subtle flex items-center justify-center transition-all duration-300 group/vote"
                         >
                             <svg class="w-6 h-6 transition-transform group-hover/vote:translate-y-1" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7"/></svg>
@@ -59,7 +77,7 @@
                                         <span class="text-base font-black text-on-surface tracking-tight">{{ $item['author'] }}</span>
                                         <span class="px-2 py-0.5 rounded bg-primary/5 border border-primary/10 text-[8px] font-black uppercase tracking-widest text-primary/60">{{ __('Expert') }}</span>
                                     </div>
-                                    <span class="text-[10px] uppercase tracking-widest text-on-surface-variant font-bold opacity-60 mt-1">Lead Architect • {{ $item['time_ago'] }}</span>
+                                    <span class="text-[10px] uppercase tracking-widest text-on-surface-variant font-bold opacity-60 mt-1">{{ __('Lead Architect') }} • {{ $item['time_ago'] }}</span>
                                 </div>
                             </div>
                             

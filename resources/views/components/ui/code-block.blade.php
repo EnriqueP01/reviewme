@@ -9,6 +9,10 @@
     
     // Improved highlighting
     $highlighted = $code;
+    
+    // Protection: Mask Livewire attributes to prevent DOM corruption
+    $highlighted = str_replace(['wire:', 'x-'], ['wi&#8203;re:', 'x&#8203;-'], $highlighted);
+
     $keywords = ['public', 'private', 'protected', 'function', 'class', 'const', 'let', 'var', 'if', 'else', 'return', 'import', 'export', 'final', 'namespace', 'use', 'static', 'throws', 'async', 'await', 'new', 'this'];
     foreach($keywords as $word) {
         $highlighted = preg_replace("/\b($word)\b/", '<span class="text-primary font-bold">$1</span>', $highlighted);
@@ -28,7 +32,7 @@
         this.copied = true;
         setTimeout(() => this.copied = false, 2000);
     }
-}" class="relative group/lens">
+}" wire:ignore class="relative group/lens">
     <!-- The Monolith Container -->
     <div @class(['glass-panel rounded-3xl overflow-hidden border border-white/5 transition-all duration-500 group-hover/lens:border-primary/20 group-hover/lens:shadow-2xl translate-y-0 group-hover/lens:-translate-y-1'])>
         
@@ -69,7 +73,7 @@
         </div>
 
         <!-- Code Body -->
-        <div class="relative p-8 font-mono text-[14px] leading-relaxed overflow-x-auto bg-[#08080c] selection:bg-primary/20">
+        <div wire:ignore class="relative p-8 font-mono text-[14px] leading-relaxed overflow-x-auto bg-[#08080c] selection:bg-primary/20">
             <!-- Noise Overlay -->
             <div class="absolute inset-0 opacity-[0.03] pointer-events-none" style="background-image: url('data:image/svg+xml,%3Csvg viewBox=\'0 0 256 256\' xmlns=\'http://www.w3.org/2000/svg\'%3E%3Cfilter id=\'noiseFilter\'%3E%3CfeTurbulence type=\'fractalNoise\' baseFrequency=\'0.65\' numOctaves=\'3\' stitchTiles=\'stitch\'/%3E%3C/filter%3E%3Crect width=\'100%25\' height=\'100%25\' filter=\'url(%23noiseFilter)\'/%3E%3C/svg%3E');"></div>
             
