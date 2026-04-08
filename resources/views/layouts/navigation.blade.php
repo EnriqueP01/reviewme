@@ -75,7 +75,7 @@
                             <button @click="dropOpen = !dropOpen" class="group relative focus:outline-none">
                                 <div class="w-12 h-12 rounded-2xl bg-surface-container-highest border border-white/5 flex items-center justify-center text-primary font-display italic font-black transition-all duration-500 group-hover:border-primary/40 group-hover:shadow-[0_0_25px_rgba(190,194,255,0.1)] group-hover:-translate-y-0.5 relative overflow-hidden">
                                      <div class="absolute inset-0 bg-gradient-to-br from-primary/5 to-transparent"></div>
-                                    {{ strtoupper(substr(Auth::user()->name, 0, 1)) }}
+                                     <img src="{{ Auth::user()->profile_photo_url }}" alt="{{ Auth::user()->name }}" class="w-full h-full object-cover">
                                 </div>
                                 <!-- Status Indicator -->
                                 <div class="absolute -bottom-1 -right-1 w-4 h-4 rounded-full bg-secondary border-4 border-surface group-hover:scale-110 transition-transform"></div>
@@ -88,8 +88,8 @@
                                 <div class="relative p-8 bg-white/[0.03] border-b border-white/5">
                                     <div class="absolute top-4 right-4 text-[8px] font-black uppercase tracking-widest text-primary/40">{{ __('Verified Agent') }}</div>
                                     <div class="flex items-center gap-6">
-                                        <div class="w-16 h-16 rounded-2xl bg-primary text-on-primary flex items-center justify-center text-3xl font-display font-black italic shadow-2xl">
-                                             {{ strtoupper(substr(Auth::user()->name, 0, 1)) }}
+                                        <div class="w-16 h-16 rounded-2xl bg-primary text-on-primary flex items-center justify-center text-3xl font-display font-black italic shadow-2xl overflow-hidden">
+                                             <img src="{{ Auth::user()->profile_photo_url }}" alt="{{ Auth::user()->name }}" class="w-full h-full object-cover">
                                         </div>
                                         <div class="flex flex-col">
                                             <span class="text-sm font-black text-on-surface leading-none">{{ Auth::user()->name }}</span>

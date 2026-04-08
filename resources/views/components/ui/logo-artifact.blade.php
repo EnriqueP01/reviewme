@@ -7,7 +7,7 @@
         <div class="absolute inset-[10%] bg-surface rounded-[20%] flex items-center justify-center border border-white/5 overflow-hidden border-outline/10">
              <!-- Scanner line effect -->
              <div class="absolute inset-0 bg-gradient-to-b from-transparent via-primary/5 to-transparent h-1/2 w-full animate-scan opacity-0 group-hover/logo:opacity-100"></div>
-             <span class="text-primary font-display font-black {{ $font }} tracking-tighter group-hover/logo:scale-125 transition-transform duration-700 select-none">R</span>
+             <img src="{{ asset('images/logo.png') }}" alt="ReviewMe Logo" class="w-full h-full object-contain p-2 group-hover/logo:scale-110 transition-transform duration-700 select-none">
         </div>
         
         <!-- Orbital particles -->

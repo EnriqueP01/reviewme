@@ -3,13 +3,57 @@
         @csrf
     </form>
 
-    <form method="post" action="{{ route('profile.update') }}" class="space-y-10">
+    <form method="post" action="{{ route('profile.update') }}" class="space-y-10" enctype="multipart/form-data">
         @csrf
         @method('patch')
 
+        <!-- Profile Photo -->
+        <div class="flex items-center gap-8 p-6 rounded-3xl bg-surface-container-low border border-outline-variant/10 group/photo-upload">
+            <div class="relative">
+                <div class="w-24 h-24 rounded-2xl bg-solid-container-blur border-2 border-primary/20 flex items-center justify-center overflow-hidden transition-all duration-500 group-hover/photo-upload:border-primary shadow-xl">
+                    <img id="photo-preview" src="{{ $user->profile_photo_url }}" alt="{{ $user->name }}" class="w-full h-full object-cover">
+                </div>
+                <label for="photo" class="absolute -bottom-2 -right-2 w-8 h-8 bg-primary rounded-xl flex items-center justify-center cursor-pointer shadow-lg hover:scale-110 transition-transform border-4 border-surface">
+                    <svg class="w-4 h-4 text-surface" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M12 4v16m8-8H4"/></svg>
+                </label>
+                <input type="file" id="photo" name="photo" class="hidden" accept="image/*" onchange="previewImage(this)">
+            </div>
+            <div class="space-y-1">
+                <h4 class="text-sm font-black text-on-surface uppercase tracking-tighter">{{ __('Neural Signature (Avatar)') }}</h4>
+                <p class="text-[10px] text-on-surface-variant opacity-60 font-medium">{{ __('Update your visual representation in the matrix.') }}</p>
+                <x-input-error :messages="$errors->get('photo')" class="mt-2" />
+            </div>
+        </div>
+
+        <script>
+            function previewImage(input) {
+                if (input.files && input.files[0]) {
+                    var reader = new FileReader();
+                    reader.onload = function(e) {
+                        document.getElementById('photo-preview').src = e.target.result;
+                    }
+                    reader.readAsDataURL(input.files[0]);
+                }
+            }
+        </script>
+
         <div class="space-y-3">
             <x-input-label for="name" :value="__('Agent Identifier')" />
-            <x-text-input id="name" name="name" type="text" class="block w-full" :value="old('name', $user->name)" required autofocus autocomplete="name" />
+            <div class="relative group/name flex items-center">
+                <div class="absolute inset-y-0 left-0 pl-6 flex items-center pointer-events-none z-10">
+                    <span class="text-primary font-mono font-black text-lg group-focus-within/name:scale-110 transition-transform">@</span>
+                </div>
+                <x-text-input 
+                    id="name" 
+                    name="name" 
+                    type="text" 
+                    class="block w-full !pl-12 font-mono !text-primary !bg-primary/[0.02] border-primary/20 focus:border-primary/50 focus:ring-primary/10 tracking-tight" 
+                    :value="old('name', $user->name)" 
+                    required 
+                    autofocus 
+                    autocomplete="name" 
+                />
+            </div>
             <x-input-error :messages="$errors->get('name')" />
         </div>
 

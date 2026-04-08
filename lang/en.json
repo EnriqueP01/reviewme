@@ -120,5 +120,17 @@
     "Update Secrets": "Update Password",
     "Secrets Rotated": "Password Updated",
     "Remember": "Remember",
-    "Standard Access": "Standard Access"
+    "Standard Access": "Standard Access",
+    "Vibe Author": "Vibe Author",
+    "Define your Vibe and its creative core.": "Define your Vibe and its creative core.",
+    "Vibe Title": "Vibe Title",
+    "e.g., The Recursive Elegant BFS": "e.g., The Recursive Elegant BFS",
+    "Catchy Summary": "Catchy Summary",
+    "Briefly hook the curators...": "Briefly hook the curators...",
+    "Select Visibility": "Select Visibility",
+    "Public (Open for Curation)": "Public (Open for Curation)",
+    "Private (Solo Reflection)": "Private (Solo Reflection)",
+    "Neural Signature (Avatar)": "Neural Signature (Avatar)",
+    "Update your visual representation in the matrix.": "Update your visual representation in the matrix.",
+    "Search vibes...": "Search vibes..."
 }

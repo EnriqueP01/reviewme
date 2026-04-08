@@ -6,24 +6,25 @@
             <p class="text-on-surface-variant text-base tracking-wide font-medium">{{ __('Synthetic analysis of architectural patterns.') }}</p>
         </div>
 
-        <div class="flex items-center gap-6">
+        <div class="flex flex-col items-end gap-6">
             <!-- Search bar -->
-            <div class="relative group">
-                <div class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
-                    <svg class="h-5 w-5 text-on-surface-variant/40 group-focus-within:text-primary transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/></svg>
+            <div class="relative group/search">
+                <div class="absolute inset-y-0 left-0 pl-5 flex items-center pointer-events-none z-10">
+                    <svg class="h-4 w-4 text-on-surface-variant/30 group-focus-within/search:text-primary transition-colors duration-500" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="3"><path stroke-linecap="round" stroke-linejoin="round" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/></svg>
                 </div>
                 <input 
                     type="text" 
                     wire:model.live.debounce.300ms="search" 
                     placeholder="{{ __('Search vibes...') }}" 
-                    class="bg-surface-container-low border border-outline-variant/20 rounded-2xl py-2.5 pl-11 pr-6 text-sm text-on-surface placeholder-on-surface-variant/30 focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary/40 transition-all w-64 group-hover:w-80"
+                    class="bg-[#0f111a]/60 backdrop-blur-2xl border border-white/5 rounded-full py-3.5 pl-12 pr-8 text-xs text-on-surface placeholder:text-on-surface-variant/20 focus:outline-none focus:border-white/20 transition-all w-64 group-hover/search:w-80 group-focus-within/search:!w-[32rem] shadow-2xl shadow-black/40 font-medium tracking-wide"
                 >
+                <div class="absolute inset-0 rounded-full bg-primary/5 opacity-0 group-focus-within/search:opacity-100 blur-xl -z-10 transition-opacity duration-700"></div>
             </div>
 
-            <div class="flex items-center gap-4 bg-surface-container rounded-full p-1 border border-outline-variant/20">
+            <div class="flex items-center gap-4 bg-surface-container-low/30 backdrop-blur-md rounded-full p-1 border border-white/5">
                 <x-ui.button 
                     variant="{{ $sort === 'trending' ? 'primary' : 'ghost' }}" 
-                    size="sm" class="!px-6" pill 
+                    size="sm" class="!px-8" pill 
                     wire:click="sortBy('trending')"
                     wire:loading.attr="disabled"
                 >
@@ -31,7 +32,7 @@
                 </x-ui.button>
                 <x-ui.button 
                     variant="{{ $sort === 'recent' ? 'primary' : 'ghost' }}" 
-                    size="sm" class="!px-6" pill 
+                    size="sm" class="!px-8" pill 
                     wire:click="sortBy('recent')"
                     wire:loading.attr="disabled"
                 >

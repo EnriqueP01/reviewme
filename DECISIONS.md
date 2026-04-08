@@ -103,3 +103,13 @@
     2. **Refonte Lexicale** : Migration terminologique (Email -> `Neural Link Artifact`, Password -> `Secret Key`, Vibe/Post -> `Artefact`).
     3. **Wizard de Curation V2** : Support du multi-fichiers drag-and-drop, détection automatique du langage par extension et orchestration de métadonnées granulaires (buts de revue, améliorations).
 - **Impact** : Transformation de ReviewMe en une plateforme de curation collaborative d'élite, sécurisée et contextuelle.
+
+## 2026-04-08-15 : Évolution de l'Identité Utilisateur & Branding
+- **Auteur** : Antigravity
+- **Statut** : ✅ Implémenté
+- **Décision** :
+    - **Photo de Profil** : Implémentation du stockage local des avatars (`profile_photo_path`) avec fallback sur GitHub/UI-Avatars.
+    - **Identité de Curation** : Stylisation du champ identifiant avec police monospacée et préfixe `@` obligatoire pour renforcer l'esthétique dév.
+    - **Branding** : Remplacement du logo textuel par l'actif `logo.png` (branding premium) et ajout d'icônes contextuelles (crayon pour l'édition).
+    - **Search UX** : Refonte de la barre de recherche du feed avec effets de focus dégradé et expansion dynamique.
+- **Impact** : Personnalisation accrue des profils et cohérence visuelle haut de gamme.

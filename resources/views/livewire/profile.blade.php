@@ -12,17 +12,19 @@
             <!-- Avatar Monolith -->
             <div class="relative group">
                 <div class="absolute inset-0 bg-primary/20 blur-3xl rounded-full opacity-0 group-hover:opacity-100 transition-opacity duration-700"></div>
-                <div class="w-48 h-48 rounded-round-4 bg-surface-container flex items-center justify-center text-primary relative z-10 overflow-hidden border border-outline-variant/10">
-                    <span class="font-display font-bold text-6xl italic">{{ substr($user->name, 0, 1) }}</span>
+                <div class="w-48 h-48 rounded-[2.5rem] bg-surface-container flex items-center justify-center text-primary relative z-10 overflow-hidden border border-outline-variant/10 group-hover:border-primary/30 transition-all duration-700 shadow-2xl">
+                    <img src="{{ $user->profile_photo_url }}" alt="{{ $user->name }}" class="w-full h-full object-cover">
                     <!-- Scanline effect -->
-                    <div class="absolute inset-0 bg-gradient-to-b from-transparent via-primary/5 to-transparent pointer-events-none animate-pulse"></div>
+                    <div class="absolute inset-0 bg-gradient-to-b from-transparent via-primary/5 to-transparent pointer-events-none animate-scan opacity-30"></div>
                 </div>
             </div>
 
             <!-- Identity -->
             <div class="flex-grow space-y-6 text-center md:text-left">
                 <div>
-                    <h1 class="font-display text-5xl font-bold tracking-tight text-on-surface">{{ $user->name }}</h1>
+                    <h1 class="font-display text-5xl font-bold tracking-tight text-on-surface flex items-center gap-4 justify-center md:justify-start">
+                        <span class="text-primary opacity-20 font-mono">@</span>{{ $user->name }}
+                    </h1>
                     <p class="text-on-surface-variant text-xl mt-2 font-display italic tracking-wide">{{ __($stats['level']) }}</p>
                 </div>
                 
@@ -44,7 +46,10 @@
             
             <div class="flex flex-col gap-4">
                 <a href="{{ route('profile.edit') }}" wire:navigate>
-                    <x-ui.button variant="primary" size="sm" class="w-full">{{ __('Edit Profile') }}</x-ui.button>
+                    <x-ui.button variant="primary" size="sm" class="w-full">
+                        <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/></svg>
+                        {{ __('Edit Profile') }}
+                    </x-ui.button>
                 </a>
                 <x-ui.button variant="ghost" size="sm" @click="share()">
                     <span x-show="!copied">{{ __('Share Portfolio') }}</span>

@@ -123,5 +123,15 @@
     "Update Secrets": "Mettre à jour le mot de passe",
     "Secrets Rotated": "Mot de passe modifié",
     "Remember": "Se Souvenir",
-    "Standard Access": "Accès Standard"
+    "Standard Access": "Accès Standard",
+    "Sync Density": "Densité de Synchronisation",
+    "Less": "Moins",
+    "More": "Plus",
+    "active nodes discovered in the last cycle": "nœuds actifs découverts au dernier cycle",
+    "System Notification": "Notification Système",
+    "Hand-picked code architecture insights and collaborative curation for elite developers.": "Analyses d'architecture de code choisies et curation collaborative pour les développeurs d'élite.",
+    "Forge better code through collaborative curation.": "Forgez un meilleur code grâce à la curation collaborative.",
+    "Neural Signature (Avatar)": "Signature Neurale (Avatar)",
+    "Update your visual representation in the matrix.": "Mettez à jour votre représentation visuelle dans la matrice.",
+    "Search vibes...": "Rechercher des vibes..."
 }
