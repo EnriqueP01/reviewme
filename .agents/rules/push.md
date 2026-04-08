@@ -34,7 +34,6 @@ Propose le bloc de commande Git suivant :
 6. `git pull origin dev` (Sécurité pré-merge)
 7. `git merge <type>/nom-de-la-tache`
 8. `git push origin dev`
-9. `git branch -d <type>/nom-de-la-tache` (Nettoyage local)
 
 ### Règle d'or :
 * **Nomenclature Atomique** : Utilise toujours des préfixes (`feat/`, `fix/`) pour que les outils de Git puissent trier et ranger les branches secondaires dans des dossiers, les séparant visuellement des branches principales (`main`, `dev`).
