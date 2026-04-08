@@ -22,7 +22,7 @@ final class SearchPostsAction
         $userId = Auth::id();
         $group_ids = $userId ? Auth::user()->groups()->pluck('groups.id') : collect();
 
-        $query = Post::with(['user', 'snippets'])
+        $query = Post::with(['user', 'snippets', 'latestSnippet'])
             ->withCount([
                 'reactions as up_count' => fn($q) => $q->where('type', 'mindblown'),
                 'reactions as down_count' => fn($q) => $q->where('type', 'optimisable')

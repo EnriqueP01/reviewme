@@ -149,10 +149,12 @@
         <!-- Lens Header -->
         <div class="flex items-center justify-between px-6 py-4 bg-white/[0.04] border-b border-white/5 relative z-20">
             <!-- Inspection Module -->
-            <div class="flex items-center gap-4 shrink-0 group/inspect cursor-pointer hover:bg-white/5 px-3 py-1.5 rounded-2xl transition-all" 
+            <div class="flex items-center gap-4 shrink-0 group/inspect cursor-pointer hover:bg-white/5 px-4 py-2 rounded-2xl transition-all" 
                  @mouseenter="showInfo = true" @mouseleave="showInfo = false">
-                <div class="flex gap-2">
-                    <div class="w-1.5 h-1.5 rounded-full bg-primary/80 shadow-[0_0_15px_rgba(190,194,255,0.4)] group-hover/inspect:scale-125 transition-transform duration-500"></div>
+                <div class="flex items-center gap-3">
+                    <div class="w-8 h-8 rounded-xl bg-primary/10 flex items-center justify-center text-primary/60 group-hover/inspect:bg-primary/20 group-hover/inspect:scale-110 transition-all duration-500">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>
+                    </div>
                 </div>
                 <div class="h-4 w-px bg-white/10 mx-1"></div>
                 <div class="flex flex-col">
@@ -217,7 +219,7 @@
         </div>
 
         <!-- Code Body with Magnetic Scroll & Transitions -->
-        <div class="relative bg-[#0d0e14] selection:bg-primary/30 rounded-b-3xl min-h-[100px] max-h-[500px] overflow-y-auto custom-scrollbar scroll-smooth snap-y snap-mandatory" 
+        <div class="relative bg-[#0d0e14] selection:bg-primary/30 rounded-b-3xl min-h-[100px] max-h-[500px] overflow-y-auto overflow-x-hidden custom-scrollbar scroll-smooth snap-y snap-mandatory" 
              style="scrollbar-width: thin; scrollbar-color: rgba(190, 194, 255, 0.2) transparent;">
             
             <template x-for="(snippet, sIndex) in snippets" :key="sIndex">

@@ -49,7 +49,7 @@
                 $myReaction = $post->reactions->first()?->type;
                 $votedState = $myReaction === 'mindblown' ? 'up' : ($myReaction === 'optimisable' ? 'down' : '');
             @endphp
-            <article wire:key="post-{{ $post->id }}" class="group relative animate-fade-in-up" x-data="{ hovered: false }" @mouseenter="hovered = true" @mouseleave="hovered = false">
+            <article wire:key="post-{{ $post->id }}" @class(['group relative', 'opacity-50 blur-sm grayscale' => false]) x-data="{ hovered: false }" @mouseenter="hovered = true" @mouseleave="hovered = false" wire:loading.class="opacity-50 blur-sm grayscale" wire:loading.attr="disabled">
                 <div class="flex items-start gap-12">
                     <!-- Karma Lens (Vertical Sidebar) -->
                     <div class="flex flex-col items-center gap-3 sticky top-32" 
@@ -143,11 +143,8 @@
                         </div>
 
                         <!-- Content Headers (Dynamic Expansion) -->
-                        <div class="relative group/header overflow-hidden cursor-default">
+                        <div class="relative group/header cursor-default">
                              <div class="flex items-start gap-6 transition-all duration-700 ease-[cubic-bezier(0.23,1,0.32,1)] group-hover:translate-y-[-4px]">
-                                <div class="shrink-0 w-12 h-12 rounded-2xl bg-primary/10 border border-primary/10 flex items-center justify-center text-primary group-hover:bg-primary/20 group-hover:border-primary/40 transition-all duration-500 shadow-lg">
-                                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>
-                                </div>
                                 <div class="flex-grow min-h-[48px] flex flex-col justify-center">
                                     <h3 class="text-3xl font-display font-black text-on-surface leading-tight tracking-tighter group-active:scale-[0.98] transition-all duration-500">
                                         {{ $post->title }}

@@ -49,7 +49,7 @@ class Feed extends Component
     public function render(\App\Actions\Posts\SearchPostsAction $searchPosts)
     {
         $posts = $searchPosts->execute($this->search, $this->sort)
-            ->paginate(20);
+            ->paginate(30);
 
         return view('livewire.feed', [
             'posts' => $posts
