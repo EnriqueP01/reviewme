@@ -2,11 +2,19 @@
     x-data="{ 
         mouseX: 0, 
         mouseY: 0,
+        ticking: false,
         updateMouse(e) {
             this.mouseX = e.clientX;
             this.mouseY = e.clientY;
-            document.body.style.setProperty('--mouse-x', this.mouseX + 'px');
-            document.body.style.setProperty('--mouse-y', this.mouseY + 'px');
+
+            if (!this.ticking) {
+                window.requestAnimationFrame(() => {
+                    this.$el.style.setProperty('--mouse-x', this.mouseX + 'px');
+                    this.$el.style.setProperty('--mouse-y', this.mouseY + 'px');
+                    this.ticking = false;
+                });
+                this.ticking = true;
+            }
         }
     }"
     @mousemove.window="updateMouse($event)"

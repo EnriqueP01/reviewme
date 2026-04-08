@@ -77,9 +77,8 @@ class Feed extends Component
         if ($this->sort === 'recent') {
             $query->latest();
         } else {
-            // Sort by score
-            $query->selectRaw('*, (SELECT COUNT(*) FROM reactions WHERE reactable_id = posts.id AND type = "mindblown") - (SELECT COUNT(*) FROM reactions WHERE reactable_id = posts.id AND type = "optimisable") as score')
-                  ->orderBy('score', 'desc');
+            // Sort by score using the withCount results
+            $query->orderByRaw('(up_count - down_count) DESC');
         }
 
         $posts = $query->paginate(10);

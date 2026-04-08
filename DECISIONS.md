@@ -109,3 +109,15 @@ Accepté
 **Décision** : Utilisation d'un flag Alpine.js `isVoting` pour désactiver les interactions durant l'aller-retour serveur.
 **Raison** : Empêche le spam de votes et garantit la cohérence des compteurs de points entre l'état local et la base de données.
 
+---
+ 
+ ## 2026-04-08-08 : Optimisation de la Latence et Fluidité UI
+ ### Statut
+ Accepté
+ ### Choix Technique : Throttling du composant InteractiveGrid
+ **Décision** : Utilisation de `requestAnimationFrame` et isolation des variables CSS sur le composant.
+ **Raison** : Empêche le recalcul global du style (Reflow/Repaint) sur l'ensemble du DOM à chaque mouvement de souris.
+ 
+ ### Choix Technique : Indexation & Refactoring SQL
+ **Décision** : Ajout d'un index composite sur `reactions` et passage au pilote de session `file`.
+ **Raison** : Résout les délais de 1s+ causés par le verrouillage de fichiers SQLite sur Windows et accélère les tris par score dans le Feed.
