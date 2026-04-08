@@ -5,8 +5,6 @@
 - **Statut** : Accepté
 - **Contexte** : L'interface utilisateur initiale manquait de caractère professionnel et de hiérarchie visuelle. Le besoin d'un standard "SaaS Premium" (type Linear/Vercel) a été identifié pour élever la plateforme de revue de code.
 - **Décision** : Refonte complète de l'UI basée sur le design system "The Monolith & The Lens" via la stack TALL (Tailwind, Alpine.js, Laravel, Livewire).
-    - **Background Dynamique** : Grille SVG interactive (effet "Lens").
-    - **Morphologie des Boutons** : État "Square" au survol.
 - **Impact** : Expérience utilisateur bilingue et immersive, prête pour une audience internationale.
 
 ## 2026-04-08-02 : Conteneurisation & Orchestration (US35/US36)
@@ -101,82 +99,69 @@
 - **Décision** :
     1. **Labs (Unités de Collaboration)** : Implémentation du système de groupes (`Labs`) avec rôles Moderateur/Membre et visibilité d'artefacts restreinte.
     2. **Refonte Lexicale** : Migration terminologique (Email -> `Neural Link Artifact`, Password -> `Secret Key`, Vibe/Post -> `Artefact`).
-    3. **Wizard de Curation V2** : Support du multi-fichiers drag-and-drop, détection automatique du langage par extension et orchestration de métadonnées granulaires (buts de revue, améliorations).
+    3. **Wizard de Curation V2** : Support du multi-fichiers drag-and-drop, de la détection automatique du langage par extension et orchestration de métadonnées granulaires (buts de revue, améliorations).
 - **Impact** : Transformation de ReviewMe en une plateforme de curation collaborative d'élite, sécurisée et contextuelle.
 
 ## 2026-04-08-15 : Évolution de l'Identité Utilisateur & Branding
 - **Auteur** : Antigravity
 - **Statut** : ✅ Implémenté
 - **Décision** :
-    - **Photo de Profil** : Implémentation du stockage local des avatars (`profile_photo_path`) avec fallback sur GitHub/UI-Avatars.
-    - **Identité de Curation** : Stylisation du champ identifiant avec police monospacée et préfixe `@` obligatoire pour renforcer l'esthétique dév.
-    - **Branding** : Remplacement du logo textuel par l'actif `logo.png` (branding premium) et ajout d'icônes contextuelles (crayon pour l'édition).
-    - **Search UX** : Refonte de la barre de recherche du feed avec effets de focus dégradé et expansion dynamique.
-- **Impact** : Personnalisation accrue des profils et cohérence visuelle haut de gamme.
+    - **Photo de Profil** : Implémentation du stockage local des avatars (`profile_photo_path`) avec fallback on GitHub/UI-Avatars.
+    - **Identité de Curation** : Stylisation du champ identifiant with monospaced font and mandatory `@` prefix to reinforce dev aesthetics.
+    - **Branding** : Remplacement du logo textuel par l'actif `logo.png` (branding premium) and addition of contextual icons.
+    - **Search UX** : Redesign of the feed search bar with gradient focus effects and dynamic expansion.
+- **Impact** : Personnalisation accrue des profils and high-end visual consistency.
 
 ## 2026-04-09-16 : Optimisation de l'Architecture & Outillage de Qualité
 - **Auteur** : Antigravity
 - **Statut** : ✅ Implémenté
-- **Contexte** : Présence de code mort (PostService) et absence de scripts de maintenance automatisée.
+- **Contexte** : Présence de code mort (PostService) and absence of automated maintenance scripts.
 - **Décision** : 
-    - **Cleanup** : Suppression du service `PostService` au profit d'une architecture 100% orientée Actions.
-    - **Qualité (DX)** : Ajout des scripts `lint` et `format` (ESLint/Prettier/Pint) dans `package.json` et `composer.json`.
-    - **Tests** : Initialisation de la structure `tests/Unit` et ajout des premiers tests unitaires pour les Actions métier.
-- **Impact** : Réduction de la dette technique, uniformisation de la logique métier et automatisation de la qualité du code.
+    - **Cleanup** : Suppression of `PostService` in favor of 100% Action-oriented architecture.
+    - **Qualité (DX)** : Addition of `lint` and `format` scripts (ESLint/Prettier/Pint).
+    - **Tests** : Initialization of `tests/Unit` and addition of first unit tests.
+- **Impact** : Technical debt reduction and uniform business logic.
 
 ## 2026-04-09-17 : Audit de Performance & Extension de la Couverture de Tests
 - **Auteur** : Antigravity
 - **Statut** : ✅ Implémenté
-- **Contexte** : Nécessité d'optimiser le Feed pour la montée en charge et de sécuriser la logique de réputation.
+- **Contexte** : Needs to optimize Feed for load and secure reputation logic.
 - **Décision** : 
-    - **Optimisation SQL** : Ajout d'index stratégiques sur `posts` et refonte du Eager Loading (`latestSnippet`) pour réduire l'empreinte mémoire.
-    - **Sécurisation métier** : Extension des tests unitaires sur les Actions de réaction et de réputation.
-- **Impact** : Feed ultra-réactif (réduction des requêtes SQL) et zéro régression possible sur le système de Karma.
+    - **Optimisation SQL** : Addition of strategic indexes and eager loading refactor.
+    - **Sécurisation métier** : Unit test extension on reaction and reputation Actions.
+- **Impact** : Ultra-responsive Feed and zero regression risk on Karma system.
 
 ## 2026-04-09-19 : Standardisation de la Qualité Continue (Quality Gate)
 - **Auteur** : Antigravity
 - **Statut** : ✅ Implémenté
-<<<<<<< HEAD
-- **Contexte** : Détection de régressions sur l'i18n (chaînes en dur) et de crashs UI (undefined keys) lors de l'audit SEO/Performance.
+- **Contexte** : Detection of i18n regressions and UI crashes in audits.
 - **Décision** : 
-    1. **Quality Gate** : Création de la règle `.agents/rules/quality.md` imposant l'i18n systématique, le code défensif (coalescence null) et les meta-tags SEO.
-    2. **Stabilité UI** : Refonte du composant `ui/card` avec gestion sécurisée des variantes chromatiques.
-    3. **Pérennité i18n** : Assainissement complet des dictionnaires JSON pour éviter les doublons.
-- **Impact** : Éradication des erreurs 500 sur les composants UI, site bilingue 100% cohérent et visibilité SEO accrue (Twitter Cards).
+    1. **Quality Gate** : Creation of `.agents/rules/quality.md`.
+    2. **Stabilité UI** : Refactor of `ui/card` component.
+    3. **Pérennité i18n** : Dictionary cleaning.
+- **Impact** : UI stability and 100% consistent bilingual site.
 
 ## 2026-04-09-20 : Protocole d'Intégrité de Réalisation
-- **Auteur :** Antigravity
-- **Statut :** ✅ Implémenté
-- **Contexte :** Risque d'omissions sur les longs threads ou lors de prompts contenant de multiples instructions micro-techniques.
-- **Décision :** Instauration de la règle d'intégrité (`integrity.md`) imposant une déconstruction systématique des tâches et une vérification comparative finale avant clôture.
-- **Impact :** Fiabilité accrue de l'agent, meilleure traçabilité des micro-tâches et satisfaction utilisateur garantie par une réalisation exhaustive.
-
-## 2026-04-09-21 : MasterTestSeeder & Flux Collaboratifs
 - **Auteur** : Antigravity
 - **Statut** : ✅ Implémenté
-- **Contexte** : Besoin d'un jeu de données réaliste pour tester l'intégralité des flux collaboratifs (Labs, conversations, multi-fichiers).
-- **Décision** : Création du `MasterTestSeeder` incluant des utilisateurs multi-profils, des Labs avec rôles et des threads de revue de code simulés.
-- **Impact** : Validation facilitée de l'expérience utilisateur complète et documentation simplifiée pour les nouveaux développeurs.
+- **Contexte** : Risk of task omission in complex prompts.
+- **Décision** : Integrity rule (`integrity.md`) forcing systematic task breakdown.
+- **Impact** : Agent reliability and exhaustive task completion.
 
-## 2026-04-09-22 : Refonte Multi-Fichiers (HUD) & Télémétrie Système
+## 2026-04-09-22 : Optimisation du Workflow de Curation (Artifacts V2)
 - **Auteur** : Antigravity
 - **Statut** : ✅ Implémenté
-- **Décision** :
-    1. **Explorateur de Code Premium** : Support natif du multi-fichiers avec navigation par onglets, snapping magnétique de ligne et animations de transition (Slide/Fade).
-    2. **Gestion des Couleurs (Centralisation)** : Délocalisation des styles de types de review (Performance, Logic) vers des classes utilitaires CSS globales (`.tag-lens-*`).
-    3. **Télémétrie & Footer** : Implémentation d'un footer dynamique incluant l'uptime système et le statut des nœuds actifs.
-    4. **Seeder Haute-Densité** : Expansion du seeder à 30+ artifacts avec structures de données réelles pour valider la scalabilité du Feed.
-- **Impact** : Expérience de lecture de code comparable aux meilleurs éditeurs (IDE-like) et feedback systémique accru.
+- **Décision** : 
+    1. **Stabilité du Drag & Drop** : Utilisation de `wire:key` et dissociation des événements de réorganisation vs import.
+    2. **Liberté Polyglotte** : Passage d'un affichage statique du langage à un sélecteur manuel (`select`).
+    3. **Expansion de Détection** : Support de 24+ langages (Rust, Go, Swift, Dart, etc.).
+- **Impact** : Expérience utilisateur fluide et réduction des erreurs de saisie.
 
 ## 2026-04-09-23 : Harmonisation Sémantique & Standardisation Professionnelle
 - **Auteur** : Antigravity
 - **Statut** : ✅ Implémenté
-- **Contexte** : Utilisation de terminologies génériques ("Node_Origin", "Inspect pattern") jugées peu professionnelles. Défaut d'ergonomie sur les hitboxes de certains boutons HUD.
+- **Contexte** : Utilisation de terminologies génériques peu professionnelles et défaut d'ergonomie sur les hitboxes HUD.
 - **Décision** :
-    1. **Refonte Lexicale Globale** : Migration vers un lexique "Enterprise-grade" :
-        - `NODE_ORIGIN` -> `SOURCE_ORIGIN`
-        - `Inspect Pattern` -> `Inspect Post`
-        - `Exploration_Details` -> `Artifact_Analysis`
-        - `Logic Body` -> `Logic_Implementation`
-    2. **Optimisation UX (Hitbox)** : Correction du bouton d'inspection dans le Feed. Neutralisation des `pointer-events` sur les icônes internes et passage en mode `static` pour garantir une zone de clic 100% fiable sans interférence du magnétisme Alpine.js.
-- **Impact** : Renforcement du positionnement premium de la plateforme et fluidité d'interaction accrue sur le flux principal.
+    1. **Refonte Lexicale Globale** : Migration vers un lexique "Enterprise-grade" (SOURCE_ORIGIN, Inspect Post, Artifact_Analysis).
+    2. **Optimisation UX (Hitbox)** : Correction du bouton d'inspection dans le Feed via neutralisation des pointer-events sur les icônes.
+- **Impact** : Renforcement du positionnement premium et fluidité d'interaction.

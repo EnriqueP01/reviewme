@@ -33,7 +33,34 @@ class PublishWorkflow extends Component
         'sql' => 'sql',
         'md' => 'markdown',
         'json' => 'json',
+        'yaml' => 'yaml',
+        'yml' => 'yaml',
+        'xml' => 'xml',
+        'c' => 'c',
+        'cpp' => 'cpp',
+        'h' => 'cpp',
+        'hpp' => 'cpp',
+        'java' => 'java',
+        'go' => 'go',
+        'rs' => 'rust',
+        'rb' => 'ruby',
+        'cs' => 'csharp',
+        'swift' => 'swift',
+        'kt' => 'kotlin',
+        'dart' => 'dart',
+        'sh' => 'bash',
+        'vue' => 'vue',
+        'blade' => 'blade',
     ];
+
+    public function getSupportedLanguages(): array
+    {
+        return [
+            'php', 'javascript', 'typescript', 'python', 'css', 'html', 'sql', 'markdown', 
+            'json', 'yaml', 'xml', 'c', 'cpp', 'java', 'go', 'rust', 'ruby', 'csharp', 
+            'swift', 'kotlin', 'dart', 'bash', 'vue', 'blade'
+        ];
+    }
     
     // Step 3: Global Focus & Distribution
     public array $selectedLens = ['clarity'];

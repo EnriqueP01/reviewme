@@ -86,12 +86,13 @@
                 >
                     @foreach($files as $index => $file)
                         <div 
+                            wire:key="file-fragment-{{ $index }}"
                             draggable="true"
                             x-data="{ collapsed: {{ $index > 0 ? 'true' : 'false' }} }"
                             @dragstart="draggingIndex = {{ $index }}; $el.style.opacity = '0.4'"
                             @dragend="draggingIndex = null; $el.style.opacity = '1'"
                             @dragover.prevent
-                            @drop.prevent="handleDrop(draggingIndex, {{ $index }})"
+                            @drop.prevent="draggingIndex !== null ? handleDrop(draggingIndex, {{ $index }}) : null"
                             class="transition-all duration-300"
                             :class="{ 'scale-[0.98] blur-[1px] opacity-50': draggingIndex !== null && draggingIndex !== {{ $index }} }"
                         >
@@ -127,9 +128,14 @@
                                         </div>
                                         <div>
                                             <x-input-label :value="__('Detected Engine')" />
-                                            <div class="flex items-center h-[46px] px-4 bg-surface-high rounded-round-4 text-on-surface-variant font-mono text-sm uppercase tracking-widest border border-outline-variant/10">
-                                                {{ $file['language'] }}
-                                            </div>
+                                            <select 
+                                                wire:model.live="files.{{ $index }}.language"
+                                                class="w-full h-[46px] px-4 bg-surface-high rounded-round-4 text-on-surface-variant font-mono text-xs uppercase tracking-widest border border-outline-variant/10 focus:ring-1 focus:ring-primary/50 appearance-none cursor-pointer hover:bg-surface-highest transition-colors"
+                                            >
+                                                @foreach($this->getSupportedLanguages() as $lang)
+                                                    <option value="{{ $lang }}">{{ $lang }}</option>
+                                                @endforeach
+                                            </select>
                                         </div>
                                     </div>
 
