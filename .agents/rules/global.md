@@ -19,7 +19,8 @@ trigger: always_on
 * **Commentaires** : Ajoute des commentaires courts et concis au-dessus de chaque fonction et bloc logique important pour expliquer ce qu'il fait.
 
 ## Architecture & Traçabilité
-* **Workflow** : Respecte strictement le processus de branchement et de synchronisation défini dans `.agents/rules/workflow.md`.
+* **Workflow (STRICT)** : Interdiction ABSOLUE de push directement sur `main`. Respecte le cycle : `git checkout -b branch-name` -> `commit` -> `merge main` -> `push`.
+* **Action Atomique** : Chaque tâche ou prompt doit avoir sa propre branche dédiée.
 * **Journal de Décisions** : Pour chaque changement, mets à jour `DECISIONS.md` avec le format strict incluant l'**Auteur** et le contexte technique.
 * **Intégrité Frontend (Strict No-Spill Policy)** : 
     * Ne modifie JAMAIS un élément visuel (Logo, animations CSS, palettes de couleurs, espacements) si ce n'est pas l'objet explicite du prompt.
