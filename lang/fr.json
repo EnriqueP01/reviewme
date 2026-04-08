@@ -141,6 +141,14 @@
     "Move Down": "Descendre",
     "Remove": "Supprimer",
     "Fragment": "Fragment",
-    "Untitled_Source": "Source_Sans_Titre",
-    "Logic Body": "Contenu du Code"
+    "Untitled_Module": "Module Sans Titre",
+    "Logic_Implementation": "Implémentation Logique",
+    "Inspect_Post": "Inspecter le Post",
+    "Artifact_Analysis": "Analyse de l'Artéfact",
+    "Selected_Module": "Module Sélectionné",
+    "SOURCE_LOGIC": "Logique Coeur",
+    "SOURCE_ORIGIN": "Origine Source",
+    "REGISTRY_ENTRIES": "Entrées Registre",
+    "Review_Objectives": "Objectifs de Revue",
+    "Application_Context": "Contexte Application"
 }

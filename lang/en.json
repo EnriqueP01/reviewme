@@ -140,6 +140,14 @@
     "Move Down": "Move Down",
     "Remove": "Remove",
     "Fragment": "Fragment",
-    "Untitled_Source": "Untitled_Source",
-    "Logic Body": "Logic Body"
+    "Untitled_Module": "Untitled Module",
+    "Logic_Implementation": "Logic Implementation",
+    "Inspect_Post": "Inspect Post",
+    "Artifact_Analysis": "Artifact Analysis",
+    "Selected_Module": "Selected Module",
+    "SOURCE_LOGIC": "Core Logic",
+    "SOURCE_ORIGIN": "Source Origin",
+    "REGISTRY_ENTRIES": "Registry Entries",
+    "Review_Objectives": "Review Objectives",
+    "Application_Context": "Application Context"
 }
