@@ -109,9 +109,13 @@
                         dragOverGap: null,
                         autoScrollInterval: null,
                         handleDrop(fromIndex, toIndex) {
-                            if (fromIndex === null) return;
+                            if (fromIndex === null || fromIndex === toIndex) {
+                                this.draggingIndex = null;
+                                this.dragOverGap = null;
+                                return;
+                            }
                             // toIndex est ici la position cible
-                            const order = Array.from({length: document.querySelectorAll('[wire\\:id]').length ? {{ count($files) }} : 0}, (_, i) => i);
+                            const order = Array.from({length: {{ count($files) }}}, (_, i) => i);
                             const [movedItem] = order.splice(fromIndex, 1);
                             
                             // Si on déplace vers le bas, l'indice cible doit être ajusté car le retrait a décalé les suivants
@@ -155,7 +159,8 @@
                             </div>
                         </div>
                         <div 
-                            wire:key="file-fragment-{{ $index }}"
+                            wire:key="file-fragment-{{ $file['id'] }}"
+                            id="file-fragment-{{ $file['id'] }}"
                             draggable="true"
                             x-data="{ collapsed: {{ $index > 0 ? 'true' : 'false' }} }"
                             @dragstart="draggingIndex = {{ $index }}; $el.style.opacity = '0.4'"
