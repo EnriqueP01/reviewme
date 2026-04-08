@@ -33,7 +33,7 @@ Propose le bloc de commande Git suivant :
 5. `git checkout dev`
 6. `git pull origin dev` (Sécurité pré-merge)
 7. `git merge --no-ff <type>/nom-de-la-tache` -m "merge: fusion de la branche <type>/nom-de-la-tache"
-8. `git push origin dev`
+8. `git push -u origin dev`
 
 ### Règle d'or :
 * **Nomenclature Atomique** : Utilise toujours des préfixes (`feat/`, `fix/`) pour que les outils de Git puissent trier et ranger les branches secondaires dans des dossiers, les séparant visuellement des branches principales (`main`, `dev`).
