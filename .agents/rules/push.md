@@ -29,7 +29,7 @@ Propose le bloc de commande Git suivant :
 1. `git checkout -b <type>/nom-de-la-tache` (Nomenclature par préfixe pour le tri).
 2. `git add .`
 3. `git commit -m "<type>(<scope>): description"`
-4. `git push origin <type>/nom-de-la-tache`
+4. `git push -u origin <type>/nom-de-la-tache`
 5. `git checkout dev`
 6. `git pull origin dev` (Sécurité pré-merge)
 7. `git merge --no-ff <type>/nom-de-la-tache` -m "merge: fusion de la branche <type>/nom-de-la-tache"
