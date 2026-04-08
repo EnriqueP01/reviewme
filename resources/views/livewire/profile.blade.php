@@ -23,7 +23,7 @@
             <div class="flex-grow space-y-6 text-center md:text-left">
                 <div>
                     <h1 class="font-display text-5xl font-bold tracking-tight text-on-surface">{{ $user->name }}</h1>
-                    <p class="text-on-surface-variant text-xl mt-2 font-display italic tracking-wide">{{ $stats['level'] }}</p>
+                    <p class="text-on-surface-variant text-xl mt-2 font-display italic tracking-wide">{{ __($stats['level']) }}</p>
                 </div>
                 
                 <div class="flex flex-wrap justify-center md:justify-start gap-4">
@@ -94,7 +94,7 @@
                                 </div>
                                 <div class="flex items-center gap-4">
                                      <div class="text-on-surface-variant font-mono text-sm group-hover:text-primary transition-colors">
-                                        {{ number_format($post->reactions_count) }} <span class="text-[10px] uppercase tracking-tighter opacity-40 ml-1">Karma</span>
+                                        {{ number_format($post->reactions_count) }} <span class="text-[10px] uppercase tracking-tighter opacity-40 ml-1">{{ __('Karma') }}</span>
                                      </div>
                                      <svg class="w-5 h-5 text-on-surface-variant/20 group-hover:text-primary group-hover:translate-x-1 transition-all" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
                                 </div>

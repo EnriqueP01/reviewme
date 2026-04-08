@@ -10,7 +10,7 @@
                         <span class="font-display font-black text-2xl tracking-tight text-on-surface group-hover:text-primary transition-colors duration-300">ReviewMe</span>
                         <div class="flex items-center gap-2">
                             <span class="w-1.5 h-1.5 rounded-full bg-secondary animate-pulse"></span>
-                            <span class="text-[9px] font-black uppercase tracking-[0.5em] text-on-surface-variant opacity-40">System Active</span>
+                            <span class="text-[9px] font-black uppercase tracking-[0.5em] text-on-surface-variant opacity-40">{{ __('System Active') }}</span>
                         </div>
                     </div>
                 </a>
@@ -55,7 +55,7 @@
                 <a href="{{ route('publish') }}" wire:navigate @mouseenter="window.fx.play('hover')">
                     <x-ui.button variant="primary" size="sm">
                         <svg class="w-4 h-4 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M12 4v16m8-8H4"/></svg>
-                        Post Review
+                        {{ __('Post Review') }}
                     </x-ui.button>
                 </a>
 
@@ -78,7 +78,7 @@
                             <div class="mt-4 glass-panel overflow-hidden rounded-[2rem] border border-white/10 shadow-[0_30px_80px_-20px_rgba(0,0,0,0.8)] animate-fade-in-up">
                                 <!-- Profile Capsule -->
                                 <div class="relative p-8 bg-white/[0.03] border-b border-white/5">
-                                    <div class="absolute top-4 right-4 text-[8px] font-black uppercase tracking-widest text-primary/40">Verified Agent</div>
+                                    <div class="absolute top-4 right-4 text-[8px] font-black uppercase tracking-widest text-primary/40">{{ __('Verified Agent') }}</div>
                                     <div class="flex items-center gap-6">
                                         <div class="w-16 h-16 rounded-2xl bg-primary text-on-primary flex items-center justify-center text-3xl font-display font-black italic shadow-2xl">
                                              {{ strtoupper(substr(Auth::user()->name, 0, 1)) }}
@@ -102,13 +102,13 @@
                                         <div class="w-10 h-10 rounded-xl bg-surface-container flex items-center justify-center text-on-surface-variant group-hover/item:text-primary transition-colors">
                                             <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"/></svg>
                                         </div>
-                                        <span class="text-[10px] font-black uppercase tracking-widest text-on-surface-variant group-hover/item:text-on-surface">Portrait</span>
+                                        <span class="text-[10px] font-black uppercase tracking-widest text-on-surface-variant group-hover/item:text-on-surface">{{ __('Portrait') }}</span>
                                     </a>
                                     <a href="{{ route('profile.edit') }}" wire:navigate @mouseenter="window.fx.play('hover')" class="flex flex-col items-center gap-3 p-4 rounded-2xl hover:bg-white/5 transition-all group/item">
                                         <div class="w-10 h-10 rounded-xl bg-surface-container flex items-center justify-center text-on-surface-variant group-hover/item:text-primary transition-colors">
                                             <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/></svg>
                                         </div>
-                                        <span class="text-[10px] font-black uppercase tracking-widest text-on-surface-variant group-hover/item:text-on-surface">Config</span>
+                                        <span class="text-[10px] font-black uppercase tracking-widest text-on-surface-variant group-hover/item:text-on-surface">{{ __('Config') }}</span>
                                     </a>
                                 </div>
 
@@ -116,7 +116,7 @@
                                 <form method="POST" action="{{ route('logout') }}" class="p-2 border-t border-white/5">
                                     @csrf
                                     <button onclick="event.preventDefault(); this.closest('form').submit();" class="flex items-center justify-between w-full px-6 py-4 rounded-3xl hover:bg-error/10 text-on-surface-variant hover:text-error transition-all group/logout">
-                                        <span class="text-[10px] font-black uppercase tracking-wider">Decommission session</span>
+                                        <span class="text-[10px] font-black uppercase tracking-wider">{{ __('Decommission session') }}</span>
                                         <svg class="w-4 h-4 opacity-40 group-hover/logout:opacity-100 transition-opacity" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"/></svg>
                                     </button>
                                 </form>
@@ -142,11 +142,11 @@
     <div :class="{'translate-x-0': open, 'translate-x-full': !open}" class="fixed inset-y-0 right-0 w-80 bg-surface-container-highest/95 backdrop-blur-2xl z-[60] border-l border-white/5 transition-transform duration-500 transform ease-in-out sm:hidden">
         <div class="p-10 space-y-10">
             <div class="flex justify-between items-center">
-                <span class="font-display font-black text-xl uppercase tracking-widest text-primary">System</span>
+                <span class="font-display font-black text-xl uppercase tracking-widest text-primary">{{ __('System') }}</span>
                 <button @click="open = false" class="text-on-surface-variant"><svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M6 18L18 6M6 6l12 12"/></svg></button>
             </div>
             <div class="space-y-6">
-                 <a href="{{ route('dashboard') }}" class="block text-3xl font-display font-black text-on-surface hover:text-primary transition-colors">Feed</a>
+                 <a href="{{ route('dashboard') }}" class="block text-3xl font-display font-black text-on-surface hover:text-primary transition-colors">{{ __('Feed') }}</a>
             </div>
             <div class="pt-10 border-t border-white/5">
                 <a href="{{ route('publish') }}" class="block">
