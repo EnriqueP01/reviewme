@@ -22,4 +22,5 @@ Rédige un message de commit structuré (`Conventional Commits`, ex: `feat:`, `f
 Fournis le bloc de commandes Git complet que je n'aurai plus qu'à copier/coller.
 
 Règle d'or :
-Reste 100% technique et proactif. Pas de solutions vagues, donne du code prêt à l'emploi.
+* **Reste 100% technique et proactif**. Pas de solutions vagues, donne du code prêt à l'emploi.
+* **Règles & Workflows** : Vérifie systématiquement si des fichiers dans `.agents/rules/` ou `.agents/workflows/` ont été modifiés. Si c'est le cas, ajoute-les impérativement au commit (`git add .agents/`). Tu dois garantir que le "cerveau" du projet (ses règles) évolue en même temps que son code.
