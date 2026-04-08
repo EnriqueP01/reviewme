@@ -11,21 +11,60 @@ class PublishWorkflow extends Component
 {
     public int $step = 1;
     
-    // Step 1: Introspection
-    public string $goal = '';
-    public string $context = '';
+    // Step 1: Introspection & Essence
+    public string $title = '';
+    public string $short_description = '';
+    public string $review_goals = '';
+    public string $improvement_goals = '';
+    public string $description = ''; // Full description
     
-    // Step 2: Files
+    // Step 2: Artifacts
     public array $files = [
-        ['name' => 'index.js', 'content' => '', 'language' => 'javascript'],
+        ['name' => '', 'content' => '', 'language' => 'php', 'description' => ''],
+    ];
+
+    protected array $extensionMap = [
+        'php' => 'php',
+        'js' => 'javascript',
+        'ts' => 'typescript',
+        'py' => 'python',
+        'css' => 'css',
+        'html' => 'html',
+        'sql' => 'sql',
+        'md' => 'markdown',
+        'json' => 'json',
     ];
     
-    // Step 3: Lens
-    public string $lens = 'elegant';
+    // Step 3: Global Focus & Distribution
+    public array $selectedLens = ['clarity'];
+    public string $visibility = 'public';
+    public ?int $groupId = null;
+    public string $groupSearch = '';
+
+    public function updatedFiles($value, $key)
+    {
+        if (str_ends_with($key, '.name')) {
+            $index = explode('.', $key)[0];
+            $extension = pathinfo($value, PATHINFO_EXTENSION);
+            if (isset($this->extensionMap[$extension])) {
+                $this->files[$index]['language'] = $this->extensionMap[$extension];
+            }
+        }
+    }
+
+    public function getGroupsProperty()
+    {
+        if (empty($this->groupSearch)) {
+            return Auth::user()->groups()->get();
+        }
+        return Auth::user()->groups()
+            ->where('name', 'like', '%' . $this->groupSearch . '%')
+            ->get();
+    }
 
     public function addFile()
     {
-        $this->files[] = ['name' => '', 'content' => '', 'language' => 'javascript'];
+        $this->files[] = ['name' => '', 'content' => '', 'language' => 'php', 'description' => ''];
     }
 
     public function removeFile($index)
@@ -36,6 +75,21 @@ class PublishWorkflow extends Component
 
     public function nextStep()
     {
+        if ($this->step === 1) {
+            $this->validate([
+                'title' => 'required|min:5|max:255',
+                'short_description' => 'required|min:10|max:255',
+                'review_goals' => 'required|min:10',
+                'improvement_goals' => 'required|min:10',
+            ]);
+        } elseif ($this->step === 2) {
+            $this->validate([
+                'files' => 'required|array|min:1',
+                'files.*.name' => 'required|string',
+                'files.*.content' => 'required|string',
+            ]);
+        }
+
         $this->step++;
     }
 
@@ -44,30 +98,26 @@ class PublishWorkflow extends Component
         $this->step--;
     }
 
-    public string $title = '';
-    public string $description = '';
-    public string $visibility = 'public';
-
     public function submit(\App\Actions\Posts\CreatePostAction $createPost)
     {
-        $validated = $this->validate([
-            'title' => 'required|string|max:255',
-            'description' => 'required|string',
-            'files' => 'required|array|min:1',
-            'files.*.content' => 'required|string',
+        $this->validate([
+            'visibility' => 'required|in:public,private',
+            'groupId' => 'required_if:visibility,private',
         ]);
 
         $createPost->execute(Auth::user(), [
             'title' => $this->title,
+            'short_description' => $this->short_description,
             'description' => $this->description,
+            'review_goals' => $this->review_goals,
+            'improvement_goals' => $this->improvement_goals,
             'visibility' => $this->visibility,
-            'goal' => $this->goal,
-            'context' => $this->context,
-            'lens' => $this->lens,
+            'group_id' => $this->groupId,
+            'lens' => implode(',', $this->selectedLens),
             'files' => $this->files,
         ]);
 
-        session()->flash('success', 'Vibe publiée avec succès !');
+        session()->flash('success', 'Artefact déployé avec succès !');
         return redirect()->to(route('dashboard'));
     }
 

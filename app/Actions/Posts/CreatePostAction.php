@@ -31,11 +31,13 @@ final class CreatePostAction
         return DB::transaction(function () use ($user, $data) {
             $post = Post::create([
                 'user_id' => $user->id,
+                'group_id' => $data['group_id'] ?? null,
                 'title' => $data['title'],
+                'short_description' => $data['short_description'] ?? null,
                 'description' => $data['description'],
+                'review_goals' => $data['review_goals'] ?? null,
+                'improvement_goals' => $data['improvement_goals'] ?? null,
                 'visibility' => $data['visibility'],
-                'goal' => $data['goal'],
-                'context' => $data['context'],
                 'lens' => $data['lens'],
             ]);
 
@@ -44,7 +46,8 @@ final class CreatePostAction
                     'post_id' => $post->id,
                     'version_number' => 1,
                     'code_content' => e($file['content']),
-                    'language' => $file['language'] ?? 'javascript',
+                    'description' => $file['description'] ?? null,
+                    'language' => $file['language'] ?? 'php',
                 ]);
             }
 

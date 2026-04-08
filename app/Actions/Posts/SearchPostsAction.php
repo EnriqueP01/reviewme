@@ -36,7 +36,8 @@ final class SearchPostsAction
             ->where(function ($query) use ($userId) {
                 $query->where('visibility', 'public');
                 if ($userId) {
-                    $query->orWhere('user_id', $userId);
+                    $query->orWhere('user_id', $userId)
+                          ->orWhereIn('group_id', Auth::user()->groups()->pluck('groups.id'));
                 }
             });
 

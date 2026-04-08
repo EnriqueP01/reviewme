@@ -8,6 +8,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 
 class User extends Authenticatable
 {
@@ -58,13 +59,20 @@ class User extends Authenticatable
         return $this->hasMany(Post::class);
     }
 
+    public function groups(): BelongsToMany
+    {
+        return $this->belongsToMany(Group::class)
+            ->withPivot('role')
+            ->withTimestamps();
+    }
+
+    public function ownedGroups(): HasMany
+    {
+        return $this->hasMany(Group::class, 'owner_id');
+    }
+
     public function reviews(): HasMany
     {
         return $this->hasMany(Review::class);
-    }
-
-    public function groups(): HasMany
-    {
-        return $this->hasMany(Group::class, 'owner_id');
     }
 }

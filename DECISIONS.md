@@ -93,3 +93,13 @@
 - **Contexte** : Consolidation du workflow de développement et protection du design.
 - **Décision** : Interdiction absolue de push sur `main`, adoption d'un cycle de branchement obligatoire et directive d'économie de tokens.
 - **Statut** : Actif.
+
+## 2026-04-08-14 : Evolution V2 - Collaborative Labs & Neural Link Paradigm
+- **Auteur** : Antigravity
+- **Statut** : ✅ Implémenté
+- **Contexte** : Besoin de structurer la curation en groupes privés et d'élever le lexique vers un univers plus technologique.
+- **Décision** :
+    1. **Labs (Unités de Collaboration)** : Implémentation du système de groupes (`Labs`) avec rôles Moderateur/Membre et visibilité d'artefacts restreinte.
+    2. **Refonte Lexicale** : Migration terminologique (Email -> `Neural Link Artifact`, Password -> `Secret Key`, Vibe/Post -> `Artefact`).
+    3. **Wizard de Curation V2** : Support du multi-fichiers drag-and-drop, détection automatique du langage par extension et orchestration de métadonnées granulaires (buts de revue, améliorations).
+- **Impact** : Transformation de ReviewMe en une plateforme de curation collaborative d'élite, sécurisée et contextuelle.

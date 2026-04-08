@@ -20,8 +20,16 @@
                        wire:navigate
                        @mouseenter="window.fx.play('hover')"
                        class="relative group/link py-2 font-display font-black text-[10px] uppercase tracking-[0.3em] transition-all duration-300 {{ request()->routeIs('dashboard') ? 'text-primary' : 'text-on-surface-variant hover:text-on-surface' }}">
-                        {{ __('Feed') }}
+                        {{ __('Network Pulse') }}
                         <div class="absolute -bottom-1 left-0 w-0 h-px bg-primary transition-all duration-300 group-hover/link:w-full {{ request()->routeIs('dashboard') ? 'w-full' : '' }}"></div>
+                    </a>
+
+                    <a href="{{ route('labs') }}" 
+                       wire:navigate
+                       @mouseenter="window.fx.play('hover')"
+                       class="relative group/link py-2 font-display font-black text-[10px] uppercase tracking-[0.3em] transition-all duration-300 {{ request()->routeIs('labs') ? 'text-primary' : 'text-on-surface-variant hover:text-on-surface' }}">
+                        {{ __('Labs') }}
+                        <div class="absolute -bottom-1 left-0 w-0 h-px bg-primary transition-all duration-300 group-hover/link:w-full {{ request()->routeIs('labs') ? 'w-full' : '' }}"></div>
                     </a>
                 </div>
             </div>
