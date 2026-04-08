@@ -33,7 +33,34 @@ class PublishWorkflow extends Component
         'sql' => 'sql',
         'md' => 'markdown',
         'json' => 'json',
+        'yaml' => 'yaml',
+        'yml' => 'yaml',
+        'xml' => 'xml',
+        'c' => 'c',
+        'cpp' => 'cpp',
+        'h' => 'cpp',
+        'hpp' => 'cpp',
+        'java' => 'java',
+        'go' => 'go',
+        'rs' => 'rust',
+        'rb' => 'ruby',
+        'cs' => 'csharp',
+        'swift' => 'swift',
+        'kt' => 'kotlin',
+        'dart' => 'dart',
+        'sh' => 'bash',
+        'vue' => 'vue',
+        'blade' => 'blade',
     ];
+
+    public function getSupportedLanguages(): array
+    {
+        return [
+            'php', 'javascript', 'typescript', 'python', 'css', 'html', 'sql', 'markdown', 
+            'json', 'yaml', 'xml', 'c', 'cpp', 'java', 'go', 'rust', 'ruby', 'csharp', 
+            'swift', 'kotlin', 'dart', 'bash', 'vue', 'blade'
+        ];
+    }
     
     // Step 3: Global Focus & Distribution
     public array $selectedLens = ['clarity'];
@@ -44,22 +71,30 @@ class PublishWorkflow extends Component
     public function updatedFiles($value, $key)
     {
         if (str_ends_with($key, '.name')) {
-            $index = explode('.', $key)[0];
-            $extension = pathinfo($value, PATHINFO_EXTENSION);
-            if (isset($this->extensionMap[$extension])) {
-                $this->files[$index]['language'] = $this->extensionMap[$extension];
-            }
+            $parts = explode('.', $key);
+            $index = $parts[count($parts) - 2];
+            $this->detectLanguage($index);
         }
     }
 
-    public function getGroupsProperty()
+    protected function detectLanguage($index)
     {
-        if (empty($this->groupSearch)) {
-            return Auth::user()->groups()->get();
+        $filename = $this->files[$index]['name'] ?? '';
+        $extension = strtolower(pathinfo($filename, PATHINFO_EXTENSION));
+        
+        if (isset($this->extensionMap[$extension])) {
+            $this->files[$index]['language'] = $this->extensionMap[$extension];
+        } else {
+            // Default to plaintext or keep existing if manually set
+            // but for a new file with generic extension, we keep it as it is
         }
-        return Auth::user()->groups()
-            ->where('name', 'like', '%' . $this->groupSearch . '%')
-            ->get();
+    }
+
+    public function importFile($index, $name, $content)
+    {
+        $this->files[$index]['name'] = $name;
+        $this->files[$index]['content'] = $content;
+        $this->detectLanguage($index);
     }
 
     public function addFile()
