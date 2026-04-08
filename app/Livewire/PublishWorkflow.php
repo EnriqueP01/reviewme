@@ -42,10 +42,39 @@ class PublishWorkflow extends Component
         $this->step--;
     }
 
+    public string $title = '';
+    public string $description = '';
+    public string $visibility = 'public';
+
     public function submit()
     {
-        // Production logic would save to DB via an Action
-        session()->flash('success', 'Your code has been submitted to the curators.');
+        $this->validate([
+            'title' => 'required|string|max:255',
+            'description' => 'required|string',
+            'files' => 'required|array|min:1',
+            'files.*.content' => 'required|string',
+        ]);
+
+        $post = \App\Models\Post::create([
+            'user_id' => auth()->id(),
+            'title' => $this->title,
+            'description' => $this->description,
+            'visibility' => $this->visibility,
+            'goal' => $this->goal,
+            'context' => $this->context,
+            'lens' => $this->lens,
+        ]);
+
+        foreach ($this->files as $file) {
+            \App\Models\Snippet::create([
+                'post_id' => $post->id,
+                'version_number' => 1,
+                'code_content' => $file['content'],
+                'language' => $file['language'] ?? 'php',
+            ]);
+        }
+
+        session()->flash('success', 'Vibe publiée avec succès !');
         return redirect()->to(route('dashboard'));
     }
 

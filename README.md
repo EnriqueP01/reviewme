@@ -7,25 +7,40 @@ Une plateforme de revue de code axée sur la bienveillance, avec une hiérarchie
 
 ---
 
-## 🛠️ Installation & Configuration (Équipe)
+## 📋 Identifiants de Test (Mode Demo)
 
-Pour une installation rapide et sans erreur de PATH, utilise les scripts fournis :
-
-### 1. Première installation
-Ouvre PowerShell en tant qu'administrateur (si possible pour winget) et lance :
-```powershell
-./setup.ps1
-```
-*Ce script installe PHP, configure le PATH, installe les dépendances et prépare la base de données.*
-
-### 2. Lancement quotidien
-Pour travailler, lance simplement :
-```powershell
-./dev.ps1
-```
-*Cela lance simultanément le serveur Laravel et le compilateur Vite.*
+Pour explorer l'application avec des données réalistes (60+ vibes, reviews inline), utilisez ces accès :
+*   **Email** : `lead@reviewme.io`
+*   **Mot de passe** : `password`
 
 ---
+
+## 🛠️ Installation & Configuration (Équipe)
+
+### 1. Pré-requis
+*   **PHP 8.3** installé nativement.
+*   **Node.js & NPM**.
+*   **Composer**.
+*   Optionnel : SQLite (ou PostgreSQL local).
+
+### 2. Démarrage Rapide
+Ouvrez votre terminal et lancez la commande suivante :
+```powershell
+php composer.phar dev
+```
+*Cette commande lance simultanément le serveur de développement Laravel et le compilateur Vite.*
+
+### 🐳 Démarrage avec Docker (Recommandé pour MVP)
+Si vous préférez utiliser Docker, les fichiers de conteneurisation sont prêts :
+```bash
+# Construire et lancer les conteneurs (App, Web, DB)
+docker-compose up -d --build
+
+# Arrêter les conteneurs
+docker-compose down
+```
+L'application sera accessible sur : [http://localhost:8080](http://localhost:8080)
+La base de données MySQL est disponible sur le port `3306`.
 
 ---
 
@@ -85,6 +100,38 @@ git add . ; git commit -m "feat: description" ; git push origin main
 ## 💡 Astuces Développement
 *   **Logs Laravel** : `tail -f storage/logs/laravel.log`
 *   **Effacer le cache** : `php artisan optimize:clear`
+
+---
+
+---
+
+## 📜 Charte de Développement (Antigravity)
+
+Ce projet utilise des règles d'automatisation et de contrôle qualité via l'agent **Antigravity**. Voici les directives à respecter :
+
+### 🛡️ Principes Fondamentaux
+*   **Langue :** Français obligatoire (explications, rapports, commits).
+*   **Méthode KISS :** Simplicité et lisibilité avant tout.
+*   **Standards :** Respect strict des fichiers de configuration locaux (`.editorconfig`, `.styleci.yml`, `phpstan.neon`, etc.).
+*   **Traçabilité :** Documentation systématique des choix techniques dans [DECISIONS.md](./DECISIONS.md).
+*   **Robustesse & Ops :** 
+    *   Mise à jour systématique de `.env.example` si le `.env` change.
+    *   Toute modification de schéma s'effectue via une **migration Laravel**.
+    *   Gestion d'erreurs proactive et utilisation des Logs Laravel.
+*   **Tests :** Rangement exclusif dans `tests/`.
+
+### 📥 Workflow de Synchronisation (`/pull`)
+1.  **Diff Review :** Analyse de l'impact des changements sur l'architecture globale.
+2.  **Synchro Env :** Vérification automatique et mise à jour des dépendances (`npm install`, `composer install`).
+3.  **Conflits & Validation :** Résolution proactive des conflits et vérification que les tests passent au vert après merge.
+
+### 📤 Workflow de Publication (`/push`)
+1.  **Pre-Push Scan :** Chasse aux bugs, suppression des `console.log` / `var_dump` et vérification de la logique.
+2.  **Doc Architecture :** Vérification et mise à jour du fichier `DECISIONS.md`.
+3.  **Commit & Push :** Signature des commits via la convention `Conventional Commits` et génération des commandes terminal.
+
+### 🚀 Analyse & Optimisation (`/opti`)
+Analyse **100% technique et factuelle** (sans analogies) axée sur la performance algorithmique, la sécurité et la maintenabilité des nouvelles fonctionnalités.
 
 ---
 

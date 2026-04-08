@@ -2,12 +2,12 @@
     <!-- Feed Header -->
     <div class="flex items-end justify-between mb-20 border-b border-outline-variant/10 pb-10">
         <div class="space-y-2">
-            <h2 class="font-display text-5xl font-black text-on-surface tracking-tight">Perspectives</h2>
-            <p class="text-on-surface-variant text-base tracking-wide font-medium">Synthetic analysis of architectural patterns.</p>
+            <h2 class="font-display text-5xl font-black text-on-surface tracking-tight">{{ __('Perspectives') }}</h2>
+            <p class="text-on-surface-variant text-base tracking-wide font-medium">{{ __('Synthetic analysis of architectural patterns.') }}</p>
         </div>
         <div class="flex items-center gap-4 bg-surface-container rounded-full p-1 border border-outline-variant/20">
-            <x-ui.button variant="primary" size="sm" class="!px-6" pill static>Trending</x-ui.button>
-            <x-ui.button variant="ghost" size="sm" class="!px-6" pill static>Recent</x-ui.button>
+            <x-ui.button variant="primary" size="sm" class="!px-6" pill static>{{ __('Trending') }}</x-ui.button>
+            <x-ui.button variant="ghost" size="sm" class="!px-6" pill static>{{ __('Recent') }}</x-ui.button>
         </div>
     </div>
 
@@ -28,7 +28,7 @@
                         
                         <div class="py-1 flex flex-col items-center select-none">
                             <span class="font-display font-black text-2xl text-primary tracking-tighter leading-none" :class="voted !== 0 ? 'scale-110' : ''">{{ number_format($item['points']) }}</span>
-                            <span class="text-[9px] font-black uppercase tracking-[0.2em] text-on-surface-variant/40 mt-1">Karma</span>
+                            <span class="text-[9px] font-black uppercase tracking-[0.2em] text-on-surface-variant/40 mt-1">{{ __('Karma') }}</span>
                         </div>
                         
                         <button 
@@ -57,16 +57,16 @@
                                 <div class="flex flex-col">
                                     <div class="flex items-center gap-3">
                                         <span class="text-base font-black text-on-surface tracking-tight">{{ $item['author'] }}</span>
-                                        <span class="px-2 py-0.5 rounded bg-primary/5 border border-primary/10 text-[8px] font-black uppercase tracking-widest text-primary/60">Expert</span>
+                                        <span class="px-2 py-0.5 rounded bg-primary/5 border border-primary/10 text-[8px] font-black uppercase tracking-widest text-primary/60">{{ __('Expert') }}</span>
                                     </div>
                                     <span class="text-[10px] uppercase tracking-widest text-on-surface-variant font-bold opacity-60 mt-1">Lead Architect • {{ $item['time_ago'] }}</span>
                                 </div>
                             </div>
                             
                             <div class="opacity-0 group-hover:opacity-100 transition-all duration-300 translate-x-4 group-hover:translate-x-0">
-                                <x-ui.button variant="ghost" size="sm" class="!bg-primary/5 border-primary/10 hover:!bg-primary/10 hover:!text-primary">
+                                <x-ui.button variant="ghost" size="sm" class="!bg-primary/5 border-primary/10 hover:!bg-primary/10 hover:!text-primary" href="{{ route('vibe.detail', $item['id']) }}">
                                     <svg class="w-4 h-4 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" /><path stroke-linecap="round" stroke-linejoin="round" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" /></svg>
-                                    Inspect
+                                    {{ __('Inspect') }}
                                 </x-ui.button>
                             </div>
                         </div>
@@ -89,8 +89,8 @@
                              </div>
                              <div class="flex-grow border-t border-outline-variant/5"></div>
                              <div class="flex items-center gap-6 text-[10px] font-black uppercase tracking-widest text-on-surface-variant/40">
-                                <span>24 Reviews</span>
-                                <span>12 Shares</span>
+                                <span>24 {{ __('Reviews') }}</span>
+                                <span>12 {{ __('Shares') }}</span>
                              </div>
                         </div>
                     </div>

@@ -21,9 +21,10 @@
     ];
     
     $classes = $baseClasses . ' ' . $radiusClass . ' ' . $variants[$variant] . ' ' . $sizes[$size];
+    $tag = $attributes->has('href') ? 'a' : 'button';
 @endphp
 
-<button 
+<{{ $tag }} 
     x-data="{ 
         atX: 0, 
         atY: 0,
@@ -33,7 +34,6 @@
             const rect = $el.getBoundingClientRect();
             const centerX = rect.left + rect.width / 2;
             const centerY = rect.top + rect.height / 2;
-            // Reduced attraction for better control
             this.atX = (e.clientX - centerX) * 0.05;
             this.atY = (e.clientY - centerY) * 0.05;
             this.txX = (e.clientX - centerX) * -0.1;
@@ -64,7 +64,7 @@
     <span class="relative z-10 flex items-center gap-3">
         {{ $slot }}
     </span>
-</button>
+</{{ $tag }}>
 
 <style>
 @keyframes shimmer {

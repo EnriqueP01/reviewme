@@ -35,6 +35,13 @@
 
             <!-- Right Actions -->
             <div class="hidden sm:flex items-center gap-10">
+                <!-- Language Switcher -->
+                <div class="flex items-center gap-2 px-3 py-1 bg-surface-high/50 rounded-full border border-outline-variant/10">
+                    <a href="{{ route('lang', 'fr') }}" class="text-[9px] font-black uppercase tracking-widest transition-colors {{ app()->getLocale() == 'fr' ? 'text-primary' : 'text-on-surface-variant hover:text-on-surface' }}">FR</a>
+                    <span class="text-outline-variant/30 text-[10px]">|</span>
+                    <a href="{{ route('lang', 'en') }}" class="text-[9px] font-black uppercase tracking-widest transition-colors {{ app()->getLocale() == 'en' ? 'text-primary' : 'text-on-surface-variant hover:text-on-surface' }}">EN</a>
+                </div>
+
                 <a href="{{ route('publish') }}">
                     <x-ui.button variant="primary" size="sm">
                         <svg class="w-4 h-4 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M12 4v16m8-8H4"/></svg>
