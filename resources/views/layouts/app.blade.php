@@ -12,7 +12,17 @@
         <meta property="og:type" content="website">
         <meta property="og:title" content="ReviewMe — The Digital Curator">
         <meta property="og:description" content="{{ __('Forge better code through collaborative curation.') }}">
+        <meta property="og:image" content="{{ asset('images/og-cover.png') }}">
         <meta name="theme-color" content="#bec2ff">
+
+        <!-- Twitter Card -->
+        <meta name="twitter:card" content="summary_large_image">
+        <meta name="twitter:title" content="ReviewMe — The Digital Curator">
+        <meta name="twitter:description" content="{{ __('Forge better code through collaborative curation.') }}">
+        <meta name="twitter:image" content="{{ asset('images/og-cover.png') }}">
+
+        <!-- Favicon -->
+        <link rel="icon" type="image/png" href="{{ asset('images/favicon.png') }}">
 
         <!-- Scripts & Styles -->
         @vite(['resources/css/app.css', 'resources/js/app.js'])
@@ -41,7 +51,7 @@
             </main>
 
             <footer class="py-12 px-6 border-t border-outline-variant/10 text-on-surface-variant text-xs uppercase tracking-widest text-center opacity-50">
-                &copy; {{ date('Y') }} ReviewMe. <span class="mx-2">|</span> Built for the elite.
+                &copy; {{ date('Y') }} ReviewMe. <span class="mx-2">|</span> {{ __('Built for the elite.') }}
             </footer>
         </div>
 

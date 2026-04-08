@@ -34,7 +34,6 @@
     "Select Target Lab Member": "Select Group",
     "Search for a Lab group...": "Search for a group...",
     "No Labs found for this identity.": "No groups found.",
-    "Regress Phase": "Back",
     "Deploy Curation Artifact": "Publish Post",
     "Labs": "Groups",
     "Neural Labs": "My Groups",
@@ -132,5 +131,15 @@
     "Private (Solo Reflection)": "Private (Solo Reflection)",
     "Neural Signature (Avatar)": "Neural Signature (Avatar)",
     "Update your visual representation in the matrix.": "Update your visual representation in the matrix.",
-    "Search vibes...": "Search vibes..."
+    "Search vibes...": "Search vibes...",
+    "Built for the elite.": "Built for the elite.",
+    "Phase": "Phase",
+    "Next Phase": "Next Phase",
+    "Regress Phase": "Back",
+    "Move Up": "Move Up",
+    "Move Down": "Move Down",
+    "Remove": "Remove",
+    "Fragment": "Fragment",
+    "Untitled_Source": "Untitled_Source",
+    "Logic Body": "Logic Body"
 }
