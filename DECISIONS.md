@@ -49,8 +49,20 @@
 ## 2026-04-08-08 : Sécurisation, Recherche & Expérience Audio FX
 - **Auteur** : Antigravity
 - **Statut** : Accepté
-- **Décision** : Karma atomique (UpdateUserReputationAction), intégration des Policies, Recherche Debounced et service Audio FX procedural.
+- **Décision** : 
+    - **Karma atomique** : Migration de la logique vers `UpdateUserReputationAction`.
+    - **Sécurité** : Intégration des Policies (`PostPolicy`, `ReviewPolicy`).
+    - **Audio FX** : Création du service `window.fx` (Oscillateurs procéduraux).
+    - **Performance** : Throttling de l'InteractiveGrid et indexation SQL.
 - **Impact** : Intégrité des scores, sécurité renforcée et immersion sensorielle premium.
+
+## 2026-04-08-09 : Micro-interactions & Verrouillage UI
+- **Auteur** : EnriqueP01
+- **Statut** : Accepté
+- **Décision** : 
+    - **Feedback Haptique** : Simulation via Web Audio API.
+    - **Anti-Replay** : Verrouillage Alpine.js `isVoting` sur les boutons de vote.
+- **Impact** : Sensation de "monolithe physique" et prévention du spam d'interactions.
 
 ## 2026-04-08-10 : Implémentation du Système HUD et Heatmap d'Activité
 - **Auteur** : Antigravity

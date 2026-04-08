@@ -8,6 +8,7 @@ use App\Models\Post;
 use Livewire\Component;
 use Illuminate\Support\Facades\Auth;
 use Livewire\WithPagination;
+use Livewire\Attributes\Layout;
 
 class Feed extends Component
 {
@@ -44,6 +45,7 @@ class Feed extends Component
         $toggleReaction->execute(Auth::user(), $post, $type);
     }
 
+    #[Layout('layouts.app')]
     public function render()
     {
         $userId = Auth::id();
@@ -80,9 +82,8 @@ class Feed extends Component
         if ($this->sort === 'recent') {
             $query->latest();
         } else {
-            // Sort by score
-            $query->selectRaw('*, (SELECT COUNT(*) FROM reactions WHERE reactable_id = posts.id AND type = "mindblown") - (SELECT COUNT(*) FROM reactions WHERE reactable_id = posts.id AND type = "optimisable") as score')
-                  ->orderBy('score', 'desc');
+            // Sort by score using the withCount results
+            $query->orderByRaw('(up_count - down_count) DESC');
         }
 
         $posts = $query->paginate(10);
