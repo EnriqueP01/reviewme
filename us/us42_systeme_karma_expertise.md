@@ -15,13 +15,12 @@
 - [x] **Feedback Qualité** : Les contenus longs et détaillés (> 500 chars) doivent bénéficier d'un bonus multiplicateur de points.
 
 ## 🛠 Détails Techniques
-- **Modèles** : `KarmaTransaction` (polymorphique), `UserSkill`.
-- **Moteur** : `GrantKarmaAction` (Pattern Action centralisé).
-- **Middleware** : `EnsureUserHasKarma` pour la protection des routes.
-- **Maintenance** : Commande Artisan `karma:rebuild`.
-- **UI** : Composant Livewire `Profile` enrichi avec des états réactifs `karma-updated`.
+- **Audit Logging** : Toute modification de points DOIT passer par la table `karma_transactions`. Interdiction de modifier `reputation_score` directement sans traceur.
+- **Expertise par Lens** : Le système `UserSkill` stocke le cumul par slug (ex: `security`, `logic`).
+- **Validation Middleware** : `EnsureUserHasKarma` supporte le format `karma:min_score` ou `karma:permission_name`.
+- **Calcul de Qualité** : Utilise `strlen()` sur la source pour appliquer le multiplicateur x2.
+- **Sync Integrity** : La commande `karma:rebuild` utilise `chunkById` pour traiter les gros volumes de transactions sans crash mémoire.
 
-## 🔗 Liens US
-- US14 (Rôles & Permissions)
-- US33 (Analyse de Sécurité)
-- DECISION_2026_04_09_57
+## 🔗 Liens
+- DECISION_2026_04_09_57 (Barème de points et Équilibrage)
+- `config/karma.php` (Configuration des paliers)

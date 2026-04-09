@@ -3,14 +3,14 @@
 ## [Unreleased]
 ### Karma & Reputation System (2026-04-09)
 - **Features** :
-    - Implemented `KarmaTransaction` audit log for full traceability.
-    - Added `UserSkill` model for expertise tracking per Lens.
-    - Created `GrantKarmaAction` for unified reputation updates.
-    - Added `EnsureUserHasKarma` middleware for reputation-gated access (RBAC).
+    - **Karma Motor v1.0** : Implémentation du moteur de réputation centralisé (`GrantKarmaAction`).
+    - **Expertise par Lens** : Distribution du karma par thématique (Skills) pour un profilage technique précis.
+    - **Récompense de Qualité** : Application automatique d'un multiplicateur **x2** sur les gains pour les contenus riches (> 500 caractères).
+    - **Anti-Farming** : Mise en place d'un **Daily Cap à 200 points** par utilisateur.
+    - **Vérification d'accès** : Nouveau middleware `karma` pour restreindre les routes sensibles selon les paliers de réputation.
+    - **Outil de Maintenance** : Commande `artisan karma:rebuild` pour assurer l'intégrité des scores.
+    - **Historique SQL** : Table transactions complètes pour audit et transparence.
     - Integrated Karma dashboard into User Profile with rank badges.
-    - Added **Daily Cap** (+200 pts/day) for anti-farming protection.
-    - Added **Quality Bonus** (2x points) for long descriptions/reviews.
-    - Added `php artisan karma:rebuild` command for data integrity checks.
 - **Security** :
     - Restricted downvotes to "Contributor" level (10+ Karma).
     - Restricted Group Management to "Certified Reviewer" level (100+ Karma).

@@ -69,10 +69,23 @@ Découvrez l'historique des décisions techniques et des évolutions du projet :
 ---
 
 ## 🎖️ Système de Réputation & Expertise (Karma)
-La plateforme intègre une méritocratie technique basée sur le **Karma** :
-- **Karma Catégorisé** : Chaque interaction développe vos **Skills** dans des domaines précis (Security, Performance, Logic).
-- **Paliers de Progression** : Devenez un **Reviewer Certifié** (100 Karma) pour accéder à la gestion de groupes ou un **Elite Member** pour influencer la roadmap.
-- **Audit Total** : Chaque point est historisé pour une transparence absolue sur l'expertise des contributeurs.
+
+### 🌟 Système de Réputation & Karma
+ReviewMe utilise un système de réputation basé sur l'expertise réelle. Le Karma n'est pas qu'un nombre, il reflète votre impact par thématique (Security, Performance, etc.).
+
+| Rang | Karma | Privilèges |
+| :--- | :--- | :--- |
+| **Apprenti** | 0+ | Voir les posts, Voter UP |
+| **Contributeur** | 10+ | Publier des Reviews, Voter DOWN |
+| **Reviewer Certifié** | 100+ | Créer des Groupes (Labs), Suggestion Inline |
+| **Expert** | 500+ | Épingler des commentaires, Accès Early Labs |
+| **Elite** | 2000+ | Outils de modération communautaire |
+
+**Règles d'or :**
+- 🛡️ **Qualité** : Les descriptions de plus de 500 caractères doublent vos points (Bonus x2).
+- 🛑 **Anti-Spam** : Gain limité à 200 Karma par jour (Daily Cap).
+- 📉 **Downvote** : Voter DOWN coûte 1 point de Karma pour éviter la toxicité.
+- 🛠️ **Integrity** : Les scores peuvent être recalculés à tout moment via `php artisan karma:rebuild`.
 - **Bonus de Qualité** : Le système récompense automatiquement les analyses détaillées et constructives.
 
 ---
