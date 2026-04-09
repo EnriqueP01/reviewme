@@ -211,7 +211,7 @@
                                     <div class="hidden md:flex items-center gap-8 self-stretch border-x border-outline-variant/10 px-8">
                                         <div class="flex flex-col">
                                             <span class="text-[8px] text-on-surface-variant uppercase font-bold tracking-widest opacity-40">{{ __('Volume') }}</span>
-                                            <span class="font-mono text-sm text-on-surface group-hover:text-primary transition-colors">{{ $stats['lines'] }} <span class="text-[10px] opacity-40">lns</span></span>
+                                            <span class="font-mono text-sm text-on-surface group-hover:text-primary transition-colors">{{ $stats['lines'] }} <span class="text-[10px] opacity-40">{{ __('lns') }}</span></span>
                                         </div>
                                         <div class="flex flex-col border-l border-outline-variant/10 pl-6">
                                             <span class="text-[8px] text-on-surface-variant uppercase font-bold tracking-widest opacity-40">{{ __('Payload') }}</span>

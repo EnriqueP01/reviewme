@@ -7,11 +7,15 @@ namespace App\Livewire\Groups;
 use App\Models\Group;
 use App\Models\User;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Storage;
 use Livewire\Attributes\Layout;
 use Livewire\Component;
+use Livewire\WithFileUploads;
 
 final class GroupManager extends Component
 {
+    use WithFileUploads;
+
     public string $name = '';
 
     public string $description = '';
@@ -26,6 +30,8 @@ final class GroupManager extends Component
     public array $searchResults = [];
 
     public string $activeTab = 'feed';
+
+    public $logo;
 
     protected $rules = [
         'name' => 'required|min:3|max:255|unique:groups,name',
@@ -108,6 +114,31 @@ final class GroupManager extends Component
         $group->members()->detach($userId);
     }
 
+    public function updatedLogo()
+    {
+        $this->validate([
+            'logo' => 'image|max:1024', // 1MB Max
+        ]);
+
+        if (! $this->selectedGroupId) {
+            return;
+        }
+
+        $group = Group::findOrFail($this->selectedGroupId);
+        $this->authorize('manage', $group);
+
+        // Delete old logo if exists
+        if ($group->logo_path) {
+            Storage::disk('public')->delete($group->logo_path);
+        }
+
+        $path = $this->logo->store('groups/logos', 'public');
+        $group->update(['logo_path' => $path]);
+
+        $this->reset('logo');
+        session()->flash('success', __('Logo updated successfully !'));
+    }
+
     #[Layout('layouts.app')]
     public function render()
     {
@@ -119,7 +150,7 @@ final class GroupManager extends Component
 
         $selectedGroup = null;
         if ($this->selectedGroupId) {
-            $selectedGroup = Group::with('members')->findOrFail($this->selectedGroupId);
+            $selectedGroup = Group::with('members')->withCount(['members', 'posts'])->findOrFail($this->selectedGroupId);
             $this->authorize('view', $selectedGroup);
         }
 

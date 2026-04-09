@@ -19,8 +19,27 @@ final class Group extends Model
         'name',
         'slug',
         'description',
+        'logo_path',
         'owner_id',
     ];
+
+    /**
+     * Get the URL to the group's logo.
+     */
+    public function getLogoUrlAttribute(): string
+    {
+        return $this->logo_path
+            ? asset('storage/'.$this->logo_path)
+            : 'https://ui-avatars.com/api/?name='.urlencode($this->name).'&color=BE85FD&background=1E1B4B';
+    }
+
+    /**
+     * Alias for logo_url to maintain consistency.
+     */
+    public function getAvatarAttribute(): string
+    {
+        return $this->getLogoUrlAttribute();
+    }
 
     /**
      * Boot function to handle automatic slug generation.

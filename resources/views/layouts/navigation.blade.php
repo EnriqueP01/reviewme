@@ -167,7 +167,7 @@
             </div>
             <div class="pt-10 border-t border-white/5">
                 <a href="{{ route('publish') }}" class="block">
-                    <x-ui.button variant="primary" size="lg" class="w-full">Post Review</x-ui.button>
+                    <x-ui.button variant="primary" size="lg" class="w-full">{{ __('Post Review') }}</x-ui.button>
                 </a>
             </div>
         </div>

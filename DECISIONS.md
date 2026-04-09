@@ -61,6 +61,16 @@
     3. **Boutons Atomiques Réactifs** : Mise à jour du composant `button` pour inclure un spinner intégré (`animate-spin`) déclenché automatiquement par `wire:loading`.
     4. **Désactivation Systématique** : Verrouillage des actions (`wire:loading.attr="disabled"`) sur tous les points d'entrée critiques pour prévenir les race conditions.
 - **Impact** : Suppression du sentiment de latence, feedback visuel premium et sécurisation des interactions multiples.
+### ID: 20260409-2200-UI-STANDARDIZATION
+**Date** : 2026-04-09
+**Contexte** : Nécessité de stabiliser l'identité visuelle entre les pages Feed et Groups.
+**Décision** : 
+- Centralisation des avatars et fallback initiales.
+- Adoption d'un header 7xl consistent.
+- Nomenclature "FORGE BETTER CODE" imposée.
+- Migration logo_path pour les groupes.
+- Implémentation du composant PostCard haute densité.
+**Conséquences** : Cohérence totale du design system "Monolith", meilleure densité ergonomique.
 
 ## 2026-04-08-15 : Évolution de l'Identité Utilisateur & Branding
 - **Auteur** : Antigravity
