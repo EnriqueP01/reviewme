@@ -281,7 +281,7 @@
 - **Décision** :
     1. **Spécification Architecturale (Markdown)** : Rédaction détaillée de la norme dans `us/us14_roles_permissions_erreurs.md` classifiant les actions par niveaux et séparant strictement de la logique métier (erreurs 422 vs 403 vs 500).
     2. **Règle IA sur Mesure (.agents/rules/rbac.md)** : Intégration d'une directive d'agent continue ("Custom Rule"). Le but de la règle est d'interdire au modèle de coder des actions en "Black Box" : je suis désormais forcé de vérifier les permissions (via `PostPolicy`, `Gate` ou Middlewares) et de ne jamais ignorer la sécurité du backend, même si l'interface dissimule déjà les actions.
-- **Impact** : Prévention à 100% des erreurs d'authentification "fail-open", structuration forte des cas critiques, et alignement parfait entre les directives d'architecture de haut-niveau et le code généré quotidiennement par l'IA.
+- **Impact** : Intégrité architecturale renforcée et sécurisation des actions critiques.
 
 ## 2026-04-09-40 : Standardisation Lexicale & Refonte Lexique Professionnel
 - **Auteur** : Antigravity
@@ -308,7 +308,6 @@ The initial "Monolith & The Lens" implementation was too spacious, creating layo
 
 #### Consequence
 *   Immediate improvement in readability for multi-file posts.
-*   Prevents sidebar "spill" on standard 1080p displays.
 *   More professional, IDE-like feel.
 
 ---
@@ -322,7 +321,7 @@ The initial "Monolith & The Lens" implementation was too spacious, creating layo
     2. **UI Ségrégative** : Ajout du composant Livewire `UpdatePost` avec le routeur dédié `/posts/{postId}/update-code`, reprenant l'ADN du workflow de création et l'heuristique de détection de fichier.
     3. **Affichage Dynamique** : Mise à jour de `PostDetail.php` (et son template) pour supporter l'affichage "1 Version = N Fichiers" et ajout du sélecteur interactif de version dans l'entête du snippet.
     4. **Sécurité & Contrôle** : Application stricte de `authorize('update', $post)` limitant l'itération à l'auteur original.
-- **Impact** : Cycle de vie du code continu, traçabilité de l'évolution post-review et réduction mécanique du churn de posts.
+- **Impact** : Cycle de vie du code continu et traçabilité de l'évolution post-review.
 
 ## 2026-04-09-42 : Feedback Collaboratif Avancé (Reviews & Suggestions)
 - **Auteur** : Antigravity
@@ -336,7 +335,7 @@ The initial "Monolith & The Lens" implementation was too spacious, creating layo
         - Système de suggestion "Diff-Edit" persistant par post (via session), offrant deux modes de lecture (Visual Diff vs In-place Editing).
         - Gutter HUD : Visualisation des contributeurs actifs directement dans la gouttière de numérotation des lignes.
     4. **Architecture de Données** : Extension du schéma via 4 nouvelles tables et intégration de 3 nouveaux patterns d'Action (`StorePostComment`, `StoreFullReview`, `StoreInlineSuggestion`).
-- **Impact** : Transformation de la page de détail en un véritable hub de revue de code interactif, favorisant les échanges de haute précision et la co-construction de solutions.
+- **Impact** : Transformation de la page de détail en un véritable hub de revue de code interactif.
 
 ## 2026-04-09-43 : Refonte UI/UX du Système de Feedback (US40)
 - **Auteur** : Antigravity
@@ -347,7 +346,7 @@ The initial "Monolith & The Lens" implementation was too spacious, creating layo
     2. **Système de Réactions Polymorphique** : Migration des cœurs/likes vers le modèle `Reaction` pour garantir l'unicité des votes et permettre le toggle (unlike).
     3. **UX de Discussion YouTube** : Masquage des formulaires de réponse par défaut, affichage conditionnel via Alpine.js. Ajout d'états vides illustrés.
     4. **Moteur de Coloration Blade** : Implémentation d'une coloration syntaxique légère via regex directement dans le template pour une performance et un rendu premium.
-- **Impact** : Expérience utilisateur ultra-premium, réduction du bruit visuel et renforcement de l'engagement social sur les reviews techniques.
+- **Impact** : Expérience utilisateur ultra-premium et réduction du bruit visuel.
 
 ## 2026-04-09-44 : Optimisation de la Revue de Code & Live Diff Engine
 - **Auteur** : Antigravity
@@ -357,7 +356,7 @@ The initial "Monolith & The Lens" implementation was too spacious, creating layo
     1. **Correction des Actions** : Déblocage du système de suggestion via passage du `snippetId` et fiabilisation de l'objet Alpine `selectionPopup`.
     2. **Architecture Multi-fichiers** : Refactoring vers un composant `CodeBlock` unique gérant l'intégralité des snippets de la version active via un système d'onglets synchronisé par événements (`snippet-changed`).
     3. **Moteur Live Diff** : Implémentation d'une prévisualisation interactive dans la "Review Factory". Utilisation du `TextDiffHelper` pour calculer et afficher en temps réel les lignes ajoutées/supprimées (coloration émeraude/rubis) pendant l'édition.
-- **Impact** : Fluidité totale du workflow de revue, réduction des erreurs de publication et feedback visuel instantané digne d'un IDE professionnel.
+- **Impact** : Fluidité totale du workflow de revue et feedback visuel instantané.
 
 ## 2026-04-09-45 : Refonte Majeure du Système de Review (Full & Quick Reviews)
 - **Auteur** : Antigravity
@@ -368,10 +367,9 @@ The initial "Monolith & The Lens" implementation was too spacious, creating layo
     2. **Full Review (Feed-Style)** : Regroupement des retours sous le code avec navigation de type flux. Tri par popularité (Up/Down votes) et commentaires compacts masqués par défaut.
     3. **Quick Review (Contextual Overlay)** : 
         - Déclenchement par sélection de texte avec bouton flottant.
-        - Visualisation via photo de profil de l'auteur sur la ligne de code concernée.
-        - Interaction double mode : "Edit" (remplacement direct) et "DIFF" (comparaison de fusion).
-    4. **Intégrité Visuelle** : Maintien de la coloration syntaxique cohérente sur tous les nouveaux overlays et modales.
-- **Impact** : Niveau d'interaction sans précédent pour une plateforme web, fusionnant l'ergonomie d'un IDE avec la dynamique d'un réseau social technique.
+        - Visualisation via photo de profil de l'auteur on code.
+        - Interaction double mode : "Edit" and "DIFF".
+- **Impact** : Niveau d'interaction sans précédent pour une plateforme web.
 
 ## 2026-04-09-46 : Formalisation de la Documentation Stratégique (US04-US28)
 - **Auteur** : Antigravity
@@ -382,7 +380,7 @@ The initial "Monolith & The Lens" implementation was too spacious, creating layo
     2. **Architecture & API** : Documentation des US10 (Architecture Globale), US11 (Choix techniques), US15 (Contrat API) et US16 (Journal de décisions).
     3. **Design & Qualité** : Formalisation des US09 (Guide UI), US26 (Gestion des erreurs/cas limites) et US28 (Qualité de code).
     4. **Harmonisation** : Mise à jour de l'US14 pour refléter la nomenclature professionnelle (Groups/Posts).
-- **Impact** : Traçabilité totale des arbitrages, vision produit alignée entre les membres de l'équipe et base documentaire robuste pour la suite du développement.
+- **Impact** : Traçabilité totale des arbitrages et base documentaire robuste.
 
 ## 2026-04-09-47 : Intégration Finale de la Navigation & Système de Raccourcis
 - **Auteur** : Antigravity
@@ -391,8 +389,8 @@ The initial "Monolith & The Lens" implementation was too spacious, creating layo
 - **Décision** :
     1. **Pages de Support** : Création et déploiement des composants Livewire pour `Leaderboard`, `Documentation`, `Changelog`, `Status` et `Legal`.
     2. **Système de Raccourcis (HUD Navigation)** : Implémentation du composant global `KeyboardShortcuts` (Alpine.js) permettant une navigation rapide (ex: `G+L` pour Leaderboard, `G+H` pour Home, `Shift+?` pour l'aide).
-    3. **Durcissement de l'Accessibilité Invités** : Refonte du header (`navigation.blade.php`) pour supporter les utilisateurs non-authentifiés (affichage "Sign In / Get Started") et correction des collisions de traduction (Status page).
-- **Impact** : Plateforme 100% connectée, accessible sans friction et prête pour une utilisation publique.
+    3. **Durcissement de l'Accessibilité Invités** : Refonte du header (`navigation.blade.php`) pour supporter les utilisateurs non-authentifiés.
+- **Impact** : Plateforme 100% connectée et prête pour une utilisation publique.
 
 ## 2026-04-09-48 : Automatisation du Suivi Documentaire (update_us)
 - **Auteur** : Antigravity
@@ -401,7 +399,7 @@ The initial "Monolith & The Lens" implementation was too spacious, creating layo
 - **Décision** : 
     1. **Règle IA Dédiée** : Création de `.agents/rules/update_us.md` imposant la mise à jour systématique des critères d'acceptation et détails techniques dans le dossier `us/` après chaque tâche.
     2. **Validation Automatique** : Mise à jour immédiate de l'US35 (Docker) pour valider le concept.
-- **Impact** : Documentation produit toujours à jour, traçabilité parfaite des fonctionnalités et alignement PO/Dev garanti.
+- **Impact** : Documentation produit toujours à jour et traçabilité parfaite.
 
 ## 2026-04-09-49 : Raffinement Adaptatif des Prompts (Auto-PRD)
 - **Auteur** : Antigravity
@@ -410,7 +408,7 @@ The initial "Monolith & The Lens" implementation was too spacious, creating layo
 - **Décision** :
     1. **Règle auto_prd Adaptative** : Mise à jour de `.agents/rules/auto_prd.md` pour introduire une matrice d'adaptation (Full PRD, Mini-PRD, Note Technique, Fast-Track).
     2. **Logique de Sélection** : L'agent choisit dynamiquement le niveau de formalisme selon la complexité fonctionnelle de la demande.
-- **Impact** : Rigueur documentaire sur les gros chantiers et efficacité maximale sur les petites tâches, sans compromis sur la qualité.
+- **Impact** : Rigueur documentaire sur les gros chantiers et efficacité maximale sur les petites tâches.
 
 ## 2026-04-09-50 : Hub Collaboratif de Groupe (Chat & Feed Privé)
 - **Auteur** : Antigravity
@@ -419,8 +417,8 @@ The initial "Monolith & The Lens" implementation was too spacious, creating layo
 - **Décision** :
     1. **Système de Chat** : Création du modèle `GroupMessage` et du composant Livewire `GroupChat` avec rafraîchissement automatique (polling).
     2. **Feed de Groupe Dédié** : Création du composant `GroupFeed` et extension de `SearchPostsAction` pour supporter le filtrage par `group_id`.
-    3. **Refonte UI GroupManager** : Passage à un dashboard à deux colonnes (Feed à gauche, Membres et Chat à droite) pour maximiser l'espace de travail.
-- **Impact** : Transformation des groupes d'une simple liste de membres en véritable espace de travail actif, sécurisé et centralisé.
+    3. **Refonte UI GroupManager** : Passage à un dashboard à deux colonnes (Feed à gauche, Membres et Chat à droite).
+- **Impact** : Transformation des groupes en véritables espaces de travail actifs.
 
 ## 2026-04-09-51 : Transition Temps-Réel avec Laravel Reverb
 - **Auteur** : Antigravity
@@ -430,5 +428,15 @@ The initial "Monolith & The Lens" implementation was too spacious, creating layo
     1. **Installation de Reverb** : Migration vers WebSockets natifs via Laravel Reverb.
     2. **Gestion des Canaux** : Implémentation de `PrivateChannel('groups.{id}')` avec vérification de l'appartenance au groupe.
     3. **Événements de Broadcast** : Création de `GroupMessageSent` et intégration avec Livewire Echo.
-- **Impact** : Expérience de chat instantanée (latence < 100ms), suppression totale de la charge de polling en base de données, infrastructure moderne prête pour la montée en charge.
-    4. **Workflow Unifié** : Mise à jour du script `composer dev` pour inclure le démarrage automatique du serveur Reverb via `npx concurrently`.
+- **Impact** : Expérience de chat instantanée (latence < 100ms) and infrastructure moderne prête pour la montée en charge.
+
+## 2026-04-09-52 : Harmonisation de l'Interface de Discussion & Optimisation du Layout
+- **Auteur** : Antigravity
+- **Statut** : ✅ Implémenté
+- **Contexte** : Besoin d'unifier l'expérience de saisie des commentaires et de supprimer les déséquilibres visuels (espaces vides) dans la section Full Review.
+- **Décision** :
+    1. **Unification de l'Input (Modèle "Reply")** : Remplacement de tous les champs de saisie (Global, Thread, Review) par un design unique haute-fidélité : fond `black/40`, bordures `primary/10`, avatar intégré et bouton d'action primaire vibrant.
+    2. **Architecture du Flux de Review** : Inversion de la hiérarchie dans les discussions de Full Review. L'input de saisie est désormais placé en tête (Above the Fold) pour favoriser l'interaction immédiate, suivi de la liste historique.
+    3. **Suppression du Vide Structurel** : Retrait des hauteurs fixes (`h-[800px]`) sur le carousel de reviews et passage à un layout flexible. Le repli des commentaires libère désormais instantanément l'espace vertical, garantissant une page compacte.
+    4. **Textures & Transitions** : Application systématique des textures `shadow-inner` et des transitions `x-collapse` pour une sensation de fluidité organique.
+- **Impact** : Expérience utilisateur plus cohérente, navigation verticale optimisée et interface modernisée.

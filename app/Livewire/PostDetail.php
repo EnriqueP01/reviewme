@@ -252,11 +252,7 @@ class PostDetail extends Component
             'comments.reactions',
             'comments.replies.user',
             'comments.replies.reactions',
-            'fullReviews.user',
-            'fullReviews.modifiedSnippets.snippet',
-            'fullReviews.reactions',
-            'fullReviews.comments.user',
-            'fullReviews.comments.reactions',
+            'fullReviews' => fn($q) => $q->orderBy('score', 'desc')->with(['user', 'modifiedSnippets.snippet', 'reactions', 'comments.user', 'comments.reactions']),
         ]);
 
         // Refresh snippets after load

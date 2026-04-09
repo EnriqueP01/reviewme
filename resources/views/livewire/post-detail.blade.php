@@ -1,4 +1,4 @@
-<div class="max-w-6xl mx-auto px-4 py-6" 
+<div class="w-full max-w-none px-12 py-6" 
      x-data="{ 
         isReviewing: @entangle('isReviewing'),
         suggestingLine: @entangle('suggestingLine'),
@@ -69,77 +69,123 @@
 
     <div class="w-full space-y-8">
         <!-- Header Monolith -->
-        <div class="bg-[#1a1b26] border border-white/5 rounded-[2.5rem] p-8 flex items-center justify-between gap-6 shadow-2xl relative overflow-hidden group/header">
+        <div class="bg-surface-container-low/40 backdrop-blur-2xl border border-white/5 rounded-[2.5rem] p-8 flex items-center justify-between gap-6 shadow-2xl relative overflow-hidden group/header">
             <div class="absolute inset-0 bg-gradient-to-r from-primary/5 to-transparent opacity-0 group-hover/header:opacity-100 transition-opacity pointer-events-none"></div>
             <div class="flex items-center gap-6 relative">
-                <div class="relative">
-                    <img src="{{ $post->user->avatar }}" class="w-16 h-16 rounded-2xl object-cover border-2 border-white/5 shadow-2xl">
-                    <div class="absolute -bottom-2 -right-2 bg-emerald-500 w-5 h-5 rounded-full border-4 border-[#1a1b26]"></div>
-                </div>
-                <div>
-                    <div class="flex items-center gap-3 mb-1">
-                        <span class="px-2 py-0.5 rounded bg-primary/10 text-primary text-[8px] font-black uppercase tracking-widest">{{ $post->lens ?: 'Logic' }}</span>
-                        <span class="text-on-surface-variant/40 text-[10px]">{{ $post->created_at->diffForHumans() }}</span>
+                <div class="relative group/avatar">
+                    <div class="w-14 h-14 rounded-2xl bg-surface-container-highest border border-primary/10 flex items-center justify-center text-xl font-black font-display text-primary italic overflow-hidden transition-all duration-500 group-hover/avatar:scale-105 shadow-xl">
+                        <img src="{{ $post->user->avatar }}" class="w-full h-full object-cover">
                     </div>
-                    <h1 class="text-2xl font-black text-on-surface tracking-tighter">{{ $post->title }}</h1>
-                    <p class="text-[10px] font-black uppercase tracking-[0.2em] text-on-surface-variant/60">{{ $post->user->name }} • {{ $post->snippets->count() }} files</p>
+                    <div class="absolute -bottom-1 -right-1 w-5 h-5 bg-secondary rounded-full border-[3px] border-surface flex items-center justify-center shadow-lg">
+                        <div class="w-1.5 h-1.5 bg-white rounded-full animate-pulse shadow-[0_0_5px_#fff]"></div>
+                    </div>
+                </div>
+                <div class="flex flex-col">
+                    <div class="flex items-center gap-3">
+                        <span class="text-lg font-black text-on-surface tracking-tight">{{ $post->user->name }}</span>
+                        <span class="text-xs font-mono font-bold text-primary tracking-wider font-black">@<span>{{ $post->user->name }}</span></span>
+                    </div>
+                    <div class="flex items-center gap-3 mt-1">
+                        @php
+                            $lensColors = [
+                                'Logic' => ['bg' => 'bg-primary/10', 'text' => 'text-primary', 'border' => 'border-primary/20'],
+                                'Security' => ['bg' => 'bg-red-500/10', 'text' => 'text-red-400', 'border' => 'border-red-500/20'],
+                                'Performance' => ['bg' => 'bg-amber-500/10', 'text' => 'text-amber-400', 'border' => 'border-amber-500/20'],
+                                'Elegant' => ['bg' => 'bg-indigo-500/10', 'text' => 'text-indigo-400', 'border' => 'border-indigo-500/20'],
+                                'Clean' => ['bg' => 'bg-emerald-500/10', 'text' => 'text-emerald-400', 'border' => 'border-emerald-500/20'],
+                                'Opti' => ['bg' => 'bg-blue-500/10', 'text' => 'text-blue-400', 'border' => 'border-blue-500/20'],
+                            ];
+                            $color = $lensColors[$post->lens] ?? $lensColors['Logic'];
+                        @endphp
+                        <span class="px-2 py-0.5 rounded text-[9px] font-black uppercase tracking-widest {{ $color['bg'] }} {{ $color['text'] }} border {{ $color['border'] }}">{{ $post->lens ?: 'Logic' }}</span>
+                        <span class="text-[10px] uppercase tracking-[0.2em] text-on-surface-variant font-black opacity-40 flex items-center gap-2">
+                            {{ $post->created_at->diffForHumans() }}
+                        </span>
+                        <span class="text-on-surface-variant/40 text-[10px] font-black uppercase tracking-[0.2em] font-mono">/ {{ $post->snippets->count() }} FILES</span>
+                    </div>
+                    <h1 class="text-2xl font-black text-on-surface tracking-tighter mt-2">{{ $post->title }}</h1>
                 </div>
             </div>
             
-            <div class="flex items-center gap-4 relative">
-                <select wire:model.live="selectedVersion" class="bg-[#0f111a] border border-white/10 text-on-surface rounded-xl text-[10px] font-bold px-4 py-2 outline-none focus:border-primary/50 transition-all appearance-none cursor-pointer">
-                    @for($i = ($post->snippets->max('version_number') ?: 1); $i >= 1; $i--)
-                        <option value="{{ $i }}">DEPLOYMENT V{{ $i }}</option>
-                    @endfor
-                </select>
-                <div class="w-px h-8 bg-white/5"></div>
-                <x-ui.button wire:click="toggleReviewMode" variant="{{ $isReviewing ? 'primary' : 'ghost' }}" size="sm" class="rounded-xl px-6">
-                    {{ $isReviewing ? __('Abort') : __('Review Factory') }}
+            <div class="flex items-center gap-6 relative">
+                <x-ui.button wire:click="toggleReviewMode" variant="{{ $isReviewing ? 'primary' : 'ghost' }}" class="whitespace-nowrap rounded-2xl px-8 py-4 font-black uppercase text-xs tracking-widest shadow-2xl">
+                    {{ $isReviewing ? __('Abort Session') : __('Make Full Review') }}
                 </x-ui.button>
             </div>
         </div>
 
         @if($isReviewing)
-            <!-- Full Review Factory (Compact & Premium) -->
-            <div class="bg-[#1a1b26] border-2 border-primary/20 rounded-[3rem] p-10 space-y-8 shadow-[0_0_50px_-12px_rgba(16,185,129,0.2)] animate-in slide-in-from-top-4 duration-500">
-                <div class="flex items-center justify-between">
-                    <div>
-                        <h2 class="text-xl font-black uppercase tracking-tighter text-on-surface">{{ __('Submit Implementation Review') }}</h2>
-                        <p class="text-xs text-on-surface-variant/60 font-medium">Your feedback will be attached to V{{ $selectedVersion }}</p>
-                    </div>
-                    <div class="flex items-center gap-2">
-                        <span class="w-2 h-2 rounded-full bg-primary animate-pulse"></span>
-                        <span class="text-[10px] font-black uppercase tracking-widest text-primary">{{ __('Recording') }}</span>
-                    </div>
-                </div>
-
-                <div class="space-y-6">
-                    <textarea wire:model="reviewDescription" placeholder="{{ __('State the overall architectural impact...') }}" class="w-full bg-[#0f111a] border border-white/5 rounded-3xl p-8 text-sm text-on-surface focus:border-primary/40 min-h-[140px] outline-none transition-all shadow-inner"></textarea>
-                    
-                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                        @foreach($currentSnippets as $snippet)
-                            <div class="bg-[#0f111a] rounded-[2rem] border border-white/5 overflow-hidden flex flex-col group/snippet">
-                                <div class="px-6 py-4 bg-[#161720] border-b border-white/5 flex items-center justify-between">
-                                    <div class="flex items-center gap-2">
-                                        <div class="w-2 h-2 rounded-full bg-primary/40 group-hover/snippet:bg-primary transition-colors"></div>
-                                        <span class="text-[10px] font-black uppercase tracking-[0.2em] text-on-surface-variant">{{ $snippet->filename ?: 'file' }}</span>
-                                    </div>
-                                    <span class="text-[8px] font-mono text-on-surface-variant/30">{{ strtoupper($snippet->language) }}</span>
-                                </div>
-                                <div class="p-2 flex-1">
-                                    <textarea wire:model="reviewFilesData.{{ $snippet->id }}.content" class="w-full bg-[#0d0e12] border-none font-mono text-[11px] text-on-surface min-h-[250px] focus:ring-0 rounded-2xl p-4 custom-scrollbar"></textarea>
-                                </div>
-                                <div class="px-6 py-4 bg-white/[0.02] border-t border-white/5">
-                                    <input type="text" wire:model="reviewFilesData.{{ $snippet->id }}.description" placeholder="{{ __('What changed in this file?') }}" class="w-full bg-transparent border-none p-0 text-[10px] text-on-surface focus:ring-0 placeholder:text-on-surface-variant/30 font-medium">
-                                </div>
+            <!-- Make Full Review (Antigravity HUD) -->
+            <div class="fixed inset-0 z-[2000] flex items-stretch justify-center bg-black/80 backdrop-blur-2xl animate-in fade-in duration-500 overflow-hidden" @click.self="toggleReviewMode">
+                <div class="bg-surface-container-highest/95 border-x border-white/10 w-full max-w-5xl shadow-[0_0_100px_rgba(0,0,0,0.9)] flex flex-col h-full overflow-hidden relative">
+                    <!-- Header -->
+                    <div class="px-8 py-4 border-b border-white/5 flex items-center justify-between shrink-0 bg-white/[0.02]">
+                        <div class="flex items-center gap-4">
+                            <div class="w-10 h-10 rounded-xl bg-primary/10 flex items-center justify-center text-primary shadow-inner">
+                                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"></path></svg>
                             </div>
-                        @endforeach
+                            <h2 class="text-xs font-black uppercase tracking-widest text-on-surface">{{ __('Dispatch Full Review') }}</h2>
+                        </div>
+                        <button wire:click="toggleReviewMode" class="p-2 rounded-xl hover:bg-white/5 text-on-surface-variant hover:text-white transition-all">
+                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M6 18L18 6M6 6l12 12" stroke-width="2.5" stroke-linecap="round"/></svg>
+                        </button>
                     </div>
-                </div>
-                
-                <div class="flex justify-end items-center gap-6 pt-6 border-t border-white/5">
-                    <button wire:click="toggleReviewMode" class="text-[10px] font-black uppercase text-on-surface-variant hover:text-white transition-colors tracking-widest">{{ __('Abandon Changes') }}</button>
-                    <x-ui.button wire:click="saveFullReview" variant="primary" class="rounded-2xl px-10 py-5 shadow-2xl">{{ __('Dispatch Review') }}</x-ui.button>
+
+                    <!-- Body -->
+                    <div class="flex-1 overflow-y-auto p-8 custom-scrollbar space-y-8">
+                        <!-- Global Eval -->
+                        <div class="space-y-3">
+                            <label class="px-1 text-[9px] font-black uppercase tracking-[0.4em] text-primary/60">{{ __('Commentary') }}</label>
+                            <textarea wire:model="reviewDescription" placeholder="{{ __('State the overall impact and patterns used...') }}" 
+                                      class="w-full bg-black/20 border border-white/5 rounded-2xl p-4 text-sm text-on-surface focus:border-primary/20 min-h-[80px] outline-none transition-all shadow-inner custom-scrollbar resize-none font-medium italic"></textarea>
+                        </div>
+
+                        <!-- Fragment Revisions -->
+                        <div class="space-y-4">
+                            <label class="px-1 text-[9px] font-black uppercase tracking-[0.4em] text-on-surface-variant/40">{{ __('Files:') }}</label>
+                            <div class="grid grid-cols-1 gap-4">
+                                @foreach($post->snippets as $snippet)
+                                    <div class="bg-black/20 rounded-2xl border border-white/5 overflow-hidden flex flex-col group/snippet shadow-xl">
+                                        <div class="px-6 py-3 bg-white/[0.03] border-b border-white/5 flex items-center justify-between">
+                                            <div class="flex items-center gap-4">
+                                                <div class="w-2.5 h-2.5 rounded-full bg-primary/40 group-hover/snippet:bg-primary transition-colors"></div>
+                                                <span class="text-[10px] font-mono font-bold text-on-surface/80 tracking-wide">{{ $snippet->filename ?: 'module' }}</span>
+                                            </div>
+                                        </div>
+                                        <div class="flex-1 bg-[#0d0e12] flex overflow-hidden">
+                                            <!-- Gutter -->
+                                            <div class="w-12 bg-white/[0.02] border-r border-white/5 flex flex-col py-4 items-end pr-3 select-none text-[8px] font-mono text-on-surface-variant/10">
+                                                @for($i = 1; $i <= max(1, count(explode("\n", $reviewFilesData[$snippet->id]['content'] ?? ''))); $i++)
+                                                    <span class="h-6 flex items-center">{{ $i }}</span>
+                                                @endfor
+                                            </div>
+                                            <!-- Editor -->
+                                            <textarea 
+                                                wire:model.live="reviewFilesData.{{ $snippet->id }}.content"
+                                                class="flex-1 bg-transparent border-none p-4 sm:p-6 font-mono text-[11px] text-on-surface focus:ring-0 leading-relaxed custom-scrollbar resize-none"
+                                                spellcheck="false"
+                                                rows="{{ max(3, min(15, count(explode("\n", $reviewFilesData[$snippet->id]['content'] ?? '')))) }}"
+                                            ></textarea>
+                                        </div>
+                                        <div class="px-6 py-4 bg-white/[0.01] border-t border-white/5">
+                                            <div class="flex items-center gap-4">
+                                                <svg class="w-4 h-4 text-primary/40" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M7 8h10M7 12h4m1 8l-4-4H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-3l-4 4z"></path></svg>
+                                                <input type="text" wire:model="reviewFilesData.{{ $snippet->id }}.description" placeholder="{{ __('Logic notes for this file...') }}" class="flex-1 bg-transparent border-none p-0 text-[11px] text-on-surface focus:ring-0 placeholder:text-on-surface-variant/20 font-medium italic">
+                                            </div>
+                                        </div>
+                                    </div>
+                                @endforeach
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Footer -->
+                    <div class="px-8 py-4 border-t border-white/5 flex justify-end items-center gap-8 shrink-0 bg-white/[0.02]">
+                        <button wire:click="toggleReviewMode" class="text-[10px] font-black uppercase text-on-surface-variant hover:text-white transition-colors tracking-widest">{{ __('Abandon') }}</button>
+                        <x-ui.button wire:click="saveFullReview" variant="primary" class="rounded-xl px-10 py-4 shadow-2xl text-[10px] font-black uppercase tracking-widest">
+                            {{ __('Curate this code !') }}
+                        </x-ui.button>
+                    </div>
                 </div>
             </div>
         @endif
@@ -147,184 +193,313 @@
         <!-- Code Block : Monolith HUD -->
         <div class="rounded-[2.5rem] overflow-hidden border border-white/5 shadow-2xl relative" @mouseup="handleMouseUp($event)">
             <x-ui.code-block 
-                :snippets="$currentSnippets"
+                :snippets="$post->snippets"
                 :title="$post->title"
                 :suggestions="$post->inlineSuggestions"
             />
         </div>
 
         <!-- Activity Feed (Reviews + Discussion) -->
-        <div class="grid grid-cols-1 gap-12 pt-12">
+        <div class="grid grid-cols-1 gap-16 pt-16">
             
-            <!-- REVIEWS SECTION -->
+            <!-- FULL REVIEWS SECTION -->
             @if($post->fullReviews->count() > 0)
-                <div class="space-y-10">
-                    <h2 class="text-[10px] font-black uppercase tracking-[0.4em] text-on-surface-variant/40 flex items-center gap-4">
-                        {{ __('Implementation Feed') }}
-                        <div class="h-px flex-1 bg-white/5"></div>
-                    </h2>
+                <div class="space-y-12">
+                    <div class="flex items-center justify-between">
+                        <h2 class="text-[10px] font-black uppercase tracking-[0.5em] text-on-surface-variant/20 flex items-center gap-6 flex-1">
+                            {{ __('Full Reviews') }}
+                            <div class="h-px flex-1 bg-gradient-to-r from-white/5 via-white/[0.02] to-transparent"></div>
+                        </h2>
+                    </div>
 
-                    <div class="space-y-8">
-                        @foreach($post->fullReviews as $fr)
-                            <div class="bg-[#1a1b26] rounded-[2.5rem] p-8 border border-white/5 shadow-xl group/fr transition-all hover:bg-[#1d1e2b] relative">
-                                <div class="flex items-start justify-between gap-6 mb-8">
-                                    <div class="flex items-center gap-4">
-                                        <div class="relative">
-                                            <img src="{{ $fr->user->avatar }}" class="w-12 h-12 rounded-2xl object-cover border border-white/10">
-                                            <div class="absolute -top-1 -right-1 bg-emerald-500 w-3 h-3 rounded-full border-2 border-[#1a1b26]"></div>
-                                        </div>
-                                        <div>
-                                            <h4 class="text-sm font-black text-on-surface">{{ $fr->user->name }}</h4>
-                                            <p class="text-[8px] font-black uppercase tracking-widest text-primary">{{ $fr->created_at->diffForHumans() }}</p>
-                                        </div>
-                                    </div>
-                                    <div class="flex items-center gap-1 bg-[#0f111a] p-1 rounded-[1.2rem] border border-white/5">
-                                        <button wire:click="voteReview({{ $fr->id }}, 'up')" class="p-2 rounded-xl hover:bg-emerald-500/10 text-on-surface-variant hover:text-emerald-400 transition-all"><svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M5 15l7-7 7 7" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
-                                        <span class="text-xs font-black px-2 {{ $fr->score > 0 ? 'text-emerald-400' : ($fr->score < 0 ? 'text-red-400' : 'text-on-surface-variant') }}">{{ $fr->score }}</span>
-                                        <button wire:click="voteReview({{ $fr->id }}, 'down')" class="p-2 rounded-xl hover:bg-red-500/10 text-on-surface-variant hover:text-red-400 transition-all"><svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M19 9l-7 7-7-7" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
-                                    </div>
-                                </div>
+                    <div class="relative group/carousel" 
+                         x-data="{ 
+                            current: 0, 
+                            total: {{ $post->fullReviews->count() }},
+                            next() { this.current = (this.current + 1) % this.total },
+                            prev() { this.current = (this.current - 1 + this.total) % this.total }
+                         }">
+                        
+                        <!-- Navigation Arrows -->
+                        @if($post->fullReviews->count() > 1)
+                            <div class="absolute inset-y-0 -left-20 flex items-center z-20">
+                                <button @click="prev()" class="w-14 h-14 rounded-full bg-surface-container-high/80 border border-white/10 flex items-center justify-center text-on-surface-variant hover:text-primary hover:bg-surface-container-highest hover:scale-110 transition-all active:scale-95 shadow-2xl backdrop-blur-xl">
+                                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M15 19l-7-7 7-7" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                                </button>
+                            </div>
+                            <div class="absolute inset-y-0 -right-20 flex items-center z-20">
+                                <button @click="next()" class="w-14 h-14 rounded-full bg-surface-container-high/80 border border-white/10 flex items-center justify-center text-on-surface-variant hover:text-primary hover:bg-surface-container-highest hover:scale-110 transition-all active:scale-95 shadow-2xl backdrop-blur-xl">
+                                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M9 5l7 7-7 7" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                                </button>
+                            </div>
+                        @endif
 
-                                <div class="pl-4 border-l-2 border-primary/20 mb-8">
-                                    <p class="text-[13px] text-on-surface-variant leading-relaxed font-medium italic opacity-90">{{ $fr->description }}</p>
-                                </div>
-                                
-                                @if($fr->modifiedSnippets->count() > 0)
-                                    <div class="space-y-4 mb-8">
-                                        @foreach($fr->modifiedSnippets as $ms)
-                                            <div class="bg-[#0f111a] rounded-[1.5rem] border border-white/5 overflow-hidden group/mod" x-data="{ open: false }">
-                                                <div @click="open = !open" class="px-6 py-3 flex items-center justify-between cursor-pointer hover:bg-white/[0.02] transition-all">
-                                                    <div class="flex items-center gap-3">
-                                                        <div class="w-2 h-2 rounded-full bg-primary/20 group-hover/mod:bg-primary transition-colors"></div>
-                                                        <span class="text-[10px] font-black uppercase text-on-surface/70">{{ $ms->snippet->filename ?: 'file' }}</span>
+                        <div class="relative w-full h-full overflow-hidden">
+                            @foreach($post->fullReviews as $frIndex => $fr)
+                                <div x-show="current === {{ $frIndex }}" 
+                                     x-transition:enter="transition ease-out duration-700"
+                                     x-transition:enter-start="opacity-0 translate-x-20"
+                                     x-transition:enter-end="opacity-100 translate-x-0"
+                                     x-transition:leave="transition ease-in duration-500 absolute inset-0"
+                                     x-transition:leave-start="opacity-100 translate-x-0"
+                                     x-transition:leave-end="opacity-0 -translate-x-20"
+                                     class="w-full h-full">
+                                    
+                                    <div class="bg-surface-container-low rounded-[1.5rem] p-6 sm:p-8 border border-white/5 shadow-2xl group/fr transition-all hover:bg-surface-container-medium relative overflow-hidden flex flex-col">
+                                        <!-- Background Ambient Glow -->
+                                        <div class="absolute -top-32 -right-32 w-96 h-96 bg-primary/5 rounded-full blur-[120px] group-hover/fr:bg-primary/10 transition-all"></div>
+                                        
+                                        <div class="relative z-10 flex flex-col h-full">
+                                            <div class="flex items-start justify-between gap-8 mb-3 shrink-0">
+                                                <div class="flex items-center gap-6">
+                                                    <div class="relative group/avatar">
+                                                        <div class="w-16 h-16 rounded-3xl bg-white/5 p-0.5 outline outline-2 outline-white/10 group-hover/avatar:outline-primary/50 transition-all overflow-hidden shadow-2xl">
+                                                            <img src="{{ $fr->user->avatar }}" class="w-full h-full object-cover">
+                                                        </div>
+                                                        <div class="absolute -bottom-2 -right-2 w-7 h-7 rounded-2xl bg-emerald-500 border-4 border-[#1a1b26] flex items-center justify-center shadow-lg">
+                                                            <svg class="w-4 h-4 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M5 13l4 4L19 7" stroke-width="3.5"/></svg>
+                                                        </div>
                                                     </div>
-                                                    <div class="flex items-center gap-3">
-                                                        <span class="text-[8px] font-black text-on-surface-variant/30 uppercase tracking-widest">{{ $ms->description ?: __('Revised') }}</span>
-                                                        <svg class="w-3.5 h-3.5 text-on-surface-variant/40 transition-transform duration-300" :class="open ? 'rotate-180' : ''" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M19 9l-7 7-7-7" stroke-width="3" stroke-linecap="round"/></svg>
+                                                    <div>
+                                                        <h4 class="text-xl font-black text-on-surface tracking-tighter">{{ $fr->user->name }}</h4>
+                                                        <p class="text-[10px] font-black uppercase tracking-[0.3em] text-primary flex items-center gap-2 mt-2">
+                                                            <svg class="w-4 h-4 text-primary" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" stroke-width="2.5"/></svg>
+                                                            {{ $fr->created_at->diffForHumans() }}
+                                                        </p>
                                                     </div>
                                                 </div>
-                                                <div x-show="open" x-collapse x-cloak>
-                                                    <div class="p-6 bg-[#0d0e12] border-t border-white/5 font-mono text-[10px] leading-relaxed custom-scrollbar overflow-x-auto">
-                                                        @foreach(\App\Helpers\TextDiffHelper::diffLines($ms->snippet->code_content, $ms->modified_content) as $line)
-                                                            <div class="flex gap-4 {{ $line['type'] === 'added' ? 'bg-emerald-500/5 text-emerald-400' : ($line['type'] === 'removed' ? 'bg-red-500/5 text-red-400 line-through opacity-40 text-[9px]' : 'text-on-surface-variant/30 opacity-60') }} px-2 rounded">
-                                                                <span class="w-4 opacity-30 select-none">{{ $line['type'] === 'added' ? '+' : ($line['type'] === 'removed' ? '-' : ' ') }}</span>
-                                                                <pre class="whitespace-pre-wrap break-all">{{ $line['content'] }}</pre>
+                                                
+                                                <!-- Vote Engine -->
+                                                <div class="flex items-center gap-3"
+                                                     x-data="{ 
+                                                        score: {{ (int) $fr->score }},
+                                                        voted: '{{ $fr->reactions->where('user_id', Auth::id())->first()?->type }}',
+                                                        vote(type) {
+                                                            if (this.voted === type) {
+                                                                this.score += (type === 'up' ? -1 : 1);
+                                                                this.voted = null;
+                                                            } else {
+                                                                if (this.voted) {
+                                                                    this.score += (type === 'up' ? 2 : -2);
+                                                                } else {
+                                                                    this.score += (type === 'up' ? 1 : -1);
+                                                                }
+                                                                this.voted = type;
+                                                            }
+                                                            $wire.voteReview({{ $fr->id }}, type);
+                                                        }
+                                                     }">
+                                                    <div class="flex items-center gap-2 p-2 bg-[#0d0e12]/60 rounded-[1.5rem] border border-white/5 shadow-inner">
+                                                        <button @click="vote('up')" class="p-3.5 rounded-2xl transition-all active:scale-75" :class="voted === 'up' ? 'text-emerald-400 bg-emerald-500/10 shadow-[0_0_30px_rgba(52,211,153,0.15)]' : 'text-on-surface-variant hover:text-emerald-400 hover:bg-emerald-500/5'">
+                                                            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M5 15l7-7 7 7" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                                                        </button>
+                                                        <span class="text-sm font-black tracking-tighter w-8 text-center" :class="score > 0 ? 'text-emerald-400' : (score < 0 ? 'text-red-400' : 'text-on-surface-variant/40')" x-text="score"></span>
+                                                        <button @click="vote('down')" class="p-3.5 rounded-2xl transition-all active:scale-75" :class="voted === 'down' ? 'text-red-400 bg-red-500/10 shadow-[0_0_30px_rgba(248,113,113,0.15)]' : 'text-on-surface-variant hover:text-red-400 hover:bg-red-500/5'">
+                                                            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M19 9l-7 7-7-7" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                                                        </button>
+                                                    </div>
+                                                </div>
+                                            </div>
+
+                                            <div class="space-y-4 pb-6">
+                                                <div class="py-1 shrink-0">
+                                                    <p class="text-[13px] text-on-surface/90 leading-relaxed font-medium italic opacity-80">{{ $fr->description }}</p>
+                                                </div>
+                                                
+                                                @if($fr->modifiedSnippets->count() > 0)
+                                                    <div class="space-y-6">
+                                                        @foreach($fr->modifiedSnippets as $ms)
+                                                            <div class="bg-[#0f111a] rounded-[2rem] border border-white/5 overflow-hidden group/mod shadow-2xl">
+                                                                <div class="px-8 py-4 flex items-center justify-between bg-white/[0.03] border-b border-white/10">
+                                                                    <div class="flex items-center gap-3">
+                                                                        <div class="w-2 h-2 rounded-full bg-primary/40"></div>
+                                                                        <span class="text-[11px] font-mono font-black text-primary tracking-widest uppercase">{{ $ms->snippet->filename }}</span>
+                                                                    </div>
+                                                                    @if($ms->description)
+                                                                        <span class="text-sm font-black text-on-surface tracking-tight bg-primary/10 px-3 py-1 rounded-lg border border-primary/20">{{ $ms->description }}</span>
+                                                                    @endif
+                                                                </div>
+                                                                <div class="relative">
+                                                                    <x-ui.syntax-highlighter :code="$ms->modified_content" :lang="$ms->snippet->language" maxHeight="max-h-[400px]" />
+                                                                </div>
                                                             </div>
                                                         @endforeach
                                                     </div>
-                                                </div>
-                                            </div>
-                                        @endforeach
-                                    </div>
-                                @endif
+                                                @endif
 
-                                <!-- DISCUSSION FOR THIS REVIEW (COMPACT) -->
-                                <div class="pt-6 border-t border-white/5" x-data="{ open: false }">
-                                    <button @click="open = !open" class="flex items-center gap-2 mb-4 group/intel">
-                                        <div class="w-8 h-8 rounded-xl bg-white/5 flex items-center justify-center group-hover/intel:bg-primary/20 transition-all">
-                                            <svg class="w-3.5 h-3.5 text-on-surface-variant/40 group-hover/intel:text-primary transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z" stroke-width="2.5" stroke-linecap="round"/></svg>
-                                        </div>
-                                        <span class="text-[10px] font-black uppercase tracking-widest text-on-surface-variant group-hover/intel:text-white transition-colors">{{ $fr->comments->count() }} {{ __('Intel Nodes') }}</span>
-                                    </button>
-
-                                    <div x-show="open" x-collapse x-cloak class="space-y-4 pl-4 border-l border-white/5 ml-4">
-                                        @foreach($fr->comments as $revComp)
-                                            <div class="flex gap-3 group/revc">
-                                                <img src="{{ $revComp->user->avatar }}" class="w-8 h-8 rounded-xl border border-white/5 object-cover">
-                                                <div class="flex-1 space-y-1">
-                                                    <div class="flex items-center gap-2">
-                                                        <span class="text-[10px] font-black text-on-surface">{{ $revComp->user->name }}</span>
-                                                        <span class="text-[8px] font-black text-on-surface-variant/30 uppercase">{{ $revComp->created_at->diffForHumans() }}</span>
+                                                <!-- Discussion Node -->
+                                                    <div class="flex items-center justify-between gap-4 px-4 bg-white/[0.02] py-3 rounded-[1.5rem] border border-white/5">
+                                                        <div class="flex items-center gap-4">
+                                                            <div class="w-1.5 h-1.5 rounded-full bg-primary/40"></div>
+                                                            <span class="text-[10px] font-black uppercase tracking-[0.3em] text-on-surface-variant/40">{{ __('Discussion') }} ({{ $fr->comments->count() }})</span>
+                                                        </div>
+                                                        <button @click="collapsed = !collapsed" class="px-4 py-2 rounded-xl hover:bg-white/5 text-[9px] font-black uppercase tracking-widest text-primary transition-all flex items-center gap-2 group/btn">
+                                                            <span x-text="collapsed ? '{{ __('Show') }}' : '{{ __('Hide') }}'"></span>
+                                                            <svg class="w-3 h-3 transition-transform duration-500" :class="collapsed ? '' : 'rotate-180'" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M19 9l-7 7-7-7" stroke-width="4" stroke-linecap="round"/></svg>
+                                                        </button>
                                                     </div>
-                                                    <p class="text-xs text-on-surface-variant/90 leading-snug">{{ $revComp->content }}</p>
+
+                                                    <div class="space-y-6" x-show="!collapsed" x-collapse>
+                                                        <!-- Input First -->
+                                                        <div class="relative pt-2">
+                                                            <div class="flex items-center gap-4 bg-black/40 rounded-[2rem] p-3 border border-primary/10 focus-within:border-primary/40 transition-all shadow-inner">
+                                                                <img src="{{ Auth::user()->avatar }}" class="w-10 h-10 rounded-2xl ml-2 shadow-2xl border border-white/10 shrink-0">
+                                                                <input type="text" 
+                                                                       wire:model="reviewCommentContent" 
+                                                                       wire:keydown.enter="saveGlobalComment(null, {{ $fr->id }})" 
+                                                                       placeholder="{{ __('Add a commentary...') }}" 
+                                                                       class="bg-transparent border-none flex-1 py-3 text-sm text-on-surface focus:ring-0 placeholder:text-on-surface-variant/20 font-semibold">
+                                                                <button wire:click="saveGlobalComment(null, {{ $fr->id }})" class="mr-2 p-3 rounded-2xl bg-primary text-white hover:scale-105 active:scale-95 transition-all shadow-[0_0_20px_rgba(190,194,255,0.3)]">
+                                                                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M13 5l7 7m0 0l-7 7m7-7H3" stroke-width="4"/></svg>
+                                                                </button>
+                                                            </div>
+                                                        </div>
+
+                                                        <!-- List Second -->
+                                                        @if($fr->comments->count() > 0)
+                                                            <div class="space-y-4">
+                                                                @foreach($fr->comments as $revComp)
+                                                                    <div class="flex gap-5 p-6 rounded-[2rem] bg-gradient-to-br from-white/[0.03] to-transparent border-l-4 border-primary/40 hover:from-white/[0.05] transition-all group/node relative shadow-2xl overflow-hidden">
+                                                                        <div class="absolute -right-8 -top-8 w-24 h-24 bg-primary/5 rounded-full blur-2xl group-hover/node:bg-primary/10 transition-all"></div>
+                                                                        <img src="{{ $revComp->user->avatar }}" class="w-12 h-12 rounded-2xl object-cover shadow-2xl relative z-10 border border-white/5">
+                                                                        <div class="flex-1 space-y-3">
+                                                                            <div class="flex items-center justify-between">
+                                                                                <div class="flex items-center gap-3">
+                                                                                    <span class="text-sm font-black text-on-surface">{{ $revComp->user->name }}</span>
+                                                                                    <span class="text-[10px] font-black text-on-surface-variant/20 uppercase flex items-center gap-2">
+                                                                                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" stroke-width="3"/></svg>
+                                                                                        {{ $revComp->created_at->diffForHumans() }}
+                                                                                    </span>
+                                                                                </div>
+                                                                                
+                                                                                <div x-data="{ likes: {{ $revComp->reactions->count() }}, isLiked: {{ $revComp->reactions->where('user_id', Auth::id())->count() > 0 ? 'true' : 'false' }}, toggle() { this.isLiked = !this.isLiked; this.likes = this.isLiked ? this.likes + 1 : this.likes - 1; $wire.toggleCommentLike({{ $revComp->id }}); } }">
+                                                                                    <button @click="toggle()" class="flex items-center gap-2 group/vlike transition-all active:scale-75 pb-1">
+                                                                                        <svg class="w-4 h-4 transition-all duration-300" :class="isLiked ? 'text-emerald-400 fill-emerald-400' : 'text-on-surface-variant/20 group-hover/vlike:text-emerald-400'" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" stroke-width="3"/></svg>
+                                                                                        <span class="text-[11px] font-black" :class="likes > 0 ? 'text-on-surface/60' : 'text-on-surface-variant/10'" x-text="likes"></span>
+                                                                                    </button>
+                                                                                </div>
+                                                                            </div>
+                                                                            <p class="text-sm text-on-surface-variant leading-relaxed">{{ $revComp->content }}</p>
+                                                                        </div>
+                                                                    </div>
+                                                                @endforeach
+                                                            </div>
+                                                        @endif
+                                                    </div>
                                                 </div>
                                             </div>
-                                        @endforeach
-                                        
-                                        <div class="relative pt-2">
-                                            <input type="text" wire:model="reviewCommentContent" wire:keydown.enter="saveGlobalComment(null, {{ $fr->id }})" placeholder="{{ __('Attach note...') }}" class="w-full bg-[#0f111a] border border-white/10 rounded-xl px-4 py-2.5 text-xs text-on-surface outline-none focus:border-primary/40 transition-all shadow-inner">
-                                            <button wire:click="saveGlobalComment(null, {{ $fr->id }})" class="absolute right-2 top-3.5 p-1 text-primary hover:scale-110 transition-transform"><svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8" stroke-width="2.5"/></svg></button>
                                         </div>
                                     </div>
                                 </div>
+                            @endforeach
+                        </div>
+
+                        <!-- Progress Dots -->
+                        @if($post->fullReviews->count() > 1)
+                            <div class="absolute -bottom-14 left-1/2 -translate-x-1/2 flex gap-4">
+                                @foreach($post->fullReviews as $frIndex => $fr)
+                                    <button @click="current = {{ $frIndex }}" class="w-12 h-1.5 transition-all duration-700 rounded-full" :class="current === {{ $frIndex }} ? 'bg-primary w-20' : 'bg-white/5 hover:bg-white/10'"></button>
+                                @endforeach
                             </div>
-                        @endforeach
+                        @endif
                     </div>
                 </div>
             @endif
 
-            <!-- GLOBAL DISCUSSION SECTION (YOUTUBE STYLE COMPACT) -->
-            <div class="space-y-10">
-                <h2 class="text-[10px] font-black uppercase tracking-[0.4em] text-on-surface-variant/40 flex items-center gap-4">
-                    {{ __('Community Discussion') }}
-                    <div class="h-px flex-1 bg-white/5"></div>
+            <!-- GLOBAL DISCUSSION SECTION -->
+            <div class="space-y-12">
+                <h2 class="text-[10px] font-black uppercase tracking-[0.5em] text-on-surface-variant/20 flex items-center gap-6">
+                    {{ __('Community Commentaries') }}
+                    <div class="h-px flex-1 bg-gradient-to-r from-white/5 via-white/[0.02] to-transparent"></div>
                 </h2>
 
-                <div class="bg-[#1a1b26] rounded-[3rem] p-10 border border-white/5 shadow-2xl space-y-12">
-                    
-                    <!-- Main Input -->
-                    <div class="flex gap-6 items-start">
-                        <img src="{{ Auth::user()?->avatar ?: 'https://ui-avatars.com/api/?name=Guest' }}" class="w-12 h-12 rounded-[1.2rem] border-2 border-white/5 object-cover shrink-0">
-                        <div class="flex-1 space-y-4">
-                            <textarea wire:model="globalCommentContent" placeholder="{{ __('Add a comment...') }}" class="w-full bg-[#0f111a] border-b border-white/10 p-0 text-sm text-on-surface focus:border-primary placeholder:text-on-surface-variant/30 min-h-[40px] outline-none transition-all resize-none"></textarea>
-                            <div class="flex justify-end gap-3" x-show="$wire.globalCommentContent.length > 0" x-transition>
-                                <button @click="$wire.globalCommentContent = ''" class="px-4 py-2 text-[10px] font-black uppercase tracking-widest text-on-surface-variant hover:text-white transition-colors">{{ __('Cancel') }}</button>
-                                <x-ui.button wire:click="saveGlobalComment" variant="primary" class="rounded-xl px-6 py-2.5">{{ __('Comment') }}</x-ui.button>
-                            </div>
+                <div class="bg-[#1a1b26] rounded-[2.5rem] p-8 border border-white/5 shadow-2xl space-y-10">
+                    <!-- Main Input Unified -->
+                    <div class="relative pt-4">
+                        <div class="flex items-center gap-4 bg-black/40 rounded-[2.5rem] p-4 border border-primary/20 focus-within:border-primary/60 transition-all shadow-[0_0_50px_rgba(190,194,255,0.05)]">
+                            <img src="{{ Auth::user()->avatar }}" class="w-14 h-14 rounded-3xl ml-2 shadow-2xl border border-white/10 shrink-0">
+                            <input type="text" 
+                                   wire:model="globalCommentContent"
+                                   wire:keydown.enter="saveGlobalComment"
+                                   placeholder="{{ __('Add a commentary...') }}" 
+                                   class="bg-transparent border-none flex-1 py-4 px-2 text-base text-on-surface focus:ring-0 placeholder:text-on-surface-variant/20 font-bold tracking-tight">
+                            <button wire:click="saveGlobalComment" class="mr-3 p-5 rounded-3xl bg-primary text-white hover:scale-105 active:scale-95 transition-all shadow-[0_0_30px_rgba(190,194,255,0.3)] flex items-center gap-3">
+                                <span class="text-xs font-black uppercase tracking-widest pl-2 hidden sm:block">{{ __('Broadcast') }}</span>
+                                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M13 5l7 7m0 0l-7 7m7-7H3"></path></svg>
+                            </button>
                         </div>
                     </div>
 
                     <!-- Comments List -->
-                    <div class="space-y-10">
+                    <div class="space-y-8">
                         @foreach($post->comments->whereNull('full_review_id')->whereNull('parent_id') as $comment)
-                            <div class="flex gap-5 group/comment" x-data="{ replying: false }">
-                                <img src="{{ $comment->user->avatar }}" class="w-11 h-11 rounded-[1.2rem] border border-white/10 shadow-lg object-cover shrink-0">
+                            <div class="flex gap-6 group/comment relative" x-data="{ replying: false }">
+                                <div class="absolute left-6 top-12 bottom-0 w-px bg-gradient-to-b from-primary/20 via-primary/5 to-transparent"></div>
+                                <img src="{{ $comment->user->avatar }}" class="w-12 h-12 rounded-2xl border border-white/10 shadow-2xl object-cover shrink-0 relative z-10 bg-surface-container">
                                 <div class="flex-1 space-y-3">
-                                    <div class="flex items-center gap-3">
-                                        <span class="text-[11px] font-black text-on-surface">{{ $comment->user->name }}</span>
-                                        <span class="text-[8px] font-black text-on-surface-variant/30 uppercase tracking-widest">{{ $comment->created_at->diffForHumans() }}</span>
+                                    <div class="flex items-center gap-4">
+                                        <span class="text-sm font-black text-on-surface leading-none">{{ $comment->user->name }}</span>
+                                        <span class="text-[9px] font-black text-on-surface-variant/30 uppercase tracking-[0.2em] flex items-center gap-2">
+                                            <div class="w-1 h-1 rounded-full bg-primary/40"></div>
+                                            {{ $comment->created_at->diffForHumans() }}
+                                        </span>
                                     </div>
-                                    <p class="text-[13px] text-on-surface-variant leading-relaxed opacity-90">{{ $comment->content }}</p>
+                                    <p class="text-sm text-on-surface-variant leading-relaxed opacity-80">{{ $comment->content }}</p>
                                     
-                                    <!-- Actions -->
-                                    <div class="flex items-center gap-6 pt-1">
-                                        <button wire:click="toggleCommentLike({{ $comment->id }})" class="flex items-center gap-2 group/like transition-all active:scale-90">
-                                            <div class="p-1 px-2 rounded-lg bg-white/5 flex items-center gap-1.5 group-hover/like:bg-emerald-500/10 transition-all">
-                                                <svg class="w-3.5 h-3.5 {{ $comment->reactions->where('user_id', Auth::id())->count() > 0 ? 'text-emerald-400 fill-emerald-400 scale-110' : 'text-on-surface-variant group-hover/like:text-emerald-400' }} transition-all duration-300" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" stroke-width="2.5"/></svg>
-                                                <span class="text-[10px] font-black {{ $comment->reactions->count() > 0 ? 'text-on-surface' : 'text-on-surface-variant opacity-40' }}">{{ $comment->reactions->count() }}</span>
+                                    <div class="flex items-center gap-8 pt-2" 
+                                         x-data="{ 
+                                            likes: {{ $comment->reactions->count() }}, 
+                                            isLiked: {{ $comment->reactions->where('user_id', Auth::id())->count() > 0 ? 'true' : 'false' }},
+                                            toggle() {
+                                                this.isLiked = !this.isLiked;
+                                                this.likes = this.isLiked ? this.likes + 1 : this.likes - 1;
+                                                $wire.toggleCommentLike({{ $comment->id }});
+                                            }
+                                         }">
+                                        <button @click="toggle()" class="flex items-center gap-2.5 group/like transition-all active:scale-90">
+                                            <div class="p-2 px-3 rounded-xl bg-white/5 flex items-center gap-2 group-hover/like:bg-emerald-500/10 transition-all border border-transparent group-hover/like:border-emerald-500/20">
+                                                <svg class="w-4 h-4 transition-all duration-300" :class="isLiked ? 'text-emerald-400 fill-emerald-400 scale-110' : 'text-on-surface-variant group-hover/like:text-emerald-400'" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" stroke-width="3"/></svg>
+                                                <span class="text-[11px] font-black transition-colors" :class="likes > 0 ? 'text-on-surface' : 'text-on-surface-variant opacity-30'" x-text="likes"></span>
                                             </div>
                                         </button>
-                                        <button @click="replying = !replying; if(replying) { $nextTick(() => $el.closest('.group\\/comment').querySelector('input')?.focus()); $wire.replyToId = {{ $comment->id }}; }" class="text-[9px] font-black uppercase tracking-[0.2em] text-on-surface-variant/40 hover:text-primary transition-all">{{ __('Reply') }}</button>
+                                        <button @click="replying = !replying; if(replying) { $nextTick(() => $el.closest('.group\\/comment').querySelector('input')?.focus()); $wire.replyToId = {{ $comment->id }}; }" class="text-[10px] font-black uppercase tracking-[0.3em] text-on-surface-variant/40 hover:text-primary transition-all flex items-center gap-3 group/reply-btn">
+                                            <svg class="w-3 h-3 group-hover/reply-btn:translate-x-0.5 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M3 10h10a8 8 0 018 8v2M3 10l6 6m-6-6l6-6" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                                            {{ __('Reply') }}
+                                        </button>
                                     </div>
 
-                                    <!-- Reply Input -->
-                                    <div x-show="replying" x-collapse x-cloak class="pt-4 flex gap-4 animate-in slide-in-from-left-2 duration-300">
-                                        <img src="{{ Auth::user()?->avatar ?: 'https://ui-avatars.com/api/?name=Guest' }}" class="w-8 h-8 rounded-lg object-cover shrink-0">
-                                        <div class="flex-1 space-y-3">
-                                            <input type="text" wire:model="replyContent" placeholder="{{ __('Add a reply...') }}" class="w-full bg-transparent border-b-2 border-white/5 py-2 text-xs text-on-surface outline-none focus:border-primary transition-all placeholder:text-on-surface-variant/20">
-                                            <div class="flex justify-end gap-3">
-                                                <button @click="replying = false; $wire.replyToId = null; $wire.replyContent = ''" class="text-[9px] font-black uppercase text-on-surface-variant hover:text-white transition-colors">{{ __('Cancel') }}</button>
-                                                <button wire:click="saveGlobalComment({{ $comment->id }})" @click="if($wire.replyContent.length > 0) { setTimeout(() => { replying = false; }, 200) }" class="bg-primary/10 hover:bg-primary text-primary hover:text-white px-5 py-2 rounded-xl text-[9px] font-black uppercase tracking-[0.2em] transition-all shadow-lg active:scale-95">{{ __('Reply') }}</button>
-                                            </div>
+                                    <div x-show="replying" x-collapse x-cloak class="pt-6 animate-in slide-in-from-left-4 duration-500">
+                                        <div class="flex items-center gap-4 bg-black/40 rounded-[2rem] p-3 border border-primary/10 focus-within:border-primary/40 transition-all shadow-inner">
+                                            <img src="{{ Auth::user()->avatar }}" class="w-10 h-10 rounded-2xl ml-2 shadow-2xl border border-white/10 shrink-0">
+                                            <input type="text" 
+                                                   wire:model="replyContent" 
+                                                   wire:keydown.enter="saveGlobalComment({{ $comment->id }})" 
+                                                   placeholder="{{ __('Add a reply...') }}" 
+                                                   class="bg-transparent border-none flex-1 py-3 text-sm text-on-surface focus:ring-0 placeholder:text-on-surface-variant/20 font-semibold">
+                                            <button wire:click="saveGlobalComment({{ $comment->id }})" @click="if($wire.replyContent.length > 0) { setTimeout(() => { replying = false; }, 200) }" class="mr-2 p-3 rounded-2xl bg-primary text-white hover:scale-105 active:scale-95 transition-all">
+                                                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M13 5l7 7m0 0l-7 7m7-7H3" stroke-width="4"/></svg>
+                                            </button>
                                         </div>
                                     </div>
 
-                                    <!-- Nested Replies List -->
                                     @if($comment->replies->count() > 0)
-                                        <div class="space-y-6 pt-6 pl-4 border-l border-white/5">
+                                        <div class="space-y-8 pt-8 pl-6 border-l-2 border-white/5">
                                             @foreach($comment->replies as $reply)
-                                                <div class="flex gap-4">
-                                                    <img src="{{ $reply->user->avatar }}" class="w-8 h-8 rounded-lg object-cover shrink-0 border border-white/5">
-                                                    <div class="flex-1 space-y-1">
-                                                        <div class="flex items-center gap-2">
-                                                            <span class="text-[10px] font-black text-on-surface">{{ $reply->user->name }}</span>
-                                                            <span class="text-[8px] font-black text-on-surface-variant/30 uppercase tracking-widest">{{ $reply->created_at->diffForHumans() }}</span>
+                                                <div class="flex gap-6 animate-in slide-in-from-top-2 duration-300">
+                                                    <img src="{{ $reply->user->avatar }}" class="w-10 h-10 rounded-xl object-cover shrink-0 border border-white/10 shadow-xl">
+                                                    <div class="flex-1 space-y-2">
+                                                        <div class="flex items-center gap-3">
+                                                            <span class="text-[11px] font-black text-on-surface">{{ $reply->user->name }}</span>
+                                                            <span class="text-[9px] font-black text-on-surface-variant/20 uppercase tracking-widest flex items-center gap-2">
+                                                                <div class="w-1 h-1 rounded-full bg-primary/20"></div>
+                                                                {{ $reply->created_at->diffForHumans() }}
+                                                            </span>
                                                         </div>
-                                                        <p class="text-[12px] text-on-surface-variant opacity-80">{{ $reply->content }}</p>
+                                                        <p class="text-sm text-on-surface-variant opacity-80 leading-relaxed">{{ $reply->content }}</p>
                                                         <div class="flex items-center gap-4 pt-1">
-                                                            <button wire:click="toggleCommentLike({{ $reply->id }})" class="flex items-center gap-1 group/rlike">
-                                                                <svg class="w-3 h-3 {{ $reply->reactions->where('user_id', Auth::id())->count() > 0 ? 'text-emerald-400 fill-emerald-400' : 'text-on-surface-variant/40 group-hover/rlike:text-emerald-400' }} transition-all" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" stroke-width="2.5"/></svg>
-                                                                <span class="text-[9px] font-black {{ $reply->reactions->count() > 0 ? 'text-on-surface' : 'text-on-surface-variant opacity-20' }}">{{ $reply->reactions->count() }}</span>
+                                                            <button wire:click="toggleCommentLike({{ $reply->id }})" class="flex items-center gap-2 group/rlike transition-all active:scale-90">
+                                                                <svg class="w-3.5 h-3.5 {{ $reply->reactions->where('user_id', Auth::id())->count() > 0 ? 'text-emerald-400 fill-emerald-400 scale-110' : 'text-on-surface-variant/20 group-hover/rlike:text-emerald-400' }} transition-all" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" stroke-width="3"/></svg>
+                                                                <span class="text-[10px] font-black {{ $reply->reactions->count() > 0 ? 'text-on-surface/60' : 'text-on-surface-variant/10' }}">{{ $reply->reactions->count() }}</span>
                                                             </button>
                                                         </div>
                                                     </div>
@@ -340,48 +515,68 @@
             </div>
         </div>
 
-        <!-- Inline Suggestion Modal (Monolith HUD) -->
+        <!-- Quick Review Modal (Antigravity HUD) -->
         @if($suggestingLine)
-            <div class="fixed inset-0 z-[1000] flex items-center justify-center p-6 bg-black/90 backdrop-blur-xl animate-in fade-in duration-300">
-                <div class="bg-[#1a1b26] border border-primary/30 rounded-[3rem] p-12 w-full max-w-5xl shadow-[0_0_100px_-20px_rgba(16,185,129,0.3)] relative overflow-hidden" @click.away="$set('suggestingLine', null)">
-                    <div class="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-primary to-emerald-400"></div>
-                    
-                    <div class="flex items-center justify-between mb-10">
-                        <div>
-                            <h2 class="text-2xl font-black uppercase tracking-tighter mb-1">{{ __('Refactoring Logic') }}</h2>
-                            <p class="text-xs text-on-surface-variant font-medium">Lines {{ $suggestingLine }} - {{ $suggestingEndLine ?: $suggestingLine }}</p>
-                        </div>
-                        <button @click="$set('suggestingLine', null)" class="w-10 h-10 rounded-full bg-white/5 flex items-center justify-center hover:bg-red-500/20 hover:text-red-400 transition-all"><svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M6 18L18 6M6 6l12 12" stroke-width="3" stroke-linecap="round"/></svg></button>
-                    </div>
-
-                    <div class="grid grid-cols-2 gap-10 mb-10">
-                        <div class="space-y-4">
-                            <div class="flex items-center gap-2">
-                                <span class="w-1.5 h-1.5 rounded-full bg-red-500"></span>
-                                <span class="text-[10px] font-black uppercase tracking-[0.3em] text-red-500/60">{{ __('Outdated') }}</span>
+            <div class="fixed inset-0 z-[2100] flex items-stretch justify-center bg-black/80 backdrop-blur-2xl animate-in fade-in duration-500" @click.self="$set('suggestingLine', null)">
+                <div class="bg-surface-container-highest/95 border-x border-white/10 w-full max-w-5xl shadow-[0_0_120px_rgba(0,0,0,0.9)] flex flex-col h-full overflow-hidden relative">
+                    <!-- Header -->
+                    <div class="px-8 py-4 border-b border-white/5 flex items-center justify-between shrink-0 bg-white/[0.02]">
+                        <div class="flex items-center gap-4">
+                            <div class="w-10 h-10 rounded-xl bg-primary/10 flex items-center justify-center text-primary shadow-inner">
+                                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"></path></svg>
                             </div>
-                            <div class="bg-[#0f111a] p-8 rounded-[2.5rem] font-mono text-[11px] text-red-400/50 line-through overflow-auto max-h-[400px] border border-red-500/10 shadow-inner custom-scrollbar whitespace-pre">{{ $originalContent }}</div>
-                        </div>
-                        <div class="space-y-4">
-                            <div class="flex items-center gap-2">
-                                <span class="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse"></span>
-                                <span class="text-[10px] font-black uppercase tracking-[0.3em] text-emerald-500">{{ __('Suggested') }}</span>
-                            </div>
-                            <div class="relative group/edit">
-                                <textarea wire:model="suggestedContent" class="w-full bg-[#0d0e12] border-2 border-primary/20 rounded-[2.5rem] p-8 font-mono text-[11px] text-on-surface min-h-[400px] focus:border-primary/60 outline-none shadow-2xl transition-all custom-scrollbar"></textarea>
-                                <div class="absolute bottom-4 right-8 text-[9px] font-black uppercase tracking-widest text-primary opacity-20 group-hover/edit:opacity-100 transition-opacity">Ready to Deploy</div>
+                            <div>
+                                <h2 class="text-xs font-black uppercase tracking-widest text-on-surface">{{ __('Inject Global Suggestion') }}</h2>
+                                <p class="text-[9px] font-black uppercase tracking-widest text-on-surface-variant/40 mt-0.5">LINES {{ $suggestingLine }} — {{ $suggestingEndLine ?: $suggestingLine }}</p>
                             </div>
                         </div>
+                        <button wire:click="$set('suggestingLine', null)" class="p-2 rounded-xl hover:bg-white/5 text-on-surface-variant hover:text-white transition-all">
+                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M6 18L18 6M6 6l12 12" stroke-width="2.5" stroke-linecap="round"/></svg>
+                        </button>
                     </div>
 
-                    <div class="space-y-4 mb-10">
-                        <label class="text-[9px] font-black uppercase tracking-[0.4em] text-on-surface-variant/40 ml-4">{{ __('Architectural Rationale') }}</label>
-                        <textarea wire:model="suggestionDescription" placeholder="{{ __('Explain why this refactoring improves the system complexity...') }}" class="w-full bg-[#0f111a] border border-white/5 rounded-[2rem] p-6 text-xs text-on-surface min-h-[100px] outline-none focus:border-primary/20 shadow-inner"></textarea>
+                    <!-- Body -->
+                    <div class="flex-1 overflow-y-auto p-8 custom-scrollbar space-y-8">
+                        <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 items-start h-full">
+                            <!-- Outdated Block -->
+                            <div class="flex flex-col space-y-4 h-full">
+                                <div class="flex items-center gap-3 px-1">
+                                    <div class="w-2 h-2 rounded-full bg-red-500 shadow-[0_0_15px_rgba(239,68,68,0.5)]"></div>
+                                    <span class="text-[9px] font-black uppercase tracking-widest text-on-surface-variant/60">{{ __('Outdated Fragment') }}</span>
+                                </div>
+                                <div class="flex-1 rounded-2xl border border-white/5 overflow-hidden shadow-inner bg-black/20">
+                                    <x-ui.syntax-highlighter :code="$originalContent" lang="php" class="text-[12px] h-full" />
+                                </div>
+                            </div>
+                            
+                            <!-- Optimized Patch -->
+                            <div class="flex flex-col space-y-4 h-full">
+                                <div class="flex items-center gap-3 px-1">
+                                    <div class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse shadow-[0_0_15px_rgba(16,185,129,0.5)]"></div>
+                                    <span class="text-[9px] font-black uppercase tracking-widest text-emerald-400">{{ __('Optimized Patch') }}</span>
+                                </div>
+                                <div class="flex-1 flex flex-col bg-[#0d0e12] rounded-2xl border-2 border-emerald-500/20 focus-within:border-emerald-500/50 transition-all shadow-2xl relative overflow-hidden group/patch">
+                                    <textarea wire:model.live="suggestedContent" 
+                                              class="flex-1 bg-transparent p-6 font-mono text-[12px] text-emerald-400 outline-none resize-none custom-scrollbar leading-relaxed selection:bg-emerald-500/30 font-black"
+                                              spellcheck="false"
+                                              rows="{{ max(5, count(explode('\n', $suggestedContent))) }}"></textarea>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Rationale -->
+                        <div class="space-y-3">
+                            <label class="px-1 text-[9px] font-black uppercase tracking-[0.4em] text-on-surface-variant/40">{{ __('Rationale & Commentary') }}</label>
+                            <textarea wire:model="suggestionDescription" placeholder="{{ __('Explain the logic or performance gains...') }}" class="w-full bg-black/20 border border-white/5 rounded-2xl p-6 text-sm text-on-surface min-h-[100px] outline-none focus:border-primary/20 transition-all shadow-inner italic font-medium"></textarea>
+                        </div>
                     </div>
 
-                    <div class="flex justify-end gap-6">
-                        <button @click="$set('suggestingLine', null)" class="text-[10px] font-black uppercase text-on-surface-variant hover:text-white tracking-widest">{{ __('Discard') }}</button>
-                        <x-ui.button wire:click="saveInlineSuggestion" variant="primary" class="rounded-2xl px-12 py-5 shadow-[0_20px_40px_-12px_rgba(16,185,129,0.3)]">{{ __('Commit Suggestion') }}</x-ui.button>
+                    <!-- Footer -->
+                    <div class="px-8 py-4 border-t border-white/5 flex justify-end items-center gap-8 shrink-0 bg-white/[0.02]">
+                        <button wire:click="$set('suggestingLine', null)" class="text-[10px] font-black uppercase text-on-surface-variant hover:text-white tracking-widest transition-colors">{{ __('Discard Payload') }}</button>
+                        <x-ui.button wire:click="saveInlineSuggestion" variant="primary" class="rounded-xl px-10 py-4 shadow-2xl text-[10px] font-black uppercase tracking-widest">
+                            {{ __('Propose Modification') }}
+                        </x-ui.button>
                     </div>
                 </div>
             </div>
