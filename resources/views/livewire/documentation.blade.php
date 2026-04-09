@@ -3,10 +3,10 @@
         <!-- Sidebar Navigation -->
         <aside class="lg:col-span-3 space-y-8 animate-in fade-in slide-in-from-left-8 duration-1000">
             <div class="space-y-4">
-                <h4 class="text-[10px] font-black uppercase tracking-[0.3em] text-primary px-4">{{ __('Quick Start') }}</h4>
+                <h4 class="text-[10px] font-black uppercase tracking-[0.3em] text-primary px-4">{{ __('Initial Steps') }}</h4>
                 <nav class="space-y-1">
                     <a href="#introduction" class="block px-4 py-2 text-xs font-bold text-on-surface hover:bg-white/5 rounded-xl transition-all">{{ __('Introduction') }}</a>
-                    <a href="#installation" class="block px-4 py-2 text-xs font-bold text-on-surface-variant/60 hover:text-on-surface hover:bg-white/5 rounded-xl transition-all">{{ __('Installation') }}</a>
+                    <a href="#onboarding" class="block px-4 py-2 text-xs font-bold text-on-surface-variant/60 hover:text-on-surface hover:bg-white/5 rounded-xl transition-all">{{ __('First Experiences') }}</a>
                     <a href="#authentication" class="block px-4 py-2 text-xs font-bold text-on-surface-variant/60 hover:text-on-surface hover:bg-white/5 rounded-xl transition-all">{{ __('Authentication') }}</a>
                 </nav>
             </div>
@@ -49,16 +49,28 @@
                 </div>
             </section>
 
-            <!-- Installation -->
-            <section id="installation" class="space-y-6">
-                <h3 class="text-2xl font-black tracking-tighter uppercase text-secondary">{{ __('Deployment') }}</h3>
-                <div class="space-y-4">
-                    <p class="text-sm text-on-surface-variant italic">{{ __('Setting up ReviewMe in your environment is straightforward.') }}</p>
-                    <div class="rounded-2xl bg-black/40 border border-white/5 p-6 font-mono text-xs text-secondary/80 leading-relaxed overflow-hidden relative group">
-                        <p><span class="text-primary/60">#</span> {{ __('Spin up the infrastructure') }}</p>
-                        <p>git clone https://github.com/EnriqueP01/reviewme.git</p>
-                        <p>docker-compose up -d --build</p>
-                        <p class="mt-4 text-white/20 italic">{{ __('# Note: Requires Docker and Docker Compose.') }}</p>
+            <!-- Onboarding -->
+            <section id="onboarding" class="space-y-6">
+                <h3 class="text-2xl font-black tracking-tighter uppercase text-secondary">{{ __('First Steps') }}</h3>
+                <div class="prose prose-invert max-w-none space-y-4">
+                    <p class="text-sm text-on-surface-variant italic">
+                        {{ __('Getting started on ReviewMe is instantaneous. No complicated setup, just collaboration.') }}
+                    </p>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mt-6">
+                        <div class="p-6 rounded-2xl bg-black/20 border border-white/5 flex gap-4">
+                            <span class="text-2xl font-black text-secondary/20">01</span>
+                            <div>
+                                <h5 class="text-xs font-bold mb-1">{{ __('Connect with GitHub') }}</h5>
+                                <p class="text-[10px] opacity-40">{{ __('Instantly sync your professional profile and artifacts.') }}</p>
+                            </div>
+                        </div>
+                        <div class="p-6 rounded-2xl bg-black/20 border border-white/5 flex gap-4">
+                            <span class="text-2xl font-black text-secondary/20">02</span>
+                            <div>
+                                <h5 class="text-xs font-bold mb-1">{{ __('Join or Create a Lab') }}</h5>
+                                <p class="text-[10px] opacity-40">{{ __('Enter a collaborative group to start sharing and auditing code.') }}</p>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </section>
