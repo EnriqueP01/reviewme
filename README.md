@@ -94,7 +94,7 @@ ReviewMe utilise un système de réputation basé sur l'expertise réelle. Le Ka
 ReviewMe propose un système d'identité robuste pour valoriser votre expertise :
 - **Handle Unique** : Chaque utilisateur possède un identifiant `@username` unique utilisé pour son URL de profil (`/profile/{handle}`).
 - **Biographie Technique** : Présentez vos spécialités, votre stack et votre expérience.
-- **GitHub Activity** : Visualisez l'état de synchronisation avec votre compte GitHub et (prochainement) votre flux d'activité réel.
+- **Native Activity Heatmap** : Visualisez votre engagement réel sur ReviewMe (Posts, Reviews, Commentaires, Suggestions) via une heatmap interactive intégrée synchronisée en temps réel.
 - **Routage Dynamique** : Partagez votre profil expert directement via une URL simple et élégante.
 
 ---

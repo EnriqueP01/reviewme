@@ -30,3 +30,4 @@ Permettre aux utilisateurs de définir une identité unique (Handle) et personne
 - [x] Le handle doit être unique et comporter uniquement des caractères alphanumériques et des tirets.
 - [x] Tous les liens d'auteurs dans le Feed pointent correctement vers le profil public.
 - [x] L'état de connexion GitHub est visible sur le profil.
+- [x] Une heatmap d'activité native agrège et affiche les contributions réelles (Posts, Reviews, etc.) de l'utilisateur sur la plateforme.
