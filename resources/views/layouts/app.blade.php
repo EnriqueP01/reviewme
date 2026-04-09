@@ -34,6 +34,7 @@
 
         <!-- Animated Background Elements -->
         <x-ui.interactive-grid />
+        <x-ui.keyboard-shortcuts />
 
         <div class="relative min-h-screen flex flex-col z-10">
             @include('layouts.navigation')

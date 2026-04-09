@@ -52,7 +52,7 @@
     3. **Wizard de Curation V2** : Support du multi-fichiers drag-and-drop, de la détection automatique du langage par extension et orchestration de métadonnées granulaires (buts de revue, améliorations).
 - **Impact** : Transformation de ReviewMe en une plateforme de curation collaborative d'élite, sécurisée et contextuelle.
 
-## 2026-04-09-36 : Systèmes de Chargement Global & États UI Contextuels
+## 2026-04-09-35 : Systèmes de Chargement Global & États UI Contextuels
 - **Auteur** : Antigravity
 - **Statut** : ✅ Implémenté
 - **Contexte** : Nécessité d'améliorer l'expérience utilisateur (UX) en fournissant un feedback visuel immédiat lors des opérations asynchrones (Livewire).
@@ -196,7 +196,7 @@
 - **Statut** : ✅ Implémenté
 - **Contexte** : Latence perçue lors du scroll infini/pagination, clignotement des éléments ré-animés et mauvaise position de l'icône d'artéfact.
 - **Décision** :
-    1. **Stabilité du Feed** : Suppression de `animate-fade-in-up` sur les articles du flux pour éviter les sursauts visuels lors du chargement de nouvelles pages.
+    1. **Stabilité du Feed** : Suppression de `animate-fade-in-up` on the feed articles to avoid visual jumps when loading new pages.
     2. **Pré-chargement & Performance** :
         - Augmentation de la pagination à 30 items.
         - Eager loading de `latestSnippet` dans `SearchPostsAction` pour éliminer les requêtes N+1 lors de l'affichage des langages.
@@ -306,7 +306,7 @@
     4. **Sécurité & Contrôle** : Application stricte de `authorize('update', $post)` limitant l'itération à l'auteur original.
 - **Impact** : Cycle de vie du code continu, traçabilité de l'évolution post-review et réduction mécanique du churn d'artefacts.
 
-## 2026-04-09-42 : Système de Feedback Collaboratif Avancé (Reviews & Suggestions)
+## 2026-04-09-42 : Feedback Collaboratif Avancé (Reviews & Suggestions)
 - **Auteur** : Antigravity
 - **Statut** : ✅ Implémenté
 - **Contexte** : Besoin d'élever ReviewMe au niveau d'un outil de collaboration d'élite via des retours contextuels, globaux et structurels.
@@ -330,3 +330,22 @@
     3. **UX de Discussion YouTube** : Masquage des formulaires de réponse par défaut, affichage conditionnel via Alpine.js. Ajout d'états vides illustrés.
     4. **Moteur de Coloration Blade** : Implémentation d'une coloration syntaxique légère via regex directement dans le template pour une performance et un rendu premium.
 - **Statut** : Accepté et implémenté.
+
+## 2026-04-09-44 : Intégration Finale de la Navigation & Système de Raccourcis
+- **Auteur** : Antigravity
+- **Statut** : ✅ Implémenté
+- **Contexte** : Finalisation de la plateforme avec les pages de support, la navigation globale et l'accessibilité clavier.
+- **Décision** :
+    1. **Pages de Support** : Création et déploiement des composants Livewire pour `Leaderboard`, `Documentation`, `Changelog`, `Status` et `Legal`.
+    2. **Système de Raccourcis (HUD Navigation)** : Implémentation du composant global `KeyboardShortcuts` (Alpine.js) permettant une navigation rapide (ex: `G+L` pour Leaderboard, `G+H` pour Home, `Shift+?` pour l'aide).
+    3. **Durcissement de l'Accessibilité Invités** : Refonte du header (`navigation.blade.php`) pour supporter les utilisateurs non-authentifiés (affichage "Sign In / Get Started") et correction des collisions de traduction (Status page).
+- **Impact** : Plateforme 100% connectée, accessible sans friction et prête pour une utilisation publique.
+
+## 2026-04-09-45 : Automatisation du Suivi Documentaire (update_us)
+- **Auteur** : Antigravity
+- **Statut** : ✅ Implémenté
+- **Contexte** : Risque de désynchronisation entre les User Stories (US) et l'implémentation finale dans le code.
+- **Décision** : 
+    1. **Règle IA Dédiée** : Création de `.agents/rules/update_us.md` imposant la mise à jour systématique des critères d'acceptation et détails techniques dans le dossier `us/` après chaque tâche.
+    2. **Validation Automatique** : Mise à jour immédiate de l'US35 (Docker) pour valider le concept.
+- **Impact** : Documentation produit toujours à jour, traçabilité parfaite des fonctionnalités et alignement PO/Dev garanti.
