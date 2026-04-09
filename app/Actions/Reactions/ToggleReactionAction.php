@@ -38,6 +38,8 @@ final class ToggleReactionAction
             $author = $reactable->user;
         } elseif ($reactable instanceof Review) {
             $author = $reactable->user;
+        } elseif ($reactable instanceof \App\Models\FullReview) {
+            $author = $reactable->user;
         }
 
         $existing = Reaction::where([

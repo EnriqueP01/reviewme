@@ -26,7 +26,7 @@
                         </div>
                         
                         <h1 class="text-6xl lg:text-[80px] font-black mb-6 leading-[0.85] tracking-tighter transition-all duration-1000 delay-200">
-                            {{ __('FORGE') }} <br/>
+                            {{ __('CREATE') }} <br/>
                             <span class="text-transparent bg-clip-text bg-gradient-to-b from-white to-white/40">{{ __('YOUR IDEAS') }}</span> <br/>
                             {{ __('TOGETHER.') }}
                         </h1>
@@ -98,7 +98,7 @@
         <section id="benefits" class="py-12" x-data="{ revealed: false }" x-intersect="revealed = true">
             <div class="max-w-7xl mx-auto px-6 lg:px-12">
                 <div class="text-center mb-12 transition-all duration-1000" :class="revealed ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-12'">
-                    <h2 class="text-4xl lg:text-5xl font-black tracking-tighter mb-4 uppercase">{{ __('Tactical Advantages') }}</h2>
+                    <h2 class="text-4xl lg:text-5xl font-black tracking-tighter mb-4 uppercase">{{ __('Advantages') }}</h2>
                     <p class="text-on-surface-variant italic">{{ __('Optimized for speed, privacy, and educational evolution.') }}</p>
                 </div>
 
@@ -111,12 +111,12 @@
                         
                         <h2 class="text-3xl lg:text-4xl font-bold mb-4 relative z-10">{{ __('Educational Synergy') }}</h2>
                         <p class="text-base text-on-surface-variant/80 max-w-md relative z-10 italic leading-relaxed">
-                            {{ __('ReviewMe is built for students who want to master code architecture through peer evaluation and supervisor mentorship.') }}
+                            {{ __('ReviewMe is built for students who want to master code architecture through peer evaluation and mentorship.') }}
                         </p>
                         
                         <div class="mt-10 grid grid-cols-1 sm:grid-cols-2 gap-6 relative z-10">
                             <div class="p-6 rounded-2xl bg-white/5 border border-white/5 group-hover:border-secondary/30 transition-all hover:bg-white/[0.08]">
-                                <span class="text-secondary font-black block mb-2 tracking-[0.2em] text-[9px] uppercase">{{ __('Karma') }}</span>
+                                <span class="text-secondary font-black block mb-2 tracking-[0.2em] text-[9px] uppercase">{{ __('Reputation') }}</span>
                                 <div class="text-xl font-bold mb-2">{{ __('Proof of Expertise') }}</div>
                                 <p class="text-xs text-on-surface-variant/60 leading-relaxed">{{ __('Earn reputation for every meaningful feedback you provide.') }}</p>
                             </div>
@@ -161,9 +161,9 @@
                          :class="revealed ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-12'">
                         <div class="flex flex-col md:flex-row gap-10 h-full items-center">
                             <div class="flex-1">
-                                <h3 class="text-3xl lg:text-4xl font-bold mb-4 tracking-tight">{{ __('Expert Oversight') }}</h3>
+                                <h3 class="text-3xl lg:text-4xl font-bold mb-4 tracking-tight">{{ __('Oversight') }}</h3>
                                 <p class="text-on-surface-variant/80 italic mb-6 leading-relaxed">
-                                    {{ __('Designated Supervisors guide the conversation, ensuring high standards.') }}
+                                    {{ __('Designated reviewers guide the conversation, ensuring high standards.') }}
                                 </p>
                             </div>
                             <div class="flex-1 w-full bg-white/5 rounded-2xl border border-white/5 p-6 relative overflow-hidden flex flex-col justify-center items-center">

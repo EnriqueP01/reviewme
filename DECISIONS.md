@@ -47,9 +47,9 @@
 - **Statut** : ✅ Implémenté
 - **Contexte** : Besoin de structurer la curation en groupes privés et d'élever le lexique vers un univers plus technologique.
 - **Décision** :
-    1. **Labs (Unités de Collaboration)** : Implémentation du système de groupes (`Labs`) avec rôles Moderateur/Membre et visibilité d'artefacts restreinte.
-    2. **Refonte Lexicale** : Migration terminologique (Email -> `Neural Link Artifact`, Password -> `Secret Key`, Vibe/Post -> `Artefact`).
-    3. **Wizard de Curation V2** : Support du multi-fichiers drag-and-drop, de la détection automatique du langage par extension et orchestration de métadonnées granulaires (buts de revue, améliorations).
+    1. **Groups (Collaboration Units)** : Implémentation du système de groupes (`Groups`) avec rôles Moderateur/Membre et visibilité restreinte.
+    2. **Refonte Lexicale** : Migration terminologique (Email -> `Email`, Password -> `Password`, Vibe/Post -> `Post`).
+    3. **Workflow de Publication** : Support du multi-fichiers drag-and-drop, de la détection automatique du langage par extension et orchestration de métadonnées granulaires (buts de revue, améliorations).
 - **Impact** : Transformation de ReviewMe en une plateforme de curation collaborative d'élite, sécurisée et contextuelle.
 
 ## 2026-04-09-36 : Systèmes de Chargement Global & États UI Contextuels
@@ -123,9 +123,9 @@
 - **Statut** : ✅ Implémenté
 - **Contexte** : Utilisation de terminologies génériques peu professionnelles et défaut d'ergonomie sur les hitboxes HUD.
 - **Décision** :
-    1. **Refonte Lexicale Globale** : Migration vers un lexique "Enterprise-grade" (SOURCE_ORIGIN, Inspect Post, Artifact_Analysis).
+    1. **Refonte Lexicale Globale** : Migration vers un lexique "Enterprise-grade" (SOURCE_ORIGIN, Inspect Post, File_Analysis).
     2. **Optimisation UX (Hitbox)** : Correction du bouton d'inspection dans le Feed via neutralisation des pointer-events sur les icônes.
-- **Impact** : Renforcement du positionnement premium et fluidité d'interaction.
+- **Impact** : Renforcement du positionnement professionnel et fluidité d'interaction.
 
 ## 2026-04-09-24 : Résolution des Conflits de Drop & Sync State
 - **Auteur** : Antigravity
@@ -294,17 +294,35 @@
     3. **Cleanup i18n** : Nettoyage intégral de `fr.json` et `en.json` pour supprimer les clés de branding "cool" au profit de termes standards (Feed, Review, Files).
     4. **Événements & UI** : Renommage des événements système (`vibe-*` -> `post-*`, `notification`) et des composants UI (`logo-artifact` -> `logo`).
 - **Impact** : Positionnement professionnel renforcé, meilleure accessibilité et cohérence totale de l'expérience utilisateur.
+### DECISION_2026_04_09_007: Overhaul to Compact High-Density UI
+**Status**: Decided | **Owner**: Architect | **Date**: 2026-04-09
+
+#### Context
+The initial "Monolith & The Lens" implementation was too spacious, creating layout blocking in the header and poor visibility for multi-file posts. User feedback demanded a "pro-grade" compact layout similar to modern IDEs/Review tools.
+
+#### Decision
+*   **Snippet Management**: Moved from consecutive vertical blocks to a single **Tab-based** viewer.
+*   **Density**: Reduced typography scales (H1: 5xl -> 3xl) and global margins/paddings.
+*   **Scrolling**: Enforced a `max-height: 600px` on code snippets with internal scrolling to maintain page structural integrity.
+*   **Header Reorganization**: Moved primary actions (Full Review, Versioning) to a top action bar to prevent vertical displacement of the title/description.
+
+#### Consequence
+*   Immediate improvement in readability for multi-file posts.
+*   Prevents sidebar "spill" on standard 1080p displays.
+*   More professional, IDE-like feel.
+
+---
 
 ## 2026-04-09-41 : Versioning Avancé d'Artefacts
 - **Auteur** : Antigravity
 - **Statut** : ✅ Implémenté
-- **Contexte** : Autoriser les curateurs à soumettre des itérations de code (nouvelles versions) sans créer un nouvel artefact, facilitant le suivi des reviews.
+- **Contexte** : Autoriser les contributeurs à soumettre des itérations de code (nouvelles versions) sans créer un nouveau post, facilitant le suivi des reviews.
 - **Décision** :
     1. **Architecture** : Création de `AddPostVersionAction` gérant l'intégration transactionnelle de nouveaux snippets avec incrémentation automatique de `version_number`.
     2. **UI Ségrégative** : Ajout du composant Livewire `UpdatePost` avec le routeur dédié `/posts/{postId}/update-code`, reprenant l'ADN du workflow de création et l'heuristique de détection de fichier.
     3. **Affichage Dynamique** : Mise à jour de `PostDetail.php` (et son template) pour supporter l'affichage "1 Version = N Fichiers" et ajout du sélecteur interactif de version dans l'entête du snippet.
     4. **Sécurité & Contrôle** : Application stricte de `authorize('update', $post)` limitant l'itération à l'auteur original.
-- **Impact** : Cycle de vie du code continu, traçabilité de l'évolution post-review et réduction mécanique du churn d'artefacts.
+- **Impact** : Cycle de vie du code continu, traçabilité de l'évolution post-review et réduction mécanique du churn de posts.
 
 ## 2026-04-09-42 : Système de Feedback Collaboratif Avancé (Reviews & Suggestions)
 - **Auteur** : Antigravity
@@ -329,4 +347,14 @@
     2. **Système de Réactions Polymorphique** : Migration des cœurs/likes vers le modèle `Reaction` pour garantir l'unicité des votes et permettre le toggle (unlike).
     3. **UX de Discussion YouTube** : Masquage des formulaires de réponse par défaut, affichage conditionnel via Alpine.js. Ajout d'états vides illustrés.
     4. **Moteur de Coloration Blade** : Implémentation d'une coloration syntaxique légère via regex directement dans le template pour une performance et un rendu premium.
-- **Statut** : Accepté et implémenté.
+- **Impact** : Expérience utilisateur ultra-premium, réduction du bruit visuel et renforcement de l'engagement social sur les reviews techniques.
+
+## 2026-04-09-44 : Optimisation de la Revue de Code & Live Diff Engine
+- **Auteur** : Antigravity
+- **Statut** : ✅ Implémenté
+- **Contexte** : Blocages sur les actions de publication, défaut de support multi-fichiers et besoin d'une prévisualisation des modifications en temps réel.
+- **Décisions** :
+    1. **Correction des Actions** : Déblocage du système de suggestion via passage du `snippetId` et fiabilisation de l'objet Alpine `selectionPopup`.
+    2. **Architecture Multi-fichiers** : Refactoring vers un composant `CodeBlock` unique gérant l'intégralité des snippets de la version active via un système d'onglets synchronisé par événements (`snippet-changed`).
+    3. **Moteur Live Diff** : Implémentation d'une prévisualisation interactive dans la "Review Factory". Utilisation du `TextDiffHelper` pour calculer et afficher en temps réel les lignes ajoutées/supprimées (coloration émeraude/rubis) pendant l'édition.
+- **Impact** : Fluidité totale du workflow de revue, réduction des erreurs de publication et feedback visuel instantané digne d'un IDE professionnel.

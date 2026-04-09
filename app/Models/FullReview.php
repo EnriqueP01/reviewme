@@ -32,4 +32,9 @@ class FullReview extends Model
     {
         return $this->hasMany(FullReviewSnippet::class);
     }
+
+    public function reactions(): \Illuminate\Database\Eloquent\Relations\MorphMany
+    {
+        return $this->morphMany(Reaction::class, 'reactable');
+    }
 }

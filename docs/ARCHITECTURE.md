@@ -21,13 +21,13 @@ ReviewMe suit un pattern **Orienté Actions** (Action-Domain-Responder) :
 - **`App\Actions`** : Contient l'intelligence métier. Chaque fichier est une action unique (ex: `CreatePostAction`).
 - **`App\Models`** : Représente les entités et leurs relations.
 - **`App\Livewire`** : Gère l'état de l'UI et délègue la logique aux Actions.
-- **`App\Policies`** : Gère les autorisations d'accès aux Labs (groupes privés).
+- **`App\Policies`** : Gère les autorisations d'accès aux Groupes (groupes privés).
 
 ---
 
 ## 📊 Modèle de Domaine (US13)
 
-L'architecture des données repose sur la notion d'**Artefact** (Post) qui possède des **Snippets** (versions du code).
+L'architecture des données repose sur la notion de **Post** (publication) qui possède des **Snippets** (fragments de code).
 
 ```mermaid
 classDiagram
@@ -64,7 +64,7 @@ classDiagram
 
 ## 🔄 Parcours Principal (US12)
 
-Le diagramme ci-dessous illustre le cycle de vie d'une publication (Vibe) et les interactions avec les composants.
+Le diagramme ci-dessous illustre le cycle de vie d'une publication (Post) et les interactions avec les composants.
 
 ```mermaid
 sequenceDiagram
@@ -89,7 +89,7 @@ sequenceDiagram
 ## 🛠️ API & Routes
 
 L'application utilise principalement des routes Web dynamiques via Livewire :
-- `/dashboard` : Hub principal.
-- `/vibe/publish` : Workflow de création.
-- `/vibe/{post}` : Vue détaillée et annotations.
-- `/groups` : Gestion des Labs.
+- `/dashboard` : Hub principal (Feed).
+- `/publish` : Workflow de création de post.
+- `/posts/{id}` : Vue détaillée et annotations.
+- `/groups` : Gestion des Groupes.

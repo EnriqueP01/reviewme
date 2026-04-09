@@ -14,6 +14,7 @@ class InlineSuggestion extends Model
         'user_id',
         'snippet_id',
         'line_number',
+        'end_line_number',
         'original_content',
         'suggested_content',
         'description',

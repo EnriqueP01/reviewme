@@ -1,4 +1,4 @@
-@props(['variant' => 'primary', 'size' => 'md', 'pill' => false, 'static' => false])
+@props(['variant' => 'primary', 'size' => 'md', 'pill' => false, 'static' => false, 'loadingTarget' => null])
 
 @php
     $baseClasses = 'inline-flex items-center justify-center font-display font-black transition-all duration-300 disabled:opacity-50 disabled:pointer-events-none relative overflow-hidden group active:scale-95 border uppercase tracking-[0.15em] select-none';
@@ -22,6 +22,14 @@
     
     $classes = $baseClasses . ' ' . $radiusClass . ' ' . $variants[$variant] . ' ' . $sizes[$size];
     $tag = $attributes->has('href') ? 'a' : 'button';
+
+    // Determine the loading target for isolation:
+    // Priority: explicit loadingTarget prop > wire:target attr > wire:click attr (simple method names only)
+    $wireClick = $attributes->get('wire:click', '');
+    $wireTarget = $attributes->get('wire:target', '');
+    // Only use wire:click as target if it's a plain method name (no parens/dollar signs)
+    $clickTarget = preg_match('/^[a-zA-Z_]+$/', $wireClick) ? $wireClick : '';
+    $resolvedTarget = $loadingTarget ?: ($wireTarget ?: $clickTarget);
 @endphp
 
 <{{ $tag }} 
@@ -61,16 +69,16 @@
              :style="`transform: translate(${txX}px, ${txY}px) scale(1.2); background-image: radial-gradient(circle at 1px 1px, currentColor 1px, transparent 0); background-size: 16px 16px;`"></div>
     </div>
     
-    <span class="relative z-10 flex items-center gap-3" wire:loading.remove {{ $attributes->has('wire:target') ? 'wire:target=' . $attributes->get('wire:target') : '' }}>
+    <span class="relative z-10 flex items-center gap-2">
+        @if($resolvedTarget)
+            <span wire:loading wire:target="{{ $resolvedTarget }}" class="inline-flex shrink-0">
+                <svg class="animate-spin h-3.5 w-3.5 text-current" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                    <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                    <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                </svg>
+            </span>
+        @endif
         {{ $slot }}
-    </span>
-
-    <span class="relative z-10 flex items-center gap-3" wire:loading {{ $attributes->has('wire:target') ? 'wire:target=' . $attributes->get('wire:target') : '' }}>
-        <svg class="animate-spin h-4 w-4 text-current" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
-            <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
-            <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
-        </svg>
-        <span>{{ __('Chargement...') }}</span>
     </span>
 </{{ $tag }}>
 

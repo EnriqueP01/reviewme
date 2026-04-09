@@ -57,7 +57,7 @@ final class CreatePostAction
                     'post_id' => $post->id,
                     'filename' => $file['name'] ?? $file['filename'] ?? 'file_'.($index + 1),
                     'version_number' => 1,
-                    'code_content' => e($file['content']),
+                    'code_content' => $file['content'],
                     'description' => $file['description'] ?? null,
                     'language' => $file['language'] ?? 'php',
                     'sort_order' => $index,

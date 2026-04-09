@@ -1,8 +1,8 @@
 # ReviewMe 🚀
 
-> « La plateforme de curation collaborative où le code devient un artefact vivant. »
+> « La plateforme de revue de code collaborative professionnelle. »
 
-ReviewMe est un écosystème de revue de code d'élite axé sur la collaboration sécurisée et la bienveillance. Grâce au système de **Labs**, les équipes peuvent isoler leurs audits dans des unités privées, tout en bénéficiant d'une interface HUD futuriste et d'un feedback haptique/audio immersif.
+ReviewMe est un écosystème de revue de code de haut niveau axé sur la collaboration sécurisée et l'excellence technique. Grâce au système de **Groupes**, les équipes peuvent organiser leurs revues dans des espaces privés, tout en bénéficiant d'une interface HUD optimisée et d'une expérience utilisateur immersive.
 
 ---
 
@@ -56,11 +56,11 @@ Découvrez l'historique des décisions techniques et des évolutions du projet :
 
 ---
 
-## 🧬 Système de Labs & Curation
-1.  **Introspection** : Définition des buts de revue et du contexte technique.
-2.  **Artefacts** : Upload multi-fichiers, détection automatique de langage et annotations.
-3.  **Distribution** : Publication publique ou restreinte à un **Lab** spécifique (Groupe privé).
-4.  **Audit** : Revue ligne à ligne avec focus spécialisés (Clarity, Security, Performance).
+## 🧬 Système de Groupes & Revues
+1.  **Détails** : Définition des buts de revue et du contexte technique.
+2.  **Fichiers** : Import multi-fichiers, détection automatique de langage et annotations.
+3.  **Distribution** : Publication publique ou restreinte à un **Groupe** spécifique.
+4.  **Revue** : Analyse ligne à ligne avec focus spécialisés (Clarity, Security, Performance).
 
 ---
 
@@ -81,13 +81,13 @@ La plateforme est maintenue par des protocoles robotiques stricts :
 
 ## 🛠️ Maintenance & Diagnostics
 ```powershell
-# Exécuter les tests de sécurité des Labs
-php artisan test tests/Feature/LabSecurityTest.php
+# Exécuter les tests de sécurité des Groupes
+php artisan test tests/Feature/GroupSecurityTest.php
 
 # Réinitialiser l'écosystème complet (Migrations + Global Seeders)
 php artisan migrate:fresh --seed
 
-# Initialiser uniquement les données de test avancées (Master, Labs, Conversations)
+# Initialiser uniquement les données de test avancées (Master, Groupes, Conversations)
 php artisan db:seed --class=MasterTestSeeder
 
 # Nettoyer les résidus de déploiement

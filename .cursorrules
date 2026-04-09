@@ -1,10 +1,10 @@
 # Antigravity & AI Rules
 
 ## Communication
-- Réponses concises et directes.
-- Aucun emojis.
-- Aucune politesse inutile (Bonjour, Merci, Voici, etc.).
-- Optimisation des tokens.
+- ZERO emoji.
+- ZERO phrase de remplissage ("Voici", "Bien sûr", "Parfait", etc.).
+- Commence par le résultat, jamais par une introduction.
+- Résumé final : bullet points factuels uniquement.
 - Langue : Français.
 
 ## Style de Code
