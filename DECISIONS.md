@@ -361,7 +361,7 @@ The initial "Monolith & The Lens" implementation was too spacious, creating layo
 
 ## 2026-04-09-45 : Refonte Majeure du Système de Review (Full & Quick Reviews)
 - **Auteur** : Antigravity
-- **Statut** : 🔄 En cours
+- **Statut** : ✅ Implémenté
 - **Contexte** : Nécessité d'approfondir l'expérience de revue avec des fonctionnalités de "Quick Review" contextuelles et une restructuration visuelle des "Full Reviews".
 - **Décision** :
     1. **Espace Commentaires** : Optimisation visuelle radicale (animations, textures, icônes dynamiques).
