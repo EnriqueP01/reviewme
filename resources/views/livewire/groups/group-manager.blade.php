@@ -89,57 +89,67 @@
                         @endif
                     </div>
 
-                    <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
-                        <!-- Members List -->
-                        <div class="space-y-6">
-                            <h3 class="font-display text-xl font-bold text-on-surface">{{ __('Members') }}</h3>
-                            
-                            <div class="space-y-3">
-                                @foreach($selectedGroup->members as $member)
-                                    <div class="flex items-center justify-between p-3 rounded-round-4 bg-surface-low border border-outline-variant/10">
-                                        <div class="flex items-center gap-3">
-                                            <img src="{{ $member->avatar ?? 'https://ui-avatars.com/api/?name='.urlencode($member->name) }}" class="w-8 h-8 rounded-full">
-                                            <div>
-                                                <div class="text-sm font-bold text-on-surface">{{ $member->name }}</div>
-                                                <div class="text-[10px] text-on-surface-variant uppercase tracking-tighter">{{ $member->pivot->role }}</div>
-                                            </div>
-                                        </div>
-                                        
-                                        @if($selectedGroup->owner_id === auth()->id() && $member->id !== auth()->id())
-                                            <button wire:click="removeMember({{ $member->id }})" class="text-on-surface-variant hover:text-secondary transition-colors">
-                                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M6 18L18 6M6 6l12 12"/></svg>
-                                            </button>
-                                        @endif
-                                    </div>
-                                @endforeach
-                            </div>
-
-                            @if($selectedGroup->owner_id === auth()->id())
-                                <div class="pt-6 border-t border-outline-variant/10 space-y-4">
-                                    <h4 class="text-sm font-bold text-on-surface">{{ __('Add Members') }}</h4>
-                                    <div class="relative">
-                                        <x-text-input wire:model.live="userSearch" placeholder="{{ __('Search for a member...') }}" />
-                                        @if(!empty($searchResults))
-                                            <div class="absolute z-30 top-full left-0 w-full mt-2 bg-surface-highest rounded-round-4 shadow-xl border border-outline-variant/10 overflow-hidden">
-                                                @foreach($searchResults as $res)
-                                                    <button wire:click="addMember({{ $res['id'] }})" class="w-full px-4 py-3 flex items-center gap-3 hover:bg-primary/10 transition-colors text-left">
-                                                        <img src="{{ $res['avatar'] ?? 'https://ui-avatars.com/api/?name='.urlencode($res['name']) }}" class="w-6 h-6 rounded-full">
-                                                        <span class="text-sm text-on-surface">{{ $res['name'] }}</span>
-                                                    </button>
-                                                @endforeach
-                                            </div>
-                                        @endif
-                                    </div>
-                                </div>
-                            @endif
+                    <div class="flex flex-col lg:flex-row gap-8">
+                        <!-- Middle: Feed -->
+                        <div class="flex-grow space-y-8">
+                            <h3 class="font-display text-xl font-bold text-on-surface flex items-center gap-3">
+                                <svg class="w-5 h-5 text-primary" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M19 20H5a2 2 0 01-2-2V6a2 2 0 012-2h10l4 4v10a2 2 0 01-2 2z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M14 2v4h4"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M7 8h10M7 12h10M7 16h6"></path></svg>
+                                {{ __('Group Activity') }}
+                            </h3>
+                            <livewire:groups.group-feed :group="$selectedGroup" :key="'feed-'.$selectedGroup->id" />
                         </div>
 
-                        <!-- Recent Activity / Stats Placeholder -->
-                        <div class="space-y-6">
-                                    <div class="text-[10px] text-on-surface-variant uppercase tracking-widest">{{ __('Posts Shared') }}</div>
+                        <!-- Right Sidebar: Members & Chat -->
+                        <div class="w-full lg:w-80 space-y-12">
+                            <!-- Members -->
+                            <div class="space-y-6">
+                                <h3 class="font-display text-lg font-bold text-on-surface flex items-center gap-3">
+                                    <svg class="w-5 h-5 text-secondary" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z"></path></svg>
+                                    {{ __('Members') }}
+                                </h3>
+                                
+                                <div class="space-y-2">
+                                    @foreach($selectedGroup->members as $member)
+                                        <div class="flex items-center justify-between p-2 rounded-xl bg-white/[0.02] border border-white/5 group/member transition-all hover:bg-white/5">
+                                            <div class="flex items-center gap-2">
+                                                <img src="{{ $member->profile_photo_url }}" class="w-6 h-6 rounded-lg opacity-60 group-hover/member:opacity-100 transition-opacity">
+                                                <div class="flex flex-col">
+                                                    <span class="text-[11px] font-bold text-white/70">{{ $member->name }}</span>
+                                                </div>
+                                            </div>
+                                            
+                                            @if($selectedGroup->owner_id === auth()->id() && $member->id !== auth()->id())
+                                                <button wire:click="removeMember({{ $member->id }})" class="text-white/20 hover:text-red-500 transition-colors">
+                                                    <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M6 18L18 6M6 6l12 12"/></svg>
+                                                </button>
+                                            @endif
+                                        </div>
+                                    @endforeach
                                 </div>
-                                <p class="text-xs text-on-surface-variant italic">{{ __('Group active.') }}</p>
-                            </x-ui.card>
+
+                                @if($selectedGroup->owner_id === auth()->id())
+                                    <div class="pt-4 border-t border-white/5 space-y-3">
+                                        <div class="relative">
+                                            <input type="text" wire:model.live="userSearch" placeholder="{{ __('Invite...') }}" class="w-full bg-white/[0.03] border-white/5 text-[10px] py-1.5 focus:ring-1 focus:ring-primary rounded-lg text-white">
+                                            @if(!empty($searchResults))
+                                                <div class="absolute z-30 bottom-full left-0 w-full mb-2 bg-[#1a1c2e] rounded-xl shadow-2xl border border-white/10 overflow-hidden backdrop-blur-3xl">
+                                                    @foreach($searchResults as $res)
+                                                        <button wire:click="addMember({{ $res['id'] }})" class="w-full px-3 py-2 flex items-center gap-2 hover:bg-primary/20 transition-colors text-left text-xs text-white/70">
+                                                            <img src="{{ $res['profile_photo_url'] ?? '' }}" class="w-5 h-5 rounded-full">
+                                                            <span>{{ $res['name'] }}</span>
+                                                        </button>
+                                                    @endforeach
+                                                </div>
+                                            @endif
+                                        </div>
+                                    </div>
+                                @endif
+                            </div>
+
+                            <!-- Chat -->
+                            <div class="space-y-6 pt-12 border-t border-white/5">
+                                <livewire:groups.group-chat :group="$selectedGroup" :key="'chat-'.$selectedGroup->id" />
+                            </div>
                         </div>
                     </div>
                 </div>

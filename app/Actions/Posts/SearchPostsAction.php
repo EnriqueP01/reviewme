@@ -13,7 +13,7 @@ final class SearchPostsAction
     /**
      * Exécute la recherche et le filtrage des posts.
      */
-    public function execute(string $search = '', string $sort = 'recent'): Builder
+    public function execute(string $search = '', string $sort = 'recent', ?int $groupId = null): Builder
     {
         $userId = Auth::id();
         $group_ids = $userId ? Auth::user()->groups()->pluck('groups.id') : collect();
@@ -30,11 +30,15 @@ final class SearchPostsAction
                     $query->whereRaw('1 = 0');
                 }
             }])
-            ->where(function ($query) use ($userId, $group_ids) {
-                $query->where('visibility', 'public');
-                if ($userId) {
-                    $query->orWhere('user_id', $userId)
-                        ->orWhereIn('group_id', $group_ids);
+            ->where(function ($query) use ($userId, $group_ids, $groupId) {
+                if ($groupId) {
+                    $query->where('group_id', $groupId);
+                } else {
+                    $query->where('visibility', 'public');
+                    if ($userId) {
+                        $query->orWhere('user_id', $userId)
+                            ->orWhereIn('group_id', $group_ids);
+                    }
                 }
             });
 

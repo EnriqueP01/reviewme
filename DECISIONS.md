@@ -411,3 +411,13 @@ The initial "Monolith & The Lens" implementation was too spacious, creating layo
     1. **Règle auto_prd Adaptative** : Mise à jour de `.agents/rules/auto_prd.md` pour introduire une matrice d'adaptation (Full PRD, Mini-PRD, Note Technique, Fast-Track).
     2. **Logique de Sélection** : L'agent choisit dynamiquement le niveau de formalisme selon la complexité fonctionnelle de la demande.
 - **Impact** : Rigueur documentaire sur les gros chantiers et efficacité maximale sur les petites tâches, sans compromis sur la qualité.
+
+## 2026-04-09-50 : Hub Collaboratif de Groupe (Chat & Feed Privé)
+- **Auteur** : Antigravity
+- **Statut** : ✅ Implémenté
+- **Contexte** : Nécessité de renforcer la collaboration au sein des groupes privés en permettant la communication directe et la visualisation facile des travaux partagés.
+- **Décision** :
+    1. **Système de Chat** : Création du modèle `GroupMessage` et du composant Livewire `GroupChat` avec rafraîchissement automatique (polling).
+    2. **Feed de Groupe Dédié** : Création du composant `GroupFeed` et extension de `SearchPostsAction` pour supporter le filtrage par `group_id`.
+    3. **Refonte UI GroupManager** : Passage à un dashboard à deux colonnes (Feed à gauche, Membres et Chat à droite) pour maximiser l'espace de travail.
+- **Impact** : Transformation des groupes d'une simple liste de membres en véritable espace de travail actif, sécurisé et centralisé.

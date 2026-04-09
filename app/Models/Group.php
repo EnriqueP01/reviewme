@@ -49,4 +49,9 @@ final class Group extends Model
     {
         return $this->hasMany(Post::class);
     }
+
+    public function messages(): HasMany
+    {
+        return $this->hasMany(GroupMessage::class)->latest();
+    }
 }
