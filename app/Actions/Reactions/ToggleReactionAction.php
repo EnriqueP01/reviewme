@@ -12,6 +12,7 @@ use App\Models\Review;
 use App\Models\Snippet;
 use App\Models\User;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\DB;
 
 final class ToggleReactionAction
 {
@@ -48,7 +49,7 @@ final class ToggleReactionAction
             return null;
         }
 
-        return \Illuminate\Support\Facades\DB::transaction(function () use ($user, $reactable, $type, $author) {
+        return DB::transaction(function () use ($user, $reactable, $type, $author) {
             $existing = Reaction::where([
                 'user_id' => $user->id,
                 'reactable_id' => $reactable->getKey(),

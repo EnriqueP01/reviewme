@@ -50,7 +50,7 @@
         
         <div class="glass-panel w-full max-w-lg rounded-round-4 border border-white/10 shadow-2xl p-10 space-y-8">
             <div class="flex items-center justify-between">
-                <h2 class="text-3xl font-black tracking-tighter uppercase">{{ __('Command Center') }}</h2>
+                <h2 class="text-3xl font-black tracking-tighter uppercase">{{ __('Keyboard Shortcuts') }}</h2>
                 <button @click="showShortcuts = false" class="text-on-surface-variant hover:text-white transition-colors">
                     <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
                 </button>
@@ -96,7 +96,6 @@
             </div>
 
             <div class="text-center pt-4">
-                <p class="text-[10px] font-black uppercase tracking-[0.2em] text-on-surface-variant/20 italic">{{ __('Master the flow.') }}</p>
             </div>
         </div>
     </div>

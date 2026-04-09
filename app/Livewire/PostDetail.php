@@ -55,6 +55,8 @@ class PostDetail extends Component
 
     public $selectedVersion = null;
 
+    public int $activeReviewIndex = 0;
+
     protected function rules(): array
     {
         return [
