@@ -283,3 +283,14 @@
     1. **Spécification Architecturale (Markdown)** : Rédaction détaillée de la norme dans `us/us14_roles_permissions_erreurs.md` classifiant les actions par niveaux et séparant strictement de la logique métier (erreurs 422 vs 403 vs 500).
     2. **Règle IA sur Mesure (.agents/rules/rbac.md)** : Intégration d'une directive d'agent continue ("Custom Rule"). Le but de la règle est d'interdire au modèle de coder des actions en "Black Box" : je suis désormais forcé de vérifier les permissions (via `PostPolicy`, `Gate` ou Middlewares) et de ne jamais ignorer la sécurité du backend, même si l'interface dissimule déjà les actions.
 - **Impact** : Prévention à 100% des erreurs d'authentification "fail-open", structuration forte des cas critiques, et alignement parfait entre les directives d'architecture de haut-niveau et le code généré quotidiennement par l'IA.
+
+## 2026-04-09-40 : Versioning Avancé d'Artefacts
+- **Auteur** : Antigravity
+- **Statut** : ✅ Implémenté
+- **Contexte** : Autoriser les curateurs à soumettre des itérations de code (nouvelles versions) sans créer un nouvel artefact, facilitant le suivi des reviews.
+- **Décision** :
+    1. **Architecture** : Création de `AddPostVersionAction` gérant l'intégration transactionnelle de nouveaux snippets avec incrémentation automatique de `version_number`.
+    2. **UI Ségrégative** : Ajout du composant Livewire `UpdateVibeCode` avec le routeur dédié `/vibe/{postId}/update-code`, reprenant l'ADN du workflow de création et l'heuristique de détection de fichier.
+    3. **Affichage Dynamique** : Mise à jour de `VibeDetail.php` (et son template) pour supporter l'affichage "1 Version = N Fichiers" et ajout du sélecteur interactif de version dans l'entête du snippet.
+    4. **Sécurité & Contrôle** : Application stricte de `authorize('update', $post)` limitant l'itération à l'auteur original.
+- **Impact** : Cycle de vie du code continu, traçabilité de l'évolution post-review et réduction mécanique du churn d'artefacts.

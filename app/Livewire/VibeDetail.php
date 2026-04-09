@@ -28,12 +28,12 @@ class VibeDetail extends Component
     public function mount(int $postId): void
     {
         $this->post = Post::with(['user', 'snippets.reviews.user', 'reactions'])->findOrFail($postId);
-        $this->selectedVersion = $this->post->snippets->first()?->id;
+        $this->selectedVersion = $this->post->snippets->max('version_number');
     }
 
-    public function selectLine(int $line): void
+    public function selectLine(int $snippetId, int $line): void
     {
-        $this->activeLine = $line;
+        $this->activeLine = $snippetId.'-'.$line;
     }
 
     public function saveComment(StoreReviewAction $storeReview): void
@@ -48,10 +48,12 @@ class VibeDetail extends Component
             'commentContent' => 'required|min:3',
         ]);
 
+        [$snippetId, $line] = explode('-', $this->activeLine);
+
         $storeReview->execute(
             Auth::user(),
-            (int) $this->selectedVersion,
-            $this->activeLine !== null ? (int) $this->activeLine : null,
+            (int) $snippetId,
+            $line !== '' ? (int) $line : null,
             $this->commentContent
         );
 
@@ -103,10 +105,10 @@ class VibeDetail extends Component
     #[Layout('layouts.app')]
     public function render()
     {
-        $snippet = $this->post->snippets()->where('id', $this->selectedVersion)->first();
+        $snippets = $this->post->snippets()->where('version_number', $this->selectedVersion)->orderBy('sort_order')->get();
 
         return view('livewire.vibe-detail', [
-            'currentSnippet' => $snippet,
+            'currentSnippets' => $snippets,
         ]);
     }
 }
