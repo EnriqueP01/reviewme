@@ -402,3 +402,12 @@ The initial "Monolith & The Lens" implementation was too spacious, creating layo
     1. **Règle IA Dédiée** : Création de `.agents/rules/update_us.md` imposant la mise à jour systématique des critères d'acceptation et détails techniques dans le dossier `us/` après chaque tâche.
     2. **Validation Automatique** : Mise à jour immédiate de l'US35 (Docker) pour valider le concept.
 - **Impact** : Documentation produit toujours à jour, traçabilité parfaite des fonctionnalités et alignement PO/Dev garanti.
+
+## 2026-04-09-49 : Raffinement Automatique des Prompts (Auto-PRD)
+- **Auteur** : Antigravity
+- **Statut** : ✅ Implémenté
+- **Contexte** : Volonté d'améliorer la qualité des réponses et la rigueur technique lors de demandes de nouvelles fonctionnalités.
+- **Décision** :
+    1. **Règle auto_prd** : Ajout de `.agents/rules/auto_prd.md` définissant un protocole de "Traduction technique" pour chaque prompt utilisateur complexe.
+    2. **Format Mini-Spec** : L'agent doit désormais structurer ses étapes (Contexte, Architecture, Sécurité, US Link) avant de coder.
+- **Impact** : Réduction drastique des erreurs d'interprétation, meilleure isolation des composants et respect strict des règles de sécurité.
