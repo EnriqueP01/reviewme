@@ -140,10 +140,12 @@ class MasterTestSeeder extends Seeder
                         $code = "<div class=\"flex flex-col space-y-6 p-4\">\n    <header class=\"border-b border-white/10 pb-4\">\n        <h2 class=\"text-xl font-bold text-white\">{{ \$title }}</h2>\n        <p class=\"text-sm text-gray-400\">Version $j</p>\n    </header>\n\n    <main class=\"grid grid-cols-1 md:grid-cols-2 gap-4\">\n        @foreach (\$items as \$item)\n            <x-ui.card :data=\"\$item\" />\n        @endforeach\n    </main>\n</div>";
                     }
 
+                    $fName = Str::slug($faker->word).".$language";
                     $snippet = Snippet::create([
                         'post_id' => $post->id,
                         'version_number' => $j,
-                        'description' => 'Fichier '.Str::slug($faker->word).".$language",
+                        'description' => 'Fichier '.$fName,
+                        'filename' => $fName,
                         'language' => $language,
                         'code_content' => $code,
                         'sort_order' => $j,
