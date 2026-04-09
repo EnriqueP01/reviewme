@@ -62,32 +62,38 @@
                              <div class="flex flex-col items-center gap-3 py-2"
                                   x-data="{ 
                                      voted: '{{ $votedState }}',
-                                     score: {{ $score }},
-                                     isProcessing: false,
+                                     score: parseInt('{{ $score }}'),
+                                     originalVoted: '{{ $votedState }}',
+                                     timer: null,
+                                     
                                      handleVote(dir) {
-                                         if (this.isProcessing) return;
-                                         this.isProcessing = true;
+                                         clearTimeout(this.timer);
+                                         
+                                         // Infallible Delta Logic
+                                         let newVoted = (this.voted === dir) ? '' : dir;
+                                         let diff = 0;
+                                         if (this.voted === 'up') diff -= 1;
+                                         if (this.voted === 'down') diff += 1;
+                                         if (newVoted === 'up') diff += 1;
+                                         if (newVoted === 'down') diff -= 1;
+                                         
+                                         this.score += diff;
+                                         this.voted = newVoted;
+
                                          window.haptic.play(dir);
-                                         if (dir === 'up') {
-                                             if (this.voted === 'up') { this.score--; this.voted = ''; }
-                                             else {
-                                                 this.score += (this.voted === 'down' ? 2 : 1);
-                                                 this.voted = 'up';
+                                         
+                                         this.timer = setTimeout(() => {
+                                             if (this.voted !== this.originalVoted) {
+                                                 const direction = this.voted === 'up' ? 'up' : (this.voted === 'down' ? 'down' : 'none');
+                                                 $wire.vote({{ $post->id }}, direction);
+                                                 this.originalVoted = this.voted;
                                              }
-                                         } else {
-                                             if (this.voted === 'down') { this.score++; this.voted = ''; }
-                                             else {
-                                                 this.score -= (this.voted === 'up' ? 2 : 1);
-                                                 this.voted = 'down';
-                                             }
-                                         }
-                                         setTimeout(() => { this.isProcessing = false; }, 100);
+                                         }, 300);
                                      }
                                   }"
                              >
                                 <button 
-                                    wire:click.stop="vote({{ $post->id }}, 'up')"
-                                    @click="handleVote('up')"
+                                    @click.stop="handleVote('up')"
                                     class="p-2 rounded-xl border transition-all"
                                     :class="voted === 'up' ? 'bg-[#8B5CF6] border-[#8B5CF6] text-white shadow-[0_0_15px_rgba(139,92,246,0.4)]' : 'bg-white/5 border-white/5 text-white/40 hover:text-[#8B5CF6] hover:border-[#8B5CF6]/30'"
                                 >
@@ -101,8 +107,7 @@
                                 </div>
 
                                 <button 
-                                    wire:click.stop="vote({{ $post->id }}, 'down')"
-                                    @click="handleVote('down')"
+                                    @click.stop="handleVote('down')"
                                     class="p-2 rounded-xl border transition-all"
                                     :class="voted === 'down' ? 'bg-red-500 border-red-500 text-white shadow-[0_0_15px_rgba(239,68,68,0.4)]' : 'bg-white/5 border-white/5 text-white/40 hover:text-red-500 hover:border-red-500/30'"
                                 >

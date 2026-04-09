@@ -268,7 +268,7 @@
                                  :style="'transform: translateX(-' + (current * 100) + '%)'">
                                 
                                 @foreach($post->fullReviews as $frIndex => $fr)
-                                    <div wire:key="fr-view-v7-{{ $fr->id }}" class="w-full shrink-0 px-4">
+                                    <div wire:key="fr-view-v10-{{ $fr->id }}" class="w-full shrink-0 px-4">
                                         <div class="max-w-6xl mx-auto bg-surface-container-low rounded-[2.5rem] p-10 border border-white/5 shadow-2xl relative overflow-hidden flex flex-col gap-8">
                                             
                                             <!-- Review Header -->
@@ -289,30 +289,35 @@
                                                         </span>
                                                     </div>
                                                 </div>
-                                                
-                                                <!-- Vote Engine -->
+
+                                                <!-- Vote Engine (Radical) -->
                                                 <div class="flex items-center gap-3"
                                                      x-data="{ 
-                                                         score: {{ (int) $fr->score }},
+                                                         score: parseInt('{{ $fr->up_count - $fr->down_count }}'),
                                                          voted: '{{ $fr->reactions->where('user_id', Auth::id())->first()?->type }}',
-                                                         isProcessing: false,
-                                                         vote(type) {
-                                                             if (this.isProcessing) return;
-                                                             this.isProcessing = true;
+                                                         originalVoted: '{{ $fr->reactions->where('user_id', Auth::id())->first()?->type }}',
+                                                         timer: null,
+                                                          
+                                                         vote(dir) {
+                                                             clearTimeout(this.timer);
+                                                              
+                                                             let newVoted = (this.voted === dir) ? '' : dir;
+                                                             let diff = 0;
+                                                             if (this.voted === 'up') diff -= 1;
+                                                             if (this.voted === 'down') diff += 1;
+                                                             if (newVoted === 'up') diff += 1;
+                                                             if (newVoted === 'down') diff -= 1;
                                                              
-                                                             if (this.voted === type) {
-                                                                 this.score += (type === 'up' ? -1 : 1);
-                                                                 this.voted = null;
-                                                             } else {
-                                                                 if (this.voted) {
-                                                                     this.score += (type === 'up' ? 2 : -2);
-                                                                 } else {
-                                                                     this.score += (type === 'up' ? 1 : -1);
+                                                             this.score += diff;
+                                                             this.voted = newVoted;
+
+                                                             this.timer = setTimeout(() => {
+                                                                 if (this.voted !== this.originalVoted) {
+                                                                     const target = this.voted === 'up' ? 'up' : (this.voted === 'down' ? 'down' : 'none');
+                                                                     $wire.voteReview({{ $fr->id }}, target);
+                                                                     this.originalVoted = this.voted;
                                                                  }
-                                                                 this.voted = type;
-                                                             }
-                                                             $wire.voteReview({{ $fr->id }}, type);
-                                                             setTimeout(() => { this.isProcessing = false; }, 100);
+                                                             }, 250);
                                                          }
                                                      }"
                                                 >
@@ -327,7 +332,6 @@
                                                              <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M19 9l-7 7-7-7" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/></svg>
                                                          </button>
                                                      </div>
-                                                </div>
                                                 </div>
                                             </div>
 

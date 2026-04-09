@@ -36,6 +36,7 @@ class Feed extends Component
         $this->resetPage();
     }
 
+    #[NoRender]
     public function vote(int $postId, string $direction, ToggleReactionAction $toggleReaction)
     {
         if (! Auth::check()) {
@@ -43,8 +44,17 @@ class Feed extends Component
         }
 
         $post = Post::findOrFail($postId);
-        $type = $direction === 'up' ? 'mindblown' : 'optimisable';
+        
+        if ($direction === 'none') {
+            \App\Models\Reaction::where([
+                'user_id' => Auth::id(),
+                'reactable_id' => $post->id,
+                'reactable_type' => $post->getMorphClass(),
+            ])->delete();
+            return;
+        }
 
+        $type = $direction === 'up' ? 'mindblown' : 'optimisable';
         $toggleReaction->execute(Auth::user(), $post, $type);
     }
 

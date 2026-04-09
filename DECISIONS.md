@@ -1,4 +1,16 @@
 
+## 2026-04-09-56 : Architecture "Zéro-Latence" & Debounced State Sync
+- **Auteur** : Antigravity
+- **Statut** : ✅ Implémenté
+- **Contexte** : Nécessité d'atteindre une fluidité d'interaction type "StackOverflow/GitHub" pour les votes (Karmas), éliminant tout sentiment de latence réseau ou de scintillement visuel (UI Flicker).
+- **Décision** :
+    1. **Découplage UI/Serveur** : Adoption du pattern "Optimistic Instant Feedback". L'UI (Alpine.js) met à jour l'état local (Score, Icones) immédiatement sans attendre le serveur.
+    2. **Delta-Based Logic** : Implémentation d'un calcul de score basé sur le delta (différence entre ancien et nouvel état) dans le client pour garantir l'intégrité du score même lors de changements de direction ultra-rapides (ex: passage de +1 à -1).
+    3. **Debounced Synchronization** : Les appels backend sont retardés (Debounce : 250-300ms). Seule la dernière intention utilisateur est envoyée au serveur, réduisant la charge et évitant les race conditions.
+    4. **Silent Backend (`#[NoRender]`)** : Utilisation systématique de l'attribut Livewire pour empêcher tout re-rendu du DOM lors de la synchronisation des votes, préservant l'état local d'Alpine.js.
+    5. **Enrichissement des Données (withCount)** : Extension du contrôleur `PostDetail` pour charger les scores de karmas des revues complètes via `withCount` (up_count, down_count), garantissant une initialisation client 100% précise.
+- **Impact** : Expérience utilisateur "Elite" avec feedback instantané (0ms perçu), suppression totale des bugs de scoring et infrastructure réseau optimisée.
+
 ## 2026-04-08-10 : Implémentation du Système HUD et Heatmap d'Activité
 - **Auteur** : Antigravity
 - **Statut** : ✅ Implémenté

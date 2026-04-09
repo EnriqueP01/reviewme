@@ -55,58 +55,62 @@
             <article wire:key="post-{{ $post->id }}" @class(['group relative', 'opacity-50 blur-sm grayscale' => false]) x-data="{ hovered: false }" @mouseenter="hovered = true" @mouseleave="hovered = false">
                 <div class="flex items-start gap-12">
                     <!-- Karma Lens (Vertical Sidebar) -->
-                    <div class="flex flex-col items-center gap-3 sticky top-32" 
-                         x-data="{ 
-                             voted: '{{ $votedState }}',
-                             score: {{ $post->up_count - $post->down_count }},
-                             isProcessing: false,
-                             handleVote(dir) {
-                                if (this.isProcessing) return;
-                                this.isProcessing = true;
-                                window.haptic.play(dir);
+                     <div class="flex flex-col items-center gap-3 sticky top-32" 
+                          x-data="{ 
+                              voted: '{{ $votedState }}',
+                              score: {{ $post->up_count - $post->down_count }},
+                              originalVoted: '{{ $votedState }}',
+                              timer: null,
+                              
+                              handleVote(dir) {
+                                 clearTimeout(this.timer);
+                                 
+                                 // Delta-based robust logic
+                                 let newVoted = (this.voted === dir) ? '' : dir;
+                                 let diff = 0;
+                                 if (this.voted === 'up') diff -= 1;
+                                 if (this.voted === 'down') diff += 1;
+                                 if (newVoted === 'up') diff += 1;
+                                 if (newVoted === 'down') diff -= 1;
+                                 
+                                 this.score += diff;
+                                 this.voted = newVoted;
 
-                                if (dir === 'up') {
-                                    if (this.voted === 'up') { this.score--; this.voted = ''; }
-                                    else {
-                                        this.score += (this.voted === 'down' ? 2 : 1);
-                                        this.voted = 'up';
-                                    }
-                                } else {
-                                    if (this.voted === 'down') { this.score++; this.voted = ''; }
-                                    else {
-                                        this.score -= (this.voted === 'up' ? 2 : 1);
-                                        this.voted = 'down';
-                                    }
-                                }
-                                // Silence the processing state quickly for UI fluidity
-                                setTimeout(() => { this.isProcessing = false; }, 100);
-                             }
-                         }"
-                    >
-                        <button 
-                            wire:click.stop="vote({{ $post->id }}, 'up')"
-                            @click="handleVote('up')"
-                            :class="voted === 'up' ? 'bg-emerald-500 border-emerald-400 text-white shadow-[0_0_30px_rgba(52,211,153,0.4)] scale-110' : 'bg-surface-container-low text-on-surface-variant hover:text-emerald-400 hover:border-emerald-500/40 active:scale-95 border-white/5'"
-                            class="w-14 h-14 rounded-2xl border flex items-center justify-center transition-all duration-300 group/vote"
-                        >
-                            <svg class="w-6 h-6 transition-transform group-hover/vote:-translate-y-1" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="4"><path stroke-linecap="round" stroke-linejoin="round" d="M5 15l7-7 7 7"/></svg>
-                        </button>
-                        
-                        <div class="py-2 flex flex-col items-center select-none">
-                            <span class="font-display font-black text-3xl tracking-tighter transition-all duration-300"
-                                  :class="voted === 'up' ? 'text-emerald-400' : (voted === 'down' ? 'text-rose-400' : 'text-on-surface/40')"
-                                  x-text="score"></span>
-                            <span class="text-[8px] font-black uppercase tracking-[0.3em] text-on-surface-variant/20 mt-1">{{ __('Score') }}</span>
-                        </div>
-                        
-                        <button 
-                            wire:click.stop="vote({{ $post->id }}, 'down')"
-                            @click="handleVote('down')"
-                            :class="voted === 'down' ? 'bg-rose-500 text-white border-rose-400 shadow-[0_0_20px_rgba(244,63,94,0.3)] scale-110' : 'bg-surface-container-low text-on-surface-variant hover:text-rose-400 hover:border-rose-500/40 active:scale-95 border-white/5'"
-                            class="w-14 h-14 rounded-2xl border flex items-center justify-center transition-all duration-300 group/vote"
-                        >
-                            <svg class="w-6 h-6 transition-transform group-hover/vote:translate-y-1" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="4"><path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7"/></svg>
-                        </button>
+                                 window.haptic.play(dir);
+                                 
+                                 // Silent sync after 300ms of inactivity
+                                 this.timer = setTimeout(() => {
+                                     if (this.voted !== this.originalVoted) {
+                                         const direction = this.voted === 'up' ? 'up' : (this.voted === 'down' ? 'down' : 'none');
+                                         $wire.vote({{ $post->id }}, direction);
+                                         this.originalVoted = this.voted;
+                                     }
+                                 }, 300);
+                              }
+                          }"
+                     >
+                         <button 
+                             @click.stop="handleVote('up')"
+                             :class="voted === 'up' ? 'bg-emerald-500 border-emerald-400 text-white shadow-[0_0_30px_rgba(52,211,153,0.4)] scale-110' : 'bg-surface-container-low text-on-surface-variant hover:text-emerald-400 hover:border-emerald-500/40 active:scale-95 border-white/5'"
+                             class="w-14 h-14 rounded-2xl border flex items-center justify-center transition-all duration-300 group/vote"
+                         >
+                             <svg class="w-6 h-6 transition-transform group-hover/vote:-translate-y-1" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="4"><path stroke-linecap="round" stroke-linejoin="round" d="M5 15l7-7 7 7"/></svg>
+                         </button>
+                         
+                         <div class="py-2 flex flex-col items-center select-none">
+                             <span class="font-display font-black text-3xl tracking-tighter transition-all duration-300"
+                                   :class="voted === 'up' ? 'text-emerald-400' : (voted === 'down' ? 'text-rose-400' : 'text-on-surface/40')"
+                                   x-text="score"></span>
+                             <span class="text-[8px] font-black uppercase tracking-[0.3em] text-on-surface-variant/20 mt-1">{{ __('Score') }}</span>
+                         </div>
+                         
+                         <button 
+                             @click.stop="handleVote('down')"
+                             :class="voted === 'down' ? 'bg-rose-500 text-white border-rose-400 shadow-[0_0_20px_rgba(244,63,94,0.3)] scale-110' : 'bg-surface-container-low text-on-surface-variant hover:text-rose-400 hover:border-rose-500/40 active:scale-95 border-white/5'"
+                             class="w-14 h-14 rounded-2xl border flex items-center justify-center transition-all duration-300 group/vote"
+                         >
+                             <svg class="w-6 h-6 transition-transform group-hover/vote:translate-y-1" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="4"><path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7"/></svg>
+                         </button>
                     </div>
 
                     <!-- Main Article Content -->

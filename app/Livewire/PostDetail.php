@@ -13,7 +13,9 @@ use App\Models\PostComment;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
+use Livewire\Attributes\NoRender;
 use Livewire\Component;
+
 
 class PostDetail extends Component
 {
@@ -109,6 +111,7 @@ class PostDetail extends Component
         $this->dispatch('post-action', type: 'success');
     }
 
+    #[NoRender]
     public function toggleCommentLike(int $commentId, ToggleReactionAction $toggleReaction): void
     {
         $comment = PostComment::findOrFail($commentId);
@@ -116,12 +119,22 @@ class PostDetail extends Component
         $this->refreshPost();
     }
 
-    public function voteReview(int $reviewId, string $type, ToggleReactionAction $toggleReaction): void
+    #[NoRender]
+    public function voteReview(int $reviewId, string $direction, ToggleReactionAction $toggleReaction): void
     {
         $this->authorizeAction();
         $review = FullReview::findOrFail($reviewId);
-        $toggleReaction->execute(Auth::user(), $review, $type);
-        $this->refreshPost();
+
+        if ($direction === 'none') {
+            \App\Models\Reaction::where([
+                'user_id' => Auth::id(),
+                'reactable_id' => $review->id,
+                'reactable_type' => $review->getMorphClass(),
+            ])->delete();
+            return;
+        }
+
+        $toggleReaction->execute(Auth::user(), $review, $direction);
     }
 
     // --- QUICK REVIEW (INLINE SUGGESTION) ---
@@ -268,7 +281,10 @@ class PostDetail extends Component
             'comments.reactions',
             'comments.replies.user',
             'comments.replies.reactions',
-            'fullReviews' => fn ($q) => $q->orderBy('score', 'desc')->with(['user', 'modifiedSnippets.snippet', 'reactions', 'comments.user', 'comments.reactions']),
+            'fullReviews' => fn ($q) => $q->withCount([
+                'reactions as up_count' => fn($q) => $q->where('type', 'up'),
+                'reactions as down_count' => fn($q) => $q->where('type', 'down')
+            ])->orderBy('score', 'desc')->with(['user', 'modifiedSnippets.snippet', 'reactions', 'comments.user', 'comments.reactions']),
         ]);
 
         // Refresh snippets after load
