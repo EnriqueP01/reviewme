@@ -120,11 +120,12 @@ class PostDetail extends Component
         $post = Post::findOrFail($postId);
 
         if ($direction === 'none') {
-            \App\Models\Reaction::where([
+            Reaction::where([
                 'user_id' => Auth::id(),
                 'reactable_id' => $post->id,
                 'reactable_type' => $post->getMorphClass(),
             ])->delete();
+
             return;
         }
 
@@ -297,27 +298,27 @@ class PostDetail extends Component
     public function refreshPost(): void
     {
         $this->post = Post::with([
-            'user', 
+            'user',
             'group',
-            'snippets.inlineSuggestions.user', 
-            'fullReviews' => function($query) {
+            'snippets.inlineSuggestions.user',
+            'fullReviews' => function ($query) {
                 $query->withCount([
-                    'reactions as up_count' => fn($q) => $q->where('type', 'up'),
-                    'reactions as down_count' => fn($q) => $q->where('type', 'down')
+                    'reactions as up_count' => fn ($q) => $q->where('type', 'up'),
+                    'reactions as down_count' => fn ($q) => $q->where('type', 'down'),
                 ])
-                ->orderBy('score', 'desc')
-                ->with(['user', 'reactions', 'comments.user', 'modifiedSnippets.snippet', 'comments.reactions']);
+                    ->orderBy('score', 'desc')
+                    ->with(['user', 'reactions', 'comments.user', 'modifiedSnippets.snippet', 'comments.reactions']);
             },
-            'comments.user', 
-            'comments.reactions', 
+            'comments.user',
+            'comments.reactions',
             'comments.replies.user',
-            'comments.replies.reactions'
+            'comments.replies.reactions',
         ])
-        ->withCount([
-            'reactions as up_count' => fn($q) => $q->where('type', 'mindblown'),
-            'reactions as down_count' => fn($q) => $q->where('type', 'optimisable')
-        ])
-        ->findOrFail($this->postId);
+            ->withCount([
+                'reactions as up_count' => fn ($q) => $q->where('type', 'mindblown'),
+                'reactions as down_count' => fn ($q) => $q->where('type', 'optimisable'),
+            ])
+            ->findOrFail($this->postId);
 
         // Rafraîchir les extraits pour la version sélectionnée
         $this->currentSnippets = $this->post->snippets->where('version_number', $this->selectedVersion);

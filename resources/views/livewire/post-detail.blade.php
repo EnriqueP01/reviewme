@@ -79,26 +79,25 @@
                         <img src="{{ $post->user->avatar }}" class="w-full h-full object-cover">
                     </div>
                 </div>
-                <div class="flex flex-col">
+                <div class="flex flex-col min-w-0">
                     <div class="flex items-center gap-3">
                         <span class="text-lg font-black text-on-surface tracking-tight">{{ $post->user->name }}</span>
                         <span class="text-xs font-mono font-bold text-primary tracking-wider font-black">@<span>{{ $post->user->name }}</span></span>
                     </div>
-                    <div class="flex items-center gap-3 mt-1">
-                    <div class="flex items-center gap-3 mt-1">
+                    <div class="flex items-center gap-3 mt-1 overflow-x-auto no-scrollbar">
                         @foreach(explode(',', $post->lens ?? 'Logic') as $l)
                             @php $lKey = strtolower(trim($l)); @endphp
                             <span 
-                                class="px-3 py-1 rounded-xl text-[9px] font-black uppercase tracking-[0.2em] transition-all cursor-default border"
+                                class="px-3 py-1 rounded-xl text-[9px] font-black uppercase tracking-[0.2em] transition-all cursor-default border flex-shrink-0"
                                 style="color: var(--lens-{{ $lKey }}); background-color: rgba(var(--lens-{{ $lKey }}-rgb), 0.1); border-color: rgba(var(--lens-{{ $lKey }}-rgb), 0.3);"
                             >#{{ strtoupper(trim($l)) }}</span>
                         @endforeach
-                        <span class="text-[10px] uppercase tracking-[0.2em] text-on-surface-variant font-black opacity-40 flex items-center gap-2">
+                        <span class="text-[10px] uppercase tracking-[0.2em] text-on-surface-variant font-black opacity-40 flex items-center gap-2 flex-shrink-0">
                             {{ $post->created_at->diffForHumans() }}
                         </span>
-                        <span class="text-on-surface-variant/40 text-[10px] font-black uppercase tracking-[0.2em] font-mono">/ {{ $post->snippets->count() }} {{ __('FILES') }}</span>
+                        <span class="text-on-surface-variant/40 text-[10px] font-black uppercase tracking-[0.2em] font-mono flex-shrink-0">/ {{ $post->snippets->count() }} {{ __('FILES') }}</span>
                     </div>
-                    <h1 class="text-2xl font-black text-on-surface tracking-tighter mt-2">{{ $post->title }}</h1>
+                    <h1 class="text-2xl font-black text-on-surface tracking-tighter mt-2 truncate">{{ $post->title }}</h1>
                 </div>
             </div>
             

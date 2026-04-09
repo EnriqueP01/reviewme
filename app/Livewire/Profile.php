@@ -3,7 +3,6 @@
 namespace App\Livewire;
 
 use App\Models\Post;
-use App\Models\Reaction;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Cache;
 use Livewire\Attributes\Layout;

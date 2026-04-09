@@ -4,7 +4,9 @@ declare(strict_types=1);
 
 namespace App\Actions\Reactions;
 
+use App\Models\Post;
 use App\Models\User;
+use Illuminate\Database\Eloquent\Model;
 
 final class UpdateUserReputationAction
 {
@@ -19,9 +21,9 @@ final class UpdateUserReputationAction
      * @param  string  $type  Le type de réaction
      * @param  string  $action  'add' | 'remove' | 'switch'
      * @param  string|null  $oldType  L'ancien type de réaction
-     * @param  \Illuminate\Database\Eloquent\Model|null  $source  La source du vote (Post, etc.)
+     * @param  Model|null  $source  La source du vote (Post, etc.)
      */
-    public function execute(User $user, string $type, string $action, ?string $oldType = null, ?\Illuminate\Database\Eloquent\Model $source = null): void
+    public function execute(User $user, string $type, string $action, ?string $oldType = null, ?Model $source = null): void
     {
         $points = $this->getPointsForType($type);
         $oldPoints = $oldType ? $this->getPointsForType($oldType) : 0;
@@ -38,13 +40,13 @@ final class UpdateUserReputationAction
         }
 
         // BONUS DE QUALITÉ : Doubler les points si le contenu est riche (> 500 chars)
-        if ($delta > 0 && $source && isset($source->description) && strlen((string)$source->description) > 500) {
+        if ($delta > 0 && $source && isset($source->description) && strlen((string) $source->description) > 500) {
             $delta *= 2;
         }
 
         // Détection de la Lens si la source est un Post
         $lens = null;
-        if ($source instanceof \App\Models\Post) {
+        if ($source instanceof Post) {
             $lens = $source->lens;
         }
 
@@ -54,7 +56,7 @@ final class UpdateUserReputationAction
             "reaction_{$action}",
             $source,
             $lens,
-            "Reaction {$type} " . ($action === 'switch' ? "(from {$oldType})" : "") . ($delta > 20 ? " [Quality Bonus]" : "")
+            "Reaction {$type} ".($action === 'switch' ? "(from {$oldType})" : '').($delta > 20 ? ' [Quality Bonus]' : '')
         );
     }
 

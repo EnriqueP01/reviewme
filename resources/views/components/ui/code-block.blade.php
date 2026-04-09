@@ -211,9 +211,9 @@
                     </span>
                     <span class="text-[11px] font-mono font-bold text-on-surface tracking-wide flex items-center gap-3">
                         <span class="w-1 h-1 rounded-full bg-primary animate-pulse shadow-[0_0_10px_rgba(190,194,255,0.8)]"></span>
-                        <div class="flex items-center gap-2">
-                            <span class="px-2 py-0.5 rounded-lg bg-primary/10 text-primary text-[9px] font-black border border-primary/20">V{{ $selectedVersion }}</span>
-                            {{ $title ?: 'UNNAMED_MODULE' }}
+                        <div class="flex items-center gap-2 max-w-[200px] lg:max-w-[300px]">
+                            <span class="px-2 py-0.5 rounded-lg bg-primary/10 text-primary text-[9px] font-black border border-primary/20 flex-shrink-0">V{{ $selectedVersion }}</span>
+                            <span class="truncate">{{ $title ?: 'UNNAMED_MODULE' }}</span>
                         </div>
                     </span>
                 </div>
@@ -226,7 +226,7 @@
                         <button 
                             @click="activeTab = index; $dispatch('snippet-changed', { id: snippet.id }); if(window.fx) window.fx.play('click')"
                             :class="activeTab === index ? 'bg-primary/20 text-primary shadow-[0_0_15px_rgba(190,194,255,0.1)]' : 'text-on-surface-variant/30 hover:text-on-surface-variant hover:bg-white/5'"
-                            class="px-5 py-2 rounded-lg text-[10px] font-black font-mono tracking-widest transition-all duration-500 whitespace-nowrap"
+                            class="px-5 py-2 rounded-lg text-[10px] font-black font-mono tracking-widest transition-all duration-500 whitespace-nowrap max-w-[180px] truncate"
                             x-text="snippet.name"
                         ></button>
                     </template>

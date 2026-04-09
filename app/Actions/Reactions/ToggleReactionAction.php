@@ -31,7 +31,7 @@ final class ToggleReactionAction
     public function execute(User $user, Model $reactable, string $type): ?Reaction
     {
         // PROTECTION KARMA : Seuls les "Contributeurs" peuvent voter DOWN
-        if (in_array($type, ['optimisable', 'down']) && !$user->hasKarmaPermission('post.vote_down')) {
+        if (in_array($type, ['optimisable', 'down']) && ! $user->hasKarmaPermission('post.vote_down')) {
             throw new \Exception(__('Niveau insuffisant pour voter DOWN. (Requis: Contributeur)'));
         }
 

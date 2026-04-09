@@ -2,10 +2,13 @@
 
 namespace Tests\Feature;
 
+use App\Actions\Reactions\GrantKarmaAction;
+use App\Actions\Reactions\ToggleReactionAction;
+use App\Actions\Reactions\UpdateUserReputationAction;
 use App\Models\Post;
 use App\Models\User;
-use App\Actions\Reactions\ToggleReactionAction;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Support\Facades\Artisan;
 use Tests\TestCase;
 
 class KarmaSystemTest extends TestCase
@@ -58,9 +61,9 @@ class KarmaSystemTest extends TestCase
         $this->assertDatabaseHas('karma_transactions', [
             'user_id' => $author->id,
             'points' => 10,
-            'type' => 'reaction_add'
+            'type' => 'reaction_add',
         ]);
-        
+
         $this->assertEquals(10, $author->fresh()->reputation_score);
     }
 
@@ -70,7 +73,7 @@ class KarmaSystemTest extends TestCase
     public function test_groups_route_is_protected_by_karma(): void
     {
         $user = User::factory()->create(['reputation_score' => 20]); // Trop bas pour 100 requis
-        
+
         $response = $this->actingAs($user)->getJson('/groups');
 
         $response->assertStatus(403);
@@ -83,12 +86,12 @@ class KarmaSystemTest extends TestCase
     public function test_daily_karma_cap_is_enforced(): void
     {
         $user = User::factory()->create(['reputation_score' => 0]);
-        
+
         // Simuler un gain massif (25 fois +10)
         for ($i = 0; $i < 25; $i++) {
-            app(\App\Actions\Reactions\GrantKarmaAction::class)->execute(
-                $user, 
-                10, 
+            app(GrantKarmaAction::class)->execute(
+                $user,
+                10,
                 'test_gain',
                 description: "Gain #{$i}"
             );
@@ -105,14 +108,14 @@ class KarmaSystemTest extends TestCase
     {
         $author = User::factory()->create(['reputation_score' => 0]);
         $user = User::factory()->create(['reputation_score' => 50]);
-        
+
         // Post très long
         $longPost = Post::factory()->create([
             'user_id' => $author->id,
-            'description' => str_repeat('Contenu de qualité supérieure. ', 20) // ~600 chars
+            'description' => str_repeat('Contenu de qualité supérieure. ', 20), // ~600 chars
         ]);
 
-        app(\App\Actions\Reactions\UpdateUserReputationAction::class)->execute($author, 'up', 'add', source: $longPost);
+        app(UpdateUserReputationAction::class)->execute($author, 'up', 'add', source: $longPost);
 
         // Normalement +10, mais ici doublé à +20
         $this->assertEquals(20, $author->fresh()->reputation_score);
@@ -124,19 +127,19 @@ class KarmaSystemTest extends TestCase
     public function test_rebuild_command_restores_integrity(): void
     {
         $user = User::factory()->create(['reputation_score' => 0]);
-        
+
         // On crée une transaction manuelle de 50 pts
         $user->karmaTransactions()->create([
             'points' => 50,
             'type' => 'manual',
-            'description' => 'Bonus manuel'
+            'description' => 'Bonus manuel',
         ]);
 
         // On reset manuellement le score à 0
         $user->update(['reputation_score' => 0]);
 
         // On lance la commande
-        \Illuminate\Support\Facades\Artisan::call('karma:rebuild', ['--user' => $user->id]);
+        Artisan::call('karma:rebuild', ['--user' => $user->id]);
 
         // Le score doit être remonté à 50
         $this->assertEquals(50, $user->fresh()->reputation_score);

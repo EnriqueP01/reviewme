@@ -135,14 +135,14 @@
                     <span class="px-4 py-1.5 rounded-xl bg-surface-container-highest text-[9px] font-black uppercase tracking-[0.2em] text-on-surface-variant/60 border border-white/[0.03] hover:border-secondary/30 transition-colors cursor-default">#{{ strtoupper($post->latestSnippet->language ?? 'PHP') }}</span>
                  </div>
                  <div class="flex-grow"></div>
-                 <div class="flex items-center gap-8 text-[10px] font-black uppercase tracking-[0.3em] text-on-surface-variant/30">
-                    <div class="flex items-center gap-3 group/stat cursor-pointer hover:text-primary transition-all duration-300">
+                  <div class="flex items-center gap-8 text-[10px] font-black uppercase tracking-[0.3em] text-on-surface-variant/30">
+                    <a href="{{ route('posts.detail', $post->id) }}" class="flex items-center gap-3 group/stat cursor-pointer hover:text-primary transition-all duration-300">
                         <div class="w-8 h-8 rounded-full bg-white/5 flex items-center justify-center group-hover/stat:bg-primary/10 transition-colors">
                             <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"/></svg>
                         </div>
-                        <span>{{ $post->reviews_count ?? 0 }} {{ __('Reviews') }}</span>
-                    </div>
-                 </div>
+                        <span class="{{ $post->full_reviews_count > 0 ? 'text-primary' : '' }}">{{ $post->full_reviews_count ?? 0 }} {{ __('Reviews') }}</span>
+                    </a>
+                  </div>
             </div>
         </div>
     </div>
