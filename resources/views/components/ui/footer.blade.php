@@ -8,7 +8,7 @@
             <!-- Brand -->
             <div class="col-span-1 md:col-span-1 space-y-8">
                 <a href="/" class="flex items-center gap-4 group">
-                    <img src="{{ asset('images/logo.png') }}" class="h-8 w-auto filter brightness-110 group-hover:scale-110 transition-transform duration-500" alt="ReviewMe Logo">
+                    <x-ui.logo-artifact size="w-12 h-12" font="text-xl" />
                     <span class="font-display text-2xl font-black tracking-tighter text-on-surface">Review<span class="text-primary">Me</span></span>
                 </a>
                 <p class="text-xs text-on-surface-variant font-medium leading-relaxed opacity-40 max-w-xs">

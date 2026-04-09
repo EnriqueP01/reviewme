@@ -14,11 +14,21 @@
     
     /* The Lens Accents */
     --primary: #bec2ff;           /* Indigo-Blue (Fidelity variant) */
+    --primary-rgb: 190, 194, 255;
     --primary-container: #5b63d3; /* Deep Purple-Indigo */
     --secondary: #4edea3;         /* Mint Green */
+    --secondary-rgb: 78, 222, 163;
     --secondary-container: #00a572;
     --tertiary: #ffb95f;          /* Amber Gold */
     --tertiary-container: #9c6200;
+
+    /* Semantic Lenses */
+    --lens-logic: #FBBF24;        /* Yellow/Amber 400 */
+    --lens-logic-rgb: 251, 191, 36;
+    --lens-beauty: #60A5FA;       /* Blue 400 */
+    --lens-beauty-rgb: 96, 165, 250;
+    --lens-opti: #34D399;         /* Green/Emerald 400 */
+    --lens-opti-rgb: 52, 211, 153;
     
     --on-surface: #e3e1ed;
     --on-surface-variant: #ababcf;
@@ -45,8 +55,26 @@ body {
 
 /* Base Texture: Geometric Grid (The Monolith Spirit) */
 .bg-grid-subtle {
-    background-image: radial-gradient(circle at 1px 1px, rgba(190, 194, 255, 0.25) 1px, transparent 0);
+    background-image: radial-gradient(circle at 1px 1px, rgba(190, 194, 255, 0.4) 1px, transparent 0);
     background-size: 32px 32px;
+}
+
+.bg-grid {
+    background-image: 
+        linear-gradient(to right, rgba(190, 194, 255, 0.12) 1px, transparent 1px),
+        linear-gradient(to bottom, rgba(190, 194, 255, 0.12) 1px, transparent 1px);
+    background-size: 60px 60px;
+}
+
+.bg-dots {
+    background-image: radial-gradient(rgba(190, 194, 255, 0.2) 1px, transparent 1px);
+    background-size: 20px 20px;
+}
+
+.bg-grid-interactive {
+    background-image: 
+        radial-gradient(circle at 1px 1px, rgba(190, 194, 255, 0.15) 1px, transparent 0);
+    background-size: 20px 20px;
 }
 
 /* Premium Typography Patterns */
@@ -133,6 +161,71 @@ button, .button {
     color: #000000 !important;
     font-weight: 900 !important;
     background-color: var(--secondary);
+}
+
+/* Premium Dividers */
+.glow-divider {
+    position: relative;
+    height: 1px;
+    width: 100%;
+    background: linear-gradient(to right, transparent, rgba(190, 194, 255, 0.2) 50%, transparent);
+}
+
+.glow-divider::after {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 4px;
+    height: 4px;
+    background: var(--primary);
+    border-radius: 50%;
+    box-shadow: 0 0 15px var(--primary);
+}
+
+/* Hover Engine */
+.hover-lift {
+    transition: transform var(--transition-base), box-shadow var(--transition-base), border-color var(--transition-base);
+}
+
+.hover-lift:hover {
+    transform: translateY(-8px) scale(1.01);
+    border-color: rgba(190, 194, 255, 0.4);
+    box-shadow: 0 40px 100px -20px rgba(0, 0, 0, 0.9), 0 0 20px rgba(190, 194, 255, 0.1);
+}
+
+.hover-glow {
+    position: relative;
+    overflow: hidden;
+}
+
+.hover-glow::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: radial-gradient(800px circle at var(--mouse-x, 0) var(--mouse-y, 0), rgba(190, 194, 255, 0.05), transparent 40%);
+    opacity: 0;
+    transition: opacity 0.5s var(--ease-standard);
+    pointer-events: none;
+}
+
+.hover-glow:hover::before {
+    opacity: 1;
+}
+
+/* Scroll Animations */
+[x-cloak] { display: none !important; }
+
+.reveal {
+    opacity: 0;
+    transform: translateY(30px);
+    transition: all 0.8s cubic-bezier(0.2, 0.8, 0.2, 1);
+}
+
+.reveal.visible {
+    opacity: 1;
+    transform: translateY(0);
 }
 
 /* Custom Scrollbar — Discrete & Pro */

@@ -200,3 +200,27 @@
     2. **Interactions Riches** : Génération automatisée de reviews, réactions et membres de groupes pour simuler une plateforme active.
     3. **Utilisateur Test Dédié** : Création d'un profil stable (`celestin@reviewme.io`) avec un historique complet pour faciliter le Vibe Coding.
 - **Impact** : Environnement de développement immersif et validation immédiate des composants UI complexes.
+
+## 2026-04-09-32 : Workflow de Publication (V6) & Charte Chromatique Lenses
+- **Auteur** : Antigravity
+- **Statut** : ✅ Implémenté
+- **Contexte** : Besoin de finaliser le PublishWorkflow avec sélection multiple, validation explicite et respect strict de la charte graphique Lenses.
+- **Décision** :
+    1. **Validation & Déploiement** : Ajout d'un bouton de validation tactile dans la phase finale ("Deploy Curation Artifact") avec lueur pulsative (`emerald`) et renforcement de l'UI.
+    2. **Visibilité Hybride** : Remplacement des boutons radio par des cases à cocher exclusives pour Public/Privé, offrant un feedback visuel plus moderne.
+    3. **Système Lenses Centralisé** : 
+        - Injection de la charte graphique officielle : **Logic (Jaune/Amber)**, **Beauty (Bleu/Sky)**, **Opti (Vert/Emerald)**.
+        - Migration de `app.css` vers des variables CSS sémantiques (`--lens-*`) dans `tokens.css` pour une maintenance facilitée.
+        - Support du multi-threading de lenses (sélection multiple) dans le tunnel de création.
+- **Impact** : Cohérence chromatique totale sur toute la plateforme et sécurisation de l'acte de publication.
+
+## 2026-04-09-33 : Optimisation UX Workflow & Forçage de Style Inline
+- **Auteur** : Antigravity
+- **Statut** : ✅ Implémenté
+- **Contexte** : Retours utilisateur sur la précision du stepper, le manque de feedback dans l'éditeur (numéros de lignes) et des instabilités mineures de coloration sur la production locale.
+- **Décision** :
+    1. **Stepper Géométrique** : Ajustement des ancres de la barre de progression (`left-10/right-10`) pour toucher exactement le centre des ronds d'étape. Ajout d'un remplissage animé fluide.
+    2. **High-Fidelity Editor** : Intégration d'une gouttière de numérotation de lignes (Gutter) auto-générée et coloration syntaxique du texte pilotée par le langage détecté.
+    3. **Forçage CSS Inline** : Utilisation de l'attribut `style` en combinaison avec les variables CSS dans les composants `Feed` et `CodeBlock` pour garantir l'application des couleurs des Lenses sans dépendance au JIT/Purge de Tailwind.
+    4. **Simplification** : Suppression de la métrique "Logic Density" et passage en optionnel des champs secondaires (description courte, buts) pour fluidifier l'expérience.
+- **Impact** : Interface plus robuste, feedback utilisateur immédiat et "zéro défaut" sur l'application visuelle du design system.

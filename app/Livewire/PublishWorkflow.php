@@ -4,10 +4,9 @@ namespace App\Livewire;
 
 use App\Actions\Posts\CreatePostAction;
 use Illuminate\Support\Facades\Auth;
-use Livewire\Attributes\Layout;
 use Livewire\Attributes\Computed;
+use Livewire\Attributes\Layout;
 use Livewire\Component;
-
 
 class PublishWorkflow extends Component
 {
@@ -30,7 +29,7 @@ class PublishWorkflow extends Component
     public function mount()
     {
         $this->files = [
-            ['id' => (string) str()->uuid(), 'name' => '', 'content' => '', 'language' => 'php', 'description' => '', 'is_duplicate' => false, 'is_content_duplicate' => false],
+            ['id' => (string) str()->uuid(), 'name' => '', 'content' => '', 'language' => 'none', 'description' => '', 'is_duplicate' => false, 'is_content_duplicate' => false],
         ];
     }
 
@@ -67,16 +66,30 @@ class PublishWorkflow extends Component
     public function getSupportedLanguages(): array
     {
         return [
-            'php', 'javascript', 'typescript', 'python', 'css', 'html', 'sql', 'markdown',
+            'none', 'php', 'javascript', 'typescript', 'python', 'css', 'html', 'sql', 'markdown',
             'json', 'yaml', 'xml', 'c', 'cpp', 'java', 'go', 'rust', 'ruby', 'csharp',
             'swift', 'kotlin', 'dart', 'bash', 'vue', 'blade',
         ];
     }
 
     // Step 3: Global Focus & Distribution
-    public array $selectedLens = ['clarity'];
+    public array $selectedLens = ['logic'];
 
-    public string $visibility = 'public';
+    public bool $is_public = true;
+
+    public bool $is_private = false;
+
+    public function toggleLens($key)
+    {
+        if (in_array($key, $this->selectedLens)) {
+            $this->selectedLens = array_diff($this->selectedLens, [$key]);
+        } else {
+            if (count($this->selectedLens) < 3) {
+                $this->selectedLens[] = $key;
+            }
+        }
+        $this->selectedLens = array_values($this->selectedLens);
+    }
 
     public ?int $groupId = null;
 
@@ -86,14 +99,16 @@ class PublishWorkflow extends Component
     public function groups()
     {
         $user = Auth::user();
-        if (!$user) return collect();
+        if (! $user) {
+            return collect();
+        }
 
         $query = $user->groups();
-        
-        if (!empty($this->groupSearch)) {
-            $query->where('name', 'like', '%' . $this->groupSearch . '%');
+
+        if (! empty($this->groupSearch)) {
+            $query->where('name', 'like', '%'.$this->groupSearch.'%');
         }
-        
+
         return $query->get();
     }
 
@@ -114,8 +129,7 @@ class PublishWorkflow extends Component
         if (isset($this->extensionMap[$extension])) {
             $this->files[$index]['language'] = $this->extensionMap[$extension];
         } else {
-            // Default to plaintext or keep existing if manually set
-            // but for a new file with generic extension, we keep it as it is
+            $this->files[$index]['language'] = 'none';
         }
     }
 
@@ -142,7 +156,7 @@ class PublishWorkflow extends Component
                 'language' => $this->getLanguageByExtension($data['name']),
                 'description' => '',
                 'is_duplicate' => false,
-                'is_content_duplicate' => false
+                'is_content_duplicate' => false,
 
             ];
         }
@@ -153,11 +167,11 @@ class PublishWorkflow extends Component
     {
         $names = [];
         $contents = [];
-        
+
         foreach ($this->files as $index => &$file) {
             $file['is_duplicate'] = false;
             $file['is_content_duplicate'] = false;
-            if (!empty($file['name'])) {
+            if (! empty($file['name'])) {
 
                 if (isset($names[$file['name']])) {
                     $file['is_duplicate'] = true;
@@ -166,7 +180,7 @@ class PublishWorkflow extends Component
                 $names[$file['name']] = $index;
             }
 
-            if (!empty($file['content'])) {
+            if (! empty($file['content'])) {
                 $hash = md5($file['content']);
                 if (isset($contents[$hash])) {
                     $file['is_content_duplicate'] = true;
@@ -181,13 +195,15 @@ class PublishWorkflow extends Component
     {
         $extension = strtolower(pathinfo($filename, PATHINFO_EXTENSION));
 
-        return $this->extensionMap[$extension] ?? 'php';
+        return $this->extensionMap[$extension] ?? 'none';
     }
 
     public function getFileStats($index)
     {
         $file = $this->files[$index] ?? null;
-        if (!$file) return ['lines' => 0, 'size' => '0 B', 'is_duplicate' => false];
+        if (! $file) {
+            return ['lines' => 0, 'size' => '0 B', 'is_duplicate' => false];
+        }
 
         $content = $file['content'] ?? '';
         $lines = empty($content) ? 0 : count(explode("\n", $content));
@@ -196,38 +212,24 @@ class PublishWorkflow extends Component
 
         return [
             'lines' => $lines,
-            'size' => $kb > 0 ? $kb . ' KB' : $bytes . ' B',
+            'size' => $kb > 0 ? $kb.' KB' : $bytes.' B',
             'is_duplicate' => $file['is_duplicate'] ?? false,
             'is_content_duplicate' => $file['is_content_duplicate'] ?? false,
-            'complexity' => $this->calculateComplexity($content)
-
         ];
-    }
-
-    protected function calculateComplexity($content)
-    {
-        if (empty($content)) return 0;
-        // Simple heuristic for UI visualization: count of keywords / lines
-        $keywords = ['if', 'else', 'for', 'while', 'foreach', 'switch', 'case', 'function', 'class', 'public', 'private', 'protected'];
-        $count = 0;
-        foreach ($keywords as $kw) {
-            $count += substr_count($content, $kw);
-        }
-        $lines = count(explode("\n", $content));
-        return min(100, round(($count / max(1, $lines)) * 100));
     }
 
     public function addFile()
     {
         $this->files[] = [
-            'id' => (string) str()->uuid(), 
-            'name' => '', 
-            'content' => '', 
-            'language' => 'php', 
-            'description' => '', 
+            'id' => (string) str()->uuid(),
+            'name' => '',
+            'content' => '',
+            'language' => 'none',
+            'description' => '',
             'is_duplicate' => false,
-            'is_content_duplicate' => false
+            'is_content_duplicate' => false,
         ];
+        $this->dispatch('file-added');
     }
 
     public function removeFile($index)
@@ -273,19 +275,48 @@ class PublishWorkflow extends Component
         if ($this->step === 1) {
             $this->validate([
                 'title' => 'required|min:5|max:255',
-                'short_description' => 'required|min:10|max:255',
-                'review_goals' => 'required|min:10',
-                'improvement_goals' => 'required|min:10',
+                'short_description' => 'nullable|min:10|max:255',
+                'review_goals' => 'nullable|min:10',
+                'improvement_goals' => 'nullable|min:10',
             ]);
+
         } elseif ($this->step === 2) {
-            $this->validate([
+            $rules = [
                 'files' => 'required|array|min:1',
-                'files.*.name' => 'required|string',
-                'files.*.content' => 'required|string|max:524288',
+            ];
+            $messages = [];
+
+            foreach ($this->files as $index => $file) {
+                $fileName = ! empty($file['name']) ? $file['name'] : __('Untitled_Source');
+                $rules["files.$index.name"] = 'required|string';
+                $rules["files.$index.content"] = 'required|string|max:524288';
+
+                $messages["files.$index.name.required"] = __('The file name is required for fragment #:index', ['index' => $index + 1]);
+                $messages["files.$index.content.required"] = __('Source code is missing for artifact: :filename', ['filename' => $fileName]);
+            }
+
+            $this->validate($rules, $messages);
+        } elseif ($this->step === 3) {
+            $this->validate([
+                'selectedLens' => 'required|array|min:1|max:3',
             ]);
         }
 
         $this->step++;
+    }
+
+    public function updatedIsPublic($value)
+    {
+        if ($value) {
+            $this->is_private = false;
+        }
+    }
+
+    public function updatedIsPrivate($value)
+    {
+        if ($value) {
+            $this->is_public = false;
+        }
     }
 
     public function prevStep()
@@ -296,9 +327,11 @@ class PublishWorkflow extends Component
     public function submit(CreatePostAction $createPost)
     {
         $this->validate([
-            'visibility' => 'required|in:public,private',
-            'groupId' => 'required_if:visibility,private',
+            'is_private' => 'required_without:is_public',
+            'groupId' => 'required_if:is_private,true',
         ]);
+
+        $visibility = $this->is_public ? 'public' : ($this->is_private ? 'group' : 'public');
 
         $createPost->execute(Auth::user(), [
             'title' => $this->title,
@@ -307,8 +340,8 @@ class PublishWorkflow extends Component
             'review_goals' => $this->review_goals,
             'improvement_goals' => $this->improvement_goals,
             // Si c'est 'private' mais avec un groupe, on stocke 'group' en DB
-            'visibility' => ($this->visibility === 'private' && $this->groupId) ? 'group' : $this->visibility,
-            'group_id' => ($this->visibility === 'private') ? $this->groupId : null,
+            'visibility' => $visibility,
+            'group_id' => $this->is_private ? $this->groupId : null,
             'lens' => implode(',', $this->selectedLens),
             'files' => $this->files,
         ]);

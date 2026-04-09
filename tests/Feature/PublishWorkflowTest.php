@@ -3,8 +3,8 @@
 namespace Tests\Feature;
 
 use App\Livewire\PublishWorkflow;
-use App\Models\User;
 use App\Models\Group;
+use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Livewire\Livewire;
 use Tests\TestCase;
@@ -126,7 +126,7 @@ class PublishWorkflowTest extends TestCase
         $user = User::factory()->create();
 
         Livewire::actingAs($user)
-            ->test(\App\Livewire\PublishWorkflow::class)
+            ->test(PublishWorkflow::class)
             ->set('files', [
                 ['id' => 'f1', 'name' => 'A.php', 'content' => 'A', 'is_duplicate' => false],
                 ['id' => 'f2', 'name' => 'B.php', 'content' => 'B', 'is_duplicate' => false],
@@ -150,12 +150,12 @@ class PublishWorkflowTest extends TestCase
             'name' => 'My Lab',
             'owner_id' => $user->id,
             'slug' => 'my-lab-1',
-            'is_private' => true
+            'is_private' => true,
         ]);
         $user->groups()->attach($group->id, ['role' => 'owner']);
 
         Livewire::actingAs($user)
-            ->test(\App\Livewire\PublishWorkflow::class)
+            ->test(PublishWorkflow::class)
             ->set('title', 'Test Private Lab')
             ->set('short_description', 'Lab Description Minimum Length')
             ->set('review_goals', 'test goals 10 chars minimum')
@@ -163,7 +163,7 @@ class PublishWorkflowTest extends TestCase
             ->call('nextStep')
             ->assertSet('step', 2)
             ->set('files', [
-                ['id' => 'f1', 'name' => 'test.php', 'content' => 'some code', 'language' => 'php', 'description' => '', 'is_duplicate' => false]
+                ['id' => 'f1', 'name' => 'test.php', 'content' => 'some code', 'language' => 'php', 'description' => '', 'is_duplicate' => false],
             ])
             ->call('nextStep')
             ->assertSet('step', 3)

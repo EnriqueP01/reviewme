@@ -7,6 +7,7 @@ use App\Livewire\Labs\GroupManager;
 use App\Livewire\Profile;
 use App\Livewire\PublishWorkflow;
 use App\Livewire\VibeDetail;
+use App\Models\User;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
@@ -15,11 +16,12 @@ Route::get('/', function () {
 
 Route::get('/dev/login', function () {
     if (app()->environment('local')) {
-        $user = \App\Models\User::first();
-        if (!$user) {
-            $user = \App\Models\User::factory()->create();
+        $user = User::first();
+        if (! $user) {
+            $user = User::factory()->create();
         }
         auth()->login($user);
+
         return redirect()->route('dashboard');
     }
     abort(403);

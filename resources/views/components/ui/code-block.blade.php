@@ -206,7 +206,11 @@
 
                 <div class="flex items-center gap-2">
                     @foreach($lenses as $l)
-                        <span @class(['px-3 py-1 rounded-lg text-[9px] font-black uppercase tracking-[0.2em] border transition-all duration-700 transform hover:scale-110', 'tag-lens-' . strtolower(trim($l))])>
+                        @php $lKey = strtolower(trim($l)); @endphp
+                        <span 
+                            class="px-3 py-1 rounded-lg text-[9px] font-black uppercase tracking-[0.2em] border transition-all duration-700 transform hover:scale-110"
+                            style="color: var(--lens-{{ $lKey }}); background-color: rgba(var(--lens-{{ $lKey }}-rgb), 0.1); border-color: rgba(var(--lens-{{ $lKey }}-rgb), 0.3); box-shadow: 0 0 15px rgba(var(--lens-{{ $lKey }}-rgb), 0.1);"
+                        >
                             {{ trim($l) }}
                         </span>
                     @endforeach

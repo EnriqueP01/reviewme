@@ -8,9 +8,9 @@ use App\Models\Reaction;
 use App\Models\Review;
 use App\Models\Snippet;
 use App\Models\User;
+use Faker\Factory as Faker;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\Hash;
-use Faker\Factory as Faker;
 use Illuminate\Support\Str;
 
 class MasterTestSeeder extends Seeder
@@ -35,11 +35,11 @@ class MasterTestSeeder extends Seeder
         for ($i = 0; $i < 30; $i++) {
             $firstName = $faker->firstName;
             $users[] = User::create([
-                'name' => $firstName . ' ' . $faker->lastName,
+                'name' => $firstName.' '.$faker->lastName,
                 'email' => $faker->unique()->safeEmail,
                 'password' => Hash::make('password'),
                 'reputation_score' => rand(10, 3000),
-                'bio' => $faker->randomElement($roles) . '. ' . $faker->realText(80),
+                'bio' => $faker->randomElement($roles).'. '.$faker->realText(80),
                 'avatar' => "https://api.dicebear.com/7.x/avataaars/svg?seed={$firstName}&backgroundColor=24283b",
             ]);
         }
@@ -58,7 +58,7 @@ class MasterTestSeeder extends Seeder
             $group = Group::create([
                 'name' => $gName,
                 'slug' => Str::slug($gName),
-                'description' => "Le repaire des experts en " . strtolower($gName) . ". " . $faker->realText(100),
+                'description' => 'Le repaire des experts en '.strtolower($gName).'. '.$faker->realText(100),
                 'owner_id' => $owner->id,
             ]);
 
@@ -68,7 +68,7 @@ class MasterTestSeeder extends Seeder
             foreach ($members as $mem) {
                 $group->members()->attach($mem->id, ['role' => ($mem->id === $owner->id) ? 'admin' : 'member']);
             }
-            
+
             // Explicitly ensure celestin is in some groups
             if (! $group->members->contains($celestin->id)) {
                 if (rand(0, 1)) {
@@ -82,7 +82,7 @@ class MasterTestSeeder extends Seeder
         $groupsCollection = collect($groups);
 
         // Helper to generate French post content
-        $generatePostContent = function() use ($faker, $lenses) {
+        $generatePostContent = function () use ($faker, $lenses) {
             $topics = [
                 'Refactorisation d\'un contrôleur massif',
                 'Optimisation des requêtes Eloquent (N+1)',
@@ -97,10 +97,10 @@ class MasterTestSeeder extends Seeder
             ];
 
             return [
-                'title' => $faker->randomElement($topics) . ' - ' . substr($faker->sentence(2), 0, -1),
+                'title' => $faker->randomElement($topics).' - '.substr($faker->sentence(2), 0, -1),
                 'short_description' => $faker->realText(60),
-                'description' => "Salut l'équipe ! J'ai rencontré ce défi technique récemment : \n\n" . $faker->realText(250) . "\n\nEst-ce que quelqu'un aurait une approche plus élégante ou performante pour traiter cela ?",
-                'review_goals' => "J'aimerais surtout des retours critiques sur la " . $faker->randomElement(['sécurité', 'performance', 'lisibilité', 'modularité', 'maintenabilité']) . " et l'architecture globale.",
+                'description' => "Salut l'équipe ! J'ai rencontré ce défi technique récemment : \n\n".$faker->realText(250)."\n\nEst-ce que quelqu'un aurait une approche plus élégante ou performante pour traiter cela ?",
+                'review_goals' => "J'aimerais surtout des retours critiques sur la ".$faker->randomElement(['sécurité', 'performance', 'lisibilité', 'modularité', 'maintenabilité'])." et l'architecture globale.",
                 'improvement_goals' => "L'objectif principal est de réduire la dette technique avant la mise en production.",
                 'context' => "Ceci est lié à notre branche 'feat/core-refactor' du projet.",
                 'visibility' => 'public',
@@ -114,11 +114,11 @@ class MasterTestSeeder extends Seeder
         foreach ($usersCollection as $user) {
             // Give each user 1 to 3 posts, but Celestin gets more
             $postCount = ($user->id === $celestin->id) ? 8 : rand(1, 3);
-            
+
             for ($i = 0; $i < $postCount; $i++) {
                 $postData = $generatePostContent();
                 $postData['user_id'] = $user->id;
-                
+
                 // 50% chance to be in a group
                 if (rand(0, 1)) {
                     $postData['group_id'] = $groupsCollection->random()->id;
@@ -131,19 +131,19 @@ class MasterTestSeeder extends Seeder
                 $numSnippets = rand(1, 2);
                 $language = $faker->randomElement($langs);
                 for ($j = 1; $j <= $numSnippets; $j++) {
-                    $code = "<?php\n\n// Version $j de l'implémentation\nfunction processData" . ucfirst(Str::camel($faker->word)) . "(\$input) {\n    // TODO: " . $faker->sentence . "\n    if (!\$input) {\n        throw new InvalidArgumentException('Input requis');\n    }\n    return true;\n}";
+                    $code = "<?php\n\n// Version $j de l'implémentation\nfunction processData".ucfirst(Str::camel($faker->word))."(\$input) {\n    // TODO: ".$faker->sentence."\n    if (!\$input) {\n        throw new InvalidArgumentException('Input requis');\n    }\n    return true;\n}";
                     if ($language === 'javascript') {
-                        $code = "const " . Str::camel($faker->word) . "Handler = (payload) => {\n  /* " . $faker->sentence . " */\n  if (!payload) return null;\n  console.log('Traitement réussi');\n};";
+                        $code = 'const '.Str::camel($faker->word)."Handler = (payload) => {\n  /* ".$faker->sentence." */\n  if (!payload) return null;\n  console.log('Traitement réussi');\n};";
                     } elseif ($language === 'css') {
-                        $code = ".card-container {\n  display: flex;\n  gap: 1rem;\n  /* " . $faker->sentence . " */\n  background: #1a1b26;\n  transition: all 0.3s ease-in-out;\n}";
+                        $code = ".card-container {\n  display: flex;\n  gap: 1rem;\n  /* ".$faker->sentence." */\n  background: #1a1b26;\n  transition: all 0.3s ease-in-out;\n}";
                     } elseif ($language === 'blade') {
-                        $code = "<div class=\"flex flex-col space-y-4\">\n    <!-- " . $faker->sentence . " -->\n    @foreach (\$items as \$item)\n        <x-card :data=\"\$item\" />\n    @endforeach\n</div>";
+                        $code = "<div class=\"flex flex-col space-y-4\">\n    <!-- ".$faker->sentence." -->\n    @foreach (\$items as \$item)\n        <x-card :data=\"\$item\" />\n    @endforeach\n</div>";
                     }
 
                     $snippet = Snippet::create([
                         'post_id' => $post->id,
                         'version_number' => $j,
-                        'description' => "Fichier " . Str::slug($faker->word) . ".$language",
+                        'description' => 'Fichier '.Str::slug($faker->word).".$language",
                         'language' => $language,
                         'code_content' => $code,
                         'sort_order' => $j,
@@ -152,19 +152,21 @@ class MasterTestSeeder extends Seeder
                     // Add Reviews to the snippet
                     // Give more reviews to Celestin's posts
                     $chanceReview = ($user->id === $celestin->id) ? 90 : 40;
-                    if (rand(1, 100) <= $chanceReview) { 
+                    if (rand(1, 100) <= $chanceReview) {
                         $reviewerCount = rand(1, 3);
                         for ($k = 0; $k < $reviewerCount; $k++) {
                             $reviewer = $usersCollection->random();
-                            
+
                             // Prevent self-reviewing
-                            if ($reviewer->id === $user->id) continue;
+                            if ($reviewer->id === $user->id) {
+                                continue;
+                            }
 
                             $review = Review::create([
                                 'snippet_id' => $snippet->id,
                                 'user_id' => $reviewer->id,
                                 'line_number' => rand(1, 4),
-                                'content' => "Super approche, cependant, as-tu pensé à vérifier cela ? " . $faker->realText(80),
+                                'content' => 'Super approche, cependant, as-tu pensé à vérifier cela ? '.$faker->realText(80),
                             ]);
 
                             // Add reactions to the review
@@ -194,7 +196,7 @@ class MasterTestSeeder extends Seeder
         }
 
         // Specific interactions: Celestin comments on others' posts
-        $otherPosts = array_filter($allPosts, fn($p) => $p->user_id !== $celestin->id);
+        $otherPosts = array_filter($allPosts, fn ($p) => $p->user_id !== $celestin->id);
         shuffle($otherPosts);
         $sampledOtherPosts = array_slice($otherPosts, 0, 10);
 

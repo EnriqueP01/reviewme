@@ -77,9 +77,9 @@ class VibeDetail extends Component
     public function deletePost(): void
     {
         $this->authorize('delete', $this->post);
-        
+
         $this->post->delete();
-        
+
         $this->dispatch('vibe-action', type: 'down');
         session()->flash('success', __('Artifact disintegrated successfully.'));
         $this->redirect(route('dashboard'));
