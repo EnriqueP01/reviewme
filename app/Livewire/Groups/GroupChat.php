@@ -29,15 +29,29 @@ final class GroupChat extends Component
         ]);
 
         $this->reset('message');
+        
+        // Dispatch event for UI scroll behavior
+        $this->dispatch('message-sent');
+    }
+
+    public function deleteMessage(int $messageId)
+    {
+        $msg = GroupMessage::findOrFail($messageId);
+        
+        // Auth check: Admin of group or author of message
+        if ($this->group->owner_id === Auth::id() || $msg->user_id === Auth::id()) {
+            $msg->delete();
+        }
     }
 
     public function render()
     {
         $messages = $this->group->messages()
-            ->with('user')
-            ->oldest() // Chat usually read top-to-bottom
+            ->with('user:id,name,profile_photo_path') // Optimization: Select only needed columns
+            ->latest()
             ->take(50)
-            ->get();
+            ->get()
+            ->reverse();
 
         return view('livewire.groups.group-chat', [
             'messages' => $messages,
