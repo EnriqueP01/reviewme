@@ -26,7 +26,6 @@
     5. **UX de Réorganisation** : Support du tri manuel via boutons `Move Up / Down` en complément du drag-and-drop pour une précision absolue.
 - **Impact** : Transformation radicale de la curation en une expérience de type IDE moderne, éliminant les erreurs de duplication et offrant un contrôle total sur le cycle de vie des artefacts.
 
-
 ## 2026-04-08-12 : Optimisation Globale et Performance
 - **Auteur** : Antigravity
 - **Contexte** : Amélioration de la scalabilité et de la sécurité du projet.
@@ -42,7 +41,7 @@
 - **Décision** : Interdiction absolue de push sur `main`, adoption d'un cycle de branchement obligatoire et directive d'économie de tokens.
 - **Statut** : Actif.
 
-## 2026-04-08-14 : Évolution V2 - Collaborative Labs & Neural Link Paradigm
+## 2026-04-08-14 : Évolution V2 - Collaborative Groups & neural Link Paradigm
 - **Auteur** : Antigravity
 - **Statut** : ✅ Implémenté
 - **Contexte** : Besoin de structurer la curation en groupes privés et d'élever le lexique vers un univers plus technologique.
@@ -52,7 +51,7 @@
     3. **Workflow de Publication** : Support du multi-fichiers drag-and-drop, de la détection automatique du langage par extension et orchestration de métadonnées granulaires (buts de revue, améliorations).
 - **Impact** : Transformation de ReviewMe en une plateforme de curation collaborative d'élite, sécurisée et contextuelle.
 
-## 2026-04-09-36 : Systèmes de Chargement Global & États UI Contextuels
+## 2026-04-09-35 : Systèmes de Chargement Global & États UI Contextuels
 - **Auteur** : Antigravity
 - **Statut** : ✅ Implémenté
 - **Contexte** : Nécessité d'améliorer l'expérience utilisateur (UX) en fournissant un feedback visuel immédiat lors des opérations asynchrones (Livewire).
@@ -196,7 +195,7 @@
 - **Statut** : ✅ Implémenté
 - **Contexte** : Latence perçue lors du scroll infini/pagination, clignotement des éléments ré-animés et mauvaise position de l'icône d'artéfact.
 - **Décision** :
-    1. **Stabilité du Feed** : Suppression de `animate-fade-in-up` sur les articles du flux pour éviter les sursauts visuels lors du chargement de nouvelles pages.
+    1. **Stabilité du Feed** : Suppression de `animate-fade-in-up` on the feed articles to avoid visual jumps when loading new pages.
     2. **Pré-chargement & Performance** :
         - Augmentation de la pagination à 30 items.
         - Eager loading de `latestSnippet` dans `SearchPostsAction` pour éliminer les requêtes N+1 lors de l'affichage des langages.
@@ -289,7 +288,7 @@
 - **Statut** : ✅ Implémenté
 - **Contexte** : Besoin de crédibiliser la plateforme en remplaçant le lexique "futuriste/SF" par une terminologie professionnelle de l'industrie.
 - **Décision** :
-    1. **Migration Lexicale** : Remplacement systématique de `Vibe/Artifact` par `Post`, `Lab` par `Group`, `Neural Link` par `Email`, `Secret Key` par `Password`.
+    1. **Migration Lexicale** : Remplacement systématique de `Vibe/Artifact` par `Post`, `Group` par `Group`, `Neural Link` par `Email`, `Secret Key` par `Password`.
     2. **Refonte des Routes** : Migration de `/labs` vers `/groups` et renommage des composants Livewire associés.
     3. **Cleanup i18n** : Nettoyage intégral de `fr.json` et `en.json` pour supprimer les clés de branding "cool" au profit de termes standards (Feed, Review, Files).
     4. **Événements & UI** : Renommage des événements système (`vibe-*` -> `post-*`, `notification`) et des composants UI (`logo-artifact` -> `logo`).
@@ -323,10 +322,9 @@ The initial "Monolith & The Lens" implementation was too spacious, creating layo
     2. **UI Ségrégative** : Ajout du composant Livewire `UpdatePost` avec le routeur dédié `/posts/{postId}/update-code`, reprenant l'ADN du workflow de création et l'heuristique de détection de fichier.
     3. **Affichage Dynamique** : Mise à jour de `PostDetail.php` (et son template) pour supporter l'affichage "1 Version = N Fichiers" et ajout du sélecteur interactif de version dans l'entête du snippet.
     4. **Sécurité & Contrôle** : Application stricte de `authorize('update', $post)` limitant l'itération à l'auteur original.
-
 - **Impact** : Cycle de vie du code continu, traçabilité de l'évolution post-review et réduction mécanique du churn de posts.
 
-## 2026-04-09-42 : Système de Feedback Collaboratif Avancé (Reviews & Suggestions)
+## 2026-04-09-42 : Feedback Collaboratif Avancé (Reviews & Suggestions)
 - **Auteur** : Antigravity
 - **Statut** : ✅ Implémenté
 - **Contexte** : Besoin d'élever ReviewMe au niveau d'un outil de collaboration d'élite via des retours contextuels, globaux et structurels.
@@ -380,8 +378,27 @@ The initial "Monolith & The Lens" implementation was too spacious, creating layo
 - **Statut** : ✅ Implémenté
 - **Contexte** : Besoin de consolider les fondations stratégiques, techniques et UX du projet pour garantir la maintenabilité et faciliter la soutenance.
 - **Décision** :
-    1. **Cadrage Produit** : Rédaction des US04 (MVP/Périmètre), US05 (Thème), US06 (Pitch) et US08 (SWOT/Benchmark).
+    1. **Cadrage Produit** : Réalisation des US04 (MVP/Périmètre), US05 (Thème), US06 (Pitch) et US08 (SWOT/Benchmark).
     2. **Architecture & API** : Documentation des US10 (Architecture Globale), US11 (Choix techniques), US15 (Contrat API) et US16 (Journal de décisions).
     3. **Design & Qualité** : Formalisation des US09 (Guide UI), US26 (Gestion des erreurs/cas limites) et US28 (Qualité de code).
     4. **Harmonisation** : Mise à jour de l'US14 pour refléter la nomenclature professionnelle (Groups/Posts).
 - **Impact** : Traçabilité totale des arbitrages, vision produit alignée entre les membres de l'équipe et base documentaire robuste pour la suite du développement.
+
+## 2026-04-09-47 : Intégration Finale de la Navigation & Système de Raccourcis
+- **Auteur** : Antigravity
+- **Statut** : ✅ Implémenté
+- **Contexte** : Finalisation de la plateforme avec les pages de support, la navigation globale et l'accessibilité clavier.
+- **Décision** :
+    1. **Pages de Support** : Création et déploiement des composants Livewire pour `Leaderboard`, `Documentation`, `Changelog`, `Status` et `Legal`.
+    2. **Système de Raccourcis (HUD Navigation)** : Implémentation du composant global `KeyboardShortcuts` (Alpine.js) permettant une navigation rapide (ex: `G+L` pour Leaderboard, `G+H` pour Home, `Shift+?` pour l'aide).
+    3. **Durcissement de l'Accessibilité Invités** : Refonte du header (`navigation.blade.php`) pour supporter les utilisateurs non-authentifiés (affichage "Sign In / Get Started") et correction des collisions de traduction (Status page).
+- **Impact** : Plateforme 100% connectée, accessible sans friction et prête pour une utilisation publique.
+
+## 2026-04-09-48 : Automatisation du Suivi Documentaire (update_us)
+- **Auteur** : Antigravity
+- **Statut** : ✅ Implémenté
+- **Contexte** : Risque de désynchronisation entre les User Stories (US) et l'implémentation finale dans le code.
+- **Décision** : 
+    1. **Règle IA Dédiée** : Création de `.agents/rules/update_us.md` imposant la mise à jour systématique des critères d'acceptation et détails techniques dans le dossier `us/` après chaque tâche.
+    2. **Validation Automatique** : Mise à jour immédiate de l'US35 (Docker) pour valider le concept.
+- **Impact** : Documentation produit toujours à jour, traçabilité parfaite des fonctionnalités et alignement PO/Dev garanti.

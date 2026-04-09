@@ -8,6 +8,11 @@ use App\Livewire\PostDetail;
 use App\Livewire\Profile;
 use App\Livewire\PublishWorkflow;
 use App\Livewire\UpdatePost;
+use App\Livewire\Leaderboard;
+use App\Livewire\Documentation;
+use App\Livewire\Changelog;
+use App\Livewire\Status;
+use App\Livewire\Legal;
 use App\Models\User;
 use Illuminate\Support\Facades\Route;
 
@@ -53,5 +58,13 @@ Route::middleware('auth')->group(function () {
 
 Route::get('/auth/github', [GithubAuthController::class, 'redirect'])->name('login.github');
 Route::get('/auth/github/callback', [GithubAuthController::class, 'callback']);
+
+// Support & Info (Public)
+Route::get('/leaderboard', Leaderboard::class)->name('leaderboard');
+Route::get('/docs', Documentation::class)->name('docs');
+Route::get('/changelog', Changelog::class)->name('changelog');
+Route::get('/status', Status::class)->name('status');
+Route::get('/privacy', Legal::class)->defaults('type', 'privacy')->name('privacy');
+Route::get('/terms', Legal::class)->defaults('type', 'terms')->name('terms');
 
 require __DIR__.'/auth.php';
