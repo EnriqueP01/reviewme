@@ -8,6 +8,8 @@ use App\Models\Post;
 use App\Models\Snippet;
 use App\Models\User;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Validator;
+use Illuminate\Validation\ValidationException;
 
 final class CreatePostAction
 {
@@ -23,9 +25,19 @@ final class CreatePostAction
      *     lens: string,
      *     files: array<int, array{content: string, language: string}>
      * } $data
+     * @throws ValidationException
      */
     public function execute(User $user, array $data): Post
     {
+        Validator::make($data, [
+            'title' => 'required|string|min:5|max:255',
+            'description' => 'nullable|string',
+            'visibility' => 'required|in:public,private,group',
+            'lens' => 'required|string',
+            'files' => 'required|array|min:1',
+            'files.*.content' => 'required|string',
+        ])->validate();
+
         return DB::transaction(function () use ($user, $data) {
             $post = Post::create([
                 'user_id' => $user->id,
