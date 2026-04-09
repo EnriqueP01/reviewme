@@ -18,11 +18,12 @@ class UpdateUserReputationActionTest extends TestCase
     protected function setUp(): void
     {
         parent::setUp();
-        $this->action = new UpdateUserReputationAction();
+        $this->action = new UpdateUserReputationAction;
     }
 
     /**
      * @test
+     *
      * @dataProvider reputationProvider
      */
     public function it_calculates_correct_reputation_impact(string $type, string $action, int $expectedDelta): void

@@ -2,6 +2,7 @@
 
 namespace Tests\Feature;
 
+use App\Livewire\VibeDetail;
 use App\Models\Post;
 use App\Models\Snippet;
 use App\Models\User;
@@ -21,7 +22,7 @@ class VibeDetailTest extends TestCase
         $user = User::factory()->create();
         $post = Post::factory()->create([
             'title' => 'Vibe de Test',
-            'user_id' => $user->id
+            'user_id' => $user->id,
         ]);
         Snippet::factory()->create(['post_id' => $post->id]);
 
@@ -41,7 +42,7 @@ class VibeDetailTest extends TestCase
         $snippet = Snippet::factory()->create(['post_id' => $post->id]);
 
         Livewire::actingAs($user)
-            ->test(\App\Livewire\VibeDetail::class, ['postId' => $post->id])
+            ->test(VibeDetail::class, ['postId' => $post->id])
             ->set('commentContent', 'Ceci est une superbe review')
             ->set('activeLine', 5)
             ->call('saveComment')
@@ -51,7 +52,7 @@ class VibeDetailTest extends TestCase
             'snippet_id' => $snippet->id,
             'user_id' => $user->id,
             'content' => 'Ceci est une superbe review',
-            'line_number' => 5
+            'line_number' => 5,
         ]);
     }
 
@@ -65,14 +66,14 @@ class VibeDetailTest extends TestCase
         Snippet::factory()->create(['post_id' => $post->id]);
 
         Livewire::actingAs($user)
-            ->test(\App\Livewire\VibeDetail::class, ['postId' => $post->id])
+            ->test(VibeDetail::class, ['postId' => $post->id])
             ->call('react', 'mindblown');
 
         $this->assertDatabaseHas('reactions', [
             'reactable_id' => $post->id,
             'reactable_type' => Post::class,
             'user_id' => $user->id,
-            'type' => 'mindblown'
+            'type' => 'mindblown',
         ]);
     }
 }

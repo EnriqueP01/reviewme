@@ -83,7 +83,7 @@
 <div x-data="{ 
     activeTab: 0,
     showInfo: false,
-    snippets: {{ $snippetData->toJson() }},
+    snippets: @js($snippetData),
     copied: false,
     copy() {
         navigator.clipboard.writeText(this.snippets[this.activeTab].raw);

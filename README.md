@@ -109,6 +109,23 @@ php artisan optimize:clear
 
 ---
 
+## 🚀 Pipeline CI/CD (GitHub Actions)
+
+Le projet intègre une pipeline d'intégration continue automatisée qui s'exécute à chaque push et Pull Request pour garantir l'intégrité du code.
+
+### Vérifications effectuées :
+1.  **Tests Automatisés** : Exécution de la suite de tests Pest/PHPUnit.
+2.  **Style PHP (Pint)** : Vérification de la conformité aux standards Laravel/PSR-12.
+3.  **Qualité JS (ESLint/Prettier)** : Validation du code frontend et du formatage.
+4.  **Analyse Statique (Larastan)** : Détection proactive de bugs via PHPStan (Niveau 5).
+
+> [!IMPORTANT]
+> Tout échec sur l'un de ces points bloque la validation de la Pull Request. Le code doit être corrigé localement via `/lint` ou manuellement avant d'être re-soumis.
+
+---
+
+---
+
 ## 📄 Documentation Supplémentaire
 *   [User Journeys](./us/us03_user_journeys.md)
 *   [Persona Profiling](./us/02_persona.md)

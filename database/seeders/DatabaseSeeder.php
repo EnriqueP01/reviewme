@@ -2,12 +2,12 @@
 
 namespace Database\Seeders;
 
-use App\Models\User;
 use App\Models\Group;
 use App\Models\Post;
-use App\Models\Snippet;
-use App\Models\Review;
 use App\Models\Reaction;
+use App\Models\Review;
+use App\Models\Snippet;
+use App\Models\User;
 use Illuminate\Database\Seeder;
 
 class DatabaseSeeder extends Seeder
@@ -43,7 +43,7 @@ class DatabaseSeeder extends Seeder
                 'lens' => collect(['elegant', 'performance', 'readability'])->random(),
             ]);
 
-            $posts->each(function ($post) use ($user) {
+            $posts->each(function ($post) {
                 // Créer V1
                 $s1 = Snippet::factory()->create([
                     'post_id' => $post->id,
@@ -60,9 +60,9 @@ class DatabaseSeeder extends Seeder
                     $s2 = Snippet::factory()->create([
                         'post_id' => $post->id,
                         'version_number' => 2,
-                        'code_content' => $s1->code_content . "\n// Optimized Version\n",
+                        'code_content' => $s1->code_content."\n// Optimized Version\n",
                     ]);
-                    
+
                     Review::factory(rand(1, 2))->create([
                         'snippet_id' => $s2->id,
                     ]);

@@ -34,6 +34,11 @@ final class PostPolicy
             return true;
         }
 
+        if ($post->visibility === 'group' && $post->group_id) {
+            return $user->id === $post->user_id
+                || $post->group->members()->where('user_id', $user->id)->exists();
+        }
+
         return $user->id === $post->user_id;
     }
 }

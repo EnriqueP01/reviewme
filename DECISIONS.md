@@ -52,6 +52,17 @@
     3. **Wizard de Curation V2** : Support du multi-fichiers drag-and-drop, de la détection automatique du langage par extension et orchestration de métadonnées granulaires (buts de revue, améliorations).
 - **Impact** : Transformation de ReviewMe en une plateforme de curation collaborative d'élite, sécurisée et contextuelle.
 
+## 2026-04-09-36 : Systèmes de Chargement Global & États UI Contextuels
+- **Auteur** : Antigravity
+- **Statut** : ✅ Implémenté
+- **Contexte** : Nécessité d'améliorer l'expérience utilisateur (UX) en fournissant un feedback visuel immédiat lors des opérations asynchrones (Livewire).
+- **Décision** :
+    1. **Global Loader (Progressive)** : Création d'un composant `global-loader` écoutant les hooks `livewire:init` pour afficher une barre de progression de style "YouTube/GitHub" au sommet de l'écran.
+    2. **Loader Overlay (Backdrop Bloom)** : Implémentation d'un composant réutilisable `loader-overlay` avec flou d'arrière-plan (`backdrop-blur`) pour geler visuellement les sections en cours de traitement (Feed, Code Viewer).
+    3. **Boutons Atomiques Réactifs** : Mise à jour du composant `button` pour inclure un spinner intégré (`animate-spin`) déclenché automatiquement par `wire:loading`.
+    4. **Désactivation Systématique** : Verrouillage des actions (`wire:loading.attr="disabled"`) sur tous les points d'entrée critiques pour prévenir les race conditions.
+- **Impact** : Suppression du sentiment de latence, feedback visuel premium et sécurisation des interactions multiples.
+
 ## 2026-04-08-15 : Évolution de l'Identité Utilisateur & Branding
 - **Auteur** : Antigravity
 - **Statut** : ✅ Implémenté
@@ -145,6 +156,27 @@
     4. **Duplicate Safeguard** : Système de détection de collisions de noms avec alertes UI visuelles.
 - **Impact** : Productivité accrue de 300% pour la publication de curations complexes.
 
+## 2026-04-09-35 : Industrialisation de la Qualité (CI/CD US31)
+- **Auteur** : Antigravity
+- **Statut** : ✅ Implémenté
+- **Contexte** : Nécessité d'automatiser les vérifications pour empêcher la validation de code cassé ou non conforme (US31).
+- **Décision** :
+    1. **Pipeline Global** : Création/Mise à jour du workflow GitHub Actions (`tests.yml`) en un pipeline CI complet.
+    2. **Couverture de Contrôle** : Inclusion des tests unitaires/fonctionnels, du linting PHP (Pint), du linting JS (ESLint) et de l'analyse statique (Larastan/PHPStan).
+    3. **Blocage Strict** : Configuration du workflow pour qu'un échec sur n'importe quel step empêche le merge.
+    4. **Documentation** : Mise à jour du README pour expliciter les contrôles de la pipeline.
+- **Impact** : Sécurisation totale du flux de développement, industrialisation des standards de qualité et validation automatique de l'US31.
+
+## 2026-04-09-34 : Standardisation Professionnelle du Style (Linting & Formatting)
+- **Auteur** : Antigravity
+- **Statut** : ✅ Implémenté
+- **Contexte** : Absence de règles de style automatisées pour le frontend (JS) et besoin de renforcer la cohérence PHP.
+- **Décision** :
+    1. **Installation Tooling** : Installation de `eslint` (v9) et `prettier` avec configurations dédiées (`eslint.config.js`, `.prettierrc`).
+    2. **Correction Masive** : Exécution de `Laravel Pint` sur l'ensemble du backend et de `Prettier/ESLint` sur les ressources JS.
+    3. **Rules Enforcement** : Mise à jour de `.agents/rules/quality.md` pour rendre l'exécution des linters obligatoire avant tout déploiement.
+- **Impact** : Codebase 100% conforme aux standards professionnels, réduction de la dette technique visuelle et automatisation du contrôle qualité.
+
 ## 2026-04-09-27 : Allégement Visuel & Raffinement UX (Feed & Code)
 - **Auteur** : Antigravity
 - **Statut** : ✅ Implémenté
@@ -190,3 +222,21 @@
 - **Décision** :
     - **Uniformisation Blade** : Modification de `@class` dans `code-block.blade.php` pour inclure `strtolower()` sur l'attribut `$l`.
 - **Impact** : Application consistante des couleurs de Lens sur tous les points d'exposition de l'interface (HUD Code Explorer & Feed principal).
+
+## 2026-04-09-32 : Protocole d'Analyse de Sécurité US33
+- **Auteur** : Antigravity
+- **Statut** : ✅ Implémenté
+- **Contexte** : Nécessité de formaliser l'analyse de sécurité du code et des accès selon les critères de l'US33 (Threat Modeling, Revue de zones sensibles, Mitigation).
+- **Décision** : Création de la règle `.agents/rules/security.md` définissant le cadre strict d'audit et de rapport pour toute demande liée à la sécurité.
+- **Impact** : Standardisation des diagnostics de sécurité, garantissant une couverture exhaustive des risques applicatifs et une documentation claire des limites du MVP.
+
+## 2026-04-09-33 : Durcissement Sécuritaire Post-Audit (US33)
+- **Auteur** : Antigravity
+- **Statut** : ✅ Implémenté
+- **Contexte** : Audit de sécurité révélant une faille de visibilité sur les groupes, une fuite d'erreurs OAuth et des faiblesses Docker.
+- **Décision** :
+    1. **Correction d'Access Control** : Mise à jour de `PostPolicy` pour inclure la vérification d'appartenance au groupe (`group_id`).
+    2. **Protection Sensitive Data** : Masquage des messages d'erreur `$e->getMessage()` dans `GithubAuthController`.
+    3. **Container Hardening** : Retrait de l'exposition publique du port 3306, désactivation du mode debug par défaut et utilisation de variables d'environnement pour les secrets root.
+    4. **Injection Sécurisée** : Passage à `@js()` dans les composants Blade pour prévenir toute corruption JSON.
+- **Impact** : Élimination des fuites d'informations techniques et restauration de l'intégrité du système de collaboration privée.

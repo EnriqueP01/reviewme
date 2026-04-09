@@ -2,15 +2,12 @@
 
 namespace Database\Seeders;
 
-use App\Models\User;
 use App\Models\Post;
-use App\Models\Snippet;
-use App\Models\Review;
 use App\Models\Reaction;
-use App\Models\Group;
+use App\Models\Snippet;
+use App\Models\User;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\Hash;
-use Illuminate\Support\Facades\DB;
 
 class MasterTestSeeder extends Seeder
 {
@@ -42,7 +39,7 @@ class MasterTestSeeder extends Seeder
         ];
 
         // 2. Create dynamic users for scale
-        for($i=1; $i<=10; $i++) {
+        for ($i = 1; $i <= 10; $i++) {
             $users[] = User::create([
                 'name' => "DevNode_$i",
                 'email' => "dev_$i@network.com",
@@ -57,7 +54,7 @@ class MasterTestSeeder extends Seeder
         $langs = ['php', 'javascript', 'css', 'blade', 'html'];
 
         // --- HIGH QUALITY HAND-CRAFTED POSTS (Large, Medium, Small) ---
-        
+
         // Large
         $p1 = Post::create([
             'user_id' => $users['master']->id,
@@ -68,9 +65,9 @@ class MasterTestSeeder extends Seeder
             'improvement_goals' => 'Optimize bitwise operations.',
             'context' => 'Neural-Core Project.',
             'visibility' => 'public',
-            'lens' => 'performance,logic'
+            'lens' => 'performance,logic',
         ]);
-        foreach(['Dispatcher.php' => 'php', 'Serializer.js' => 'javascript', 'HUD.css' => 'css'] as $desc => $lang) {
+        foreach (['Dispatcher.php' => 'php', 'Serializer.js' => 'javascript', 'HUD.css' => 'css'] as $desc => $lang) {
             Snippet::create(['post_id' => $p1->id, 'description' => $desc, 'language' => $lang, 'code_content' => "// Source code for $desc\n// Logic goes here..."]);
         }
 
@@ -83,9 +80,9 @@ class MasterTestSeeder extends Seeder
             'review_goals' => 'Verify key rotation.',
             'context' => 'Admin portal.',
             'visibility' => 'public',
-            'lens' => 'security,logic'
+            'lens' => 'security,logic',
         ]);
-        Snippet::create(['post_id' => $p2->id, 'description' => 'Auth.php', 'language' => 'php', 'code_content' => "// Security implementation..."]);
+        Snippet::create(['post_id' => $p2->id, 'description' => 'Auth.php', 'language' => 'php', 'code_content' => '// Security implementation...']);
 
         // Small
         $p3 = Post::create([
@@ -95,35 +92,37 @@ class MasterTestSeeder extends Seeder
             'description' => 'A CSS-based cursor glow effect using radial gradients and variable injection.',
             'context' => 'Dashboard UI.',
             'visibility' => 'public',
-            'lens' => 'elegant'
+            'lens' => 'elegant',
         ]);
-        Snippet::create(['post_id' => $p3->id, 'description' => 'Glow.js', 'language' => 'javascript', 'code_content' => "// Hover logic..."]);
+        Snippet::create(['post_id' => $p3->id, 'description' => 'Glow.js', 'language' => 'javascript', 'code_content' => '// Hover logic...']);
 
         // 4. GENERATE 30+ ADDITIONAL POSTS
-        for($i=1; $i<=30; $i++) {
-            $user = (array_values($users))[rand(0, count($users)-1)];
-            $lensSelection = [ $lenses[rand(0, 6)] ];
-            if (rand(0, 3) > 2) $lensSelection[] = $lenses[rand(0, 6)]; // sometimes 2 lenses
-            
+        for ($i = 1; $i <= 30; $i++) {
+            $user = (array_values($users))[rand(0, count($users) - 1)];
+            $lensSelection = [$lenses[rand(0, 6)]];
+            if (rand(0, 3) > 2) {
+                $lensSelection[] = $lenses[rand(0, 6)];
+            } // sometimes 2 lenses
+
             $post = Post::create([
                 'user_id' => $user->id,
-                'title' => "Artifact_Ref_" . strtoupper(bin2hex(random_bytes(3))),
-                'short_description' => "Refactoring segment $i for improved " . $lensSelection[0] . ".",
+                'title' => 'Artifact_Ref_'.strtoupper(bin2hex(random_bytes(3))),
+                'short_description' => "Refactoring segment $i for improved ".$lensSelection[0].'.',
                 'description' => "Deep dive into the structural challenges of node $i.",
-                'review_goals' => "Evaluate the " . $lensSelection[0] . " metrics.",
+                'review_goals' => 'Evaluate the '.$lensSelection[0].' metrics.',
                 'context' => "Production module segment $i.",
                 'visibility' => 'public',
-                'lens' => implode(',', array_unique($lensSelection))
+                'lens' => implode(',', array_unique($lensSelection)),
             ]);
 
             $numSnippets = rand(1, 4);
-            for($j=1; $j<=$numSnippets; $j++) {
+            for ($j = 1; $j <= $numSnippets; $j++) {
                 $lang = $langs[rand(0, 4)];
                 Snippet::create([
                     'post_id' => $post->id,
                     'description' => "file_$j.$lang",
                     'language' => $lang,
-                    'code_content' => "// Technical implementation $j\nfunction optimizeNode$i() {\n  return 0xFF;\n}"
+                    'code_content' => "// Technical implementation $j\nfunction optimizeNode$i() {\n  return 0xFF;\n}",
                 ]);
             }
 
@@ -133,7 +132,7 @@ class MasterTestSeeder extends Seeder
                     'user_id' => $users['master']->id,
                     'reactable_id' => $post->id,
                     'reactable_type' => Post::class,
-                    'type' => $lenses[rand(0, 6)] === 'security' ? 'optimisable' : 'clean'
+                    'type' => $lenses[rand(0, 6)] === 'security' ? 'optimisable' : 'clean',
                 ]);
             }
         }

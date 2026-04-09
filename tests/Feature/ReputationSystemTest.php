@@ -4,9 +4,9 @@ declare(strict_types=1);
 
 namespace Tests\Feature;
 
+use App\Actions\Reactions\ToggleReactionAction;
 use App\Models\Post;
 use App\Models\User;
-use App\Actions\Reactions\ToggleReactionAction;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
 

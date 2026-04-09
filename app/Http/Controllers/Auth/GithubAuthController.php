@@ -7,6 +7,7 @@ use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Log;
 use Laravel\Socialite\Facades\Socialite;
+use Laravel\Socialite\Two\User;
 
 class GithubAuthController extends Controller
 {
@@ -24,7 +25,7 @@ class GithubAuthController extends Controller
     public function callback(HandleGithubCallbackAction $handleGithubCallback)
     {
         try {
-            /** @var \Laravel\Socialite\Two\User $githubUser */
+            /** @var User $githubUser */
             $githubUser = Socialite::driver('github')->user();
 
             $user = $handleGithubCallback->execute($githubUser);
@@ -33,8 +34,12 @@ class GithubAuthController extends Controller
 
             return redirect()->intended('/dashboard');
         } catch (\Exception $e) {
-            Log::error('GitHub Auth Error: ' . $e->getMessage());
-            return redirect('/login')->with('error', 'Erreur lors de la connexion avec GitHub : ' . $e->getMessage());
+            Log::error('GitHub Auth Error: '.$e->getMessage(), [
+                'exception' => $e,
+                'trace' => $e->getTraceAsString(),
+            ]);
+
+            return redirect('/login')->with('error', __('Authentication failed. Please try again or contact support.'));
         }
     }
 }

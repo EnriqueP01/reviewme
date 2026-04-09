@@ -43,7 +43,10 @@
     </div>
 
     <!-- Feed Content -->
-    <div class="space-y-24">
+    <div class="relative min-h-[400px]">
+        <x-ui.loader-overlay target="search, sortBy, gotoPage, nextPage, previousPage" />
+        
+        <div class="space-y-24">
         @foreach($posts as $post)
             @php
                 $myReaction = $post->reactions->first()?->type;
@@ -203,7 +206,7 @@
                 <!-- Corner Decoration -->
                 <div class="absolute -right-16 -top-16 w-48 h-48 bg-primary/5 blur-[100px] rounded-full opacity-0 group-hover:opacity-100 transition-opacity duration-1000"></div>
             </article>
-        @endforeach
+        </div>
     </div>
 
     <!-- Pagination -->

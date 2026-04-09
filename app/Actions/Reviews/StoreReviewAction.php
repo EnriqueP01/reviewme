@@ -11,12 +11,6 @@ final class StoreReviewAction
 {
     /**
      * Crée un nouveau commentaire sur un snippet.
-     *
-     * @param User $user
-     * @param int $snippetId
-     * @param int|null $lineNumber
-     * @param string $content
-     * @return Review
      */
     public function execute(User $user, int $snippetId, ?int $lineNumber, string $content): Review
     {

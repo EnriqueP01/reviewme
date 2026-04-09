@@ -2,13 +2,12 @@
 
 namespace App\Models;
 
-use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Database\Factories\UserFactory;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
-use Illuminate\Database\Eloquent\Relations\HasMany;
-use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 
 class User extends Authenticatable
 {
@@ -34,13 +33,11 @@ class User extends Authenticatable
 
     /**
      * Get the URL to the user's profile photo.
-     *
-     * @return string
      */
     public function getProfilePhotoUrlAttribute(): string
     {
         return $this->profile_photo_path
-                    ? asset('storage/' . $this->profile_photo_path)
+                    ? asset('storage/'.$this->profile_photo_path)
                     : ($this->avatar ?: 'https://ui-avatars.com/api/?name='.urlencode($this->name).'&color=7F9CF5&background=EBF4FF');
     }
 

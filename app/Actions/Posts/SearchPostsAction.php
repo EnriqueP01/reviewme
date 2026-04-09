@@ -12,10 +12,6 @@ final class SearchPostsAction
 {
     /**
      * Exécute la recherche et le filtrage des posts.
-     *
-     * @param string $search
-     * @param string $sort
-     * @return Builder
      */
     public function execute(string $search = '', string $sort = 'recent'): Builder
     {
@@ -24,10 +20,10 @@ final class SearchPostsAction
 
         $query = Post::with(['user', 'snippets', 'latestSnippet'])
             ->withCount([
-                'reactions as up_count' => fn($q) => $q->where('type', 'mindblown'),
-                'reactions as down_count' => fn($q) => $q->where('type', 'optimisable')
+                'reactions as up_count' => fn ($q) => $q->where('type', 'mindblown'),
+                'reactions as down_count' => fn ($q) => $q->where('type', 'optimisable'),
             ])
-            ->with(['reactions' => function($query) use ($userId) {
+            ->with(['reactions' => function ($query) use ($userId) {
                 if ($userId) {
                     $query->where('user_id', $userId);
                 } else {
@@ -38,15 +34,15 @@ final class SearchPostsAction
                 $query->where('visibility', 'public');
                 if ($userId) {
                     $query->orWhere('user_id', $userId)
-                          ->orWhereIn('group_id', $group_ids);
+                        ->orWhereIn('group_id', $group_ids);
                 }
             });
 
-        if (!empty($search)) {
+        if (! empty($search)) {
             $query->where(function ($q) use ($search) {
-                $q->where('title', 'like', '%' . $search . '%')
-                  ->orWhere('description', 'like', '%' . $search . '%')
-                  ->orWhereHas('user', fn($qu) => $qu->where('name', 'like', '%' . $search . '%'));
+                $q->where('title', 'like', '%'.$search.'%')
+                    ->orWhere('description', 'like', '%'.$search.'%')
+                    ->orWhereHas('user', fn ($qu) => $qu->where('name', 'like', '%'.$search.'%'));
             });
         }
 

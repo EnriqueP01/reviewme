@@ -6,6 +6,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Database\Eloquent\Relations\MorphMany;
 
 class Post extends Model
@@ -23,7 +24,7 @@ class Post extends Model
         'visibility',
         'goal',
         'context',
-        'lens'
+        'lens',
     ];
 
     public function user(): BelongsTo
@@ -41,7 +42,7 @@ class Post extends Model
         return $this->hasMany(Snippet::class)->orderBy('sort_order', 'asc')->orderBy('version_number', 'desc');
     }
 
-    public function latestSnippet(): \Illuminate\Database\Eloquent\Relations\HasOne
+    public function latestSnippet(): HasOne
     {
         return $this->hasOne(Snippet::class)->latestOfMany('version_number');
     }

@@ -7,7 +7,6 @@ use App\Models\Post;
 use App\Models\Snippet;
 use App\Models\User;
 use Illuminate\Database\Seeder;
-use Illuminate\Support\Facades\Hash;
 
 class LabTestSeeder extends Seeder
 {
@@ -53,7 +52,7 @@ class LabTestSeeder extends Seeder
         Snippet::create([
             'post_id' => $artifact->id,
             'version_number' => 1,
-            'code_content' => e("function bfs(\$node) { bfs(\$node); } // Leak!"),
+            'code_content' => e('function bfs($node) { bfs($node); } // Leak!'),
             'language' => 'php',
             'description' => 'The problematic recursion logic.',
         ]);
@@ -73,7 +72,7 @@ class LabTestSeeder extends Seeder
         Snippet::create([
             'post_id' => $public->id,
             'version_number' => 1,
-            'code_content' => e("class Node { public \$links = []; }"),
+            'code_content' => e('class Node { public $links = []; }'),
             'language' => 'php',
         ]);
     }
