@@ -87,7 +87,6 @@ class VibeDetail extends Component
 
     public function react(string $type, ToggleReactionAction $toggleReaction): void
     {
-
         if (! Auth::check()) {
             $this->redirect(route('login'));
 

@@ -34,9 +34,12 @@ class GithubAuthController extends Controller
 
             return redirect()->intended('/dashboard');
         } catch (\Exception $e) {
-            Log::error('GitHub Auth Error: '.$e->getMessage());
+            Log::error('GitHub Auth Error: '.$e->getMessage(), [
+                'exception' => $e,
+                'trace' => $e->getTraceAsString(),
+            ]);
 
-            return redirect('/login')->with('error', 'Erreur lors de la connexion avec GitHub : '.$e->getMessage());
+            return redirect('/login')->with('error', __('Authentication failed. Please try again or contact support.'));
         }
     }
 }

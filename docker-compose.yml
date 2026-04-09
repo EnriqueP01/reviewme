@@ -18,7 +18,7 @@ services:
       - DB_CONNECTION=sqlite
       - DB_DATABASE=/var/www/html/database/database.sqlite
       - APP_ENV=local
-      - APP_DEBUG=true
+      - APP_DEBUG=false
       - SESSION_DRIVER=file
       - CACHE_STORE=file
     depends_on:
@@ -42,10 +42,10 @@ services:
     image: mysql:8.0
     container_name: reviewme-db
     restart: unless-stopped
-    ports:
-      - "3306:3306"
+    # ports:
+    #   - "3306:3306" # Interdit en production, décommenter uniquement pour debug local spécifique
     environment:
-      MYSQL_ROOT_PASSWORD: root
+      MYSQL_ROOT_PASSWORD: ${DB_ROOT_PASSWORD:-root_should_be_changed}
       MYSQL_DATABASE: reviewme
       MYSQL_USER: user
       MYSQL_PASSWORD: password

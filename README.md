@@ -56,5 +56,68 @@ Découvrez l'historique des décisions techniques et des évolutions du projet :
 
 ---
 
+## 🧬 Système de Labs & Curation
+1.  **Introspection** : Définition des buts de revue et du contexte technique.
+2.  **Artefacts** : Upload multi-fichiers, détection automatique de langage et annotations.
+3.  **Distribution** : Publication publique ou restreinte à un **Lab** spécifique (Groupe privé).
+4.  **Audit** : Revue ligne à ligne avec focus spécialisés (Clarity, Security, Performance).
+
+---
+
+## 📋 Commandes de l'Agent Antigravity
+
+La plateforme est maintenue par des protocoles robotiques stricts :
+
+| Commande | Action | Usage |
+| :--- | :--- | :--- |
+| `/sync` | **Synchronisation** | Pull, install, migrations et nettoyage. |
+| `/lint` | **Qualité Code** | Auto-correction Laravel Pint & ESLint. |
+| `/test` | **Validation** | Exécution des tests et réparation auto. |
+| `/audit` | **Sécurité/SEO** | Diagnostic complet perf et sécurité. |
+| `/upgrade`| **Amélioration** | Analyse de dette technique et propositions. |
+| `/commit`| **Push** | Commit conventionnel après vérification qualité. |
+
+---
+
+## 🛠️ Maintenance & Diagnostics
+```powershell
+# Exécuter les tests de sécurité des Labs
+php artisan test tests/Feature/LabSecurityTest.php
+
+# Réinitialiser l'écosystème complet (Migrations + Global Seeders)
+php artisan migrate:fresh --seed
+
+# Initialiser uniquement les données de test avancées (Master, Labs, Conversations)
+php artisan db:seed --class=MasterTestSeeder
+
+# Nettoyer les résidus de déploiement
+php artisan optimize:clear
+```
+
+---
+
+## 📜 Charte de Développement
+*   **Workflows Atomiques** : Une branche par fonctionnalité. **Interdiction de push sur `main`**.
+*   **Traçabilité** : Chaque décision technique est consignée dans [DECISIONS.md](./DECISIONS.md).
+*   **Langue** : Français obligatoire pour les rapports et documentations.
+*   **KISS** : Simplicité, performance et robustesse.
+
+---
+
+## 🚀 Pipeline CI/CD (GitHub Actions)
+
+Le projet intègre une pipeline d'intégration continue automatisée qui s'exécute à chaque push et Pull Request pour garantir l'intégrité du code.
+
+### Vérifications effectuées :
+1.  **Tests Automatisés** : Exécution de la suite de tests Pest/PHPUnit.
+2.  **Style PHP (Pint)** : Vérification de la conformité aux standards Laravel/PSR-12.
+3.  **Qualité JS (ESLint/Prettier)** : Validation du code frontend et du formatage.
+4.  **Analyse Statique (Larastan)** : Détection proactive de bugs via PHPStan (Niveau 5).
+
+> [!IMPORTANT]
+> Tout échec sur l'un de ces points bloque la validation de la Pull Request. Le code doit être corrigé localement via `/lint` ou manuellement avant d'être re-soumis.
+
+---
+
 ## 📜 Licence
 Ce projet est distribué sous licence MIT.

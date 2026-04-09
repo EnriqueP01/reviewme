@@ -25,11 +25,11 @@ final class PostPolicy
     {
         $allowed = $user->id === $post->user_id;
 
-        if (!$allowed) {
-            Log::warning("Unauthorized deletion attempt", [
+        if (! $allowed) {
+            Log::warning('Unauthorized deletion attempt', [
                 'user_id' => $user->id,
                 'post_id' => $post->id,
-                'ip' => request()->ip()
+                'ip' => request()->ip(),
             ]);
         }
 
@@ -46,25 +46,26 @@ final class PostPolicy
         }
 
         if ($post->visibility === 'group' && $post->group_id) {
-            $isMember = $user->id === $post->user_id 
+            $isMember = $user->id === $post->user_id
                 || $post->group->members()->where('user_id', $user->id)->exists();
-            
-            if (!$isMember) {
-                Log::warning("Access denied to group post", [
+
+            if (! $isMember) {
+                Log::warning('Access denied to group post', [
                     'user_id' => $user->id,
                     'post_id' => $post->id,
-                    'group_id' => $post->group_id
+                    'group_id' => $post->group_id,
                 ]);
             }
+
             return $isMember;
         }
 
         $allowed = $user->id === $post->user_id;
 
-        if (!$allowed) {
-            Log::warning("Access denied to private post", [
+        if (! $allowed) {
+            Log::warning('Access denied to private post', [
                 'user_id' => $user->id,
-                'post_id' => $post->id
+                'post_id' => $post->id,
             ]);
         }
 

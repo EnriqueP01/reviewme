@@ -25,6 +25,7 @@ final class CreatePostAction
      *     lens: string,
      *     files: array<int, array{content: string, language: string}>
      * } $data
+     *
      * @throws ValidationException
      */
     public function execute(User $user, array $data): Post

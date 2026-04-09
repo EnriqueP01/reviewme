@@ -43,5 +43,22 @@ jobs:
       - name: Generate app key
         run: php artisan key:generate
 
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Install Node dependencies
+        run: npm install
+
+      - name: Check PHP Style (Pint)
+        run: php vendor/bin/pint --test
+
+      - name: Check JS Quality (ESLint/Prettier)
+        run: npm run lint
+
+      - name: Static Analysis (Larastan)
+        run: php vendor/bin/phpstan analyse
+
       - name: Execute tests
         run: php artisan test

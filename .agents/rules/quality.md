@@ -19,3 +19,9 @@
 
 ## 4. Audit périodique
 * À chaque fin de session de "Vibe Coding", lance un `/audit` pour vérifier que les nouvelles dépendances sont saines et que le score de performance reste optimal.
+
+## 5. Style de Code & Linter (Automatique)
+* **Zéro Erreur de Linter** : Avant chaque push, le code doit passer par le linter. Aucune modification ne doit être validée si elle casse les règles de style établies.
+    * **PHP** : Exécution obligatoire de `php vendor/bin/pint` pour maintenir la conformité Laravel/PSR-12.
+    * **JS/CSS** : Exécution obligatoire de `npm run format ; npm run lint` pour garantir la propreté du frontend.
+* **Standardisation** : Respecte scrupuleusement les configurations `.editorconfig`, `eslint.config.js` et `.prettierrc`.

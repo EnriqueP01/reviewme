@@ -64,6 +64,8 @@
 
             <!-- The Code Viewer -->
             <div class="bg-surface-container rounded-2xl overflow-hidden border border-outline-variant shadow-2xl relative">
+                <x-ui.loader-overlay target="selectedVersion, saveComment, deleteReview, selectLine" />
+                
                 <div class="flex items-center gap-2 px-4 py-3 bg-surface-container-high border-b border-outline-variant">
                     <div class="flex gap-1.5">
                         <div class="w-2.5 h-2.5 rounded-full bg-red-500/50"></div>
@@ -107,7 +109,15 @@
                                                       rows="3"></textarea>
                                             <div class="flex justify-end mt-3 gap-2">
                                                 <button wire:click="$set('activeLine', null)" class="text-xs text-on-surface-variant hover:text-on-surface">{{ __('Cancel') }}</button>
-                                                <button wire:click="saveComment" class="bg-primary text-on-primary text-xs font-bold px-4 py-2 rounded-lg hover:brightness-110 transition-all shadow-md">{{ __('Post Review') }}</button>
+                                                <button wire:click="saveComment" wire:loading.attr="disabled" wire:target="saveComment" class="bg-primary text-on-primary text-xs font-bold px-4 py-2 rounded-lg hover:brightness-110 transition-all shadow-md flex items-center gap-2">
+                                                    <span wire:loading wire:target="saveComment">
+                                                        <svg class="animate-spin h-3 w-3 text-current" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                                                            <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                                                            <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                                                        </svg>
+                                                    </span>
+                                                    {{ __('Post Review') }}
+                                                </button>
                                             </div>
                                         </div>
                                     </td>

@@ -454,14 +454,14 @@
             </div>
 
             @if($step < 3)
-                <x-ui.button type="button" variant="primary" wire:click="nextStep" class="group px-8">
+                <x-ui.button type="button" variant="primary" wire:click="nextStep" wire:loading.attr="disabled" wire:target="nextStep" class="group px-8">
                     <span class="flex items-center gap-2 group-hover:translate-x-1 transition-transform">
                         {{ __('Next Phase') }}
                         <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M9 5l7 7-7 7"/></svg>
                     </span>
                 </x-ui.button>
             @else
-                <x-ui.button type="submit" variant="secondary" class="px-10 py-4 shadow-[0_0_30px_rgba(78,222,163,0.2)] hover:scale-105 transition-all">
+                <x-ui.button type="submit" variant="secondary" wire:loading.attr="disabled" wire:target="submit" class="px-10 py-4 shadow-[0_0_30px_rgba(78,222,163,0.2)] hover:scale-105 transition-all">
                     <span class="flex items-center gap-3">
                          <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg>
                          {{ __('Deploy Curation Artifact') }}

@@ -30,6 +30,8 @@
     </head>
     <body class="bg-surface text-on-surface font-sans antialiased selection:bg-primary selection:text-on-primary overflow-x-hidden">
         
+        <x-ui.global-loader />
+
         <!-- Animated Background Elements -->
         <x-ui.interactive-grid />
 

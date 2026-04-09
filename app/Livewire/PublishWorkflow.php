@@ -79,6 +79,19 @@ class PublishWorkflow extends Component
 
     public bool $is_private = false;
 
+    public string $visibility = 'public';
+
+    public function updatedVisibility($value)
+    {
+        if ($value === 'public') {
+            $this->is_public = true;
+            $this->is_private = false;
+        } elseif ($value === 'group' || $value === 'private') {
+            $this->is_public = false;
+            $this->is_private = true;
+        }
+    }
+
     public function toggleLens($key)
     {
         if (in_array($key, $this->selectedLens)) {
@@ -157,7 +170,6 @@ class PublishWorkflow extends Component
                 'description' => '',
                 'is_duplicate' => false,
                 'is_content_duplicate' => false,
-
             ];
         }
         $this->checkDuplicates();
@@ -171,8 +183,8 @@ class PublishWorkflow extends Component
         foreach ($this->files as $index => &$file) {
             $file['is_duplicate'] = false;
             $file['is_content_duplicate'] = false;
-            if (! empty($file['name'])) {
 
+            if (! empty($file['name'])) {
                 if (isset($names[$file['name']])) {
                     $file['is_duplicate'] = true;
                     $this->files[$names[$file['name']]]['is_duplicate'] = true;
@@ -215,7 +227,24 @@ class PublishWorkflow extends Component
             'size' => $kb > 0 ? $kb.' KB' : $bytes.' B',
             'is_duplicate' => $file['is_duplicate'] ?? false,
             'is_content_duplicate' => $file['is_content_duplicate'] ?? false,
+            'complexity' => $this->calculateComplexity($content),
         ];
+    }
+
+    protected function calculateComplexity($content)
+    {
+        if (empty($content)) {
+            return 0;
+        }
+        // Simple heuristic for UI visualization: count of keywords / lines
+        $keywords = ['if', 'else', 'for', 'while', 'foreach', 'switch', 'case', 'function', 'class', 'public', 'private', 'protected'];
+        $count = 0;
+        foreach ($keywords as $kw) {
+            $count += substr_count($content, $kw);
+        }
+        $lines = count(explode("\n", $content));
+
+        return min(100, round(($count / max(1, $lines)) * 100));
     }
 
     public function addFile()
@@ -309,6 +338,7 @@ class PublishWorkflow extends Component
     {
         if ($value) {
             $this->is_private = false;
+            $this->visibility = 'public';
         }
     }
 
@@ -316,6 +346,7 @@ class PublishWorkflow extends Component
     {
         if ($value) {
             $this->is_public = false;
+            $this->visibility = 'group';
         }
     }
 
