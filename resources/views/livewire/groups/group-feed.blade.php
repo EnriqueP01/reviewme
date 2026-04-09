@@ -56,7 +56,10 @@
                                   x-data="{ 
                                      voted: '{{ $votedState }}',
                                      score: {{ $score }},
+                                     isProcessing: false,
                                      handleVote(dir) {
+                                         if (this.isProcessing) return;
+                                         this.isProcessing = true;
                                          window.haptic.play(dir);
                                          if (dir === 'up') {
                                              if (this.voted === 'up') { this.score--; this.voted = ''; }
@@ -71,15 +74,13 @@
                                                  this.voted = 'down';
                                              }
                                          }
+                                         setTimeout(() => { this.isProcessing = false; }, 100);
                                      }
                                   }"
-                                  wire:loading.class="opacity-60 pointer-events-none transition-opacity"
-                                  wire:target="vote({{ $post->id }}, 'up'), vote({{ $post->id }}, 'down')"
                              >
                                 <button 
-                                    wire:click="vote({{ $post->id }}, 'up')"
+                                    wire:click.stop="vote({{ $post->id }}, 'up')"
                                     @click="handleVote('up')"
-                                    wire:loading.attr="disabled"
                                     class="p-2 rounded-xl border transition-all"
                                     :class="voted === 'up' ? 'bg-[#8B5CF6] border-[#8B5CF6] text-white shadow-[0_0_15px_rgba(139,92,246,0.4)]' : 'bg-white/5 border-white/5 text-white/40 hover:text-[#8B5CF6] hover:border-[#8B5CF6]/30'"
                                 >
@@ -90,9 +91,8 @@
                                       x-text="score">
                                 </span>
                                 <button 
-                                    wire:click="vote({{ $post->id }}, 'down')"
+                                    wire:click.stop="vote({{ $post->id }}, 'down')"
                                     @click="handleVote('down')"
-                                    wire:loading.attr="disabled"
                                     class="p-2 rounded-xl border transition-all"
                                     :class="voted === 'down' ? 'bg-red-500 border-red-500 text-white shadow-[0_0_15px_rgba(239,68,68,0.4)]' : 'bg-white/5 border-white/5 text-white/40 hover:text-red-500 hover:border-red-500/30'"
                                 >

@@ -52,17 +52,17 @@
                 $myReaction = $post->reactions->first()?->type;
                 $votedState = $myReaction === 'mindblown' ? 'up' : ($myReaction === 'optimisable' ? 'down' : '');
             @endphp
-            <article wire:key="post-{{ $post->id }}" @class(['group relative', 'opacity-50 blur-sm grayscale' => false]) x-data="{ hovered: false }" @mouseenter="hovered = true" @mouseleave="hovered = false" wire:loading.class="opacity-50 blur-sm grayscale" wire:loading.attr="disabled">
+            <article wire:key="post-{{ $post->id }}" @class(['group relative', 'opacity-50 blur-sm grayscale' => false]) x-data="{ hovered: false }" @mouseenter="hovered = true" @mouseleave="hovered = false">
                 <div class="flex items-start gap-12">
                     <!-- Karma Lens (Vertical Sidebar) -->
                     <div class="flex flex-col items-center gap-3 sticky top-32" 
                          x-data="{ 
                              voted: '{{ $votedState }}',
                              score: {{ $post->up_count - $post->down_count }},
-                             isVoting: false,
+                             isProcessing: false,
                              handleVote(dir) {
-                                if (this.isVoting) return;
-                                this.isVoting = true;
+                                if (this.isProcessing) return;
+                                this.isProcessing = true;
                                 window.haptic.play(dir);
 
                                 if (dir === 'up') {
@@ -78,14 +78,13 @@
                                         this.voted = 'down';
                                     }
                                 }
+                                // Silence the processing state quickly for UI fluidity
+                                setTimeout(() => { this.isProcessing = false; }, 100);
                              }
                          }"
-                         wire:loading.class="opacity-60 pointer-events-none transition-opacity"
-                         wire:target="vote({{ $post->id }}, 'up'), vote({{ $post->id }}, 'down')"
                     >
                         <button 
-                            wire:click="vote({{ $post->id }}, 'up')"
-                            wire:loading.attr="disabled"
+                            wire:click.stop="vote({{ $post->id }}, 'up')"
                             @click="handleVote('up')"
                             :class="voted === 'up' ? 'bg-primary border-primary shadow-[0_0_25px_rgba(190,194,255,0.4)] scale-110' : 'bg-surface-container-low text-on-surface-variant hover:text-primary hover:border-primary/40 active:scale-95 border-primary/5'"
                             class="w-14 h-14 rounded-2xl border flex items-center justify-center transition-all duration-300 group/vote"
@@ -101,8 +100,7 @@
                         </div>
                         
                         <button 
-                            wire:click="vote({{ $post->id }}, 'down')"
-                            wire:loading.attr="disabled"
+                            wire:click.stop="vote({{ $post->id }}, 'down')"
                             @click="handleVote('down')"
                             :class="voted === 'down' ? 'bg-error text-white border-error shadow-[0_0_20px_rgba(239,68,68,0.3)] scale-110' : 'bg-surface-container-low text-on-surface-variant hover:text-error hover:border-error/40 active:scale-95 border-primary/5'"
                             class="w-14 h-14 rounded-2xl border flex items-center justify-center transition-all duration-300 group/vote"
