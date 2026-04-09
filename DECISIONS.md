@@ -440,3 +440,17 @@ The initial "Monolith & The Lens" implementation was too spacious, creating layo
     3. **Suppression du Vide Structurel** : Retrait des hauteurs fixes (`h-[800px]`) sur le carousel de reviews et passage à un layout flexible. Le repli des commentaires libère désormais instantanément l'espace vertical, garantissant une page compacte.
     4. **Textures & Transitions** : Application systématique des textures `shadow-inner` et des transitions `x-collapse` pour une sensation de fluidité organique.
 - **Impact** : Expérience utilisateur plus cohérente, navigation verticale optimisée et interface modernisée.
+
+## 2026-04-09-53 : Stabilisation UI & Résolution Dépendances Reverb
+- **Auteur** : Antigravity
+- **Statut** : ✅ Implémenté
+- **Contexte** : Erreur d'import Vite sur `pusher-js` et instabilités ergonomiques des modales de review (problème de centrage et de "vide" visuel).
+- **Décision** :
+    1. **Correction Full-Stack** : Installation de `pusher-js` pour finaliser l'intégration Laravel Reverb / Echo.
+    2. **Architecture des Modales (HUD 2.0)** :
+        - Passage d'un layout "stretch" à une approche centrée (`items-center justify-center`) avec `max-h-[90vh]`.
+        - Utilisation de `x-teleport="body"` pour garantir que les modales ignorent les contraintes du DOM parent et se fixent à la fenêtre écran.
+        - Ajout de marges d'air (`px-4 py-8`) et d'arrondis massifs (`rounded-[2.5rem]`).
+    3. **Fiabilisation Quick Review** : Correction de l'interception des événements (`@click.stop`) sur le bouton de suggestion pour éviter les fermetures intempestives lors du clic.
+- **Impact** : Suppression des erreurs critiques de build, interface HUD plus immersive et stable, et correction des bugs de navigation modale.
+
