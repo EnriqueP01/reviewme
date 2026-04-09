@@ -86,15 +86,15 @@
                         <button 
                             wire:click.stop="vote({{ $post->id }}, 'up')"
                             @click="handleVote('up')"
-                            :class="voted === 'up' ? 'bg-primary border-primary shadow-[0_0_25px_rgba(190,194,255,0.4)] scale-110' : 'bg-surface-container-low text-on-surface-variant hover:text-primary hover:border-primary/40 active:scale-95 border-primary/5'"
+                            :class="voted === 'up' ? 'bg-emerald-500 border-emerald-400 text-white shadow-[0_0_30px_rgba(52,211,153,0.4)] scale-110' : 'bg-surface-container-low text-on-surface-variant hover:text-emerald-400 hover:border-emerald-500/40 active:scale-95 border-white/5'"
                             class="w-14 h-14 rounded-2xl border flex items-center justify-center transition-all duration-300 group/vote"
                         >
-                            <svg class="w-6 h-6 transition-transform group-hover/vote:-translate-y-1" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="3.5"><path stroke-linecap="round" stroke-linejoin="round" d="M5 15l7-7 7 7"/></svg>
+                            <svg class="w-6 h-6 transition-transform group-hover/vote:-translate-y-1" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="4"><path stroke-linecap="round" stroke-linejoin="round" d="M5 15l7-7 7 7"/></svg>
                         </button>
                         
                         <div class="py-2 flex flex-col items-center select-none">
                             <span class="font-display font-black text-3xl tracking-tighter transition-all duration-300"
-                                  :class="voted === 'up' ? 'text-primary' : (voted === 'down' ? 'text-error' : 'text-on-surface/40')"
+                                  :class="voted === 'up' ? 'text-emerald-400' : (voted === 'down' ? 'text-rose-400' : 'text-on-surface/40')"
                                   x-text="score"></span>
                             <span class="text-[8px] font-black uppercase tracking-[0.3em] text-on-surface-variant/20 mt-1">{{ __('Score') }}</span>
                         </div>
@@ -102,10 +102,10 @@
                         <button 
                             wire:click.stop="vote({{ $post->id }}, 'down')"
                             @click="handleVote('down')"
-                            :class="voted === 'down' ? 'bg-error text-white border-error shadow-[0_0_20px_rgba(239,68,68,0.3)] scale-110' : 'bg-surface-container-low text-on-surface-variant hover:text-error hover:border-error/40 active:scale-95 border-primary/5'"
+                            :class="voted === 'down' ? 'bg-rose-500 text-white border-rose-400 shadow-[0_0_20px_rgba(244,63,94,0.3)] scale-110' : 'bg-surface-container-low text-on-surface-variant hover:text-rose-400 hover:border-rose-500/40 active:scale-95 border-white/5'"
                             class="w-14 h-14 rounded-2xl border flex items-center justify-center transition-all duration-300 group/vote"
                         >
-                            <svg class="w-6 h-6 transition-transform group-hover/vote:translate-y-1" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="3.5"><path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7"/></svg>
+                            <svg class="w-6 h-6 transition-transform group-hover/vote:translate-y-1" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="4"><path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7"/></svg>
                         </button>
                     </div>
 

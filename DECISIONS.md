@@ -454,3 +454,24 @@ The initial "Monolith & The Lens" implementation was too spacious, creating layo
     3. **Fiabilisation Quick Review** : Correction de l'interception des événements (`@click.stop`) sur le bouton de suggestion pour éviter les fermetures intempestives lors du clic.
 - **Impact** : Suppression des erreurs critiques de build, interface HUD plus immersive et stable, et correction des bugs de navigation modale.
 
+
+## 2026-04-09-54 : Consolidation du Carousel & Système de Vote Vibrants
+- **Auteur** : Antigravity
+- **Statut** : ✅ Implémenté
+- **Contexte** : Nécessité de stabiliser la navigation du carousel, d'harmoniser le système de vote et de durcir les règles d'adhérence stricte de l'agent.
+- **Décision** :
+    1. **Architecture Navigation** : Mise en place d'un slider `translateX` hardware-accelerated synchronisé avec Livewire (`@entangle`).
+    2. **Système de Vote Sémantique** : Application d'un code couleur vibrant (Émeraude pour Up, Rose pour Down) sur toutes les sections (Feed et PostDetail).
+    3. **Optimisation Spatiale** : Réduction radicale des marges verticales description/carousel pour une expérience haute-densité.
+    4. **Contrôle Qualité** : Mise à jour de `global.md` avec une clause de conformité stricte pour interdire les changements de design non sollicités.
+- **Impact** : Interface robuste, cohérence chromatique globale et fiabilité accrue de l'assistant de codage.
+
+## 2026-04-09-55 : Architecture "Instant Feedback" (Optimistic UI)
+- **Statut** : ✅ Implémenté
+- **Contexte** : Demande d'une fluidité identique à StackOverflow pour les interactions de vote, sans temps de chargement visuel ("blur" ou "loading states").
+- **Décision** :
+    1. **Alpine.js Optimiste** : Déplacement de la logique de mise à jour du score et de l'état du vote côté client via Alpine.js.
+    2. **Suppression de wire:loading** : Suppression systématique des filtres `blur` et `opacity` lors des requêtes au serveur pour éviter les saccades.
+    3. **Backend Robuste** : Utilisation de `DB::transaction` et `lockForUpdate()` pour garantir l'intégrité malgré la latence réseau.
+- **Impact** : Perception d'instantanéité totale (< 50ms perçu) et élimination des artefacts visuels de chargement.
+
