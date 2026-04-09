@@ -15,6 +15,20 @@
 - **Impact** : Création d'un cercle vertueux de contribution, sécurisation de la plateforme contre le trollage et mise en place d'une méritocratie technique.
 
 
+### 2026-04-09-58 - Permissions Cumulatives (Karma)
+**Context**: Les utilisateurs de haut grade (Expert/Elite) perdaient l'accès aux actions de base (Upvote/Downvote) car les permissions étaient restrictives par niveau.
+**Decision**: 
+1. Refactorisation de `User::hasKarmaPermission()` pour devenir cumulative.
+2. Un utilisateur hérite désormais de toutes les permissions des paliers inférieurs à son score de réputation.
+
+### 2026-04-09-59 - Robustesse UI "Monolith" & Troncature
+**Context**: Les noms de fichiers longs et les titres de posts provoquaient des débordements horizontaux (Horizontal Overflow).
+**Decision**: 
+1. Application de `truncate` et `max-w` sur les titres du header (`post-detail`) et du code explorer (`code-block`).
+2. Limitation de la largeur des onglets de fichiers à `180px`.
+3. Correction d'un bug de balise `<div>` dupliquée dans le header principal.
+
+
 ## 2026-04-09-57 : Standardisation Visuelle Monolith (Search & Modals)
 - **Auteur** : Antigravity
 - **Statut** : ✅ Implémenté

@@ -9,18 +9,19 @@ use App\Models\User;
 use App\Models\UserSkill;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\DB;
+use Livewire\Livewire;
 
 final class GrantKarmaAction
 {
     /**
      * Accorde ou retire du Karma à un utilisateur avec traçabilité complète.
      *
-     * @param User $user L'utilisateur qui reçoit le Karma
-     * @param int $points Nombre de points (positif ou négatif)
-     * @param string $type Type d'action (post_upvote, review_bonus, etc.)
-     * @param Model|null $source L'objet source (Post, Review, etc.)
-     * @param string|null $lens La catégorie concernée (Security, Logic, etc.)
-     * @param string|null $description Commentaire optionnel
+     * @param  User  $user  L'utilisateur qui reçoit le Karma
+     * @param  int  $points  Nombre de points (positif ou négatif)
+     * @param  string  $type  Type d'action (post_upvote, review_bonus, etc.)
+     * @param  Model|null  $source  L'objet source (Post, Review, etc.)
+     * @param  string|null  $lens  La catégorie concernée (Security, Logic, etc.)
+     * @param  string|null  $description  Commentaire optionnel
      */
     public function execute(
         User $user,
@@ -65,12 +66,12 @@ final class GrantKarmaAction
 
         // NOTIFICATION UI (Livewire Event)
         // Utilisation d'un check sécurisé pour éviter de casser les tests hors-contexte Livewire
-        if ($points > 0 && class_exists(\Livewire\Livewire::class)) {
+        if ($points > 0 && class_exists(Livewire::class)) {
             try {
-                \Livewire\Livewire::dispatch('karma-updated', [
+                Livewire::dispatch('karma-updated', [
                     'points' => $points,
                     'total' => $user->fresh()->reputation_score,
-                    'type' => $type
+                    'type' => $type,
                 ]);
             } catch (\Throwable $e) {
                 // Ignore errors in non-livewire contexts (tests, console)

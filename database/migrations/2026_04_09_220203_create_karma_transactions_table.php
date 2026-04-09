@@ -17,15 +17,15 @@ return new class extends Migration
             $table->integer('points');
             $table->string('type'); // vote, interaction, bonus, reward
             $table->string('description')->nullable();
-            
+
             // Source polymorphique (Post, Review, Comment)
             $table->nullableMorphs('source');
-            
+
             // Metadata (ex: { 'lens': 'security' })
             $table->json('metadata')->nullable();
-            
+
             $table->timestamps();
-            
+
             $table->index(['user_id', 'created_at']);
         });
 

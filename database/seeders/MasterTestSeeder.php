@@ -2,228 +2,266 @@
 
 namespace Database\Seeders;
 
+use App\Models\FullReview;
+use App\Models\FullReviewSnippet;
 use App\Models\Group;
+use App\Models\GroupMessage;
 use App\Models\Post;
+use App\Models\PostComment;
 use App\Models\Reaction;
-use App\Models\Review;
 use App\Models\Snippet;
 use App\Models\User;
-use Faker\Factory as Faker;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\Hash;
-use Illuminate\Support\Str;
 
 class MasterTestSeeder extends Seeder
 {
     public function run(): void
     {
-        $faker = Faker::create('fr_FR');
+        // 1. CLEAR TABLES TO ENSURE CLEAN STATE
+        User::query()->delete();
+        Group::query()->delete();
+        Post::query()->delete();
+        Snippet::query()->delete();
+        PostComment::query()->delete();
+        FullReview::query()->delete();
+        Reaction::query()->delete();
+        GroupMessage::query()->delete();
 
-        // Create main user for testing
-        $celestin = User::updateOrCreate(['email' => 'celestin@reviewme.io'], [
-            'name' => 'Célestin Dev',
+        // 2. CREATE ELITE USERS (NO SPACES IN IDENTIFIERS)
+        $celestin = User::create([
+            'name' => 'celestin_dev',
+            'email' => 'celestin@reviewme.io',
             'password' => Hash::make('password'),
-            'reputation_score' => 5000,
-            'bio' => 'Développeur Fullstack passionné. J\'adore optimiser les requêtes SQL et construire des architectures solides et scalables.',
-            'avatar' => 'https://api.dicebear.com/7.x/avataaars/svg?seed=Celestin&backgroundColor=1a1b26',
+            'reputation_score' => 7500,
+            'bio' => 'Lead Fullstack Engineer & Architect. Passionate about Laravel internals, React performance, and building high-fidelity developer tools.',
+            'avatar' => 'https://api.dicebear.com/7.x/avataaars/svg?seed=celestin&backgroundColor=1a1b26',
         ]);
 
-        // Creating more specific users to interact with
-        $users = [$celestin];
-        $roles = ['Architecte Backend', 'Senior Frontend Dev', 'Junior Dev', 'Lead Tech', 'Ingénieur DevOps'];
+        $sarah = User::create([
+            'name' => 'sarah_arch',
+            'email' => 'sarah@reviewme.io',
+            'password' => Hash::make('password'),
+            'reputation_score' => 9200,
+            'bio' => 'Senior Infrastructure Architect specializing in Go, K8s, and high-available distributed systems. I live for clean abstractions.',
+            'avatar' => 'https://api.dicebear.com/7.x/avataaars/svg?seed=sarah&backgroundColor=24283b',
+        ]);
 
-        for ($i = 0; $i < 30; $i++) {
-            $firstName = $faker->firstName;
-            $users[] = User::create([
-                'name' => $firstName.' '.$faker->lastName,
-                'email' => $faker->unique()->safeEmail,
-                'password' => Hash::make('password'),
-                'reputation_score' => rand(10, 3000),
-                'bio' => $faker->randomElement($roles).'. '.$faker->realText(80),
-                'avatar' => "https://api.dicebear.com/7.x/avataaars/svg?seed={$firstName}&backgroundColor=24283b",
+        $marcus = User::create([
+            'name' => 'marcus_sec',
+            'email' => 'marcus@reviewme.io',
+            'password' => Hash::make('password'),
+            'reputation_score' => 4500,
+            'bio' => 'Security Researcher & Penetration Tester. My goal is to find the one line of code that breaks everything.',
+            'avatar' => 'https://api.dicebear.com/7.x/avataaars/svg?seed=marcus&backgroundColor=1a1b26',
+        ]);
+
+        $lea = User::create([
+            'name' => 'lea_pixel',
+            'email' => 'lea@pixel.io',
+            'password' => Hash::make('password'),
+            'reputation_score' => 3800,
+            'bio' => 'Lead Frontend Engineer. Obsessed with CSS performance, motion design, and semantic HTML5.',
+            'avatar' => 'https://api.dicebear.com/7.x/avataaars/svg?seed=lea&backgroundColor=f5c2e7',
+        ]);
+
+        $david = User::create([
+            'name' => 'david_optim',
+            'email' => 'david@performance.com',
+            'password' => Hash::make('password'),
+            'reputation_score' => 8100,
+            'bio' => 'Performance Engineer. HFM background. I measure execution time in microseconds. C++, Rust, and low-level PHP optimization.',
+            'avatar' => 'https://api.dicebear.com/7.x/avataaars/svg?seed=david&backgroundColor=a6adc8',
+        ]);
+
+        $users = collect([$celestin, $sarah, $marcus, $lea, $david]);
+
+        // 3. CREATE SPECIALIZED GROUPS
+        $groups = collect([
+            Group::create([
+                'name' => 'Core_Architecture',
+                'slug' => 'core-architecture',
+                'description' => 'Discussions on design patterns, scalability, and structural integrity of large-scale applications.',
+                'owner_id' => $sarah->id,
+            ]),
+            Group::create([
+                'name' => 'Sec_Audit_Lab',
+                'slug' => 'sec-audit-lab',
+                'description' => 'A workshop for peer-reviewing security-sensitive endpoints and looking for vulnerabilities.',
+                'owner_id' => $marcus->id,
+            ]),
+            Group::create([
+                'name' => 'Optimization_Forge',
+                'slug' => 'optimization-forge',
+                'description' => 'The place where we shave off every unnecessary millisecond from our payloads.',
+                'owner_id' => $david->id,
+            ]),
+        ]);
+
+        // Join users to groups
+        foreach ($groups as $group) {
+            foreach ($users as $user) {
+                $group->members()->attach($user->id, ['role' => ($user->id === $group->owner_id) ? 'admin' : 'member']);
+            }
+        }
+
+        // 4. REAL WORLD POSTS & CODE SNIPPETS
+
+        // Scenario 1: Rust Mutex Safety (David)
+        $post1 = Post::create([
+            'user_id' => $david->id,
+            'group_id' => $groups[2]->id,
+            'title' => 'Preventing Data Race in Concurrent Shared State',
+            'short_description' => 'Implementing Arc<Mutex<T>> for a shared inventory counter in Rust.',
+            'description' => "I'm working on a high-concurrency shared state for a marketplace inventory. I used Arc and Mutex but the performance in high contention is lower than expected. Any tips for reducing lock holding time?",
+            'review_goals' => 'Review the locking strategy and suggest lock-free alternatives if applicable.',
+            'improvement_goals' => 'Improve throughput while maintaining absolute thread safety.',
+            'context' => 'Part of the new Real-time Bidding Engine.',
+            'visibility' => 'public',
+            'lens' => 'performance',
+        ]);
+
+        Snippet::create([
+            'post_id' => $post1->id,
+            'version_number' => 1,
+            'filename' => 'inventory.rs',
+            'language' => 'rust',
+            'code_content' => "use std::sync::{Arc, Mutex};\nuse std::thread;\n\nstruct Inventory {\n    items: u32,\n}\n\nfn main() {\n    let inventory = Arc::new(Mutex::new(Inventory { items: 1000 }));\n    let mut handles = vec![];\n\n    for _ in 0..10 {\n        let inv = Arc::clone(&inventory);\n        let handle = thread::spawn(move || {\n            // CONTENTION POINT: Locking the whole struct for increment\n            let mut data = inv.lock().unwrap();\n            data.items += 1;\n        });\n        handles.push(handle);\n    }\n\n    for handle in handles {\n        handle.join().unwrap();\n    }\n}",
+            'sort_order' => 1,
+        ]);
+
+        // Scenario 2: PHP Early Return & DTO (Celestin)
+        $post2 = Post::create([
+            'user_id' => $celestin->id,
+            'group_id' => $groups[0]->id,
+            'title' => 'Refactoring Business Logic into DTOs and Services',
+            'short_description' => 'Moving from massive controllers to specialized data objects.',
+            'description' => 'Just finished refactoring our invitation system. I moved all validation logic into a DTO and the registration into a dedicated Service. Looking for feedback on the abstraction level.',
+            'review_goals' => 'Is the DTO too verbose? Should I use PHP 8.2 readonly classes on everything?',
+            'visibility' => 'public',
+            'lens' => 'logic',
+        ]);
+
+        Snippet::create([
+            'post_id' => $post2->id,
+            'version_number' => 1,
+            'filename' => 'UserInviteDTO.php',
+            'language' => 'php',
+            'code_content' => "<?php\n\nnamespace App\\DTOs;\n\nreadonly class UserInviteDTO\n{\n    public function __construct(\n        public string \$email,\n        public array \$roles = ['member'],\n        public ?int \$groupId = null,\n    ) {}\n\n    public static function fromRequest(array \$data): self\n    {\n        return new self(\n            email: \$data['email'],\n            roles: \$data['roles'] ?? ['member'],\n            groupId: \$data['group_id'] ?? null\n        );\n    }\n}",
+            'sort_order' => 1,
+        ]);
+
+        // Scenario 3: SQL Recursive CTE (Sarah)
+        $post3 = Post::create([
+            'user_id' => $sarah->id,
+            'group_id' => $groups[0]->id,
+            'title' => 'Querying Hierarchical Comment Threads',
+            'short_description' => 'Using Recursive CTE to fetch unlimited levels of nested comments.',
+            'description' => "Our comment system is getting slow with multi-level nesting. I'm testing a recursive Common Table Expression (CTE) to fetch the entire tree in a single query. Is there a depth-limit I should worry about in Postgres?",
+            'review_goals' => 'Check the recursion logic and the performance impact of the sorting field.',
+            'visibility' => 'public',
+            'lens' => 'performance',
+        ]);
+
+        Snippet::create([
+            'post_id' => $post3->id,
+            'version_number' => 1,
+            'filename' => 'comments_tree.sql',
+            'language' => 'sql',
+            'code_content' => "WITH RECURSIVE comment_tree AS (\n    -- Base case: Top level comments\n    SELECT id, parent_id, content, 0 as depth, ARRAY[id] as path\n    FROM post_comments\n    WHERE parent_id IS NULL AND post_id = :post_id\n\n    UNION ALL\n\n    -- Recursive case\n    SELECT c.id, c.parent_id, c.content, ct.depth + 1, ct.path || c.id\n    FROM post_comments c\n    JOIN comment_tree ct ON c.parent_id = ct.id\n)\nSELECT * FROM comment_tree ORDER BY path;",
+            'sort_order' => 1,
+        ]);
+
+        // Scenario 4: Security - Middleware Validation (Marcus)
+        $post4 = Post::create([
+            'user_id' => $marcus->id,
+            'group_id' => $groups[1]->id,
+            'title' => 'Preventing IDOR on Sensitive API Endpoints',
+            'short_description' => 'Custom Middleware to verify resource ownership before processing.',
+            'description' => 'Found a potential IDOR vulnerability yesterday. I wrote this Middleware to force ownership checks on all private resources. Does this look robust enough to you?',
+            'review_goals' => 'Can this be bypassed if multiple resources are requested in the same payload?',
+            'visibility' => 'public',
+            'lens' => 'security',
+        ]);
+
+        Snippet::create([
+            'post_id' => $post4->id,
+            'version_number' => 1,
+            'filename' => 'VerifyOwnership.php',
+            'language' => 'php',
+            'code_content' => "<?php\n\nnamespace App\\Http\\Middleware;\n\nclass VerifyOwnership\n{\n    public function handle(\$request, \$next, \$model)\n    {\n        \$resourceId = \$request->route(\$model);\n        \$userId = auth()->id();\n\n        // VULNERABILITY CHECK: Verifying if current user owns the resource\n        if (!DB::table(\$model)->where('id', \$resourceId)->where('user_id', \$userId)->exists()) {\n            abort(403, 'Unauthorized access attempt.');\n        }\n\n        return \$next(\$request);\n    }\n}",
+            'sort_order' => 1,
+        ]);
+
+        // 5. REVIEWS & COMMENTS (REAL CONTENT)
+
+        // David reviews Celestin's DTO
+        $rev1 = FullReview::create([
+            'user_id' => $david->id,
+            'post_id' => $post2->id,
+            'description' => 'Excellent move towards DTOs. PHP 8.2 readonly classes are perfect here. One optimization: using `public readonly` on the constructor params is enough, no need for the extra class flag if using the constructor promotion pattern.',
+            'score' => 10,
+        ]);
+
+        FullReviewSnippet::create([
+            'full_review_id' => $rev1->id,
+            'snippet_id' => $post2->snippets->first()->id,
+            'modified_content' => "<?php\n\nnamespace App\\DTOs;\n\nclass UserInviteDTO\n{\n    public function __construct(\n        public readonly string \$email,\n        public readonly array \$roles = ['member'],\n        public readonly ?int \$groupId = null,\n    ) {}\n}",
+            'description' => 'Constructor property promotion is cleaner and as effective.',
+        ]);
+
+        // Marcus reviews Sarah's SQL
+        $rev2 = FullReview::create([
+            'user_id' => $marcus->id,
+            'post_id' => $post3->id,
+            'description' => 'Recursive CTEs are great. SEC TIP: Make sure `:post_id` is properly cast to an integer in the driver layer, Postgres is strict and it prevents type-juggling injection attempts.',
+            'score' => 5,
+        ]);
+
+        // Global Comments
+        PostComment::create([
+            'user_id' => $lea->id,
+            'post_id' => $post2->id,
+            'content' => 'Love this refactor! Are you planning to add a `ValidationRequest` as well to separate the HTTP layer from the data object?',
+        ]);
+
+        // Interactions with celestin
+        PostComment::create([
+            'user_id' => $celestin->id,
+            'post_id' => $post1->id,
+            'content' => 'Hey David, if contention is the issue, check out `dashmap` crate for Rust. It uses sharding to avoid global locks. Also, is your `items` counter an `AtomicU32`? That would be much faster than a Mutex for just an increment.',
+        ]);
+
+        // 7. CHAT MESSAGES (REAL CHAT)
+        $archGroup = $groups[0];
+        $chatData = [
+            ['u' => $sarah->id, 'm' => 'Welcome to Core Architecture. Let\'s keep the discussion focused on structural integrity.'],
+            ['u' => $celestin->id, 'm' => 'Thanks Sarah. Just posted the DTO refactor. Interested to see if we can generalize it for the whole API layer.'],
+            ['u' => $sarah->id, 'm' => 'I just reviewed it. Check the point about property promotion. It simplifies the payload signature significantly.'],
+            ['u' => $david->id, 'm' => 'Sarah, what about the Recursive CTE depth? I\'m worried it might blow up on deep threads.'],
+            ['u' => $sarah->id, 'm' => 'David, Postgres default max recursion is 1000. We\'ll never hit it with our current metadata limit, but I\'ll add a guard clause in the CTE base case anyway.'],
+        ];
+
+        foreach ($chatData as $data) {
+            GroupMessage::create([
+                'group_id' => $archGroup->id,
+                'user_id' => $data['u'],
+                'content' => $data['m'],
+                'created_at' => now()->subMinutes(60 - (count($chatData) * 5)),
             ]);
         }
-        $usersCollection = collect($users);
 
-        // Define options for randomizations
-        $lenses = ['performance', 'logic', 'security', 'elegant', 'readability', 'clean', 'mindblown'];
-        $langs = ['php', 'javascript', 'css', 'blade', 'html'];
-        $reactionTypes = ['clean', 'optimisable', 'mindblown', 'security'];
-
-        // Create Groups
-        $groups = [];
-        $groupNames = ['Laravel France', 'Optimisation Extrême', 'Design System & UI', 'DevOps & Architecture', 'Sécurité Web Avancée'];
-        foreach ($groupNames as $gName) {
-            $owner = $usersCollection->random();
-            $group = Group::create([
-                'name' => $gName,
-                'slug' => Str::slug($gName),
-                'description' => 'Le repaire des experts en '.strtolower($gName).'. '.$faker->realText(100),
-                'owner_id' => $owner->id,
-            ]);
-
-            // Add members
-            $membersCount = rand(5, 20);
-            $members = $usersCollection->random($membersCount);
-            foreach ($members as $mem) {
-                $group->members()->attach($mem->id, ['role' => ($mem->id === $owner->id) ? 'admin' : 'member']);
-            }
-
-            // Explicitly ensure celestin is in some groups
-            if (! $group->members->contains($celestin->id)) {
-                if (rand(0, 1)) {
-                    $group->members()->attach($celestin->id, ['role' => 'member']);
-                }
-            }
-
-            $groups[] = $group;
-        }
-
-        $groupsCollection = collect($groups);
-
-        // Helper to generate French post content
-        $generatePostContent = function () use ($faker, $lenses) {
-            $topics = [
-                'Refactorisation d\'un contrôleur massif',
-                'Optimisation des requêtes Eloquent (N+1)',
-                'Ajout de cache Redis sur une route API critique',
-                'Implémentation du pattern Strategy',
-                'Animation CSS sans JavaScript (Pur CSS)',
-                'Sécurisation complète d\'un endpoint',
-                'Amélioration de la lisibilité des middlewares',
-                'Dockerisation du workflow de CI/CD',
-                'Passage de Blade à Vue.js sur un composant',
-                'Résolution de fuites de mémoire en PHP',
-            ];
-
-            return [
-                'title' => $faker->randomElement($topics).' - '.substr($faker->sentence(2), 0, -1),
-                'short_description' => $faker->realText(60),
-                'description' => "Salut l'équipe ! J'ai rencontré ce défi technique récemment : \n\n".$faker->realText(250)."\n\nEst-ce que quelqu'un aurait une approche plus élégante ou performante pour traiter cela ?",
-                'review_goals' => "J'aimerais surtout des retours critiques sur la ".$faker->randomElement(['sécurité', 'performance', 'lisibilité', 'modularité', 'maintenabilité'])." et l'architecture globale.",
-                'improvement_goals' => "L'objectif principal est de réduire la dette technique avant la mise en production.",
-                'context' => "Ceci est lié à notre branche 'feat/core-refactor' du projet.",
-                'visibility' => 'public',
-                'lens' => $faker->randomElement($lenses),
-            ];
-        };
-
-        // Create posts for all users
-        $allPosts = [];
-
-        foreach ($usersCollection as $user) {
-            // Give each user 1 to 3 posts, but Celestin gets more
-            $postCount = ($user->id === $celestin->id) ? 8 : rand(1, 3);
-
-            for ($i = 0; $i < $postCount; $i++) {
-                $postData = $generatePostContent();
-                $postData['user_id'] = $user->id;
-
-                // 50% chance to be in a group
-                if (rand(0, 1)) {
-                    $postData['group_id'] = $groupsCollection->random()->id;
-                }
-
-                $post = Post::create($postData);
-                $allPosts[] = $post;
-
-                // Create snippets for post
-                $numSnippets = rand(1, 2);
-                $language = $faker->randomElement($langs);
-                for ($j = 1; $j <= $numSnippets; $j++) {
-                    $code = "<?php\n\n/**\n * Version $j de l'implémentation\n * Optimisé pour la performance et la lisibilité\n */\nfunction processData".ucfirst(Str::camel($faker->word))."(\$input) {\n    // Validation des données d'entrée\n    if (!\$input) {\n        throw new InvalidArgumentException('Input requis pour le traitement');\n    }\n\n    \$result = array_map(function(\$item) {\n        return is_numeric(\$item) ? \$item * 2 : strtoupper(\$item);\n    }, \$input);\n\n    return \$result;\n}\n";
-                    if ($language === 'javascript') {
-                        $code = "/**\n * Handler pour ".Str::camel($faker->word)."\n * Version $j\n */\nconst ".Str::camel($faker->word)."Handler = async (payload) => {\n  if (!payload) {\n    console.error('Payload manquant');\n    return null;\n  }\n\n  try {\n    const response = await fetch('/api/process', {\n      method: 'POST',\n      body: JSON.stringify(payload)\n    });\n    return await response.json();\n  } catch (err) {\n    return { success: false, error: err.message };\n  }\n};";
-                    } elseif ($language === 'css') {
-                        $code = '/* Container principal pour '.Str::slug($faker->word)." */\n.card-container {\n  display: flex;\n  flex-direction: column;\n  gap: 1.5rem;\n  padding: 2rem;\n  background: rgba(26, 27, 38, 0.8);\n  backdrop-filter: blur(10px);\n  border: 1px solid rgba(255, 255, 255, 0.1);\n  border-radius: 1rem;\n  transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);\n}\n\n.card-container:hover {\n  transform: translateY(-4px);\n}";
-                    } elseif ($language === 'blade') {
-                        $code = "<div class=\"flex flex-col space-y-6 p-4\">\n    <header class=\"border-b border-white/10 pb-4\">\n        <h2 class=\"text-xl font-bold text-white\">{{ \$title }}</h2>\n        <p class=\"text-sm text-gray-400\">Version $j</p>\n    </header>\n\n    <main class=\"grid grid-cols-1 md:grid-cols-2 gap-4\">\n        @foreach (\$items as \$item)\n            <x-ui.card :data=\"\$item\" />\n        @endforeach\n    </main>\n</div>";
-                    }
-
-                    $fName = Str::slug($faker->word).".$language";
-                    $snippet = Snippet::create([
-                        'post_id' => $post->id,
-                        'version_number' => $j,
-                        'description' => 'Fichier '.$fName,
-                        'filename' => $fName,
-                        'language' => $language,
-                        'code_content' => $code,
-                        'sort_order' => $j,
-                    ]);
-
-                    // Add Reviews to the snippet
-                    // Give more reviews to Celestin's posts
-                    $chanceReview = ($user->id === $celestin->id) ? 90 : 40;
-                    if (rand(1, 100) <= $chanceReview) {
-                        $reviewerCount = rand(1, 3);
-                        for ($k = 0; $k < $reviewerCount; $k++) {
-                            $reviewer = $usersCollection->random();
-
-                            // Prevent self-reviewing
-                            if ($reviewer->id === $user->id) {
-                                continue;
-                            }
-
-                            $review = Review::create([
-                                'snippet_id' => $snippet->id,
-                                'user_id' => $reviewer->id,
-                                'line_number' => rand(1, 4),
-                                'content' => 'Super approche, cependant, as-tu pensé à vérifier cela ? '.$faker->realText(80),
-                            ]);
-
-                            // Add reactions to the review
-                            if (rand(0, 1)) {
-                                $reactor = $usersCollection->where('id', '!=', $reviewer->id)->random();
-                                Reaction::updateOrCreate([
-                                    'user_id' => $reactor->id,
-                                    'reactable_id' => $review->id,
-                                    'reactable_type' => Review::class,
-                                ], [
-                                    'type' => $faker->randomElement($reactionTypes),
-                                ]);
-                            }
-                        }
-                    }
-                }
-
-                // Add reactions to the post itself
-                $reactionCount = rand(2, 6);
-                $reactors = $usersCollection->where('id', '!=', $user->id)->random($reactionCount);
-                foreach ($reactors as $reactor) {
-                    Reaction::updateOrCreate([
+        // 8. REACTIONS (Post & Reviews)
+        foreach (Post::all() as $post) {
+            foreach ($users->random(rand(2, 4)) as $reactor) {
+                if ($reactor->id !== $post->user_id) {
+                    Reaction::create([
                         'user_id' => $reactor->id,
                         'reactable_id' => $post->id,
                         'reactable_type' => Post::class,
-                    ], [
-                        'type' => $faker->randomElement($reactionTypes),
+                        'type' => collect(['up', 'mindblown', 'clean'])->random(),
                     ]);
                 }
-            }
-        }
-
-        // Specific interactions: Celestin comments on others' posts
-        $otherPosts = array_filter($allPosts, fn ($p) => $p->user_id !== $celestin->id);
-        shuffle($otherPosts);
-        $sampledOtherPosts = array_slice($otherPosts, 0, 10);
-
-        foreach ($sampledOtherPosts as $post) {
-            $snippet = $post->snippets()->first();
-            if ($snippet) {
-                Review::updateOrCreate([
-                    'snippet_id' => $snippet->id,
-                    'user_id' => $celestin->id,
-                    'line_number' => 2,
-                ], [
-                    'content' => "C'est une implémentation très propre ! Personnellement j'aurais utilisé un Early Return ici pour éviter la pyramide de l'enfer. Sinon super !",
-                ]);
-
-                Reaction::updateOrCreate([
-                    'user_id' => $celestin->id,
-                    'reactable_id' => $post->id,
-                    'reactable_type' => Post::class,
-                ], [
-                    'type' => $faker->randomElement($reactionTypes),
-                ]);
             }
         }
     }
