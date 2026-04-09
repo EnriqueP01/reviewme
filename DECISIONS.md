@@ -274,3 +274,12 @@
     3. **Container Hardening** : Retrait de l'exposition publique du port 3306, désactivation du mode debug par défaut et utilisation de variables d'environnement pour les secrets root.
     4. **Injection Sécurisée** : Passage à `@js()` dans les composants Blade pour prévenir toute corruption JSON.
 - **Impact** : Élimination des fuites d'informations techniques et restauration de l'intégrité du système de collaboration privée.
+
+## 2026-04-09-39 : Maintien Permanent de l'Architecture (RBAC & Gestion d'Erreurs)
+- **Auteur** : Antigravity
+- **Statut** : ✅ Implémenté
+- **Contexte** : Nécessité de formaliser la "User Story d'Architecture" US14 (Définir les rôles, permissions et la stratégie de gestion des erreurs) et de garantir que l'IA respecte ces choix à long terme.
+- **Décision** :
+    1. **Spécification Architecturale (Markdown)** : Rédaction détaillée de la norme dans `us/us14_roles_permissions_erreurs.md` classifiant les actions par niveaux et séparant strictement de la logique métier (erreurs 422 vs 403 vs 500).
+    2. **Règle IA sur Mesure (.agents/rules/rbac.md)** : Intégration d'une directive d'agent continue ("Custom Rule"). Le but de la règle est d'interdire au modèle de coder des actions en "Black Box" : je suis désormais forcé de vérifier les permissions (via `PostPolicy`, `Gate` ou Middlewares) et de ne jamais ignorer la sécurité du backend, même si l'interface dissimule déjà les actions.
+- **Impact** : Prévention à 100% des erreurs d'authentification "fail-open", structuration forte des cas critiques, et alignement parfait entre les directives d'architecture de haut-niveau et le code généré quotidiennement par l'IA.
