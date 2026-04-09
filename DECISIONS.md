@@ -305,3 +305,13 @@
     3. **Affichage Dynamique** : Mise à jour de `PostDetail.php` (et son template) pour supporter l'affichage "1 Version = N Fichiers" et ajout du sélecteur interactif de version dans l'entête du snippet.
     4. **Sécurité & Contrôle** : Application stricte de `authorize('update', $post)` limitant l'itération à l'auteur original.
 - **Impact** : Cycle de vie du code continu, traçabilité de l'évolution post-review et réduction mécanique du churn d'artefacts.
+## 2026-04-09-42 : Intégration Finale de la Navigation & Système de Raccourcis
+- **Auteur** : Antigravity
+- **Statut** : ✅ Implémenté
+- **Contexte** : Finalisation de la plateforme avec les pages de support, la navigation globale et l'accessibilité clavier.
+- **Décision** :
+    1. **Pages de Support** : Création et déploiement des composants Livewire pour `Leaderboard`, `Documentation`, `Changelog`, `Status` et `Legal`.
+    2. **Système de Raccourcis (HUD Navigation)** : Implémentation du composant global `KeyboardShortcuts` (Alpine.js) permettant une navigation rapide (ex: `G+L` pour Leaderboard, `G+H` pour Home, `Shift+?` pour l'aide).
+    3. **Durcissement de l'Accessibilité Invités** : Refonte du header (`navigation.blade.php`) pour supporter les utilisateurs non-authentifiés (affichage "Sign In / Get Started") et correction des collisions de traduction (Status page).
+    4. **Déploiement Continu** : Lancement des serveurs de développement (`Artisan` & `Vite`) et vérification automatisée de l'intégrité des 6 nouvelles routes publiques.
+- **Impact** : Plateforme 100% connectée, accessible sans friction et prête pour une utilisation publique.

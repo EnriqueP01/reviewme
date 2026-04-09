@@ -41,7 +41,11 @@ Ceci démarre le serveur Laravel (`8000`) et Vite.
 ## 🐳 Docker Mode
 
 ```bash
+# Lancer l'environnement
 docker-compose up -d --build
+
+# Arrêter les services
+docker-compose stop
 ```
 L'application est accessible sur [http://localhost:8080](http://localhost:8080).
 

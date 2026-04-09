@@ -60,7 +60,14 @@ ReviewMe est entièrement conteneurisé pour simplifier le déploiement.
 
 ### 1. Lancement des conteneurs
 ```bash
+# Démarrage
 docker-compose up -d --build
+
+# Arrêt (mise en pause)
+docker-compose stop
+
+# Destruction (nettoyage complet)
+docker-compose down
 ```
 Les services suivants seront démarrés :
 - `reviewme-app` (PHP-FPM)
