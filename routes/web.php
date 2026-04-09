@@ -7,6 +7,7 @@ use App\Livewire\Groups\GroupManager;
 use App\Livewire\PostDetail;
 use App\Livewire\Profile;
 use App\Livewire\PublishWorkflow;
+use App\Livewire\UpdateVibeCode;
 use App\Models\User;
 use Illuminate\Support\Facades\Route;
 
@@ -44,6 +45,7 @@ Route::middleware('auth')->group(function () {
     Route::get('/publish', PublishWorkflow::class)->name('publish');
     Route::get('/groups', GroupManager::class)->name('groups');
     Route::get('/posts/{postId}', PostDetail::class)->name('posts.detail');
+    Route::get('/posts/{postId}/update-code', UpdateVibeCode::class)->name('posts.update-code');
     Route::get('/settings', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');

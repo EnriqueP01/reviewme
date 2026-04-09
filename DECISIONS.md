@@ -294,3 +294,14 @@
     3. **Cleanup i18n** : Nettoyage intégral de `fr.json` et `en.json` pour supprimer les clés de branding "cool" au profit de termes standards (Feed, Review, Files).
     4. **Événements & UI** : Renommage des événements système (`vibe-*` -> `post-*`, `notification`) et des composants UI (`logo-artifact` -> `logo`).
 - **Impact** : Positionnement professionnel renforcé, meilleure accessibilité et cohérence totale de l'expérience utilisateur.
+
+## 2026-04-09-41 : Versioning Avancé d'Artefacts
+- **Auteur** : Antigravity
+- **Statut** : ✅ Implémenté
+- **Contexte** : Autoriser les curateurs à soumettre des itérations de code (nouvelles versions) sans créer un nouvel artefact, facilitant le suivi des reviews.
+- **Décision** :
+    1. **Architecture** : Création de `AddPostVersionAction` gérant l'intégration transactionnelle de nouveaux snippets avec incrémentation automatique de `version_number`.
+    2. **UI Ségrégative** : Ajout du composant Livewire `UpdateVibeCode` avec le routeur dédié `/posts/{postId}/update-code`, reprenant l'ADN du workflow de création et l'heuristique de détection de fichier.
+    3. **Affichage Dynamique** : Mise à jour de `PostDetail.php` (et son template) pour supporter l'affichage "1 Version = N Fichiers" et ajout du sélecteur interactif de version dans l'entête du snippet.
+    4. **Sécurité & Contrôle** : Application stricte de `authorize('update', $post)` limitant l'itération à l'auteur original.
+- **Impact** : Cycle de vie du code continu, traçabilité de l'évolution post-review et réduction mécanique du churn d'artefacts.

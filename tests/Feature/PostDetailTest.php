@@ -44,7 +44,7 @@ class VibeDetailTest extends TestCase
         Livewire::actingAs($user)
             ->test(VibeDetail::class, ['postId' => $post->id])
             ->set('commentContent', 'Ceci est une superbe review')
-            ->set('activeLine', 5)
+            ->set('activeLine', $snippet->id.'-5')
             ->call('saveComment')
             ->assertHasNoErrors();
 
