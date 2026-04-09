@@ -14,34 +14,37 @@ AFIN DE forcer la priorisation réelle dans un cadre de temps étudiant limité
 ---
 
 ### 1. Noyau Minimal Livrable (MVP)
-Le MVP se concentre sur le cycle de vie d'un artefact de code (Post) au sein d'une communauté d'étudiants.
+Le MVP se concentre sur le cycle de vie d'un post de code au sein d'une communauté d'étudiants.
 
-- **Authentification Sécurisée** : Connexion via GitHub (OAuth) pour lier l'identité de développeur.
+- **Authentification & Identité** : Connexion via GitHub (OAuth). Profil avec score de réputation et historique.
 - **Moteur de Curation (Publish Workflow)** :
-    - Import massif de fichiers par drag-and-drop.
-    - Détection automatique du langage de programmation.
-    - Association de métadonnées (Lenses : Logic, Opti, Beauty).
-- **Consommation & Collaboration** :
-    - Dashboard/Feed avec recherche plein texte et filtres par langage/Lens.
-    - Système de Groupes (ex-Labs) pour isoler les revues par projet ou classe.
-    - Versioning : Possibilité de soumettre une itération de code sur un post existant.
-- **Feedback** : Système de réactions et de reviews par fragments.
+    - Import multi-fichiers asynchrone par drag-and-drop.
+    - Détection automatique du langage et télémétrie (LOC, KB, Doublons MD5).
+    - Métadonnées granulaires (Buts de revue, Objectifs d'amélioration, Lenses).
+- **Consommation & Collaboration d'Élite** :
+    - **Feed** : Dashboard avec recherche "Live" et filtrage chromatique par Lenses.
+    - **Groupes** : Espaces privés pour isoler les projets ou classes.
+    - **Versioning** : Support de l'itération continue sur un même post.
+- **Feedback Interactif (Précision IDE)** :
+    - **Full Review** : Publication de versions alternatives complètes du code (PR-Style).
+    - **Quick Review** : Suggestions de modifications contextuelles (Inline) sur des lignes spécifiques.
+    - **Discussion Threadée** : Commentaires globaux, réponses imbriquées et réactions polymorphiques (Likes/Votes).
 
 ### 2. Hors Périmètre (Post-MVP)
 Éléments volontairement écartés pour garantir la tenue des délais :
 
-- **Analyse Statique par IA** : Automatiser la revue via un LLM (trop complexe pour la phase initiale, risque de faux positifs).
-- **Messagerie Instantanée** : Chat en temps réel dans les groupes (utilité secondaire face au système de reviews asynchrones).
-- **Application Mobile Native** : Le responsive web suffit pour l'usage étudiant sur tablette/laptop.
-- **Statistiques d'Équipe Avancées** : Dashboards complexes pour enseignants (reporté pour focus sur l'expérience étudiant).
+- **Analyse Statique par IA** : Automatiser la revue via un LLM (risque de faux positifs élevé).
+- **Messagerie Instantanée** : Chat en temps réel hors système de revue.
+- **Application Mobile Native** : Le responsive web suffit pour l'usage sur laptop (IDE-style).
+- **Audit Logs d'Administration** : Traçabilité ultra-détaillée des actions admin.
 
 ### 3. Critères de Coupe (Downscoping)
 Si le retard menace la livraison, les éléments suivants seront retirés dans cet ordre :
 
-1.  **Système de Versioning (US41)** : On se limite à une seule version par post.
-2.  **Heatmap d'Activité** : Supprimer la visualisation graphique de la réputation.
-3.  **Détection de Clones (MD5)** : Retirer la validation technique contre le plagiat immédiat.
-4.  **Multi-Lenses** : Limiter la curation à un seul type de review par post.
+1.  **Système de Suggestions Inline** : On se limite aux commentaires globaux et aux Full Reviews.
+2.  **Heatmap d'Activité** : Supprimer la visualisation graphique de la réputation sur le profil.
+3.  **Détection de Clones (MD5)** : Retirer la validation automatique contre les doublons de contenu.
+4.  **Multi-Threading de Lenses** : Limiter la curation à un seul type de focus par post.
 
 ### 4. Cohérence du Produit
-Même sans ces options, ReviewMe reste un outil complet permettant de charger du code, de le partager en privé/public et de recevoir des revues structurées, remplissant sa promesse de "plateforme de curation collaborative".
+ReviewMe reste un outil de collaboration complet permettant de charger, partager et auditer du code de manière structurée et sensorielle, remplissant sa promesse de "hub de curation collaborative".
