@@ -305,3 +305,14 @@
     3. **Affichage Dynamique** : Mise à jour de `PostDetail.php` (et son template) pour supporter l'affichage "1 Version = N Fichiers" et ajout du sélecteur interactif de version dans l'entête du snippet.
     4. **Sécurité & Contrôle** : Application stricte de `authorize('update', $post)` limitant l'itération à l'auteur original.
 - **Impact** : Cycle de vie du code continu, traçabilité de l'évolution post-review et réduction mécanique du churn d'artefacts.
+
+## 2026-04-09-42 : Formalisation de la Documentation Stratégique (US04-US28)
+- **Auteur** : Antigravity
+- **Statut** : ✅ Implémenté
+- **Contexte** : Besoin de consolider les fondations stratégiques, techniques et UX du projet pour garantir la maintenabilité et faciliter la soutenance.
+- **Décision** :
+    1. **Cadrage Produit** : Rédaction des US04 (MVP/Périmètre), US05 (Thème), US06 (Pitch) et US08 (SWOT/Benchmark).
+    2. **Architecture & API** : Documentation des US10 (Architecture Globale), US11 (Choix techniques), US15 (Contrat API) et US16 (Journal de décisions).
+    3. **Design & Qualité** : Formalisation des US09 (Guide UI), US26 (Gestion des erreurs/cas limites) et US28 (Qualité de code).
+    4. **Harmonisation** : Mise à jour de l'US14 pour refléter la nomenclature professionnelle (Groups/Posts).
+- **Impact** : Traçabilité totale des arbitrages, vision produit alignée entre les membres de l'équipe et base documentaire robuste pour la suite du développement.
