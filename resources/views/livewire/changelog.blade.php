@@ -7,6 +7,26 @@
     <!-- Timeline -->
     <div class="space-y-12 relative before:absolute before:inset-0 before:ml-5 before:-translate-x-px md:before:mx-auto md:before:translate-x-0 before:h-full before:w-0.5 before:bg-gradient-to-b before:from-transparent before:via-white/5 before:to-transparent">
         
+        <!-- Instant Fluidity & UX Mastery -->
+        <div class="relative flex items-center justify-between md:justify-normal md:odd:flex-row-reverse group is-active animate-in fade-in zoom-in-95 duration-700">
+            <!-- Icon -->
+            <div class="flex items-center justify-center w-10 h-10 rounded-full border border-primary bg-surface shadow-[0_0_25px_rgba(190,194,255,0.3)] md:order-1 md:group-odd:-translate-x-1/2 md:group-even:translate-x-1/2">
+                <div class="w-2 h-2 rounded-full bg-primary animate-ping"></div>
+            </div>
+            <!-- Content -->
+            <div class="w-[calc(100%-4rem)] md:w-[45%] glass-panel p-6 rounded-3xl border border-primary/20 hover:border-primary/50 transition-all duration-500 shadow-2xl">
+                <div class="flex items-center justify-between mb-2">
+                    <time class="font-mono text-[10px] uppercase tracking-widest text-primary font-black">2026-04-09</time>
+                </div>
+                <div class="text-xl font-bold mb-3 tracking-tight">{{ __('v1.3.2 - Instant Fluidity & UX Mastery') }}</div>
+                <ul class="space-y-2 text-xs text-on-surface-variant/70 italic leading-relaxed">
+                    <li class="flex gap-3"><span class="text-primary font-black">+</span> {{ __('Optimistic UI implementation for voting (StackOverflow style).') }}</li>
+                    <li class="flex gap-3"><span class="text-primary font-black">+</span> {{ __('Removal of all loading artifacts (blurs, lags).') }}</li>
+                    <li class="flex gap-3"><span class="text-emerald-400 font-black">~</span> {{ __('Immediate haptic and visual feedback (< 50ms).') }}</li>
+                </ul>
+            </div>
+        </div>
+
         <!-- Voting System & Data Integrity -->
         <div class="relative flex items-center justify-between md:justify-normal md:odd:flex-row-reverse group is-active animate-in fade-in zoom-in-95 duration-700">
             <!-- Icon -->

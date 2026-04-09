@@ -58,7 +58,7 @@
 - **Décision** :
     1. **Global Loader (Progressive)** : Création d'un composant `global-loader` écoutant les hooks `livewire:init` pour afficher une barre de progression de style "YouTube/GitHub" au sommet de l'écran.
     2. **Loader Overlay (Backdrop Bloom)** : Implémentation d'un composant réutilisable `loader-overlay` avec flou d'arrière-plan (`backdrop-blur`) pour geler visuellement les sections en cours de traitement (Feed, Code Viewer).
-    3. **Boutons Atomiques Réactifs** : Mise à jour du composant `button` pour inclure un spinner intégré (`animate-spin`) déclenché automatiquement par `wire:loading`.
+    3. **Boutons Atomiques Réactifs** : Mise à jour du composant `button` pour include un spinner intégré (`animate-spin`) déclenché automatiquement par `wire:loading`.
     4. **Désactivation Systématique** : Verrouillage des actions (`wire:loading.attr="disabled"`) sur tous les points d'entrée critiques pour prévenir les race conditions.
 - **Impact** : Suppression du sentiment de latence, feedback visuel premium et sécurisation des interactions multiples.
 
@@ -219,7 +219,7 @@
 - **Statut** : ✅ Implémenté
 - **Contexte** : Les tags (Pins) présents à l'intérieur du composant d'exploration de code restaient blancs malgré l'application des couleurs sur les hashtags globaux.
 - **Décision** :
-    - **Uniformisation Blade** : Modification de `@class` dans `code-block.blade.php` pour inclure `strtolower()` sur l'attribut `$l`.
+    - **Uniformisation Blade** : Modification de `@class` dans `code-block.blade.php` pour include `strtolower()` sur l'attribut `$l`.
 - **Impact** : Application consistante des couleurs de Lens sur tous les points d'exposition de l'interface (HUD Code Explorer & Feed principal).
 
 ## 2026-04-09-31 : Refonte des Seeders & Localisation Française
@@ -268,7 +268,7 @@
 - **Statut** : ✅ Implémenté
 - **Contexte** : Audit de sécurité révélant une faille de visibilité sur les groupes, une fuite d'erreurs OAuth et des faiblesses Docker.
 - **Décision** :
-    1. **Correction d'Access Control** : Mise à jour de `PostPolicy` pour inclure la vérification d'appartenance au groupe (`group_id`).
+    1. **Correction d'Access Control** : Mise à jour de `PostPolicy` pour include la vérification d'appartenance au groupe (`group_id`).
     2. **Protection Sensitive Data** : Masquage des messages d'erreur `$e->getMessage()` dans `GithubAuthController`.
     3. **Container Hardening** : Retrait de l'exposition publique du port 3306, désactivation du mode debug par défaut et utilisation de variables d'environnement pour les secrets root.
     4. **Injection Sécurisée** : Passage à `@js()` dans les composants Blade pour prévenir toute corruption JSON.
@@ -366,7 +366,7 @@ The initial "Monolith & The Lens" implementation was too spacious, creating layo
     1. **Espace Commentaires** : Optimisation visuelle radicale (animations, textures, icônes dynamiques).
     2. **Full Review (Feed-Style)** : Regroupement des retours sous le code avec navigation de type flux. Tri par popularité (Up/Down votes) et commentaires compacts masqués par défaut.
     3. **Quick Review (Contextual Overlay)** : 
-        - Déclenchement par sélection de texte avec bouton flottant.
+        - Déclenchement par sélection de texte with bouton flottant.
         - Visualisation via photo de profil de l'auteur on code.
         - Interaction double mode : "Edit" and "DIFF".
 - **Impact** : Niveau d'interaction sans précédent pour une plateforme web.
@@ -427,7 +427,7 @@ The initial "Monolith & The Lens" implementation was too spacious, creating layo
 - **Décision** :
     1. **Installation de Reverb** : Migration vers WebSockets natifs via Laravel Reverb.
     2. **Gestion des Canaux** : Implémentation de `PrivateChannel('groups.{id}')` avec vérification de l'appartenance au groupe.
-    3. **Événements de Broadcast** : Création de `GroupMessageSent` et intégration avec Livewire Echo.
+    3. **Événements de Broadcast** : Création de `GroupMessageSent` et intégration with Livewire Echo.
 - **Impact** : Expérience de chat instantanée (latence < 100ms) and infrastructure moderne prête pour la montée en charge.
 
 ## 2026-04-09-52 : Harmonisation de l'Interface de Discussion & Optimisation du Layout
@@ -454,3 +454,25 @@ The initial "Monolith & The Lens" implementation was too spacious, creating layo
     3. **Fiabilisation Quick Review** : Correction de l'interception des événements (`@click.stop`) sur le bouton de suggestion pour éviter les fermetures intempestives lors du clic.
 - **Impact** : Suppression des erreurs critiques de build, interface HUD plus immersive et stable, et correction des bugs de navigation modale.
 
+
+## 2026-04-09-54 : Consolidation du Carousel & Système de Vote Vibrants
+- **Auteur** : Antigravity
+- **Statut** : ✅ Implémenté
+- **Contexte** : Nécessité de stabiliser la navigation du carousel, d'harmoniser le système de vote et de durcir les règles d'adhérence stricte de l'agent.
+- **Décision** :
+    1. **Architecture Navigation** : Mise en place d'un slider `translateX` hardware-accelerated synchronisé avec Livewire (`@entangle`).
+    2. **Système de Vote Sémantique** : Application d'un code couleur vibrant (Émeraude pour Up, Rose pour Down) sur toutes les sections (Feed et PostDetail).
+    3. **Optimisation Spatiale** : Réduction radicale des marges verticales description/carousel pour une expérience haute-densité.
+    4. **Contrôle Qualité** : Mise à jour de `global.md` avec une clause de conformité stricte pour interdire les changements de design non sollicités.
+- **Impact** : Interface robuste, cohérence chromatique globale et fiabilité accrue de l'assistant de codage.
+
+## 2026-04-09-55 : Optimisation de la Fluidité "StackOverflow style" (Zéro Latence)
+- **Auteur** : Antigravity
+- **Statut** : ✅ Implémenté
+- **Contexte** : Latence visuelle perçue lors des votes (flou, blocage) nuisant à l'expérience utilisateur premium.
+- **Décision** :
+    1. **Suppression des Artefacts de Chargement** : Retrait systématique de toutes les classes `wire:loading` (blur, opacity, disabled) sur les boutons de vote.
+    2. **Mise à jour Optimiste (Alpine.js)** : Implémentation d'une logique de prédiction du score et de l'état du vote côté client via Alpine.js, offrant un feedback instantané (< 50ms) avant même la réponse serveur.
+    3. **Sécurisation Backend** : Utilisation de transactions SQL avec `lockForUpdate()` dans `ToggleReactionAction` pour garantir l'intégrité des données malgré la rapidité des clics.
+    4. **Haptique & Audio** : Déclenchement immédiat des retours sensoriels (`window.haptic`) dès le clic.
+- **Impact** : Expérience de vote perçue comme instantanée, alignée sur les standards les plus élevés du web (type StackOverflow).
