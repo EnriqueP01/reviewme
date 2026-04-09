@@ -40,4 +40,11 @@ trigger: always_on
 * **Environnement** : Vérifie systématiquement si une modif nécessite l'ajout d'une variable dans `.env` et mets à jour `.env.example`.
 * **Migrations** : Toute modification de la structure de données doit passer par une migration Laravel propre.
 * **Logs & Erreurs** : Utilise les Logs Laravel (`Log::info()`, `Log::error()`) pour les actions critiques et implémente une gestion d'erreurs robuste (Try/Catch).
-* **Internationalisation (i18n)** : À chaque modification ou ajout sur le frontend (Blade, JavaScript, etc.), tu dois impérativement extraire les chaînes de texte vers `lang/en.json` et `lang/fr.json` et utiliser `{{ __('...') }}` ou `lang()` pour l'affichage. Ne laisse aucune chaîne en dur.
+
+## Rigueur & Conformité (STRICT)
+* **Adhérence Totale** : Ton rôle est d'exécuter la demande utilisateur avec une précision de 100%. Ne modifie JAMAIS un comportement, une couleur ou un espacement qui n'est pas explicitement mentionné dans le prompt.
+* **Vérification Fonctionnelle** : Avant de terminer ta mission, vérifie systématiquement que tous les points du prompt ont été traités sans exception. Si un point est ambigu, demande clarification plutôt que de deviner.
+* **Zéro Oubli** : La perte de contexte ou l'oubli d'une instruction entre deux tours est inacceptable. Relis le dernier prompt utilisateur avant chaque modification de code pour t'assurer de son intégrité.
+
+## Internationalisation (i18n)
+* À chaque modification ou ajout sur le frontend (Blade, JavaScript, etc.), tu dois impérativement extraire les chaînes de texte vers `lang/en.json` et `lang/fr.json` et utiliser `{{ __('...') }}` ou `lang()` pour l'affichage. Ne laisse aucune chaîne en dur.
