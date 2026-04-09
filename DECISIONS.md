@@ -190,3 +190,13 @@
 - **Décision** :
     - **Uniformisation Blade** : Modification de `@class` dans `code-block.blade.php` pour inclure `strtolower()` sur l'attribut `$l`.
 - **Impact** : Application consistante des couleurs de Lens sur tous les points d'exposition de l'interface (HUD Code Explorer & Feed principal).
+
+## 2026-04-09-31 : Refonte des Seeders & Localisation Française
+- **Auteur** : Antigravity
+- **Statut** : ✅ Implémenté
+- **Contexte** : Besoin d'un jeu de données riche, réaliste et en français pour les tests et démonstrations.
+- **Décision** :
+    1. **Master Seeder V2** : Utilisation de `Faker (fr_FR)` pour générer 30+ utilisateurs, 5 groupes thématiques (Labs), et des dizaines de posts avec snippets multi-langages.
+    2. **Interactions Riches** : Génération automatisée de reviews, réactions et membres de groupes pour simuler une plateforme active.
+    3. **Utilisateur Test Dédié** : Création d'un profil stable (`celestin@reviewme.io`) avec un historique complet pour faciliter le Vibe Coding.
+- **Impact** : Environnement de développement immersif et validation immédiate des composants UI complexes.
