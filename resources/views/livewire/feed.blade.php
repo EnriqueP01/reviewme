@@ -78,9 +78,11 @@
                                         this.voted = 'down';
                                     }
                                 }
-                                setTimeout(() => { this.isVoting = false; }, 300);
                              }
-                         }">
+                         }"
+                         wire:loading.class="opacity-60 pointer-events-none transition-opacity"
+                         wire:target="vote({{ $post->id }}, 'up'), vote({{ $post->id }}, 'down')"
+                    >
                         <button 
                             wire:click="vote({{ $post->id }}, 'up')"
                             wire:loading.attr="disabled"

@@ -52,14 +52,50 @@
                     <article wire:key="group-post-{{ $post->id }}" class="group relative bg-[#0f111a]/40 border border-white/5 rounded-3xl p-8 transition-all hover:bg-white/[0.02] hover:border-[#8B5CF6]/20">
                         <div class="flex items-start gap-8">
                              <!-- Compact Karma -->
-                             <div class="flex flex-col items-center gap-2">
-                                <button wire:click="vote({{ $post->id }}, 'up')" class="p-2 rounded-xl border {{ $votedState === 'up' ? 'bg-[#8B5CF6] border-[#8B5CF6] text-white shadow-[0_0_15px_rgba(139,92,246,0.4)]' : 'bg-white/5 border-white/5 text-white/40 hover:text-[#8B5CF6] hover:border-[#8B5CF6]/30' }} transition-all">
+                             <div class="flex flex-col items-center gap-2"
+                                  x-data="{ 
+                                     voted: '{{ $votedState }}',
+                                     score: {{ $score }},
+                                     handleVote(dir) {
+                                         window.haptic.play(dir);
+                                         if (dir === 'up') {
+                                             if (this.voted === 'up') { this.score--; this.voted = ''; }
+                                             else {
+                                                 this.score += (this.voted === 'down' ? 2 : 1);
+                                                 this.voted = 'up';
+                                             }
+                                         } else {
+                                             if (this.voted === 'down') { this.score++; this.voted = ''; }
+                                             else {
+                                                 this.score -= (this.voted === 'up' ? 2 : 1);
+                                                 this.voted = 'down';
+                                             }
+                                         }
+                                     }
+                                  }"
+                                  wire:loading.class="opacity-60 pointer-events-none transition-opacity"
+                                  wire:target="vote({{ $post->id }}, 'up'), vote({{ $post->id }}, 'down')"
+                             >
+                                <button 
+                                    wire:click="vote({{ $post->id }}, 'up')"
+                                    @click="handleVote('up')"
+                                    wire:loading.attr="disabled"
+                                    class="p-2 rounded-xl border transition-all"
+                                    :class="voted === 'up' ? 'bg-[#8B5CF6] border-[#8B5CF6] text-white shadow-[0_0_15px_rgba(139,92,246,0.4)]' : 'bg-white/5 border-white/5 text-white/40 hover:text-[#8B5CF6] hover:border-[#8B5CF6]/30'"
+                                >
                                     <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="3"><path stroke-linecap="round" stroke-linejoin="round" d="M5 15l7-7 7 7"/></svg>
                                 </button>
-                                <span class="text-lg font-black font-display {{ $votedState === 'up' ? 'text-[#8B5CF6]' : ($votedState === 'down' ? 'text-red-500' : 'text-white/30') }}">
-                                    {{ $score }}
+                                <span class="text-lg font-black font-display transition-colors"
+                                      :class="voted === 'up' ? 'text-[#8B5CF6]' : (voted === 'down' ? 'text-red-500' : 'text-white/30')"
+                                      x-text="score">
                                 </span>
-                                <button wire:click="vote({{ $post->id }}, 'down')" class="p-2 rounded-xl border {{ $votedState === 'down' ? 'bg-red-500 border-red-500 text-white shadow-[0_0_15px_rgba(239,68,68,0.4)]' : 'bg-white/5 border-white/5 text-white/40 hover:text-red-500 hover:border-red-500/30' }} transition-all">
+                                <button 
+                                    wire:click="vote({{ $post->id }}, 'down')"
+                                    @click="handleVote('down')"
+                                    wire:loading.attr="disabled"
+                                    class="p-2 rounded-xl border transition-all"
+                                    :class="voted === 'down' ? 'bg-red-500 border-red-500 text-white shadow-[0_0_15px_rgba(239,68,68,0.4)]' : 'bg-white/5 border-white/5 text-white/40 hover:text-red-500 hover:border-red-500/30'"
+                                >
                                     <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="3"><path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7"/></svg>
                                 </button>
                              </div>

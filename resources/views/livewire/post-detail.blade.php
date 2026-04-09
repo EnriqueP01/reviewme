@@ -297,32 +297,39 @@
                                                 <!-- Vote Engine -->
                                                 <div class="flex items-center gap-3"
                                                      x-data="{ 
-                                                        score: {{ (int) $fr->score }},
-                                                        voted: '{{ $fr->reactions->where('user_id', Auth::id())->first()?->type }}',
-                                                        vote(type) {
-                                                            if (this.voted === type) {
-                                                                this.score += (type === 'up' ? -1 : 1);
-                                                                this.voted = null;
-                                                            } else {
-                                                                if (this.voted) {
-                                                                    this.score += (type === 'up' ? 2 : -2);
-                                                                } else {
-                                                                    this.score += (type === 'up' ? 1 : -1);
-                                                                }
-                                                                this.voted = type;
-                                                            }
-                                                            $wire.voteReview({{ $fr->id }}, type);
-                                                        }
-                                                     }">
-                                                    <div class="flex items-center gap-2 p-2 bg-[#0d0e12]/60 rounded-[1.5rem] border border-white/5 shadow-inner">
-                                                        <button @click="vote('up')" class="p-3.5 rounded-2xl transition-all active:scale-75" :class="voted === 'up' ? 'text-emerald-400 bg-emerald-500/10 shadow-[0_0_30px_rgba(52,211,153,0.15)]' : 'text-on-surface-variant hover:text-emerald-400 hover:bg-emerald-500/5'">
-                                                            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M5 15l7-7 7 7" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/></svg>
-                                                        </button>
-                                                        <span class="text-sm font-black tracking-tighter w-8 text-center" :class="score > 0 ? 'text-emerald-400' : (score < 0 ? 'text-red-400' : 'text-on-surface-variant/40')" x-text="score"></span>
-                                                        <button @click="vote('down')" class="p-3.5 rounded-2xl transition-all active:scale-75" :class="voted === 'down' ? 'text-red-400 bg-red-500/10 shadow-[0_0_30px_rgba(248,113,113,0.15)]' : 'text-on-surface-variant hover:text-red-400 hover:bg-red-500/5'">
-                                                            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M19 9l-7 7-7-7" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/></svg>
-                                                        </button>
-                                                    </div>
+                                                         score: {{ (int) $fr->score }},
+                                                         voted: '{{ $fr->reactions->where('user_id', Auth::id())->first()?->type }}',
+                                                         vote(type) {
+                                                             if (this.voted === type) {
+                                                                 this.score += (type === 'up' ? -1 : 1);
+                                                                 this.voted = null;
+                                                             } else {
+                                                                 if (this.voted) {
+                                                                     this.score += (type === 'up' ? 2 : -2);
+                                                                 } else {
+                                                                     this.score += (type === 'up' ? 1 : -1);
+                                                                 }
+                                                                 this.voted = type;
+                                                             }
+                                                             $wire.voteReview({{ $fr->id }}, type);
+                                                         }
+                                                     }"
+                                                     wire:loading.class="opacity-50 pointer-events-none"
+                                                     wire:target="voteReview({{ $fr->id }}, 'up'), voteReview({{ $fr->id }}, 'down')"
+                                                >
+                                                     <div class="flex items-center gap-2 p-2 bg-[#0d0e12]/60 rounded-[1.5rem] border border-white/5 shadow-inner">
+                                                         <button @click="vote('up')" 
+                                                                 wire:loading.attr="disabled"
+                                                                 class="p-3.5 rounded-2xl transition-all active:scale-75" :class="voted === 'up' ? 'text-emerald-400 bg-emerald-500/10 shadow-[0_0_30px_rgba(52,211,153,0.15)]' : 'text-on-surface-variant hover:text-emerald-400 hover:bg-emerald-500/5'">
+                                                             <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M5 15l7-7 7 7" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                                                         </button>
+                                                         <span class="text-sm font-black tracking-tighter w-8 text-center" :class="score > 0 ? 'text-emerald-400' : (score < 0 ? 'text-red-400' : 'text-on-surface-variant/40')" x-text="score"></span>
+                                                         <button @click="vote('down')" 
+                                                                 wire:loading.attr="disabled"
+                                                                 class="p-3.5 rounded-2xl transition-all active:scale-75" :class="voted === 'down' ? 'text-red-400 bg-red-500/10 shadow-[0_0_30px_rgba(248,113,113,0.15)]' : 'text-on-surface-variant hover:text-red-400 hover:bg-red-500/5'">
+                                                             <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M19 9l-7 7-7-7" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                                                         </button>
+                                                     </div>
                                                 </div>
                                             </div>
 
