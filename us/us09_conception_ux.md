@@ -15,41 +15,44 @@ AFIN DE réduire les ambiguïtés avant développement et éviter une interface 
 
 ### 1. Parcours Principal : Les 4 Écrans Clés
 
-1.  **Le Feed (Dashboard)** :
-    - *Rôle* : Centralisation des curations publiques et privées.
-    - *Zones* : Barre de recherche dynamique, filtres par Lenses, Liste de cartes (Posts) avec aperçu du langage et de la version.
-    - *Actions* : Inspection (Quick View), navigation vers le détail.
-2.  **Workflow de Publication (Publish Step)** :
-    - *Rôle* : Tunnel de création d'un artefact.
-    - *Zones* : Stepper horizontal (Files -> Context -> Deploy), Zone de drop massive, sélecteur de visibilité.
-    - *Feedback* : Barre de progression animée et télémétrie en temps réel (LOC, KB).
+1.  **Dashboard (Feed)** :
+    - *Rôle* : Hub central de consommation et de recherche.
+    - *Zones* : Barre de recherche "Live", filtres "Lens", grille de cartes à haute densité d'information.
+    - *Animations* : Reveal du titre au survol, transition fluide des filtres.
+2.  **Workflow de Publication (Publish Workflow)** :
+    - *Rôle* : Tunnel de dépôt structuré.
+    - *Étapes Réelles* : 
+        1. **Détails** (Titre, Buts de revue, Objectifs d'amélioration).
+        2. **Fichiers** (Dropzone massive, télémétrie LOC/KB/Complexity, détection de doublons).
+        3. **Focus & Distribution** (Sélection multi-lenses, Visibilité Publique/Groupe).
+    - *UX* : Stepper géométrique scellé au design HUD.
 3.  **Explorateur de Code (Post Detail)** :
-    - *Rôle* : Analyse approfondie du code.
-    - *Zones* : Navigation par fichiers (onglets), Gouttière de numérotation, Sélecteur de versions.
-    - *Esthétique* : Thème sombre haute-fidélité, coloration syntaxique dynamique.
-4.  **Gestionnaire de Groupes (Group Manager)** :
-    - *Rôle* : Administration de la collaboration privée.
-    - *Zones* : Mes groupes, Création rapide, Liste des membres.
+    - *Rôle* : Interface de collaboration technique.
+    - *Interaction Double Mode* :
+        - **Quick Review** : Sélection de code -> Overlay contextuel -> Suggestion de modification directe. Visualisation des contributeurs dans la Gouttière HUD.
+        - **Full Review** : Basculement en mode "PR" -> Modification globale des fichiers -> Prévisualisation des Diffs en temps réel (Live Diff Engine).
+    - *Navigation* : Système d'onglets synchronisés, sélecteur de version interactif.
+4.  **Group Manager** :
+    - *Rôle* : Espace de collaboration privée.
+    - *Zones* : Création instantanée, Dashboard de groupe, Gestion des membres.
 
 ### 2. États UI Contextuels
 
-- **État Normal** : Utilisation du design "Monolith & Glass" avec flous d'arrière-plan (`backdrop-blur`).
-- **État Vide** : Illustrations stylisées pour les feeds vides (ex: "Aucun artefact détecté dans ce secteur") avec bouton d'action principal bien visible.
-- **État Erreur** : Notifications Toast (HUD style) avec lueurs rouges pour les erreurs critiques et ambre pour les validations.
-- **État de Chargement** : Progression progressive au sommet (style GitHub) et overlays flous sur les composants en mutation (Livewire loading).
+- **État Normal** : "Monolith & Glass" avec flous progressifs (`backdrop-blur`) et textures HUD.
+- **État Vide** : "Zero Post Detected" / "No Result Found". Illustrations monoline évitant la frustration.
+- **État Erreur** : Lueurs "Rubis" (Rouge) pour les erreurs système, "Ambre" (Orange) pour la validation.
+- **État Loading** : Overlays de flou (`backdrop-bloom`) et boutons réactifs avec spinners intégrés (`animate-spin`).
 
 ### 3. Mini Guide UI (HUD Design System)
 
-*   **Typographie** : Fonts sans-serif modernes (Inter/Outfit) pour l'UI, Monospaced (JetBrains Mono/Fira Code) pour les identifiants techniques et le code.
-*   **Couleurs des Lenses** :
-    - **Logic** : Jaune/Ambre (`#F59E0B`)
-    - **Beauty** : Bleu/Cyan (`#06B6D4`)
-    - **Opti/Performance** : Vert/Émeraude (`#10B981`)
-    - **Security** : Rouge/Rose (`#EF4444`)
-*   **Composants Récurrents** :
-    - *Boutons* : Effet "Glow" au survol, coins arrondis précis.
-    - *Cartes* : Translucides, bordures subtiles (1px), coins 1.5rem.
-    - *Navigation* : Centrée, flottante si besoin.
+*   **Identité Visuelle** : Palette sombre (`#1a1b26`, `#0d0e12`).
+*   **Signatures Chromatiques Lenses** :
+    - **Logic** : Jaune/Ambre (`#F59E0B`) - Focus sur la structure et le flux.
+    - **Beauty** : Bleu/Sky (`#06B6D4`) - Focus sur le style et l'architecture.
+    - **Opti/Performance** : Vert/Emerald (`#10B981`) - Focus sur la rapidité et les ressources.
+*   **Composants Critiques** :
+    - *Buttons* : `wire:loading` géré nativement (désactivation + lueur).
+    - *Code Viewers* : Tab-based, max-height contrôlé (600px), scrollbar HUD.
 
 ### 4. Référence Technique
-L'interface doit rester fidèle au concept de **HUD (Heads-Up Display)**, privilégiant la densité d'information utile sans encombrement visuel inutile.
+L'interface privilégie la **haute densité d'information** (compact IDE feel) plutôt que les espaces blancs génériques.
