@@ -47,10 +47,12 @@ Route::get('/dashboard', Feed::class)
 
 Route::middleware('auth')->group(function () {
     Route::get('/profile', function () {
+        if (! auth()->user()->handle) {
+            auth()->user()->update(['handle' => 'user-'.auth()->id()]);
+        }
         return redirect()->route('profile.show', auth()->user()->handle);
     })->name('profile');
 
-    Route::get('/profile/{handle}', Profile::class)->name('profile.show');
     Route::get('/publish', PublishWorkflow::class)->name('publish');
     Route::get('/groups', GroupManager::class)->middleware('karma:group.create')->name('groups');
     Route::get('/posts/{postId}', PostDetail::class)->name('posts.detail');
@@ -59,6 +61,8 @@ Route::middleware('auth')->group(function () {
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 });
+
+Route::get('/profile/{handle}', Profile::class)->name('profile.show');
 
 Route::get('/auth/github', [GithubAuthController::class, 'redirect'])->name('login.github');
 Route::get('/auth/github/callback', [GithubAuthController::class, 'callback']);

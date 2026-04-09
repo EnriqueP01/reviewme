@@ -107,7 +107,7 @@
 
                                     <!-- Action Grid -->
                                     <div class="p-4 grid grid-cols-2 gap-2">
-                                        <a href="{{ route('profile.show', Auth::user()->handle) }}" wire:navigate @mouseenter="window.fx.play('hover')" class="flex flex-col items-center gap-3 p-4 rounded-2xl hover:bg-white/5 transition-all group/item">
+                                        <a href="{{ route('profile') }}" wire:navigate @mouseenter="window.fx.play('hover')" class="flex flex-col items-center gap-3 p-4 rounded-2xl hover:bg-white/5 transition-all group/item">
                                             <div class="w-10 h-10 rounded-xl bg-surface-container flex items-center justify-center text-on-surface-variant group-hover/item:text-primary transition-colors">
                                                 <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"/></svg>
                                             </div>
