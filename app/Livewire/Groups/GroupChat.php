@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Livewire\Groups;
 
+use App\Events\GroupMessageSent;
 use App\Models\Group;
 use App\Models\GroupMessage;
 use Illuminate\Support\Facades\Auth;
@@ -13,7 +14,7 @@ final class GroupChat extends Component
 {
     public Group $group;
 
-    public string $message = '';
+    public string $newMessage = '';
 
     public function getListeners()
     {
@@ -23,7 +24,7 @@ final class GroupChat extends Component
     }
 
     protected $rules = [
-        'message' => 'required|string|max:1000',
+        'newMessage' => 'required|string|max:1000',
     ];
 
     public function sendMessage()
@@ -32,13 +33,13 @@ final class GroupChat extends Component
 
         $message = $this->group->messages()->create([
             'user_id' => Auth::id(),
-            'content' => $this->message,
+            'content' => $this->newMessage,
         ]);
 
-        broadcast(new \App\Events\GroupMessageSent($message))->toOthers();
+        broadcast(new GroupMessageSent($message))->toOthers();
 
-        $this->reset('message');
-        
+        $this->reset('newMessage');
+
         // Dispatch event for local UI scroll behavior
         $this->dispatch('message-sent');
     }
@@ -46,7 +47,7 @@ final class GroupChat extends Component
     public function deleteMessage(int $messageId)
     {
         $msg = GroupMessage::findOrFail($messageId);
-        
+
         // Auth check: Admin of group or author of message
         if ($this->group->owner_id === Auth::id() || $msg->user_id === Auth::id()) {
             $msg->delete();

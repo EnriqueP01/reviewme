@@ -7,11 +7,10 @@ namespace Database\Seeders;
 use App\Models\Group;
 use App\Models\GroupMessage;
 use App\Models\Post;
+use App\Models\PostComment;
 use App\Models\Snippet;
 use App\Models\User;
-use App\Models\PostComment;
 use Illuminate\Database\Seeder;
-use Illuminate\Support\Str;
 
 final class GroupCollaborationSeeder extends Seeder
 {
@@ -70,7 +69,6 @@ final class GroupCollaborationSeeder extends Seeder
 
         Snippet::create([
             'post_id' => $post1->id,
-            'name' => 'Authenticate.php',
             'filename' => 'Authenticate.php',
             'code_content' => "namespace App\Http\Middleware;\n\nuse Closure;\nuse Illuminate\Http\Request;\nuse Symfony\Component\HttpFoundation\Response;\n\nclass Authenticate\n{\n    public function handle(Request \$request, Closure \$next): Response\n    {\n        // Vérification du token Bearer\n        if (!\$request->bearerToken()) {\n             return response()->json(['error' => 'Token missing'], 401);\n        }\n\n        // Extraction des scopes pour validation fine\n        \$scopes = explode(',', \$request->header('X-App-Scopes', ''));\n\n        if (empty(\$scopes) || !in_array('admin', \$scopes)) {\n             // LOGIQUE À VÉRIFIER ICI\n             Log::warning('Unauthorized scope access attempt');\n             return response()->json(['error' => 'Insufficient scopes'], 403);\n        }\n\n        return \$next(\$request);\n    }\n}",
             'language' => 'php',
@@ -88,7 +86,6 @@ final class GroupCollaborationSeeder extends Seeder
 
         Snippet::create([
             'post_id' => $post2->id,
-            'name' => 'SearchPostsAction.php',
             'filename' => 'SearchPostsAction.php',
             'code_content' => "public function execute(string \$search = null, string \$orderBy = 'created_at')\n{\n    \$query = Post::query();\n\n    if (\$search) {\n        \$query->where('title', 'LIKE', '%' . \$search . '%');\n    }\n\n    // VULNÉRABLE : Injection via \$orderBy\n    return \$query->orderByRaw(\$orderBy . ' DESC')->paginate(10);\n}",
             'language' => 'php',

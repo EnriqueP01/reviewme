@@ -38,7 +38,15 @@ class User extends Authenticatable
     {
         return $this->profile_photo_path
                     ? asset('storage/'.$this->profile_photo_path)
-                    : ($this->avatar ?: 'https://ui-avatars.com/api/?name='.urlencode($this->name).'&color=7F9CF5&background=EBF4FF');
+                    : (($this->attributes['avatar'] ?? null) ?: 'https://ui-avatars.com/api/?name='.urlencode($this->name).'&color=7F9CF5&background=EBF4FF');
+    }
+
+    /**
+     * Alias for profile_photo_url to maintain consistency across the app.
+     */
+    public function getAvatarAttribute(): string
+    {
+        return $this->getProfilePhotoUrlAttribute();
     }
 
     /**

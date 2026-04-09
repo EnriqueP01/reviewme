@@ -131,13 +131,13 @@ class MasterTestSeeder extends Seeder
                 $numSnippets = rand(1, 2);
                 $language = $faker->randomElement($langs);
                 for ($j = 1; $j <= $numSnippets; $j++) {
-                    $code = "<?php\n\n// Version $j de l'implémentation\nfunction processData".ucfirst(Str::camel($faker->word))."(\$input) {\n    // TODO: ".$faker->sentence."\n    if (!\$input) {\n        throw new InvalidArgumentException('Input requis');\n    }\n    return true;\n}";
+                    $code = "<?php\n\n/**\n * Version $j de l'implémentation\n * Optimisé pour la performance et la lisibilité\n */\nfunction processData".ucfirst(Str::camel($faker->word))."(\$input) {\n    // Validation des données d'entrée\n    if (!\$input) {\n        throw new InvalidArgumentException('Input requis pour le traitement');\n    }\n\n    \$result = array_map(function(\$item) {\n        return is_numeric(\$item) ? \$item * 2 : strtoupper(\$item);\n    }, \$input);\n\n    return \$result;\n}\n";
                     if ($language === 'javascript') {
-                        $code = 'const '.Str::camel($faker->word)."Handler = (payload) => {\n  /* ".$faker->sentence." */\n  if (!payload) return null;\n  console.log('Traitement réussi');\n};";
+                        $code = "/**\n * Handler pour ".Str::camel($faker->word)."\n * Version $j\n */\nconst ".Str::camel($faker->word)."Handler = async (payload) => {\n  if (!payload) {\n    console.error('Payload manquant');\n    return null;\n  }\n\n  try {\n    const response = await fetch('/api/process', {\n      method: 'POST',\n      body: JSON.stringify(payload)\n    });\n    return await response.json();\n  } catch (err) {\n    return { success: false, error: err.message };\n  }\n};";
                     } elseif ($language === 'css') {
-                        $code = ".card-container {\n  display: flex;\n  gap: 1rem;\n  /* ".$faker->sentence." */\n  background: #1a1b26;\n  transition: all 0.3s ease-in-out;\n}";
+                        $code = '/* Container principal pour '.Str::slug($faker->word)." */\n.card-container {\n  display: flex;\n  flex-direction: column;\n  gap: 1.5rem;\n  padding: 2rem;\n  background: rgba(26, 27, 38, 0.8);\n  backdrop-filter: blur(10px);\n  border: 1px solid rgba(255, 255, 255, 0.1);\n  border-radius: 1rem;\n  transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);\n}\n\n.card-container:hover {\n  transform: translateY(-4px);\n}";
                     } elseif ($language === 'blade') {
-                        $code = "<div class=\"flex flex-col space-y-4\">\n    <!-- ".$faker->sentence." -->\n    @foreach (\$items as \$item)\n        <x-card :data=\"\$item\" />\n    @endforeach\n</div>";
+                        $code = "<div class=\"flex flex-col space-y-6 p-4\">\n    <header class=\"border-b border-white/10 pb-4\">\n        <h2 class=\"text-xl font-bold text-white\">{{ \$title }}</h2>\n        <p class=\"text-sm text-gray-400\">Version $j</p>\n    </header>\n\n    <main class=\"grid grid-cols-1 md:grid-cols-2 gap-4\">\n        @foreach (\$items as \$item)\n            <x-ui.card :data=\"\$item\" />\n        @endforeach\n    </main>\n</div>";
                     }
 
                     $snippet = Snippet::create([

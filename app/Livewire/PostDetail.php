@@ -110,7 +110,7 @@ class PostDetail extends Component
     public function toggleCommentLike(int $commentId, ToggleReactionAction $toggleReaction): void
     {
         $comment = PostComment::findOrFail($commentId);
-        $toggleReaction->execute(Auth::user(), $comment, 'like');
+        $toggleReaction->execute(Auth::user(), $comment, 'clean');
         $this->refreshPost();
     }
 
@@ -137,6 +137,13 @@ class PostDetail extends Component
     public function saveInlineSuggestion(): void
     {
         $this->authorizeAction();
+
+        if ($this->isAuthor()) {
+            $this->dispatch('post-action', type: 'error', message: __('Vous ne pouvez pas suggérer de modifications sur votre propre post.'));
+
+            return;
+        }
+
         Log::info('Attempting to save inline suggestion. User: '.Auth::id());
 
         $this->validate([
@@ -191,6 +198,13 @@ class PostDetail extends Component
     public function saveFullReview(): void
     {
         $this->authorizeAction();
+
+        if ($this->isAuthor()) {
+            $this->dispatch('post-action', type: 'error', message: __('Vous ne pouvez pas publier de review sur votre propre post.'));
+
+            return;
+        }
+
         Log::info('Attempting to save full review. User: '.Auth::id());
 
         $this->validate([
@@ -252,7 +266,7 @@ class PostDetail extends Component
             'comments.reactions',
             'comments.replies.user',
             'comments.replies.reactions',
-            'fullReviews' => fn($q) => $q->orderBy('score', 'desc')->with(['user', 'modifiedSnippets.snippet', 'reactions', 'comments.user', 'comments.reactions']),
+            'fullReviews' => fn ($q) => $q->orderBy('score', 'desc')->with(['user', 'modifiedSnippets.snippet', 'reactions', 'comments.user', 'comments.reactions']),
         ]);
 
         // Refresh snippets after load
@@ -278,5 +292,10 @@ class PostDetail extends Component
             $this->redirect(route('login'));
             throw new \Exception('Unauthorized');
         }
+    }
+
+    public function isAuthor(): bool
+    {
+        return Auth::id() === $this->post->user_id;
     }
 }

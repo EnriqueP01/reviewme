@@ -317,11 +317,12 @@ class PublishWorkflow extends Component
 
             foreach ($this->files as $index => $file) {
                 $fileName = ! empty($file['name']) ? $file['name'] : __('Untitled File');
-                $rules["files.$index.name"] = 'required|string';
-                $rules["files.$index.content"] = 'required|string|max:524288';
+                $rules["files.$index.name"] = 'required|string|max:255';
+                $rules["files.$index.content"] = 'required|string|min:5|max:524288';
 
-                $messages["files.$index.name.required"] = __('The file name is required for file #:index', ['index' => $index + 1]);
-                $messages["files.$index.content.required"] = __('Source code is missing for file: :filename', ['filename' => $fileName]);
+                $messages["files.$index.name.required"] = __('Le nom du fichier est obligatoire (#:index)', ['index' => $index + 1]);
+                $messages["files.$index.content.required"] = __('Le code source est manquant pour :filename', ['filename' => $fileName]);
+                $messages["files.$index.content.min"] = __('Le code source pour :filename est trop court (min 5 caractères)', ['filename' => $fileName]);
             }
 
             $this->validate($rules, $messages);
