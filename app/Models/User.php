@@ -140,9 +140,19 @@ class User extends Authenticatable
 
     /**
      * Vérifie si l'utilisateur possède une permission spécifique basée sur son Karma.
+     * Les permissions sont cumulatives par palier.
      */
     public function hasKarmaPermission(string $permission): bool
     {
-        return in_array($permission, $this->karma_level['permissions']);
+        $config = config('karma.levels');
+        $allPermissions = [];
+
+        foreach ($config as $level) {
+            if ($this->reputation_score >= $level['min_score']) {
+                $allPermissions = array_unique(array_merge($allPermissions, $level['permissions']));
+            }
+        }
+
+        return in_array($permission, $allPermissions);
     }
 }

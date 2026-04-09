@@ -1,14 +1,14 @@
-# [Architecture] US12 - Produire le diagramme de séquence du parcours principal
+# [Architecture] US12 - Diagramme de Séquence (V2 - Évolué)
 
 | Attribut | Description |
 | :--- | :--- |
 | **En tant que** | Architecte logiciel |
 | **Je veux** | Modéliser les échanges techniques du cas d'usage central |
-| **Afin de** | Clarifier les interactions avant implémentation et limiter les erreurs |
+| **Afin de** | Clarifier les interactions et garantir l'intégrité de la publication |
 
-## 1. Cas d'usage : Publication d'une Vibe
+## 1. Cas d'usage : Publication d'une Vibe (Artefact)
 
-Ce cas d'usage décrit le processus technique lorsqu'un développeur souhaite partager un snippet de code (une "Vibe") sur la plateforme ReviewMe.
+Ce diagramme modélise le flux complexe de création d'un artefact, incluant les couches de sécurité et de persistance atomique.
 
 ## 2. Diagramme de Séquence (UML)
 
@@ -16,61 +16,77 @@ Ce cas d'usage décrit le processus technique lorsqu'un développeur souhaite pa
 sequenceDiagram
     autonumber
     actor Dev as Développeur
-    participant UI as Browser (Livewire UI)
+    participant UI as Browser (HUD UI)
     participant LW as PublishWorkflow (Livewire)
     participant ACT as CreatePostAction (Action)
-    participant DB as Database (Postgres)
+    participant VAL as Validator (Laravel Core)
+    participant DB as SQLite DB
+    participant LOG as Audit Log (Laravel)
 
-    Note over Dev, UI: Phase de Saisie
-    Dev->>UI: Dépose les fichiers & saisit les métadonnées
-    UI->>LW: Synchronisation asynchrone ($wire.files)
-    
-    Dev->>UI: Clique sur "Publier"
+    Note over Dev, UI: Phase de Saisie HUD
+    Dev->>UI: Saisie métadonnées & Upload Snippets
     UI->>LW: submit()
-    
-    Note over LW, ACT: Phase de Validation & Traitement
     activate LW
-    LW->>LW: validate(FormRequest)
+
+    Note over LW, VAL: Phase 1: Validation Frontend-Backend
+    LW->>VAL: validate(metadata + files)
+    VAL-->>LW: Validated Data (ou Exception)
     
-    alt Données Invalides
-        LW-->>UI: ValidationException (422)
-        UI-->>Dev: Affiche les erreurs Toast HUD
-    else Données Valides
+    alt Erreur de Saisie (422)
+        LW-->>UI: ValidationException
+        UI->>UI: Play sound('error') + Vibration
+        UI-->>Dev: Toast Error notification
+    else Succès Validation UI
+        Note over LW, ACT: Phase 2: Traitement de Domaine (ADR)
         LW->>ACT: execute(User, Payload)
         activate ACT
         
-        ACT->>DB: TRANSACTION: BEGIN
-        ACT->>DB: INSERT post (metadata)
-        ACT->>DB: INSERT snippets (loop)
-        ACT->>DB: TRANSACTION: COMMIT
+        Note over ACT, VAL: Phase 3: Validation Défensive (Sécurité)
+        ACT->>VAL: make(data, rules)->validate()
         
-        ACT-->>LW: Post Instance
-        deactivate ACT
-        
-        Note over LW, Dev: Phase de Finalisation
-        LW-->>UI: Redirect (Dashboard)
-        deactivate LW
-        UI-->>Dev: Affiche succès & Redirection
+        alt Attaque ou Données Corrompues
+            VAL-->>ACT: ValidationException
+            ACT->>LOG: Log::warning("Inconsistent data attempt")
+            ACT-->>LW: re-throw Exception
+        else Données Intègres
+            Note over ACT, DB: Phase 4: Persistance Atomique
+            ACT->>DB: BEGIN TRANSACTION
+            ACT->>DB: INSERT Post (ID artifact)
+            loop Chaque fichier déposé
+                ACT->>DB: INSERT Snippet (filename, content, lang)
+            end
+            ACT->>DB: COMMIT TRANSACTION
+            
+            ACT-->>LW: Post instance
+            deactivate ACT
+            
+            LW->>UI: flash('success') + Redirect(/dashboard)
+            deactivate LW
+            
+            UI->>UI: Play sound('success')
+            UI-->>Dev: Navigation Dashboard
+        end
     end
 ```
 
-## 3. Analyse Technique des Échanges
+## 3. Analyse Technique de l'Évolution
 
-### 3.1. Soumission (Client vers Serveur)
-L'interaction est gérée par **Livewire 3**. Lorsqu'un utilisateur clique sur "Publier", Livewire intercepte l'événement `wire:submit` et envoie une requête JSON contenant l'état actuel du composant (titre, fichiers, visibilité).
+### 3.1. Validation à Double Détente
+Le système ne fait plus "aveuglément" confiance au composant Livewire. 
+1. **Livewire** valide pour l'expérience utilisateur (erreurs immédiates).
+2. **L'Action** valide de nouveau pour la sécurité du domaine. C'est la **Mesure de Sécurité US38** qui empêche toute corruption de base de données via un appel API direct ou un bypass d'UI.
 
-### 3.2. Validation & Sécurité
-- **Validation** : Le backend utilise le système de validation natif de Laravel (`$this->validate()`). Si une contrainte (ex: `title` trop court) est violée, le flux est interrompu avant toute écriture en base.
-- **Authentification** : L'ID de l'utilisateur est récupéré via `auth()->id()`. Si l'utilisateur n'est plus authentifié (session expirée), une exception est levée.
+### 3.2. Atomicité & Transactions
+La persistance utilise `DB::transaction()`. Si l'insertion d'un seul `Snippet` échoue (ex: disque plein, contrainte violée), le `Post` n'est pas créé non plus. On évite ainsi les "fichiers orphelins" ou des artefacts vides.
 
-### 3.3. Persistance (Atomicité)
-Le modèle de données sépare le contenu descriptif (`Post`) du contenu technique (`Snippets`). 
-1. Le `Post` est créé en premier pour générer une clé étrangère.
-2. Les `Snippets` sont créés ensuite en référence à ce `Post`.
-*Note : Dans une phase ultérieure, ces opérations seront encapsulées dans une Database Transaction pour garantir l'intégrité.*
+### 3.3. Traçabilité (Audit Trail)
+En cas de tentative d'injection ou d'accès refusé, la couche `Log` est sollicitée avec le contexte (Utilisateur, IP, Payload). Cela permet une détection proactive d'attaques.
 
-### 3.4. Retour Utilisateur
-Le système utilise un **Message Flash** stocké temporairement en session. La redirection est asynchrone (gérée par le script Livewire au client) pour assurer une transition fluide vers le Dashboard.
+### 3.4. Rendu de l'Expérience (UX)
+Le diagramme inclut désormais les signaux haptiques et sonores (`sound('error')`, `sound('success')`), gérés par le service `window.fx` dans `app.js`, pour souligner l'aspect immersif de la plateforme.
 
-## 4. Cas d'Erreur Modélisé
-- **Refus de validation** : Le diagramme montre explicitement le retour vers l'UI en cas de données invalides (étape 5 du diagramme), empêchant ainsi la progression vers la base de données.
+## 4. Conformité
+- [x] Montre les composants ADR (Action-Domain-Responder).
+- [x] Affiche la transaction atomique.
+- [x] Inclut au moins un cas d'erreur (ValidationException).
+- [x] Inclus l'Audit Logging.

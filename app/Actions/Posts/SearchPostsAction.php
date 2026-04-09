@@ -22,6 +22,7 @@ final class SearchPostsAction
             ->withCount([
                 'reactions as up_count' => fn ($q) => $q->where('type', 'mindblown'),
                 'reactions as down_count' => fn ($q) => $q->where('type', 'optimisable'),
+                'fullReviews',
             ])
             ->with(['reactions' => function ($query) use ($userId) {
                 if ($userId) {

@@ -40,7 +40,7 @@
                 wire:click="vote({{ $post->id }}, 'up')"
                 wire:loading.attr="disabled"
                 @click="handleVote('up')"
-                :class="voted === 'up' ? 'bg-emerald-500 border-emerald-400 text-white shadow-[0_0_30px_rgba(52,211,153,0.4)] scale-110' : 'bg-surface-container-low text-on-surface-variant hover:text-emerald-400 hover:border-emerald-500/40 active:scale-95 border-white/5'"
+                :class="voted === 'up' ? 'bg-emerald-500 border-emerald-400 text-on-secondary shadow-[0_0_30px_rgba(52,211,153,0.4)] scale-110' : 'bg-surface-container-low text-on-surface-variant hover:text-emerald-400 hover:border-emerald-500/40 active:scale-95 border-white/5'"
                 class="w-14 h-14 rounded-2xl border flex items-center justify-center transition-all duration-300 group/vote"
             >
                 <svg class="w-6 h-6 transition-transform group-hover/vote:-translate-y-1" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="4"><path stroke-linecap="round" stroke-linejoin="round" d="M5 15l7-7 7 7"/></svg>
@@ -57,7 +57,7 @@
                 wire:click="vote({{ $post->id }}, 'down')"
                 wire:loading.attr="disabled"
                 @click="handleVote('down')"
-                :class="voted === 'down' ? 'bg-rose-500 text-white border-rose-400 shadow-[0_0_20px_rgba(244,63,94,0.3)] scale-110' : 'bg-surface-container-low text-on-surface-variant hover:text-rose-400 hover:border-rose-500/40 active:scale-95 border-white/5'"
+                :class="voted === 'down' ? 'bg-rose-500 text-black border-rose-400 shadow-[0_0_20px_rgba(244,63,94,0.3)] scale-110' : 'bg-surface-container-low text-on-surface-variant hover:text-rose-400 hover:border-rose-500/40 active:scale-95 border-white/5'"
                 class="w-14 h-14 rounded-2xl border flex items-center justify-center transition-all duration-300 group/vote"
             >
                 <svg class="w-6 h-6 transition-transform group-hover/vote:translate-y-1" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="4"><path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7"/></svg>
@@ -135,14 +135,14 @@
                     <span class="px-4 py-1.5 rounded-xl bg-surface-container-highest text-[9px] font-black uppercase tracking-[0.2em] text-on-surface-variant/60 border border-white/[0.03] hover:border-secondary/30 transition-colors cursor-default">#{{ strtoupper($post->latestSnippet->language ?? 'PHP') }}</span>
                  </div>
                  <div class="flex-grow"></div>
-                 <div class="flex items-center gap-8 text-[10px] font-black uppercase tracking-[0.3em] text-on-surface-variant/30">
-                    <div class="flex items-center gap-3 group/stat cursor-pointer hover:text-primary transition-all duration-300">
+                  <div class="flex items-center gap-8 text-[10px] font-black uppercase tracking-[0.3em] text-on-surface-variant/30">
+                    <a href="{{ route('posts.detail', $post->id) }}" class="flex items-center gap-3 group/stat cursor-pointer hover:text-primary transition-all duration-300">
                         <div class="w-8 h-8 rounded-full bg-white/5 flex items-center justify-center group-hover/stat:bg-primary/10 transition-colors">
                             <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"/></svg>
                         </div>
-                        <span>{{ $post->reviews_count ?? 0 }} {{ __('Reviews') }}</span>
-                    </div>
-                 </div>
+                        <span class="{{ $post->full_reviews_count > 0 ? 'text-primary' : '' }}">{{ $post->full_reviews_count ?? 0 }} {{ __('Reviews') }}</span>
+                    </a>
+                  </div>
             </div>
         </div>
     </div>

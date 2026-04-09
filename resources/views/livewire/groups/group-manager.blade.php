@@ -40,12 +40,12 @@
                     <form wire:submit.prevent="createGroup" class="space-y-6">
                         <div class="space-y-2">
                             <label class="px-1 text-[9px] font-black uppercase tracking-widest text-primary/40">{{ __('Group Name') }}</label>
-                            <input type="text" wire:model="name" placeholder="{{ __('e.g., Core Development Team') }}" class="w-full bg-black/40 border border-white/5 rounded-2xl p-4 text-xs text-on-surface focus:border-primary transition-all outline-none font-bold tracking-tight">
+                            <input type="text" wire:model="name" placeholder="{{ __('Example: \'Core Architecture Team\' — Focus on performance and logic reviews for our main engine.') }}" class="w-full bg-black/40 border border-white/5 rounded-2xl p-4 text-xs text-on-surface focus:border-primary transition-all outline-none font-bold tracking-tight">
                             <x-input-error :messages="$errors->get('name')" class="mt-2" />
                         </div>
                         <div class="space-y-2">
                             <label class="px-1 text-[9px] font-black uppercase tracking-widest text-primary/40">{{ __('Description') }}</label>
-                            <textarea wire:model="description" rows="3" placeholder="{{ __('What is this group about?') }}" class="w-full bg-black/40 border border-white/5 rounded-2xl p-4 text-xs text-on-surface focus:border-primary transition-all outline-none italic font-medium resize-none"></textarea>
+                            <textarea wire:model="description" rows="3" placeholder="{{ __('Example: \'This group is dedicated to high-performance C++ and Rust codebases. We focus on low-latency optimizations and robust memory management patterns.\'') }}" class="w-full bg-black/40 border border-white/5 rounded-2xl p-4 text-xs text-on-surface focus:border-primary transition-all outline-none italic font-medium resize-none"></textarea>
                         </div>
                         <x-ui.button type="submit" variant="primary" class="w-full !rounded-2xl !py-4 shadow-2xl">{{ __('Create Group') }}</x-ui.button>
                     </form>
@@ -149,7 +149,7 @@
                                             </label>
                                         @endif
                                         <div wire:loading wire:target="logo" class="absolute inset-0 flex items-center justify-center bg-black/40 rounded-[2.5rem] backdrop-blur-md">
-                                            <div class="w-6 h-6 border-2 border-primary border-t-transparent rounded-full animate-spin"></div>
+                                            <x-ui.loader class="!w-6 !h-6" />
                                         </div>
                                     </div>
 
@@ -170,7 +170,11 @@
                             
                             <div class="flex flex-col items-end gap-6">
                                 @if($selectedGroup->owner_id === auth()->id())
-                                    <x-ui.button variant="ghost" class="!text-rose-500 !bg-rose-500/5 hover:!bg-rose-500/20 !border-rose-500/20 !rounded-xl !px-6 !py-3 text-[10px] font-black tracking-widest uppercase" onclick="confirm('{{ __('Delete this group?') }}') || event.stopImmediatePropagation()" wire:click="deleteGroup({{ $selectedGroup->id }})">
+                                    <x-ui.button 
+                                        variant="ghost" 
+                                        class="!text-rose-500 !bg-rose-500/5 hover:!bg-rose-500/20 !border-rose-500/20 !rounded-xl !px-6 !py-3 text-[10px] font-black tracking-widest uppercase" 
+                                        x-on:click="$dispatch('open-modal', 'delete-group-modal')"
+                                    >
                                         <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/></svg>
                                         {{ __('Delete Group') }}
                                     </x-ui.button>
@@ -196,14 +200,14 @@
                                 <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M19 20H5a2 2 0 01-2-2V6a2 2 0 012-2h10l4 4v10a2 2 0 01-2 2zM14 2v4h4M7 8h10M7 12h10M7 16h6"/></svg>
                                 {{ __('Activity Feed') }}
                             </button>
-                            <button wire:click="$set('activeTab', 'chat')" class="px-8 py-3 rounded-xl text-[10px] font-black uppercase tracking-widest transition-all duration-300 flex items-center gap-3 {{ $activeTab === 'chat' ? 'bg-[#8B5CF6] text-white shadow-2xl shadow-[#8B5CF6]/20' : 'text-on-surface-variant/40 hover:text-white hover:bg-white/5' }}">
+                            <button wire:click="$set('activeTab', 'chat')" class="px-8 py-3 rounded-xl text-[10px] font-black uppercase tracking-widest transition-all duration-300 flex items-center gap-3 {{ $activeTab === 'chat' ? 'bg-primary text-on-primary shadow-2xl' : 'text-on-surface-variant/40 hover:text-white hover:bg-white/5' }}">
                                 <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"/></svg>
                                 {{ __('Discussion Hub') }}
                             </button>
                         </div>
                     </div>
 
-                    <div class="flex flex-col 2xl:flex-row gap-12 items-start">
+                    <div class="flex flex-col xl:flex-row gap-12 items-start h-full">
                         <!-- Content -->
                         <div class="flex-grow min-h-[600px] w-full min-w-0">
                             @if($activeTab === 'feed')
@@ -228,7 +232,7 @@
                         </div>
 
                         <!-- Member Management -->
-                        <div class="w-full 2xl:w-[380px] shrink-0 sticky top-32 space-y-8">
+                        <div class="w-full xl:w-[380px] shrink-0 sticky top-32 space-y-8 h-fit">
                             <div class="bg-surface-container-low/60 backdrop-blur-3xl border border-white/10 rounded-[2.5rem] p-8 shadow-2xl relative overflow-hidden">
                                 <div class="flex items-center justify-between mb-8 pb-4 border-b border-white/5">
                                     <h3 class="text-[10px] font-black uppercase tracking-[0.4em] text-on-surface-variant/40 flex items-center gap-3">
@@ -254,8 +258,8 @@
                                             </div>
                                             
                                             @if($selectedGroup->owner_id === auth()->id() && $member->id !== auth()->id())
-                                                <button wire:click="removeMember({{ $member->id }})" class="opacity-0 group-hover/member:opacity-100 p-2 text-on-surface-variant/20 hover:text-rose-500 transition-all rounded-xl hover:bg-rose-500/10">
-                                                    <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M6 18L18 6M6 6l12 12"/></svg>
+                                                <button wire:click="removeMember({{ $member->id }})" class="opacity-0 group-hover/member:opacity-100 p-2 text-rose-500/40 hover:text-rose-500 transition-all rounded-xl hover:bg-rose-500/10" title="{{ __('Remove Member') }}">
+                                                    <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/></svg>
                                                 </button>
                                             @endif
                                         </div>
@@ -266,10 +270,10 @@
                                     <div class="pt-8 mt-8 border-t border-white/10 space-y-4">
                                         <div class="relative group/invite">
                                             <label class="px-1 text-[9px] font-black uppercase tracking-widest text-on-surface-variant/20 mb-2 block">{{ __('Invite Members') }}</label>
-                                            <div class="relative">
-                                                <input type="text" wire:model.live="userSearch" placeholder="{{ __('Search for users...') }}" class="w-full bg-black/40 border border-white/5 text-[11px] py-4 pl-12 pr-4 focus:ring-1 focus:ring-primary/40 rounded-[1.5rem] text-on-surface placeholder:text-on-surface-variant/10 font-bold transition-all group-hover/invite:border-white/20">
-                                                <svg class="absolute top-4 left-4 h-4 w-4 text-on-surface-variant/20" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="3"><path stroke-linecap="round" stroke-linejoin="round" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/></svg>
-                                            </div>
+                                            <x-ui.search-input 
+                                                model="userSearch" 
+                                                placeholder="{{ __('Example: John or #expert. Search for users to join the team...') }}"
+                                            />
 
                                             @if(!empty($searchResults))
                                                 <div class="absolute z-50 bottom-full left-0 w-full mb-4 bg-surface-container-highest rounded-3xl shadow-[0_30px_100px_rgba(0,0,0,0.8)] border border-white/5 overflow-hidden backdrop-blur-3xl animate-in slide-in-from-bottom-4 duration-300">
@@ -292,17 +296,33 @@
                 </div>
             @else
                 <!-- No Selection State -->
-                <div class="h-full min-h-[500px] flex flex-col items-center justify-center text-center space-y-8 animate-fade-in">
-                    <div class="w-40 h-40 rounded-[3rem] bg-surface-container-low/40 border border-white/5 shadow-2xl flex items-center justify-center relative overflow-hidden group/empty">
+                <div class="flex flex-col items-center justify-start text-center space-y-8 animate-fade-in pt-32">
+                    <div class="w-40 h-40 rounded-[3rem] bg-surface-container-low/40 border border-white/5 shadow-2xl flex items-center justify-center relative overflow-hidden group/empty transition-all hover:scale-105 duration-700">
                         <div class="absolute inset-0 bg-primary/5 opacity-0 group-hover/empty:opacity-100 transition-opacity blur-2xl"></div>
                         <svg class="w-20 h-20 text-on-surface-variant/10 group-hover/empty:text-primary/20 transition-all duration-700" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="1"><path d="M19.428 15.428a2 2 0 00-1.022-.547l-2.387-.477a6 6 0 00-3.86.517l-.673.337a4 4 0 01-1.909.508H8a2 2 0 00-2 2v3a1 1 0 001 1h10a1 1 0 001-1v-3.5a1 1 0 01.357-.762l.071-.057zM8 12a4 4 0 100-8 4 4 0 000 8z"/></svg>
                     </div>
-                    <div>
+                    <div class="space-y-4">
                         <h3 class="font-display text-4xl font-black text-on-surface/40 tracking-tighter">{{ __('Select a Group') }}</h3>
-                        <p class="text-[10px] font-black uppercase tracking-[0.5em] text-on-surface-variant/20 mt-4">{{ __('Join or select a workspace to begin.') }}</p>
+                        <div class="flex items-center justify-center gap-4">
+                            <div class="w-8 h-px bg-primary/20"></div>
+                            <p class="text-[10px] font-black uppercase tracking-[0.5em] text-on-surface-variant/20">{{ __('Join or select a workspace to begin.') }}</p>
+                            <div class="w-8 h-px bg-primary/20"></div>
+                        </div>
                     </div>
                 </div>
             @endif
         </div>
     </div>
+
+    @if($selectedGroup)
+        <x-ui.confirm-modal 
+            name="delete-group-modal" 
+            title="{{ __('Critical Action: Delete Group') }}" 
+            content="{{ __('This action is irreversible. All messages, activity feed history, and member links associated with this group will be permanently purged from the system.') }}"
+            confirmText="{{ __('Purge Group') }}"
+            variant="danger"
+            wire:click="deleteGroup({{ $selectedGroup->id }})"
+            x-on:click="show = false"
+        />
+    @endif
 </div>

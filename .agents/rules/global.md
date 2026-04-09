@@ -31,6 +31,7 @@ trigger: always_on
     * Ne modifie JAMAIS un élément visuel (Logo, animations CSS, palettes de couleurs, espacements) si ce n'est pas l'objet explicite du prompt.
     * Interdiction de supprimer ou d'altérer des animations existantes ou des assets graphiques (SVG, PNG) sans demande directe.
     * Toute "amélioration esthétique" spontanée est considérée comme une régression. Reste focalise sur la logique et la stabilité.
+    * **Copie-Colle Uniquement** : Sauf indication contraire, il est strictement INTERDIT d'inventer de nouveaux styles, textures ou composants visuels. Recherche systématiquement un équivalent existant dans le projet et reproduis exactement ses classes et sa structure.
 * **Organisation** : Maintiens une architecture propre. Les tests doivent être rangés dans `tests/`.
 
 ## Sécurité, Robustesse & Ops

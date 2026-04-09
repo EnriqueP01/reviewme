@@ -15,6 +15,30 @@
 - **Impact** : Création d'un cercle vertueux de contribution, sécurisation de la plateforme contre le trollage et mise en place d'une méritocratie technique.
 
 
+### 2026-04-09-58 - Permissions Cumulatives (Karma)
+**Context**: Les utilisateurs de haut grade (Expert/Elite) perdaient l'accès aux actions de base (Upvote/Downvote) car les permissions étaient restrictives par niveau.
+**Decision**: 
+1. Refactorisation de `User::hasKarmaPermission()` pour devenir cumulative.
+2. Un utilisateur hérite désormais de toutes les permissions des paliers inférieurs à son score de réputation.
+
+### 2026-04-09-59 - Robustesse UI "Monolith" & Troncature
+**Context**: Les noms de fichiers longs et les titres de posts provoquaient des débordements horizontaux (Horizontal Overflow).
+**Decision**: 
+1. Application de `truncate` et `max-w` sur les titres du header (`post-detail`) et du code explorer (`code-block`).
+2. Limitation de la largeur des onglets de fichiers à `180px`.
+3. Correction d'un bug de balise `<div>` dupliquée dans le header principal.
+
+
+## 2026-04-09-57 : Standardisation Visuelle Monolith (Search & Modals)
+- **Auteur** : Antigravity
+- **Statut** : ✅ Implémenté
+- **Contexte** : Besoin d'uniformiser tous les points d'entrée de recherche et les actions de confirmation pour garantir la cohérence du design system.
+- **Décision** :
+    1. **Composant Search Unifié** : Création de `<x-ui.search-input />` adoptant le design des contrôles de tri (`bg-black/20`, `backdrop-blur-3xl`, `rounded-[1.25rem]`). Suppression de l'uppercase au profit d'un style `font-bold tracking-tight` professionnel.
+    2. **Système de Confirmation Monolith** : Refonte de `<x-ui.confirm-modal />` intégrant le composant `<x-ui.button />`. Adoption systématique du style "Ghost-Rose" pour les actions de suppression, incluant la texture de bruit (noise) et les lueurs orbitales.
+    3. **Règle "Copie-Colle Uniquement"** : Ajout d'une directive stricte dans `global.md` interdisant l'invention de nouveaux styles et forçant la réplication exacte des patterns existants.
+- **Impact** : Identité visuelle 100% cohérente, réduction de la dette technique UI et simplification de l'extensibilité du design system.
+
 ## 2026-04-09-56 : Architecture "Zéro-Latence" & Debounced State Sync
 - **Auteur** : Antigravity
 - **Statut** : ✅ Implémenté

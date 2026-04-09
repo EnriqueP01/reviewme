@@ -3,17 +3,11 @@
     <div class="flex flex-col md:flex-row md:items-center justify-between gap-8 py-8 border-b border-white/5 relative group/controls">
         <div class="absolute inset-0 bg-gradient-to-r from-primary/5 to-transparent opacity-0 group-hover/controls:opacity-100 transition-opacity"></div>
         
-        <div class="relative group/search max-w-xl w-full z-10">
-            <div class="absolute inset-y-0 left-0 pl-5 flex items-center pointer-events-none">
-                <svg class="h-4 w-4 text-on-surface-variant/30 group-focus-within/search:text-primary transition-colors duration-500" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="3"><path stroke-linecap="round" stroke-linejoin="round" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/></svg>
-            </div>
-            <input 
-                type="text" 
-                wire:model.live.debounce.300ms="search" 
-                placeholder="{{ __('Search posts in this group...') }}" 
-                class="w-full bg-black/40 border border-white/5 rounded-2xl py-4 pl-14 pr-6 text-xs text-on-surface placeholder:text-on-surface-variant/10 focus:outline-none focus:border-primary/40 transition-all font-bold tracking-wide shadow-2xl"
-            >
-        </div>
+        <x-ui.search-input 
+            model="search" 
+            placeholder="{{ __('Search posts in this group...') }}" 
+            containerClass="max-w-xl w-full z-10"
+        />
 
         <div class="flex items-center gap-3 bg-white/[0.02] backdrop-blur-3xl rounded-[1.5rem] p-1.5 border border-white/5 z-10">
             <button 

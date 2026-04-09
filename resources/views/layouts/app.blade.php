@@ -6,6 +6,7 @@
         <meta name="csrf-token" content="{{ csrf_token() }}">
 
         <title>{{ config('app.name', 'ReviewMe') }} — Code Review Platform</title>
+        <link rel="icon" type="image/png" href="{{ asset('images/logo.png') }}">
         <meta name="description" content="{{ __('Professional code architecture insights and collaborative reviews.') }}">
         
         <!-- Open Graph / Social -->

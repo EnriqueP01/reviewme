@@ -49,8 +49,8 @@
                     </div>
 
                     @if($message->user_id === auth()->id())
-                        <button wire:click="deleteMessage({{ $message->id }})" class="opacity-0 group-hover/msg:opacity-100 text-[8px] font-black text-rose-500 hover:text-rose-400 transition-all uppercase tracking-[0.2em] pt-1">
-                            {{ __('Delete') }}
+                        <button wire:click="deleteMessage({{ $message->id }})" class="opacity-0 group-hover/msg:opacity-100 text-rose-500/40 hover:text-rose-500 transition-all p-2 hover:bg-rose-500/5 rounded-lg" title="{{ __('Delete') }}">
+                            <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/></svg>
                         </button>
                     @endif
                 </div>
@@ -71,15 +71,16 @@
             <div class="relative flex-grow">
                 <input type="text" 
                        wire:model="newMessage" 
-                       placeholder="{{ __('Type a message...') }}" 
-                       class="w-full bg-white/[0.02] border border-white/5 text-xs py-4.5 px-6 rounded-[1.5rem] text-on-surface placeholder:text-on-surface-variant/10 focus:ring-1 focus:ring-primary/40 focus:border-primary/40 transition-all shadow-inner font-bold tracking-tight">
+                       wire:key="chat-input-{{ $group->id }}"
+                       placeholder="{{ __('Example: \'The O(n^2) loop in the core engine is causing a 200ms lag. I suggest we use a Hash Map instead.\'') }}" 
+                       class="w-full bg-white/[0.02] border border-white/5 text-xs py-4.5 px-6 rounded-[1.5rem] text-on-surface placeholder:text-on-surface-variant/10 focus:ring-0 focus:outline-none focus:border-primary/40 transition-all shadow-inner font-bold tracking-tight outline-none">
             </div>
             
             <button type="submit" 
-                    class="w-14 h-14 bg-primary hover:bg-primary-hover text-on-primary rounded-[1.2rem] shadow-2xl shadow-primary/30 flex items-center justify-center transition-all active:scale-90 disabled:opacity-20 group-hover/form:rotate-2"
+                    class="w-14 h-14 bg-primary hover:bg-primary-hover text-on-primary rounded-[1.2rem] shadow-2xl shadow-primary/30 flex items-center justify-center transition-all active:scale-95 disabled:opacity-50 group-hover/form:rotate-2 relative overflow-hidden"
                     wire:loading.attr="disabled">
                 <svg wire:loading.remove class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="3"><path stroke-linecap="round" stroke-linejoin="round" d="M14 5l7 7m0 0l-7 7m7-7H3"/></svg>
-                <div wire:loading class="w-5 h-5 border-2 border-on-primary/30 border-t-on-primary rounded-full animate-spin"></div>
+                <x-ui.loader wire:loading class="!w-6 !h-6" />
             </button>
         </form>
     </div>

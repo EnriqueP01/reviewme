@@ -79,26 +79,25 @@
                         <img src="{{ $post->user->avatar }}" class="w-full h-full object-cover">
                     </div>
                 </div>
-                <div class="flex flex-col">
+                <div class="flex flex-col min-w-0">
                     <div class="flex items-center gap-3">
                         <span class="text-lg font-black text-on-surface tracking-tight">{{ $post->user->name }}</span>
                         <span class="text-xs font-mono font-bold text-primary tracking-wider font-black">@<span>{{ $post->user->name }}</span></span>
                     </div>
-                    <div class="flex items-center gap-3 mt-1">
-                    <div class="flex items-center gap-3 mt-1">
+                    <div class="flex items-center gap-3 mt-1 overflow-x-auto no-scrollbar">
                         @foreach(explode(',', $post->lens ?? 'Logic') as $l)
                             @php $lKey = strtolower(trim($l)); @endphp
                             <span 
-                                class="px-3 py-1 rounded-xl text-[9px] font-black uppercase tracking-[0.2em] transition-all cursor-default border"
+                                class="px-3 py-1 rounded-xl text-[9px] font-black uppercase tracking-[0.2em] transition-all cursor-default border flex-shrink-0"
                                 style="color: var(--lens-{{ $lKey }}); background-color: rgba(var(--lens-{{ $lKey }}-rgb), 0.1); border-color: rgba(var(--lens-{{ $lKey }}-rgb), 0.3);"
                             >#{{ strtoupper(trim($l)) }}</span>
                         @endforeach
-                        <span class="text-[10px] uppercase tracking-[0.2em] text-on-surface-variant font-black opacity-40 flex items-center gap-2">
+                        <span class="text-[10px] uppercase tracking-[0.2em] text-on-surface-variant font-black opacity-40 flex items-center gap-2 flex-shrink-0">
                             {{ $post->created_at->diffForHumans() }}
                         </span>
-                        <span class="text-on-surface-variant/40 text-[10px] font-black uppercase tracking-[0.2em] font-mono">/ {{ $post->snippets->count() }} {{ __('FILES') }}</span>
+                        <span class="text-on-surface-variant/40 text-[10px] font-black uppercase tracking-[0.2em] font-mono flex-shrink-0">/ {{ $post->snippets->count() }} {{ __('FILES') }}</span>
                     </div>
-                    <h1 class="text-2xl font-black text-on-surface tracking-tighter mt-2">{{ $post->title }}</h1>
+                    <h1 class="text-2xl font-black text-on-surface tracking-tighter mt-2 truncate">{{ $post->title }}</h1>
                 </div>
             </div>
             
@@ -157,7 +156,7 @@
 
                 @if($this->isAuthor())
                     <!-- Author Actions -->
-                    <a href="{{ route('posts.update', $post->id) }}" class="whitespace-nowrap rounded-2xl px-8 py-4 font-black uppercase text-xs tracking-widest shadow-2xl bg-primary text-white hover:scale-105 active:scale-95 transition-all flex items-center gap-3">
+                    <a href="{{ route('posts.update', $post->id) }}" class="whitespace-nowrap rounded-2xl px-8 py-4 font-black uppercase text-xs tracking-widest shadow-2xl bg-primary text-on-primary hover:scale-105 active:scale-95 transition-all flex items-center gap-3">
                         <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg>
                         {{ __('Update Code') }}
                     </a>
@@ -193,7 +192,9 @@
                             <!-- Global Eval -->
                             <div class="space-y-3">
                                 <label class="px-1 text-[9px] font-black uppercase tracking-[0.4em] text-primary/60">{{ __('Summary') }}</label>
-                                <textarea wire:model="reviewDescription" placeholder="{{ __('Overall thoughts on the code...') }}" 
+                                <textarea wire:model="reviewDescription" 
+                                          wire:key="full-review-desc-{{ $post->id }}"
+                                          placeholder="{{ __('Example: \'The O(n^2) nested loop in the auth middleware is causing significant overhead. I recommend refactoring to a Set-based lookup for O(1) complexity. Also, consider moving the heavy disk I/O to a background worker to prevent blocking the main request cycle.\'') }}" 
                                           class="w-full bg-black/20 border border-white/5 rounded-2xl p-6 text-sm text-on-surface focus:border-primary/20 min-h-[120px] outline-none transition-all shadow-inner custom-scrollbar resize-none font-medium italic"></textarea>
                             </div>
 
@@ -297,12 +298,12 @@
                         <!-- Permanent Sticky Side Navigation Paddles -->
                         @if($post->fullReviews->count() > 1)
                             <div @click="prev()" class="absolute top-0 bottom-0 left-0 w-24 z-50 cursor-pointer group/nav-left flex items-start justify-center">
-                                <div class="sticky top-[50%] -translate-y-1/2 w-14 h-14 rounded-full bg-surface-container-high/40 border border-white/10 flex items-center justify-center text-primary shadow-[0_0_40px_rgba(190,194,255,0.1)] backdrop-blur-2xl hover:scale-110 hover:bg-primary hover:text-white hover:border-primary/40 transition-all duration-300">
+                                <div class="sticky top-[50%] -translate-y-1/2 w-14 h-14 rounded-full bg-surface-container-high/40 border border-white/10 flex items-center justify-center text-primary shadow-[0_0_40px_rgba(190,194,255,0.1)] backdrop-blur-2xl hover:scale-110 hover:bg-primary hover:text-on-primary hover:border-primary/40 transition-all duration-300">
                                     <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M15 19l-7-7 7-7" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/></svg>
                                 </div>
                             </div>
                             <div @click="next()" class="absolute top-0 bottom-0 right-0 w-24 z-50 cursor-pointer group/nav-right flex items-start justify-center">
-                                <div class="sticky top-[50%] -translate-y-1/2 w-14 h-14 rounded-full bg-surface-container-high/40 border border-white/10 flex items-center justify-center text-primary shadow-[0_0_40px_rgba(190,194,255,0.1)] backdrop-blur-2xl hover:scale-110 hover:bg-primary hover:text-white hover:border-primary/40 transition-all duration-300">
+                                <div class="sticky top-[50%] -translate-y-1/2 w-14 h-14 rounded-full bg-surface-container-high/40 border border-white/10 flex items-center justify-center text-primary shadow-[0_0_40px_rgba(190,194,255,0.1)] backdrop-blur-2xl hover:scale-110 hover:bg-primary hover:text-on-primary hover:border-primary/40 transition-all duration-300">
                                     <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M9 5l7 7-7 7" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/></svg>
                                 </div>
                             </div>
@@ -410,7 +411,7 @@
                                             <div x-data="{ collapsed: true }">
                                                 <div @click="collapsed = !collapsed" class="flex items-center justify-between px-6 py-4 bg-white/[0.04] rounded-[1.5rem] border border-white/10 cursor-pointer hover:bg-white/[0.08] transition-all group/node">
                                                     <div class="flex items-center gap-4">
-                                                        <div class="w-10 h-10 rounded-xl bg-primary/10 flex items-center justify-center text-primary group-hover/node:bg-primary group-hover/node:text-white transition-all">
+                                                        <div class="w-10 h-10 rounded-xl bg-primary/10 flex items-center justify-center text-primary group-hover/node:bg-primary group-hover/node:text-on-primary transition-all">
                                                             <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M7 8h10M7 12h4m1 8l-4-4H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-3l-4 4z" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
                                                         </div>
                                                         <span class="text-[10px] font-black uppercase tracking-[0.2em] text-on-surface">{{ __('Discussion') }} ({{ $fr->comments->count() }})</span>
@@ -422,8 +423,13 @@
                                                     <!-- Reply Input -->
                                                     <div class="flex items-center gap-4 bg-black/40 rounded-[2rem] p-3 border border-primary/20 shadow-inner">
                                                         <img src="{{ auth()->user()->avatar }}" class="w-10 h-10 rounded-2xl border border-white/10 object-cover">
-                                                        <input type="text" wire:model="reviewCommentContent" wire:keydown.enter="saveGlobalComment(null, {{ $fr->id }})" placeholder="{{ __('Add a commentary...') }}" class="bg-transparent border-none flex-1 py-3 text-sm text-on-surface focus:ring-0 placeholder:text-on-surface-variant/20 font-semibold italic">
-                                                        <button type="button" wire:click="saveGlobalComment(null, {{ $fr->id }})" class="p-3 rounded-2xl bg-primary text-white hover:scale-105 active:scale-95 transition-all">
+                                                        <input type="text" 
+                                                               wire:model="reviewCommentContent" 
+                                                               wire:key="fr-comment-input-{{ $fr->id }}"
+                                                               wire:keydown.enter="saveGlobalComment(null, {{ $fr->id }})" 
+                                                               placeholder="{{ __('Example: \'How does this refactoring impact the hydration cost? Can we ensure the Reactive Store handles this asynchronously?\'') }}" 
+                                                               class="bg-transparent border-none flex-1 py-3 text-sm text-on-surface focus:ring-0 placeholder:text-on-surface-variant/20 font-semibold italic">
+                                                        <button type="button" wire:click="saveGlobalComment(null, {{ $fr->id }})" class="p-3 rounded-2xl bg-primary text-on-primary hover:scale-105 active:scale-95 transition-all">
                                                             <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M13 5l7 7m0 0l-7 7m7-7H3" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/></svg>
                                                         </button>
                                                     </div>
@@ -479,12 +485,13 @@
                             <img src="{{ Auth::user()->avatar }}" class="w-10 h-10 rounded-2xl ml-2 shadow-2xl border border-white/10 shrink-0">
                             <input type="text" 
                                    wire:model="globalCommentContent"
+                                   wire:key="global-comment-input-{{ $post->id }}"
                                    wire:keydown.enter="saveGlobalComment"
-                                   placeholder="{{ __('Add a commentary...') }}" 
+                                   placeholder="{{ __('Example: \'The database indexing strategy on the metadata JSON field seems suboptimal for large datasets. I suspect it might lead to full table scans.\'') }}" 
                                    class="bg-transparent border-none flex-1 py-3 text-sm text-on-surface focus:ring-0 placeholder:text-on-surface-variant/20 font-semibold tracking-tight">
-                            <button type="button" wire:click="saveGlobalComment" class="mr-2 p-3 rounded-2xl bg-primary text-white hover:scale-105 active:scale-95 transition-all shadow-[0_0_20px_rgba(190,194,255,0.2)]">
-                                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="4" d="M13 5l7 7m0 0l-7 7m7-7H3"></path></svg>
-                            </button>
+                            <x-ui.button wire:click="saveGlobalComment" variant="primary" size="sm" class="!px-4 !py-4 shadow-[0_0_20px_rgba(190,194,255,0.25)]">
+                                <svg wire:loading.remove class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="4" d="M13 5l7 7m0 0l-7 7m7-7H3"></path></svg>
+                            </x-ui.button>
                         </div>
                     </div>
 
@@ -532,10 +539,11 @@
                                             <img src="{{ Auth::user()->avatar }}" class="w-10 h-10 rounded-2xl ml-2 shadow-2xl border border-white/10 shrink-0">
                                             <input type="text" 
                                                    wire:model="replyContent" 
+                                                   wire:key="reply-input-{{ $comment->id }}"
                                                    wire:keydown.enter="saveGlobalComment({{ $comment->id }})" 
-                                                   placeholder="{{ __('Add a reply...') }}" 
+                                                   placeholder="{{ __('Example: \'I see your point about Big-O complexity, but given our data volume, readability is currently our priority.\'') }}" 
                                                    class="bg-transparent border-none flex-1 py-3 text-sm text-on-surface focus:ring-0 placeholder:text-on-surface-variant/20 font-semibold">
-                                            <button wire:click="saveGlobalComment({{ $comment->id }})" @click="if($wire.replyContent.length > 0) { setTimeout(() => { replying = false; }, 200) }" class="mr-2 p-3 rounded-2xl bg-primary text-white hover:scale-105 active:scale-95 transition-all">
+                                            <button wire:click="saveGlobalComment({{ $comment->id }})" @click="if($wire.replyContent.length > 0) { setTimeout(() => { replying = false; }, 200) }" class="mr-2 p-3 rounded-2xl bg-primary text-on-primary hover:scale-105 active:scale-95 transition-all">
                                                 <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M13 5l7 7m0 0l-7 7m7-7H3" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/></svg>
                                             </button>
                                         </div>
@@ -627,8 +635,11 @@
 
                             <!-- Rationale -->
                             <div class="space-y-3">
-                                <label class="px-1 text-[9px] font-black uppercase tracking-[0.4em] text-on-surface-variant/40">{{ __('Rationale & Commentary') }}</label>
-                                <textarea wire:model="suggestionDescription" placeholder="{{ __('Explain the logic or performance gains...') }}" class="w-full bg-black/20 border border-white/5 rounded-2xl p-6 text-sm text-on-surface min-h-[140px] outline-none focus:border-primary/20 transition-all shadow-inner italic font-medium"></textarea>
+                                <label class="px-1 text-[9px] font-black uppercase tracking-[0.4em] text-on-surface-variant/40">{{ __('Technical Rationale & Benchmarks') }}</label>
+                                <textarea wire:model="suggestionDescription" 
+                                          wire:key="suggestion-desc-{{ $post->id }}"
+                                          placeholder="{{ __('Example: \'This refactoring targets the memory leaks in the stream handler. By ensuring the file pointers are closed in a Finally block, we prevent resource exhaustion under heavy load.\'') }}" 
+                                          class="w-full bg-black/20 border border-white/5 rounded-2xl p-6 text-sm text-on-surface min-h-[140px] outline-none focus:border-primary/20 transition-all shadow-inner italic font-medium"></textarea>
                             </div>
                         </div>
 

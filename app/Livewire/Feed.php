@@ -7,6 +7,7 @@ namespace App\Livewire;
 use App\Actions\Posts\SearchPostsAction;
 use App\Actions\Reactions\ToggleReactionAction;
 use App\Models\Post;
+use App\Models\Reaction;
 use Illuminate\Support\Facades\Auth;
 use Livewire\Attributes\Layout;
 use Livewire\Attributes\NoRender;
@@ -45,13 +46,14 @@ class Feed extends Component
         }
 
         $post = Post::findOrFail($postId);
-        
+
         if ($direction === 'none') {
-            \App\Models\Reaction::where([
+            Reaction::where([
                 'user_id' => Auth::id(),
                 'reactable_id' => $post->id,
                 'reactable_type' => $post->getMorphClass(),
             ])->delete();
+
             return;
         }
 

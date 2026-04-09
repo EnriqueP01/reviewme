@@ -32,7 +32,9 @@
     
     --on-surface: #e3e1ed;
     --on-surface-variant: #ababcf;
-    --on-primary: #000000; /* Solid black for absolute readability on primary (light) buttons */
+    --on-primary: #000000;
+    --on-secondary: #000000;
+    --on-tertiary: #000000;
     
     --outline: #908f9e;
     --outline-variant: #454653;
