@@ -114,6 +114,9 @@
     "Remember": "Remember",
     "Standard Access": "Standard Access",
     "Activity": "Activity",
+    "ReviewMe Activity": "ReviewMe Activity",
+    "contributions": "contributions",
+    "contributions in the last year": "contributions in the last year",
     "Less": "Less",
     "More": "More",
     "active users": "active users",
@@ -188,7 +191,6 @@
     "No groups owned.": "No groups owned.",
     "No groups joined.": "No groups joined.",
     "Search for a member...": "Search for a member...",
-    "Select a group to start collaborating.": "Select a group to start collaborating.",
     "Post Stats": "Post Stats",
     "Review Factory": "Make Full Review"
 }

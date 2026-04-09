@@ -560,3 +560,13 @@ The initial "Monolith & The Lens" implementation was too spacious, creating layo
     4. **UX d'Édition** : Refonte du formulaire de réglages (`update-profile-information-form`) pour permettre la modification sécurisée du handle (regex alpha-dash) et de la biographie.
     5. **Intégration GitHub Status** : Ajout d'un indicateur de connexion GitHub dans le profil avec gestion des états d'erreurs/déconnexion.
 - **Impact** : Identité utilisateur professionnelle, partage de profils facilité via URLs propres et renforcement de l'aspect social de la plateforme.
+
+## 2026-04-10-63 : Unification de la Heatmap d'Activité "ReviewMe-Native"
+- **Auteur** : Antigravity
+- **Statut** : ✅ Implémenté
+- **Contexte** : Volonté de valoriser l'engagement interne sur la plateforme plutôt que de dépendre uniquement des données externes (GitHub).
+- **Décision** :
+    1. **Agrégation de Contributions** : Refonte de la logique de calcul dans `Profile.php`. La heatmap n'est plus liée à l'API GitHub mais agrège désormais quatre types d'actions réelles : création de `Post`, rédaction de `FullReview`, ajout de `PostComment` et proposition d'une `InlineSuggestion`.
+    2. **Algorithme de Fusion** : Mise en place d'une logique de fusion de dates où chaque action compte pour `+1` dans la case journalière. Utilisation d'un cache de 600 secondes pour optimiser le rendu sur 365 jours.
+    3. **UX & i18n** : Mise à jour des libellés ("Activity" -> "ReviewMe Activity") et des tooltips pour refléter l'ensemble des contributions. Centralisation des traductions dans `fr.json` et `en.json`.
+- **Impact** : Renforcement du sentiment d'appartenance à ReviewMe et valorisation de tous les types d'expertise (curation, revue et conseil).

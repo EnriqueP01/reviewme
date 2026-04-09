@@ -119,10 +119,10 @@
 
         <!-- Main Column: Activity -->
         <div class="lg:col-span-2 space-y-12">
-            <!-- Contribution Heatmap -->
+            <!-- Contribution Heatmap (ReviewMe centric) -->
             <div class="glass-panel p-10 rounded-[2.5rem] border-subtle overflow-hidden">
                 <div class="flex items-center justify-between mb-8">
-                    <h3 class="font-display font-bold text-xl text-on-surface italic">{{ __('Activity') }}</h3>
+                    <h3 class="font-display font-bold text-xl text-on-surface italic">{{ __('ReviewMe Activity') }}</h3>
                     <div class="flex items-center gap-2">
                         <span class="text-[9px] text-on-surface-variant uppercase tracking-widest opacity-40">{{ __('Less') }}</span>
                         <div class="flex gap-1">
@@ -148,7 +148,7 @@
                 }">
                     <template x-for="day in days" :key="day.date">
                         <div 
-                            :title="day.date + ': ' + day.count + ' posts'"
+                            :title="day.date + ': ' + day.count + ' contributions'"
                             class="w-3 h-3 rounded-sm transition-all duration-500 hover:scale-150 hover:z-20 cursor-crosshair"
                             :class="{
                                 'bg-surface-highest': day.count === 0,
@@ -161,7 +161,7 @@
                     </template>
                 </div>
                 <p class="mt-6 text-[10px] text-on-surface-variant font-mono opacity-40 uppercase tracking-widest">
-                    {{ count($contributions) }} {{ __('posts in the last year') }}
+                    {{ array_sum($contributions) }} {{ __('contributions in the last year') }}
                 </p>
             </div>
 

@@ -68,16 +68,49 @@ class Profile extends Component
 
     public function getContributionsProperty()
     {
-        return Cache::remember("user_contributions_{$this->user->id}", 600, function () {
-            return Post::where('user_id', $this->user->id)
-                ->where('created_at', '>=', now()->subDays(365))
+        return Cache::remember("user_activity_heatmap_{$this->user->id}", 600, function () {
+            $since = now()->subDays(365);
+            
+            $posts = Post::where('user_id', $this->user->id)
+                ->where('created_at', '>=', $since)
                 ->selectRaw('DATE(created_at) as date, count(*) as count')
                 ->groupBy('date')
-                ->pluck('count', 'date')
-                ->toArray();
+                ->pluck('count', 'date')->toArray();
+
+            $reviews = \App\Models\FullReview::where('user_id', $this->user->id)
+                ->where('created_at', '>=', $since)
+                ->selectRaw('DATE(created_at) as date, count(*) as count')
+                ->groupBy('date')
+                ->pluck('count', 'date')->toArray();
+
+            $comments = \App\Models\PostComment::where('user_id', $this->user->id)
+                ->where('created_at', '>=', $since)
+                ->selectRaw('DATE(created_at) as date, count(*) as count')
+                ->groupBy('date')
+                ->pluck('count', 'date')->toArray();
+
+            $suggestions = \App\Models\InlineSuggestion::where('user_id', $this->user->id)
+                ->where('created_at', '>=', $since)
+                ->selectRaw('DATE(created_at) as date, count(*) as count')
+                ->groupBy('date')
+                ->pluck('count', 'date')->toArray();
+
+            // Fusionner toutes les dates uniques
+            $allDates = array_unique(array_merge(
+                array_keys($posts),
+                array_keys($reviews),
+                array_keys($comments),
+                array_keys($suggestions)
+            ));
+
+            $merged = [];
+            foreach ($allDates as $date) {
+                $merged[$date] = ($posts[$date] ?? 0) + ($reviews[$date] ?? 0) + ($comments[$date] ?? 0) + ($suggestions[$date] ?? 0);
+            }
+
+            return $merged;
         });
     }
-
     public function getRecentActivityProperty()
     {
         return $this->user->posts()
