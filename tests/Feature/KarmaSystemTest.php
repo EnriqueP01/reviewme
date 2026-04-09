@@ -144,4 +144,23 @@ class KarmaSystemTest extends TestCase
         // Le score doit être remonté à 50
         $this->assertEquals(50, $user->fresh()->reputation_score);
     }
+
+    /**
+     * Test que le vote DOWN ne coûte rien au votant.
+     */
+    public function test_downvote_is_free_for_voter(): void
+    {
+        $author = User::factory()->create(['reputation_score' => 0]);
+        $voter = User::factory()->create(['reputation_score' => 50]); // Déjà contributeur
+        $post = Post::factory()->create(['user_id' => $author->id]);
+
+        $action = app(ToggleReactionAction::class);
+        $action->execute($voter, $post, 'down');
+
+        // L'auteur perd des points (le downvote est à -2 dans la config ou le code)
+        $this->assertEquals(-2, $author->fresh()->reputation_score);
+
+        // LE VOTANT NE PERD RIEN
+        $this->assertEquals(50, $voter->fresh()->reputation_score);
+    }
 }

@@ -19,6 +19,7 @@ final class HandleGithubCallbackAction
             'github_id' => $githubUser->getId(),
         ], [
             'name' => $githubUser->getNickname() ?? $githubUser->getName(),
+            'handle' => $githubUser->getNickname() ? Str::slug($githubUser->getNickname(), '') : Str::slug($githubUser->getName(), ''),
             'email' => $githubUser->getEmail(),
             'avatar' => $githubUser->getAvatar(),
             'bio' => $githubUser->user['bio'] ?? null,

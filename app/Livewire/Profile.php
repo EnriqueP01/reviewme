@@ -3,6 +3,7 @@
 namespace App\Livewire;
 
 use App\Models\Post;
+use App\Models\User;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Cache;
 use Livewire\Attributes\Layout;
@@ -12,16 +13,34 @@ class Profile extends Component
 {
     public $user;
 
+    public ?string $handle = null;
+
     public $perPage = 3;
 
-    public function mount()
+    public function mount(?string $handle = null)
     {
-        $this->user = Auth::user();
+        if ($handle) {
+            $this->user = User::where('handle', $handle)->firstOrFail();
+            $this->handle = $handle;
+        } else {
+            $this->user = Auth::user();
+
+            if (! $this->user) {
+                return redirect()->route('login');
+            }
+
+            $this->handle = $this->user->handle;
+        }
     }
 
     public function loadMore()
     {
         $this->perPage += 3;
+    }
+
+    public function getIsOwnProfileProperty(): bool
+    {
+        return Auth::check() && Auth::id() === $this->user->id;
     }
 
     public function getStatsProperty()

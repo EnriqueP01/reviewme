@@ -84,9 +84,18 @@ ReviewMe utilise un système de réputation basé sur l'expertise réelle. Le Ka
 **Règles d'or :**
 - 🛡️ **Qualité** : Les descriptions de plus de 500 caractères doublent vos points (Bonus x2).
 - 🛑 **Anti-Spam** : Gain limité à 200 Karma par jour (Daily Cap).
-- 📉 **Downvote** : Voter DOWN coûte 1 point de Karma pour éviter la toxicité.
+- 📉 **Downvote** : Gratuit pour le votant (mais réservé au rang "Contributeur").
 - 🛠️ **Integrity** : Les scores peuvent être recalculés à tout moment via `php artisan karma:rebuild`.
 - **Bonus de Qualité** : Le système récompense automatiquement les analyses détaillées et constructives.
+
+---
+
+## 👤 Profils Publics & Identité
+ReviewMe propose un système d'identité robuste pour valoriser votre expertise :
+- **Handle Unique** : Chaque utilisateur possède un identifiant `@username` unique utilisé pour son URL de profil (`/profile/{handle}`).
+- **Biographie Technique** : Présentez vos spécialités, votre stack et votre expérience.
+- **GitHub Activity** : Visualisez l'état de synchronisation avec votre compte GitHub et (prochainement) votre flux d'activité réel.
+- **Routage Dynamique** : Partagez votre profil expert directement via une URL simple et élégante.
 
 ---
 

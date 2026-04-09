@@ -46,7 +46,11 @@ Route::get('/dashboard', Feed::class)
     ->name('dashboard');
 
 Route::middleware('auth')->group(function () {
-    Route::get('/profile', Profile::class)->name('profile');
+    Route::get('/profile', function () {
+        return redirect()->route('profile.show', auth()->user()->handle);
+    })->name('profile');
+
+    Route::get('/profile/{handle}', Profile::class)->name('profile.show');
     Route::get('/publish', PublishWorkflow::class)->name('publish');
     Route::get('/groups', GroupManager::class)->middleware('karma:group.create')->name('groups');
     Route::get('/posts/{postId}', PostDetail::class)->name('posts.detail');

@@ -538,3 +538,25 @@ The initial "Monolith & The Lens" implementation was too spacious, creating layo
     3. **Priorité Front-End** : Application de la règle "xhuriken first" : toute modification structurelle du DOM par le système de Karma a été validée pour ne pas dénaturer les animations CSS et les espacements définis par le lead design.
     4. **Audit de Santé** : Validation de la suite de tests `KarmaSystemTest` (100% vert) post-merge.
 - **Impact** : Plateforme stabilisée, système de réputation parfaitement fondu dans l'identité visuelle d'élite et codebase synchronisée.
+
+## 2026-04-10-61 : Suppression du Coût de Karma pour le Downvote
+- **Auteur** : Antigravity
+- **Statut** : ✅ Implémenté
+- **Contexte** : Le coût de -1 Karma imposé au votant lors d'un "Downvote" a été jugé contre-productif par l'utilisateur.
+- **Décision** :
+    1. **Gratuité du Vote** : Les votes négatifs (Down/Optimisable) ne retirent plus de point au votant.
+    2. **Maintien du Barrage de Qualité** : La restriction d'accès au vote DOWN (exigence du rang "Contributeur", 10+ Karma) reste active pour prévenir le spam par des comptes fraîchement créés.
+    3. **Documentation** : Mise à jour du `README.md` et de l'**US42** pour refléter ce changement de politique.
+- **Impact** : Fluidification des interactions de feedback négatif tout en conservant une barrière à l'entrée pour garantir la maturité des votants.
+
+## 2026-04-10-62 : Refonte de l'Identité Utilisateur (Handles & Public Profiles)
+- **Auteur** : Antigravity
+- **Statut** : ✅ Implémenté
+- **Contexte** : Besoin de découpler l'identité visuelle (Pseudo) de l'identifiant technique (Handle) pour permettre des URLs de profil uniques et une personnalisation accrue (Bio).
+- **Décision** :
+    1. **Architecture Handle-First** : Migration de la base de données pour introduire la colonne `handle` (unique) et ajout de la colonne `bio`. Le champ `name` perd son unicité pour devenir un "Display Name" libre.
+    2. **Routage Dynamique** : Mise en place de la route `/profile/{handle}` permettant l'accès aux profils publics. La route `/profile` redirige désormais automatiquement vers le profil de l'utilisateur connecté via son handle.
+    3. **Synchronisation OAuth** : Mise à jour de `HandleGithubCallbackAction` pour générer automatiquement un handle unique à partir du nickname GitHub lors de la première connexion.
+    4. **UX d'Édition** : Refonte du formulaire de réglages (`update-profile-information-form`) pour permettre la modification sécurisée du handle (regex alpha-dash) et de la biographie.
+    5. **Intégration GitHub Status** : Ajout d'un indicateur de connexion GitHub dans le profil avec gestion des états d'erreurs/déconnexion.
+- **Impact** : Identité utilisateur professionnelle, partage de profils facilité via URLs propres et renforcement de l'aspect social de la plateforme.
