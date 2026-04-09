@@ -102,7 +102,7 @@
     3. **Pérennité i18n** : Dictionary cleaning.
 - **Impact** : UI stability and 100% consistent bilingual site.
 
-## 2026-04-09-20 : Protocole d'Intégrité de Réalisation
+## 2026-04-09-20 : Protocole d'Analyse de Sécurité US33
 - **Auteur** : Antigravity
 - **Statut** : ✅ Implémenté
 - **Contexte** : Risk of task omission in complex prompts.
@@ -294,6 +294,7 @@
     3. **Cleanup i18n** : Nettoyage intégral de `fr.json` et `en.json` pour supprimer les clés de branding "cool" au profit de termes standards (Feed, Review, Files).
     4. **Événements & UI** : Renommage des événements système (`vibe-*` -> `post-*`, `notification`) et des composants UI (`logo-artifact` -> `logo`).
 - **Impact** : Positionnement professionnel renforcé, meilleure accessibilité et cohérence totale de l'expérience utilisateur.
+
 ### DECISION_2026_04_09_007: Overhaul to Compact High-Density UI
 **Status**: Decided | **Owner**: Architect | **Date**: 2026-04-09
 
@@ -322,6 +323,7 @@ The initial "Monolith & The Lens" implementation was too spacious, creating layo
     2. **UI Ségrégative** : Ajout du composant Livewire `UpdatePost` avec le routeur dédié `/posts/{postId}/update-code`, reprenant l'ADN du workflow de création et l'heuristique de détection de fichier.
     3. **Affichage Dynamique** : Mise à jour de `PostDetail.php` (et son template) pour supporter l'affichage "1 Version = N Fichiers" et ajout du sélecteur interactif de version dans l'entête du snippet.
     4. **Sécurité & Contrôle** : Application stricte de `authorize('update', $post)` limitant l'itération à l'auteur original.
+
 - **Impact** : Cycle de vie du code continu, traçabilité de l'évolution post-review et réduction mécanique du churn de posts.
 
 ## 2026-04-09-42 : Système de Feedback Collaboratif Avancé (Reviews & Suggestions)
@@ -372,3 +374,14 @@ The initial "Monolith & The Lens" implementation was too spacious, creating layo
         - Interaction double mode : "Edit" (remplacement direct) et "DIFF" (comparaison de fusion).
     4. **Intégrité Visuelle** : Maintien de la coloration syntaxique cohérente sur tous les nouveaux overlays et modales.
 - **Impact** : Niveau d'interaction sans précédent pour une plateforme web, fusionnant l'ergonomie d'un IDE avec la dynamique d'un réseau social technique.
+
+## 2026-04-09-46 : Formalisation de la Documentation Stratégique (US04-US28)
+- **Auteur** : Antigravity
+- **Statut** : ✅ Implémenté
+- **Contexte** : Besoin de consolider les fondations stratégiques, techniques et UX du projet pour garantir la maintenabilité et faciliter la soutenance.
+- **Décision** :
+    1. **Cadrage Produit** : Rédaction des US04 (MVP/Périmètre), US05 (Thème), US06 (Pitch) et US08 (SWOT/Benchmark).
+    2. **Architecture & API** : Documentation des US10 (Architecture Globale), US11 (Choix techniques), US15 (Contrat API) et US16 (Journal de décisions).
+    3. **Design & Qualité** : Formalisation des US09 (Guide UI), US26 (Gestion des erreurs/cas limites) et US28 (Qualité de code).
+    4. **Harmonisation** : Mise à jour de l'US14 pour refléter la nomenclature professionnelle (Groups/Posts).
+- **Impact** : Traçabilité totale des arbitrages, vision produit alignée entre les membres de l'équipe et base documentaire robuste pour la suite du développement.
