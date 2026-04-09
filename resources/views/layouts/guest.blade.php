@@ -41,7 +41,7 @@
                         <a href="{{ url('/dashboard') }}" class="text-xs font-black uppercase tracking-[0.2em] text-on-surface hover:text-primary transition-colors">{{ __('Access') }}</a>
                     @else
                         <div class="flex items-center gap-6">
-                            <a href="{{ route('login') }}" class="text-xs font-black uppercase tracking-[0.2em] text-on-surface-variant hover:text-white transition-colors">{{ __('SignIn') }}</a>
+                            <a href="{{ route('login') }}" class="text-xs font-black uppercase tracking-[0.2em] text-on-surface-variant hover:text-white transition-colors">{{ __('Sign In') }}</a>
                             <x-ui.button variant="primary" size="sm" href="{{ route('register') }}">
                                 {{ __('Join') }}
                             </x-ui.button>

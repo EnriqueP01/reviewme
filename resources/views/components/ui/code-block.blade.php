@@ -257,8 +257,8 @@
                 
                 <button @click="copy()" class="relative text-on-surface-variant hover:text-primary transition-all p-2.5 rounded-xl hover:bg-white/5 group/copy">
                     <div class="flex items-center gap-2">
-                        <span x-show="!copied" class="text-[8px] font-black uppercase tracking-widest opacity-0 group-hover/copy:opacity-100 transition-all -translate-x-2 group-hover/copy:translate-x-0">Copy</span>
-                        <span x-show="copied" x-cloak class="text-[8px] font-black uppercase tracking-widest text-secondary scale-110">Done</span>
+                        <span x-show="!copied" class="text-[8px] font-black uppercase tracking-widest opacity-0 group-hover/copy:opacity-100 transition-all -translate-x-2 group-hover/copy:translate-x-0">{{ __('Copy') }}</span>
+                        <span x-show="copied" x-cloak class="text-[8px] font-black uppercase tracking-widest text-secondary scale-110">{{ __('Done') }}</span>
                         
                         <svg x-show="!copied" class="w-4 h-4 transition-transform group-hover/copy:scale-110" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
                             <path stroke-linecap="round" stroke-linejoin="round" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"/>

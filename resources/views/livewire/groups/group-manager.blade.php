@@ -1,14 +1,31 @@
 <div class="w-full max-w-none px-12 py-10">
     <!-- Groups Header -->
-    <div class="flex items-end justify-between mb-16 border-b border-outline-variant/10 pb-10">
-        <div class="space-y-3">
-            <h2 class="font-display text-5xl font-black text-on-surface tracking-tighter">{{ __('Private Groups') }}</h2>
-            <p class="text-on-surface-variant text-sm tracking-wide font-medium opacity-60">{{ __('Collaborate with your team in private spaces.') }}</p>
+    <div class="flex items-end justify-between mb-24 relative">
+        <div class="space-y-4">
+            <div class="flex items-center gap-4">
+                <div class="w-12 h-1 bg-primary rounded-full"></div>
+                <span class="text-[10px] font-black uppercase tracking-[0.5em] text-primary/60 italic">{{ __('FORGE BETTER CODE') }}</span>
+            </div>
+            <h1 class="font-display text-7xl font-black text-on-surface tracking-tighter leading-none">
+                {{ __('Groups') }}<span class="text-primary">.</span>
+            </h1>
         </div>
 
         <div class="flex items-center gap-6">
-            <x-ui.button variant="{{ $isCreating ? 'primary' : 'ghost' }}" size="sm" wire:click="$toggle('isCreating')" class="!px-8 !rounded-xl shadow-xl">
-                {{ $isCreating ? __('Cancel') : '+ ' . __('New Group') }}
+            <x-ui.button 
+                variant="{{ $isCreating ? 'primary' : 'ghost' }}" 
+                wire:click="$toggle('isCreating')" 
+                class="!px-10 !py-5 !rounded-2xl shadow-2xl {{ !$isCreating ? '!bg-white/5 !border-white/10 hover:!bg-white/10' : '' }}"
+            >
+                <div class="flex items-center gap-3">
+                    @if($isCreating)
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M6 18L18 6M6 6l12 12"/></svg>
+                        <span>{{ __('Cancel') }}</span>
+                    @else
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="4" d="M12 4v16m8-8H4"/></svg>
+                        <span>{{ __('New Group') }}</span>
+                    @endif
+                </div>
             </x-ui.button>
         </div>
     </div>
@@ -50,13 +67,8 @@
                                 'bg-primary/10 border-primary/30 shadow-[0_0_30px_rgba(190,194,255,0.1)]' => $selectedGroupId == $group->id,
                                 'bg-surface-container-low/40 border-white/5 hover:border-white/20' => $selectedGroupId != $group->id
                             ])>
-                                <div @class([
-                                    'w-14 h-14 rounded-2xl flex items-center justify-center font-display font-black text-xl italic transition-all duration-500',
-                                    'bg-primary text-on-primary rotate-3 shadow-2xl' => $selectedGroupId == $group->id,
-                                    'bg-surface-container-highest text-primary/40 group-hover/btn:rotate-3 group-hover/btn:bg-primary/20 group-hover/btn:text-primary' => $selectedGroupId != $group->id
-                                ])>
-                                    {{ strtoupper(substr($group->name, 0, 1)) }}
-                                </div>
+                                <x-ui.avatar :model="$group" size="lg" class="{{ $selectedGroupId == $group->id ? 'rotate-3 shadow-2xl' : 'group-hover/btn:rotate-3 group-hover/btn:bg-primary/20 transition-all duration-500 shadow-xl' }}" />
+
                                 <div class="flex-1">
                                     <div @class([
                                         'text-lg font-black tracking-tight transition-colors',
@@ -93,13 +105,8 @@
                                 'bg-secondary/10 border-secondary/30 shadow-[0_0_30px_rgba(100,200,255,0.1)]' => $selectedGroupId == $group->id,
                                 'bg-surface-container-low/40 border-white/5 hover:border-white/20' => $selectedGroupId != $group->id
                             ])>
-                                <div @class([
-                                    'w-14 h-14 rounded-2xl flex items-center justify-center font-display font-black text-xl italic transition-all duration-500',
-                                    'bg-secondary text-on-secondary -rotate-3 shadow-2xl' => $selectedGroupId == $group->id,
-                                    'bg-surface-container-highest text-secondary/40 group-hover/btn:-rotate-3 group-hover/btn:bg-secondary/20 group-hover/btn:text-secondary' => $selectedGroupId != $group->id
-                                ])>
-                                    {{ strtoupper(substr($group->name, 0, 1)) }}
-                                </div>
+                                <x-ui.avatar :model="$group" size="lg" class="{{ $selectedGroupId == $group->id ? '-rotate-3 shadow-2xl' : 'group-hover/btn:-rotate-3 group-hover/btn:bg-secondary/20 transition-all duration-500 shadow-xl' }}" />
+
                                 <div class="flex-1">
                                     <div @class([
                                         'text-lg font-black tracking-tight transition-colors',
@@ -130,9 +137,22 @@
                         <div class="relative flex flex-col md:flex-row justify-between items-start gap-12">
                             <div class="space-y-6 flex-1">
                                 <div class="flex items-center gap-6">
-                                    <div class="w-16 h-16 rounded-2xl bg-primary/10 flex items-center justify-center font-display font-black text-2xl text-primary shadow-inner border border-primary/20 italic">
-                                        {{ strtoupper(substr($selectedGroup->name, 0, 1)) }}
+                                    <div class="relative group/logo">
+                                        <x-ui.avatar :model="$selectedGroup" size="2xl" class="rounded-[2.5rem] shadow-2xl transition-transform group-hover/logo:scale-105 duration-500" />
+                                        @if($selectedGroup->owner_id === auth()->id())
+                                            <label class="absolute inset-0 flex items-center justify-center bg-black/60 opacity-0 group-hover/logo:opacity-100 transition-opacity cursor-pointer rounded-[2.5rem] backdrop-blur-sm">
+                                                <div class="flex flex-col items-center gap-2">
+                                                    <svg class="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M3 9a2 2 0 012-2h.93a2 2 0 001.664-.89l.812-1.22A2 2 0 0110.07 4h3.86a2 2 0 011.664.89l.812 1.22A2 2 0 0018.07 7H19a2 2 0 012 2v9a2 2 0 01-2 2H5a2 2 0 01-2-2V9z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M15 13a3 3 0 11-6 0 3 3 0 016 0z"/></svg>
+                                                    <span class="text-[8px] font-black uppercase tracking-widest text-white">{{ __('Edit') }}</span>
+                                                </div>
+                                                <input type="file" wire:model="logo" class="hidden" accept="image/*">
+                                            </label>
+                                        @endif
+                                        <div wire:loading wire:target="logo" class="absolute inset-0 flex items-center justify-center bg-black/40 rounded-[2.5rem] backdrop-blur-md">
+                                            <div class="w-6 h-6 border-2 border-primary border-t-transparent rounded-full animate-spin"></div>
+                                        </div>
                                     </div>
+
                                     <div>
                                         <h1 class="font-display text-4xl font-black text-on-surface tracking-tighter">{{ $selectedGroup->name }}</h1>
                                         <div class="flex items-center gap-3 mt-1">
@@ -159,11 +179,11 @@
                                 <!-- Group Statistics -->
                                 <div class="flex items-center gap-4 bg-black/20 rounded-2xl p-4 border border-white/5">
                                     <div class="flex flex-col items-center px-4 border-r border-white/5">
-                                        <span class="text-2xl font-black text-on-surface">{{ $selectedGroup->members->count() }}</span>
+                                        <span class="text-2xl font-black text-on-surface">{{ $selectedGroup->members_count }}</span>
                                         <span class="text-[8px] font-black uppercase tracking-widest text-on-surface-variant/40">{{ __('Members') }}</span>
                                     </div>
                                     <div class="flex flex-col items-center px-4">
-                                        <span class="text-2xl font-black text-primary">0</span>
+                                        <span class="text-2xl font-black text-primary">{{ $selectedGroup->posts_count }}</span>
                                         <span class="text-[8px] font-black uppercase tracking-widest text-on-surface-variant/40">{{ __('Posts') }}</span>
                                     </div>
                                 </div>
@@ -183,9 +203,9 @@
                         </div>
                     </div>
 
-                    <div class="flex flex-col xl:flex-row gap-12 items-start">
+                    <div class="flex flex-col 2xl:flex-row gap-12 items-start">
                         <!-- Content -->
-                        <div class="flex-grow min-h-[600px] w-full">
+                        <div class="flex-grow min-h-[600px] w-full min-w-0">
                             @if($activeTab === 'feed')
                                 <div class="animate-in fade-in slide-in-from-bottom-8 duration-700">
                                     <div class="flex items-center gap-6 mb-12">
@@ -208,7 +228,7 @@
                         </div>
 
                         <!-- Member Management -->
-                        <div class="w-full xl:w-[350px] shrink-0 sticky top-32 space-y-8">
+                        <div class="w-full 2xl:w-[380px] shrink-0 sticky top-32 space-y-8">
                             <div class="bg-surface-container-low/60 backdrop-blur-3xl border border-white/10 rounded-[2.5rem] p-8 shadow-2xl relative overflow-hidden">
                                 <div class="flex items-center justify-between mb-8 pb-4 border-b border-white/5">
                                     <h3 class="text-[10px] font-black uppercase tracking-[0.4em] text-on-surface-variant/40 flex items-center gap-3">
@@ -223,9 +243,10 @@
                                         <div class="flex items-center justify-between p-3 rounded-2xl bg-black/20 border border-white/5 group/member transition-all hover:border-primary/20 hover:bg-primary/5">
                                             <div class="flex items-center gap-4">
                                                 <div class="relative">
-                                                    <img src="{{ $member->profile_photo_url }}" class="w-10 h-10 rounded-xl border border-white/10 shadow-lg object-cover">
+                                                    <x-ui.avatar :model="$member" size="sm" class="rounded-xl border border-white/10 shadow-lg" />
                                                     <div class="absolute -bottom-1 -right-1 w-3 h-3 bg-emerald-500 border-[3px] border-[#0d0e12] rounded-full shadow-[0_0_10px_rgba(16,185,129,0.5)]"></div>
                                                 </div>
+
                                                 <div class="flex flex-col">
                                                     <span class="text-xs font-black text-on-surface tracking-tight">{{ $member->name }}</span>
                                                     <span class="text-[9px] font-mono font-bold text-primary/40 uppercase tracking-tighter">{{ $selectedGroup->owner_id === $member->id ? 'OWNER' : 'MEMBER' }}</span>
@@ -254,9 +275,11 @@
                                                 <div class="absolute z-50 bottom-full left-0 w-full mb-4 bg-surface-container-highest rounded-3xl shadow-[0_30px_100px_rgba(0,0,0,0.8)] border border-white/5 overflow-hidden backdrop-blur-3xl animate-in slide-in-from-bottom-4 duration-300">
                                                     @foreach($searchResults as $res)
                                                         <button wire:click="addMember({{ $res['id'] }})" class="w-full px-6 py-4 flex items-center gap-4 hover:bg-primary/20 transition-all text-left text-xs font-black text-on-surface">
-                                                            <img src="{{ $res['profile_photo_url'] ?? '' }}" class="w-8 h-8 rounded-xl shadow-lg">
+                                                            @php $u = \App\Models\User::find($res['id']); @endphp
+                                                            <x-ui.avatar :model="$u" size="sm" class="rounded-xl shadow-lg" />
                                                             <span>{{ $res['name'] }}</span>
                                                         </button>
+
                                                     @endforeach
                                                 </div>
                                             @endif

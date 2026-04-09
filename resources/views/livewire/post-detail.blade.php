@@ -47,13 +47,13 @@
         @if (session()->has('success'))
             <div class="bg-emerald-500/90 backdrop-blur-md text-white px-6 py-4 rounded-2xl shadow-2xl border border-emerald-400/50 flex items-center justify-between pointer-events-auto animate-fade-in">
                 <span class="text-xs font-black uppercase tracking-widest">{{ session('success') }}</span>
-                <button @click="$el.closest('div').remove()" class="ml-4 opacity-50 hover:opacity-100 italic text-[10px]">Close</button>
+                <button @click="$el.closest('div').remove()" class="ml-4 opacity-50 hover:opacity-100 italic text-[10px]">{{ __('Close') }}</button>
             </div>
         @endif
         @if (session()->has('error'))
             <div class="bg-red-500/90 backdrop-blur-md text-white px-6 py-4 rounded-2xl shadow-2xl border border-red-400/50 flex items-center justify-between pointer-events-auto animate-fade-in">
                 <span class="text-xs font-black uppercase tracking-widest">{{ session('error') }}</span>
-                <button @click="$el.closest('div').remove()" class="ml-4 opacity-50 hover:opacity-100 italic text-[10px]">Close</button>
+                <button @click="$el.closest('div').remove()" class="ml-4 opacity-50 hover:opacity-100 italic text-[10px]">{{ __('Close') }}</button>
             </div>
         @endif
     </div>
@@ -85,13 +85,17 @@
                         <span class="text-xs font-mono font-bold text-primary tracking-wider font-black">@<span>{{ $post->user->name }}</span></span>
                     </div>
                     <div class="flex items-center gap-3 mt-1">
-                        @php
-                            $lensColors = [
-                        <span class="px-2 py-0.5 rounded text-[9px] font-black uppercase tracking-widest {{ $color['bg'] }} {{ $color['text'] }} border {{ $color['border'] }}">{{ $post->lens ?: 'Logic' }}</span>
+                        @foreach(explode(',', $post->lens ?? 'Logic') as $l)
+                            @php $lKey = strtolower(trim($l)); @endphp
+                            <span 
+                                class="px-3 py-1 rounded-xl text-[9px] font-black uppercase tracking-[0.2em] transition-all cursor-default border"
+                                style="color: var(--lens-{{ $lKey }}); background-color: rgba(var(--lens-{{ $lKey }}-rgb), 0.1); border-color: rgba(var(--lens-{{ $lKey }}-rgb), 0.3);"
+                            >#{{ strtoupper(trim($l)) }}</span>
+                        @endforeach
                         <span class="text-[10px] uppercase tracking-[0.2em] text-on-surface-variant font-black opacity-40 flex items-center gap-2">
                             {{ $post->created_at->diffForHumans() }}
                         </span>
-                        <span class="text-on-surface-variant/40 text-[10px] font-black uppercase tracking-[0.2em] font-mono">/ {{ $post->snippets->count() }} FILES</span>
+                        <span class="text-on-surface-variant/40 text-[10px] font-black uppercase tracking-[0.2em] font-mono">/ {{ $post->snippets->count() }} {{ __('FILES') }}</span>
                     </div>
                     <h1 class="text-2xl font-black text-on-surface tracking-tighter mt-2">{{ $post->title }}</h1>
                 </div>
@@ -279,9 +283,7 @@
                                                         <div class="flex items-center gap-4">
                                                             <h3 class="text-2xl font-black text-on-surface tracking-tighter">{{ $fr->user->name }}</h3>
                                                             <span class="text-xs font-mono font-bold text-primary/60 tracking-wider">@<span>{{ $fr->user->name }}</span></span>
-                                                            @if($fr->score)
-                                                                <span class="px-3 py-1 rounded-full bg-primary/10 text-primary text-[10px] font-black uppercase tracking-widest border border-primary/20">SCORE: {{ $fr->score }}/10</span>
-                                                            @endif
+                                                                <span class="px-3 py-1 rounded-full bg-primary/10 text-primary text-[10px] font-black uppercase tracking-widest border border-primary/20">{{ __('Score') }}: {{ $fr->score }}/10</span>
                                                         </div>
                                                         <span class="text-[10px] font-black uppercase tracking-[0.3em] text-on-surface-variant/40 flex items-center gap-2">
                                                             <div class="w-1 h-1 rounded-full bg-primary/40"></div>
