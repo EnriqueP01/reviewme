@@ -8,7 +8,7 @@ use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 use Livewire\Attributes\Layout;
 use Livewire\Component;
 
-class UpdateVibeCode extends Component
+class UpdatePost extends Component
 {
     use AuthorizesRequests;
 
@@ -97,8 +97,8 @@ class UpdateVibeCode extends Component
             $fileName = ! empty($file['name']) ? $file['name'] : __('Untitled_Source');
             $rules["files.$index.name"] = 'required|string';
             $rules["files.$index.content"] = 'required|string|max:524288';
-            $messages["files.$index.name.required"] = __('The file name is required for fragment #:index', ['index' => $index + 1]);
-            $messages["files.$index.content.required"] = __('Source code is missing for artifact: :filename', ['filename' => $fileName]);
+            $messages["files.$index.name.required"] = __('The file name is required for snippet #:index', ['index' => $index + 1]);
+            $messages["files.$index.content.required"] = __('Source code is missing for file: :filename', ['filename' => $fileName]);
         }
         $this->validate($rules, $messages);
 
@@ -117,12 +117,12 @@ class UpdateVibeCode extends Component
 
         session()->flash('success', __('New code version created and deployed!'));
 
-        return redirect()->to(route('vibe.detail', $this->post->id));
+        return redirect()->to(route('posts.detail', $this->post->id));
     }
 
     #[Layout('layouts.app')]
     public function render()
     {
-        return view('livewire.update-vibe-code');
+        return view('livewire.update-post');
     }
 }

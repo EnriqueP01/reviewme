@@ -2,7 +2,7 @@
 
 namespace Tests\Feature;
 
-use App\Livewire\UpdateVibeCode;
+use App\Livewire\UpdatePost;
 use App\Models\Post;
 use App\Models\Snippet;
 use App\Models\User;
@@ -11,7 +11,7 @@ use Illuminate\Support\Str;
 use Livewire\Livewire;
 use Tests\TestCase;
 
-class UpdateVibeCodeTest extends TestCase
+class UpdatePostTest extends TestCase
 {
     use RefreshDatabase;
 
@@ -21,10 +21,10 @@ class UpdateVibeCodeTest extends TestCase
         $post = Post::factory()->create(['user_id' => $user->id]);
         Snippet::factory()->create(['post_id' => $post->id, 'version_number' => 1]);
 
-        $response = $this->actingAs($user)->get(route('vibe.update-code', $post->id));
+        $response = $this->actingAs($user)->get(route('posts.update-code', $post->id));
 
         $response->assertStatus(200);
-        $response->assertSeeLivewire(UpdateVibeCode::class);
+        $response->assertSeeLivewire(UpdatePost::class);
     }
 
     public function test_non_author_cannot_access_update_page()
@@ -34,7 +34,7 @@ class UpdateVibeCodeTest extends TestCase
         $post = Post::factory()->create(['user_id' => $otherUser->id]);
         Snippet::factory()->create(['post_id' => $post->id, 'version_number' => 1]);
 
-        $response = $this->actingAs($user)->get(route('vibe.update-code', $post->id));
+        $response = $this->actingAs($user)->get(route('posts.update-code', $post->id));
 
         $response->assertStatus(403);
     }
@@ -51,7 +51,7 @@ class UpdateVibeCodeTest extends TestCase
         ]);
 
         Livewire::actingAs($user)
-            ->test(UpdateVibeCode::class, ['postId' => $post->id])
+            ->test(UpdatePost::class, ['postId' => $post->id])
             ->set('files', [
                 [
                     'id' => (string) Str::uuid(),
@@ -62,7 +62,7 @@ class UpdateVibeCodeTest extends TestCase
                 ],
             ])
             ->call('submit')
-            ->assertRedirect(route('vibe.detail', $post->id));
+            ->assertRedirect(route('posts.detail', $post->id));
 
         $this->assertDatabaseHas('snippets', [
             'post_id' => $post->id,
