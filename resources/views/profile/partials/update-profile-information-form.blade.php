@@ -37,24 +37,53 @@
             }
         </script>
 
+        <!-- Display Name -->
         <div class="space-y-3">
-            <x-input-label for="name" :value="__('Username')" />
-            <div class="relative group/name flex items-center">
+            <x-input-label for="name" :value="__('Display Name')" />
+            <x-text-input 
+                id="name" 
+                name="name" 
+                type="text" 
+                class="block w-full" 
+                :value="old('name', $user->name)" 
+                required 
+                autofocus 
+                autocomplete="name" 
+            />
+            <x-input-error :messages="$errors->get('name')" />
+        </div>
+
+        <!-- Unique Handle -->
+        <div class="space-y-3">
+            <x-input-label for="handle" :value="__('Unique Handle')" />
+            <div class="relative group/handle flex items-center">
                 <div class="absolute inset-y-0 left-0 pl-6 flex items-center pointer-events-none z-10">
-                    <span class="text-primary font-mono font-black text-lg group-focus-within/name:scale-110 transition-transform">@</span>
+                    <span class="text-primary font-mono font-black text-lg group-focus-within/handle:scale-110 transition-transform">@</span>
                 </div>
                 <x-text-input 
-                    id="name" 
-                    name="name" 
+                    id="handle" 
+                    name="handle" 
                     type="text" 
                     class="block w-full !pl-12 font-mono !text-primary !bg-primary/[0.02] border-primary/20 focus:border-primary/50 focus:ring-primary/10 tracking-tight" 
-                    :value="old('name', $user->name)" 
+                    :value="old('handle', $user->handle)" 
                     required 
-                    autofocus 
-                    autocomplete="name" 
                 />
             </div>
-            <x-input-error :messages="$errors->get('name')" />
+            <p class="text-[10px] text-on-surface-variant opacity-60 italic">{{ __('This will be used for your profile URL: ') }} {{ config('app.url') }}/profile/<b>your-handle</b></p>
+            <x-input-error :messages="$errors->get('handle')" />
+        </div>
+
+        <!-- Biography -->
+        <div class="space-y-3">
+            <x-input-label for="bio" :value="__('Biography')" />
+            <textarea 
+                id="bio" 
+                name="bio" 
+                rows="4"
+                class="block w-full rounded-[1.5rem] bg-surface-container border-outline-variant/10 text-on-surface focus:border-primary focus:ring-primary/10 transition-all text-sm py-4 px-6 italic"
+                placeholder="{{ __('Tell us about yourself...') }}"
+            >{{ old('bio', $user->bio) }}</textarea>
+            <x-input-error :messages="$errors->get('bio')" />
         </div>
 
         <div class="space-y-3">

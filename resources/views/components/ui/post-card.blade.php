@@ -69,17 +69,19 @@
             <!-- Metadata Row -->
             <div class="flex items-start justify-between">
                 <div class="flex items-center gap-6">
-                    <x-ui.avatar :model="$post->user" size="lg" class="group-hover/avatar:scale-105 transition-all duration-500" />
-                    
-                    <div class="flex flex-col">
-                        <div class="flex items-center gap-3">
-                            <span class="text-lg font-black text-on-surface tracking-tight">{{ $post->user->name }}</span>
-                            <span class="text-xs font-mono font-bold text-primary tracking-wider font-black">@<span>{{ $post->user->username ?? $post->user->name }}</span></span>
+                    <a href="{{ route('profile.show', $post->user->handle) }}" wire:navigate class="group/author flex items-center gap-6">
+                        <x-ui.avatar :model="$post->user" size="lg" class="group-hover/author:scale-105 transition-all duration-500 shadow-xl" />
+                        
+                        <div class="flex flex-col">
+                            <div class="flex items-center gap-3">
+                                <span class="text-lg font-black text-on-surface tracking-tight group-hover/author:text-primary transition-colors">{{ $post->user->name }}</span>
+                                <span class="text-xs font-mono font-bold text-primary tracking-wider font-black opacity-40 group-hover/author:opacity-100 transition-opacity">@<span>{{ $post->user->handle }}</span></span>
+                            </div>
+                            <span class="text-[10px] uppercase tracking-[0.2em] text-on-surface-variant font-black opacity-40 mt-1 flex items-center gap-2">
+                                {{ $post->created_at->diffForHumans() }}
+                            </span>
                         </div>
-                        <span class="text-[10px] uppercase tracking-[0.2em] text-on-surface-variant font-black opacity-40 mt-1 flex items-center gap-2">
-                            {{ $post->created_at->diffForHumans() }}
-                        </span>
-                    </div>
+                    </a>
                 </div>
                 
                 <div class="opacity-0 group-hover:opacity-100 transition-all duration-300 flex items-center gap-4">

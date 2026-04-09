@@ -25,9 +25,19 @@ class ProfileUpdateRequest extends FormRequest
             'name' => [
                 'required',
                 'string',
-                'alpha_dash',
                 'max:255',
+            ],
+            'handle' => [
+                'required',
+                'string',
+                'alpha_dash',
+                'max:50',
                 Rule::unique(User::class)->ignore($this->user()->id),
+            ],
+            'bio' => [
+                'nullable',
+                'string',
+                'max:500',
             ],
             'email' => [
                 'required',
