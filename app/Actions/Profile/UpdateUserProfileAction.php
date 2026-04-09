@@ -4,17 +4,15 @@ declare(strict_types=1);
 
 namespace App\Actions\Profile;
 
-use Illuminate\Support\Facades\Storage;
 use App\Models\User;
+use Illuminate\Support\Facades\Storage;
 
 final class UpdateUserProfileAction
 {
     /**
      * Exécute la mise à jour du profil utilisateur.
      *
-     * @param User $user
-     * @param array<string, mixed> $data
-     * @return User
+     * @param  array<string, mixed>  $data
      */
     public function execute(User $user, array $data): User
     {

@@ -11,10 +11,6 @@ final class UpdateUserPasswordAction
 {
     /**
      * Met à jour le mot de passe de l'utilisateur.
-     *
-     * @param User $user
-     * @param string $newPassword
-     * @return void
      */
     public function execute(User $user, string $newPassword): void
     {

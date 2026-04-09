@@ -26,15 +26,15 @@ class PostFeedTest extends TestCase
     public function test_authenticated_users_can_see_public_posts()
     {
         $user = User::factory()->create();
-        
+
         $publicPost = Post::factory()->create([
             'title' => 'Vibe Publique',
-            'visibility' => 'public'
+            'visibility' => 'public',
         ]);
 
         $privatePostByOther = Post::factory()->create([
             'title' => 'Vibe Privée Secrète',
-            'visibility' => 'private'
+            'visibility' => 'private',
         ]);
 
         $response = $this->actingAs($user)->get('/dashboard');
@@ -50,11 +50,11 @@ class PostFeedTest extends TestCase
     public function test_authenticated_users_can_see_their_own_private_posts()
     {
         $user = User::factory()->create();
-        
+
         $privatePost = Post::factory()->create([
             'user_id' => $user->id,
             'title' => 'Ma Vibe Secrète',
-            'visibility' => 'private'
+            'visibility' => 'private',
         ]);
 
         $response = $this->actingAs($user)->get('/dashboard');

@@ -14,7 +14,7 @@ class PasswordController extends Controller
      * Update the user's password.
      */
     public function update(
-        Request $request, 
+        Request $request,
         UpdateUserPasswordAction $updateUserPassword
     ): RedirectResponse {
         $validated = $request->validateWithBag('updatePassword', [

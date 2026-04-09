@@ -14,7 +14,6 @@ final class CreatePostAction
     /**
      * Crée un nouveau Post ainsi que ses Snippets associés au sein d'une transaction.
      *
-     * @param User $user
      * @param array{
      *     title: string,
      *     description: string,
@@ -24,7 +23,6 @@ final class CreatePostAction
      *     lens: string,
      *     files: array<int, array{content: string, language: string}>
      * } $data
-     * @return Post
      */
     public function execute(User $user, array $data): Post
     {

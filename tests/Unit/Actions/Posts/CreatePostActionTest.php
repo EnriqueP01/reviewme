@@ -19,7 +19,7 @@ class CreatePostActionTest extends TestCase
     protected function setUp(): void
     {
         parent::setUp();
-        $this->action = new CreatePostAction();
+        $this->action = new CreatePostAction;
     }
 
     /**
@@ -40,14 +40,14 @@ class CreatePostActionTest extends TestCase
                 [
                     'content' => '<?php echo "Hello World"; ?>',
                     'language' => 'php',
-                    'description' => 'Initial snippet'
+                    'description' => 'Initial snippet',
                 ],
                 [
                     'content' => 'console.log("Hello");',
                     'language' => 'javascript',
-                    'description' => 'JS snippet'
-                ]
-            ]
+                    'description' => 'JS snippet',
+                ],
+            ],
         ];
 
         $post = $this->action->execute($user, $data);
@@ -56,20 +56,20 @@ class CreatePostActionTest extends TestCase
         $this->assertEquals($user->id, $post->user_id);
         $this->assertEquals('Test Artifact', $post->title);
         $this->assertCount(2, $post->snippets);
-        
+
         $this->assertDatabaseHas('posts', [
             'id' => $post->id,
-            'title' => 'Test Artifact'
+            'title' => 'Test Artifact',
         ]);
 
         $this->assertDatabaseHas('snippets', [
             'post_id' => $post->id,
-            'language' => 'php'
+            'language' => 'php',
         ]);
-        
+
         $this->assertDatabaseHas('snippets', [
             'post_id' => $post->id,
-            'language' => 'javascript'
+            'language' => 'javascript',
         ]);
     }
 }

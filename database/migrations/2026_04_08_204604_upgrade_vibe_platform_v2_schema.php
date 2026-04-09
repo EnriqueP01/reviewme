@@ -11,21 +11,21 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::table('posts', function (Illuminate\Database\Schema\Blueprint $table) {
+        Schema::table('posts', function (Blueprint $table) {
             $table->string('short_description')->nullable()->after('title');
             $table->text('review_goals')->nullable()->after('short_description');
             $table->text('improvement_goals')->nullable()->after('review_goals');
         });
 
-        Schema::table('snippets', function (Illuminate\Database\Schema\Blueprint $table) {
+        Schema::table('snippets', function (Blueprint $table) {
             $table->text('description')->nullable()->after('code_content');
         });
 
-        Schema::table('groups', function (Illuminate\Database\Schema\Blueprint $table) {
+        Schema::table('groups', function (Blueprint $table) {
             $table->text('description')->nullable()->after('name');
         });
 
-        Schema::create('group_user', function (Illuminate\Database\Schema\Blueprint $table) {
+        Schema::create('group_user', function (Blueprint $table) {
             $table->id();
             $table->foreignId('group_id')->constrained()->cascadeOnDelete();
             $table->foreignId('user_id')->constrained()->cascadeOnDelete();
@@ -37,16 +37,16 @@ return new class extends Migration
     public function down(): void
     {
         Schema::dropIfExists('group_user');
-        
-        Schema::table('snippets', function (Illuminate\Database\Schema\Blueprint $table) {
+
+        Schema::table('snippets', function (Blueprint $table) {
             $table->dropColumn('description');
         });
 
-        Schema::table('posts', function (Illuminate\Database\Schema\Blueprint $table) {
+        Schema::table('posts', function (Blueprint $table) {
             $table->dropColumn(['short_description', 'review_goals', 'improvement_goals']);
         });
 
-        Schema::table('groups', function (Illuminate\Database\Schema\Blueprint $table) {
+        Schema::table('groups', function (Blueprint $table) {
             $table->dropColumn('description');
         });
     }

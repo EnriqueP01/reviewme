@@ -12,9 +12,6 @@ final class HandleGithubCallbackAction
 {
     /**
      * Gère la création ou la mise à jour de l'utilisateur à partir des données GitHub.
-     *
-     * @param SocialiteUser $githubUser
-     * @return User
      */
     public function execute(SocialiteUser $githubUser): User
     {
@@ -26,7 +23,7 @@ final class HandleGithubCallbackAction
             'avatar' => $githubUser->getAvatar(),
             'bio' => $githubUser->user['bio'] ?? null,
             'password' => bcrypt(Str::random(24)),
-            'email_verified_at' => now(), 
+            'email_verified_at' => now(),
         ]);
     }
 }

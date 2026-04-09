@@ -2,9 +2,10 @@
 
 namespace Tests\Feature;
 
+use App\Actions\Posts\SearchPostsAction;
 use App\Models\Group;
-use App\Models\User;
 use App\Models\Post;
+use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
 
@@ -16,15 +17,15 @@ class LabSecurityTest extends TestCase
     {
         $owner = User::factory()->create();
         $stranger = User::factory()->create();
-        
+
         $group = Group::create([
             'name' => 'Secret Lab',
             'slug' => 'secret-lab',
-            'owner_id' => $owner->id
+            'owner_id' => $owner->id,
         ]);
 
         $this->actingAs($stranger);
-        
+
         // On simule l'accès via la Policy
         $this->assertFalse($stranger->can('view', $group));
     }
@@ -33,11 +34,11 @@ class LabSecurityTest extends TestCase
     {
         $owner = User::factory()->create();
         $member = User::factory()->create();
-        
+
         $group = Group::create([
             'name' => 'Collaborative Lab',
             'slug' => 'collab-lab',
-            'owner_id' => $owner->id
+            'owner_id' => $owner->id,
         ]);
 
         $group->members()->attach($member->id, ['role' => 'member']);
@@ -50,18 +51,18 @@ class LabSecurityTest extends TestCase
     {
         $owner = User::factory()->create();
         $moderator = User::factory()->create();
-        
+
         $group = Group::create([
             'name' => 'Fragile Lab',
             'slug' => 'fragile-lab',
-            'owner_id' => $owner->id
+            'owner_id' => $owner->id,
         ]);
 
         $group->members()->attach($moderator->id, ['role' => 'moderator']);
 
         $this->actingAs($moderator);
         $this->assertFalse($moderator->can('delete', $group));
-        
+
         $this->actingAs($owner);
         $this->assertTrue($owner->can('delete', $group));
     }
@@ -70,11 +71,11 @@ class LabSecurityTest extends TestCase
     {
         $owner = User::factory()->create();
         $stranger = User::factory()->create();
-        
+
         $group = Group::create([
             'name' => 'Invisible Lab',
             'slug' => 'invisible-lab',
-            'owner_id' => $owner->id
+            'owner_id' => $owner->id,
         ]);
 
         $post = Post::create([
@@ -83,13 +84,13 @@ class LabSecurityTest extends TestCase
             'title' => 'Top Secret Code',
             'description' => 'Shhh',
             'visibility' => 'private',
-            'lens' => 'security'
+            'lens' => 'security',
         ]);
 
         $this->actingAs($stranger);
-        
+
         // On simule l'action de recherche pour vérifier le filtrage
-        $action = new \App\Actions\Posts\SearchPostsAction();
+        $action = new SearchPostsAction;
         $results = $action->execute()->get();
 
         $this->assertFalse($results->contains($post));

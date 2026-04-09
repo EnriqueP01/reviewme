@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace Tests\Unit\Actions\Reactions;
 
 use App\Actions\Reactions\ToggleReactionAction;
-use App\Actions\Reactions\UpdateUserReputationAction;
 use App\Models\Post;
 use App\Models\Reaction;
 use App\Models\User;
@@ -38,7 +37,7 @@ class ToggleReactionActionTest extends TestCase
             'user_id' => $voter->id,
             'reactable_id' => $post->id,
             'reactable_type' => Post::class,
-            'type' => 'mindblown'
+            'type' => 'mindblown',
         ]);
 
         $this->assertEquals(10, $author->fresh()->reputation_score);
@@ -50,20 +49,20 @@ class ToggleReactionActionTest extends TestCase
         $voter = User::factory()->create();
         $author = User::factory()->create(['reputation_score' => 10]);
         $post = Post::factory()->create(['user_id' => $author->id]);
-        
+
         // Setup existing reaction
         Reaction::create([
             'user_id' => $voter->id,
             'reactable_id' => $post->id,
             'reactable_type' => Post::class,
-            'type' => 'mindblown'
+            'type' => 'mindblown',
         ]);
 
         $this->action->execute($voter, $post, 'mindblown');
 
         $this->assertDatabaseMissing('reactions', [
             'user_id' => $voter->id,
-            'reactable_id' => $post->id
+            'reactable_id' => $post->id,
         ]);
 
         $this->assertEquals(0, $author->fresh()->reputation_score);
@@ -75,12 +74,12 @@ class ToggleReactionActionTest extends TestCase
         $voter = User::factory()->create();
         $author = User::factory()->create(['reputation_score' => -2]); // Auteur d'un post jugé optimisable
         $post = Post::factory()->create(['user_id' => $author->id]);
-        
+
         Reaction::create([
             'user_id' => $voter->id,
             'reactable_id' => $post->id,
             'reactable_type' => Post::class,
-            'type' => 'optimisable'
+            'type' => 'optimisable',
         ]);
 
         // On change en 'mindblown' (Delta attendu: +12)

@@ -4,7 +4,9 @@ declare(strict_types=1);
 
 namespace App\Actions\Reactions;
 
+use App\Models\Post;
 use App\Models\Reaction;
+use App\Models\Snippet;
 use App\Models\User;
 use Illuminate\Database\Eloquent\Model;
 
@@ -18,18 +20,17 @@ final class ToggleReactionAction
      * Ajoute, met à jour ou supprime (toggle) une réaction sur un modèle.
      * Si la réaction existante est du même type, elle est supprimée.
      *
-     * @param User $user Celui qui réagit
-     * @param Model $reactable Le post ou snippet reactable
-     * @param string $type Le type de réaction
-     * @return Reaction|null
+     * @param  User  $user  Celui qui réagit
+     * @param  Model  $reactable  Le post ou snippet reactable
+     * @param  string  $type  Le type de réaction
      */
     public function execute(User $user, Model $reactable, string $type): ?Reaction
     {
         // On récupère l'auteur de la ressource pour mettre à jour sa réputation
         $author = null;
-        if ($reactable instanceof \App\Models\Post) {
+        if ($reactable instanceof Post) {
             $author = $reactable->user;
-        } elseif ($reactable instanceof \App\Models\Snippet) {
+        } elseif ($reactable instanceof Snippet) {
             $author = $reactable->post->user;
         }
 
@@ -45,6 +46,7 @@ final class ToggleReactionAction
             if ($author) {
                 $this->updateReputation->execute($author, $type, 'remove');
             }
+
             return null;
         }
 
@@ -54,6 +56,7 @@ final class ToggleReactionAction
             if ($author) {
                 $this->updateReputation->execute($author, $type, 'switch');
             }
+
             return $existing;
         }
 
@@ -62,7 +65,7 @@ final class ToggleReactionAction
             'user_id' => $user->id,
             'reactable_id' => $reactable->getKey(),
             'reactable_type' => $reactable->getMorphClass(),
-            'type' => $type
+            'type' => $type,
         ]);
 
         if ($author) {

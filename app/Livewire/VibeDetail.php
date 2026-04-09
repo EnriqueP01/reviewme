@@ -4,20 +4,25 @@ declare(strict_types=1);
 
 namespace App\Livewire;
 
+use App\Actions\Reactions\ToggleReactionAction;
+use App\Actions\Reviews\StoreReviewAction;
 use App\Models\Post;
 use App\Models\Review;
-use Livewire\Component;
-use Livewire\Attributes\Layout;
-use Illuminate\Support\Facades\Auth;
 use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
+use Illuminate\Support\Facades\Auth;
+use Livewire\Attributes\Layout;
+use Livewire\Component;
 
 class VibeDetail extends Component
 {
     use AuthorizesRequests;
 
     public Post $post;
+
     public $activeLine = null;
+
     public string $commentContent = '';
+
     public $selectedVersion = null;
 
     public function mount(int $postId): void
@@ -31,10 +36,11 @@ class VibeDetail extends Component
         $this->activeLine = $line;
     }
 
-    public function saveComment(\App\Actions\Reviews\StoreReviewAction $storeReview): void
+    public function saveComment(StoreReviewAction $storeReview): void
     {
-        if (!Auth::check()) {
+        if (! Auth::check()) {
             $this->redirect(route('login'));
+
             return;
         }
 
@@ -52,7 +58,7 @@ class VibeDetail extends Component
         $this->commentContent = '';
         $this->activeLine = null;
         $this->post->load('snippets.reviews.user');
-        
+
         $this->dispatch('vibe-action', type: 'success');
         session()->flash('message', __('Review added successfully!'));
     }
@@ -60,7 +66,7 @@ class VibeDetail extends Component
     public function deleteReview(int $reviewId): void
     {
         $review = Review::findOrFail($reviewId);
-        
+
         $this->authorize('delete', $review);
 
         $review->delete();
@@ -79,16 +85,18 @@ class VibeDetail extends Component
         $this->redirect(route('dashboard'));
     }
 
-    public function react(string $type, \App\Actions\Reactions\ToggleReactionAction $toggleReaction): void
+    public function react(string $type, ToggleReactionAction $toggleReaction): void
     {
-        if (!Auth::check()) {
+
+        if (! Auth::check()) {
             $this->redirect(route('login'));
+
             return;
         }
 
         $toggleReaction->execute(Auth::user(), $this->post, $type);
         $this->post->load('reactions');
-        
+
         $sound = ($type === 'mindblown') ? 'up' : 'down';
         $this->dispatch('vibe-action', type: $sound);
     }
@@ -97,9 +105,9 @@ class VibeDetail extends Component
     public function render()
     {
         $snippet = $this->post->snippets()->where('id', $this->selectedVersion)->first();
-        
+
         return view('livewire.vibe-detail', [
-            'currentSnippet' => $snippet
+            'currentSnippet' => $snippet,
         ]);
     }
 }

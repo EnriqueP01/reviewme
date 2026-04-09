@@ -12,10 +12,6 @@ final class DeleteUserAccountAction
 {
     /**
      * Supprime le compte de l'utilisateur et gère la déconnexion et l'invalidation de session.
-     *
-     * @param User $user
-     * @param Request $request
-     * @return void
      */
     public function execute(User $user, Request $request): void
     {

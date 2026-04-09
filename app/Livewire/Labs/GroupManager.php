@@ -13,12 +13,16 @@ use Livewire\Component;
 final class GroupManager extends Component
 {
     public string $name = '';
+
     public string $description = '';
+
     public bool $isCreating = false;
 
     // Membership management
     public ?int $selectedGroupId = null;
+
     public string $userSearch = '';
+
     public array $searchResults = [];
 
     protected $rules = [
@@ -61,10 +65,11 @@ final class GroupManager extends Component
     {
         if (strlen($this->userSearch) < 3) {
             $this->searchResults = [];
+
             return;
         }
 
-        $this->searchResults = User::where('name', 'like', '%' . $this->userSearch . '%')
+        $this->searchResults = User::where('name', 'like', '%'.$this->userSearch.'%')
             ->where('id', '!=', Auth::id())
             ->limit(5)
             ->get()
@@ -73,12 +78,14 @@ final class GroupManager extends Component
 
     public function addMember(int $userId)
     {
-        if (!$this->selectedGroupId) return;
+        if (! $this->selectedGroupId) {
+            return;
+        }
 
         $group = Group::findOrFail($this->selectedGroupId);
         $this->authorize('addMember', $group);
 
-        if (!$group->members()->where('user_id', $userId)->exists()) {
+        if (! $group->members()->where('user_id', $userId)->exists()) {
             $group->members()->attach($userId, ['role' => 'member']);
         }
 
@@ -87,11 +94,13 @@ final class GroupManager extends Component
 
     public function removeMember(int $userId)
     {
-        if (!$this->selectedGroupId) return;
+        if (! $this->selectedGroupId) {
+            return;
+        }
 
         $group = Group::findOrFail($this->selectedGroupId);
         $memberToRemove = User::findOrFail($userId);
-        
+
         $this->authorize('removeMember', [$group, $memberToRemove]);
 
         $group->members()->detach($userId);
