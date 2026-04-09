@@ -6,6 +6,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\HasManyThrough;
 use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Database\Eloquent\Relations\MorphMany;
 
@@ -59,6 +60,13 @@ class Post extends Model
 
     public function fullReviews(): HasMany
     {
-        return $this->hasMany(FullReview::class)->latest();
+        return $this->hasMany(FullReview::class)->withCount(['reactions as up_count' => function ($query) {
+            $query->where('type', 'up');
+        }])->orderByDesc('up_count')->latest();
+    }
+
+    public function inlineSuggestions(): HasManyThrough
+    {
+        return $this->hasManyThrough(InlineSuggestion::class, Snippet::class);
     }
 }

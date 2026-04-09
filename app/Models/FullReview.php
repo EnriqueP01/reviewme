@@ -6,17 +6,13 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\MorphMany;
 
 class FullReview extends Model
 {
     use HasFactory;
 
-    protected $fillable = [
-        'user_id',
-        'post_id',
-        'description',
-        'score',
-    ];
+    protected $fillable = ['user_id', 'post_id', 'description', 'score'];
 
     public function user(): BelongsTo
     {
@@ -33,8 +29,13 @@ class FullReview extends Model
         return $this->hasMany(FullReviewSnippet::class);
     }
 
-    public function reactions(): \Illuminate\Database\Eloquent\Relations\MorphMany
+    public function reactions(): MorphMany
     {
         return $this->morphMany(Reaction::class, 'reactable');
+    }
+
+    public function comments(): HasMany
+    {
+        return $this->hasMany(PostComment::class)->whereNull('parent_id')->latest();
     }
 }

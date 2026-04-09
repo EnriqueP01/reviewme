@@ -358,3 +358,17 @@ The initial "Monolith & The Lens" implementation was too spacious, creating layo
     2. **Architecture Multi-fichiers** : Refactoring vers un composant `CodeBlock` unique gérant l'intégralité des snippets de la version active via un système d'onglets synchronisé par événements (`snippet-changed`).
     3. **Moteur Live Diff** : Implémentation d'une prévisualisation interactive dans la "Review Factory". Utilisation du `TextDiffHelper` pour calculer et afficher en temps réel les lignes ajoutées/supprimées (coloration émeraude/rubis) pendant l'édition.
 - **Impact** : Fluidité totale du workflow de revue, réduction des erreurs de publication et feedback visuel instantané digne d'un IDE professionnel.
+
+## 2026-04-09-45 : Refonte Majeure du Système de Review (Full & Quick Reviews)
+- **Auteur** : Antigravity
+- **Statut** : ✅ Implémenté
+- **Contexte** : Nécessité d'approfondir l'expérience de revue avec des fonctionnalités de "Quick Review" contextuelles et une restructuration visuelle des "Full Reviews".
+- **Décision** :
+    1. **Espace Commentaires** : Optimisation visuelle radicale (animations, textures, icônes dynamiques).
+    2. **Full Review (Feed-Style)** : Regroupement des retours sous le code avec navigation de type flux. Tri par popularité (Up/Down votes) et commentaires compacts masqués par défaut.
+    3. **Quick Review (Contextual Overlay)** : 
+        - Déclenchement par sélection de texte avec bouton flottant.
+        - Visualisation via photo de profil de l'auteur sur la ligne de code concernée.
+        - Interaction double mode : "Edit" (remplacement direct) et "DIFF" (comparaison de fusion).
+    4. **Intégrité Visuelle** : Maintien de la coloration syntaxique cohérente sur tous les nouveaux overlays et modales.
+- **Impact** : Niveau d'interaction sans précédent pour une plateforme web, fusionnant l'ergonomie d'un IDE avec la dynamique d'un réseau social technique.

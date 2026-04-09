@@ -10,12 +10,7 @@ class FullReviewSnippet extends Model
 {
     use HasFactory;
 
-    protected $fillable = [
-        'full_review_id',
-        'snippet_id',
-        'modified_content',
-        'description',
-    ];
+    protected $fillable = ['full_review_id', 'snippet_id', 'modified_content', 'description'];
 
     public function fullReview(): BelongsTo
     {

@@ -52,7 +52,7 @@ class GroupTestSeeder extends Seeder
         Snippet::create([
             'post_id' => $post->id,
             'version_number' => 1,
-            'code_content' => "function bfs(\$node) { bfs(\$node); } // Memory leak here!",
+            'code_content' => 'function bfs($node) { bfs($node); } // Memory leak here!',
             'language' => 'php',
             'description' => 'Problematic recursive logic.',
         ]);
@@ -72,7 +72,7 @@ class GroupTestSeeder extends Seeder
         Snippet::create([
             'post_id' => $public->id,
             'version_number' => 1,
-            'code_content' => "class Node { public \$links = []; }",
+            'code_content' => 'class Node { public $links = []; }',
             'language' => 'php',
         ]);
     }

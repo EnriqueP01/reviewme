@@ -5,7 +5,8 @@
     'title' => '', 
     'type' => 'elegant',
     'goals' => null,
-    'context' => null
+    'context' => null,
+    'suggestions' => collect([])
 ])
 
 @php
@@ -78,13 +79,47 @@
     });
     
     $lenses = explode(',', $type ?? 'elegant');
+
+    $suggestList = $suggestions->map(fn($s) => [
+        'id' => $s->id,
+        'snippet_id' => $s->snippet_id,
+        'line' => $s->line_number,
+        'end_line' => $s->end_line_number,
+        'description' => $s->description,
+        'user' => [
+            'name' => $s->user->name,
+            'avatar' => $s->user->avatar
+        ],
+        'original' => $s->original_content,
+        'suggested' => $highlight($s->suggested_content, ($snippetList->firstWhere('id', $s->snippet_id)['lang'] ?? 'php')),
+        'suggested_raw' => $s->suggested_content
+    ]);
 @endphp
 
 <div x-data="{ 
     activeTab: 0,
     showInfo: false,
     snippets: @js($snippetData),
+    suggestions: @js($suggestList),
+    activeSuggestion: null,
+    suggestionMode: 'diff',
     copied: false,
+    
+    toggleSuggestion(sId) {
+        if (this.activeSuggestion && this.activeSuggestion.id === sId) {
+            // Cycle modes: DIFF -> EDIT -> OFF
+            if (this.suggestionMode === 'diff') {
+                this.suggestionMode = 'edit';
+            } else {
+                this.activeSuggestion = null;
+                this.suggestionMode = 'diff';
+            }
+        } else {
+            this.activeSuggestion = this.suggestions.find(s => s.id === sId);
+            this.suggestionMode = 'diff';
+        }
+    },
+    
     copy() {
         navigator.clipboard.writeText(this.snippets[this.activeTab].raw);
         this.copied = true;
@@ -233,7 +268,7 @@
         </div>
 
         <!-- Code Body with Magnetic Scroll & Transitions -->
-        <div class="relative bg-[#0d0e14] selection:bg-primary/30 rounded-b-3xl min-h-[100px] max-h-[500px] overflow-y-auto overflow-x-hidden custom-scrollbar scroll-smooth snap-y snap-mandatory" 
+        <div class="relative bg-[#0d0e14] selection:bg-primary/30 rounded-b-3xl min-h-[100px] max-h-[600px] overflow-y-auto overflow-x-hidden custom-scrollbar scroll-smooth" 
              style="scrollbar-width: thin; scrollbar-color: rgba(190, 194, 255, 0.2) transparent;">
             
             <template x-for="(snippet, sIndex) in snippets" :key="sIndex">
@@ -242,21 +277,70 @@
                     x-transition:enter="transition ease-out duration-700"
                     x-transition:enter-start="opacity-0 translate-x-8"
                     x-transition:enter-end="opacity-100 translate-x-0"
-                    x-transition:leave="transition ease-in duration-300 absolute inset-0"
-                    x-transition:leave-start="opacity-100 translate-x-0"
-                    x-transition:leave-end="opacity-0 -translate-x-8"
                     class="p-6"
                 >
-                    <div class="font-mono text-[12px] leading-5 relative z-10 space-y-0">
+                    <div class="font-mono text-[12px] leading-6 relative z-10 space-y-0">
                         <template x-for="(line, lIndex) in snippet.lines" :key="lIndex">
-                            <div class="flex items-start group/line hover:bg-white/[0.03] -mx-6 px-6 transition-all duration-300 snap-start snap-always scroll-mt-0 selection:bg-primary/40 selection:text-white"
-                                 :data-snippet="snippet.id"
-                                 :data-line="lIndex + 1">
-                                <div class="w-12 shrink-0 text-right pr-6 select-none text-on-surface-variant/10 group-hover/line:text-primary transition-colors font-bold text-[10px]">
-                                    <span x-text="lIndex + 1"></span>
+                            <div class="relative">
+                                <!-- Quick Review Anchor (Photo) -->
+                                <template x-for="sug in suggestions.filter(s => s.snippet_id === snippet.id && s.line === (lIndex + 1))" :key="sug.id">
+                                    <div class="absolute -left-12 top-0.5 z-50 flex items-center group/picaction">
+                                        <button @click="toggleSuggestion(sug.id)" 
+                                                class="w-8 h-8 rounded-lg border-2 border-primary/40 overflow-hidden shadow-2xl transition-all hover:scale-110 hover:border-primary active:scale-95"
+                                                :class="activeSuggestion && activeSuggestion.id === sug.id ? 'ring-2 ring-primary ring-offset-2 ring-offset-[#0d0e14] border-white' : ''">
+                                            <img :src="sug.user.avatar" class="w-full h-full object-cover">
+                                        </button>
+                                        
+                                        <!-- Info Icon on Hover -->
+                                        <div class="ml-2 relative">
+                                            <div class="p-1 rounded-full bg-primary/20 text-primary opacity-40 group-hover/picaction:opacity-100 transition-opacity cursor-help">
+                                                <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" stroke-width="3"/></svg>
+                                            </div>
+                                            <!-- Description Tooltip -->
+                                            <div class="absolute left-full ml-3 top-0 w-64 p-3 bg-[#1a1b26] border border-white/10 rounded-xl shadow-2xl opacity-0 scale-95 pointer-events-none group-hover/picaction:opacity-100 group-hover/picaction:scale-100 transition-all z-50">
+                                                <p class="text-[9px] font-black uppercase tracking-widest text-primary mb-1" x-text="sug.user.name"></p>
+                                                <p class="text-[11px] text-on-surface-variant font-medium leading-relaxed" x-text="sug.description"></p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </template>
+
+                                <!-- LINE CONTENT -->
+                                <div class="flex items-start group/line hover:bg-white/[0.03] -mx-6 px-6 transition-all duration-300 selection:bg-primary/40 selection:text-white"
+                                     :data-snippet="snippet.id"
+                                     :data-line="lIndex + 1"
+                                     :class="{
+                                         'bg-primary/5': activeSuggestion && (lIndex + 1) >= activeSuggestion.line && (lIndex + 1) <= activeSuggestion.end_line && suggestionMode === 'edit',
+                                         'opacity-30': activeSuggestion && (lIndex + 1) >= activeSuggestion.line && (lIndex + 1) <= activeSuggestion.end_line && suggestionMode === 'diff'
+                                     }">
+                                    
+                                    <div class="w-12 shrink-0 text-right pr-6 select-none text-on-surface-variant/10 group-hover/line:text-primary transition-colors font-bold text-[10px]">
+                                        <span x-text="lIndex + 1"></span>
+                                    </div>
+                                    
+                                    <!-- Actual Code Display -->
+                                    <div class="flex-1 whitespace-pre-wrap break-all text-on-surface/90 font-medium tracking-wide group-hover/line:text-white transition-colors"
+                                         x-html="(activeSuggestion && (lIndex + 1) >= activeSuggestion.line && (lIndex + 1) <= activeSuggestion.end_line && suggestionMode === 'edit') 
+                                                 ? (lIndex + 1 === activeSuggestion.line ? activeSuggestion.suggested : '') 
+                                                 : line || '&nbsp;'">
+                                    </div>
                                 </div>
-                                <div class="flex-1 whitespace-pre-wrap break-all text-on-surface/90 font-medium tracking-wide group-hover/line:text-white transition-colors" x-html="line || '&nbsp;'">
-                                </div>
+
+                                <!-- DIFF VIEW (Fusion style) -->
+                                <template x-if="activeSuggestion && suggestionMode === 'diff' && lIndex + 1 === activeSuggestion.end_line && snippet.id === activeSuggestion.snippet_id">
+                                    <div class="my-2 ml-12 mr-6 rounded-xl border border-primary/30 overflow-hidden shadow-2xl animate-in fade-in slide-in-from-top-4 duration-500">
+                                        <div class="bg-primary/10 px-4 py-1.5 border-b border-primary/20 flex items-center justify-between">
+                                            <span class="text-[9px] font-black uppercase tracking-widest text-primary">{{ __('Suggested Fusion') }}</span>
+                                            <div class="flex gap-2">
+                                                <div class="w-2 h-2 rounded-full bg-primary/40"></div>
+                                                <div class="w-2 h-2 rounded-full bg-primary/20"></div>
+                                            </div>
+                                        </div>
+                                        <div class="bg-[#0f111a] p-4 text-[11px] leading-relaxed">
+                                            <div x-html="activeSuggestion.suggested"></div>
+                                        </div>
+                                    </div>
+                                </template>
                             </div>
                         </template>
                     </div>
