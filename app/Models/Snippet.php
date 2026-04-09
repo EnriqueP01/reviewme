@@ -11,7 +11,7 @@ class Snippet extends Model
 {
     use HasFactory;
 
-    protected $fillable = ['post_id', 'filename', 'version_number', 'code_content', 'description', 'language', 'sort_order'];
+    protected $fillable = ['post_id', 'name', 'content', 'language', 'sort_order', 'filename'];
 
     public function post(): BelongsTo
     {
@@ -21,5 +21,15 @@ class Snippet extends Model
     public function reviews(): HasMany
     {
         return $this->hasMany(Review::class);
+    }
+
+    public function fullReviewSnippets(): HasMany
+    {
+        return $this->hasMany(FullReviewSnippet::class);
+    }
+
+    public function inlineSuggestions(): HasMany
+    {
+        return $this->hasMany(InlineSuggestion::class)->latest();
     }
 }

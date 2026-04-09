@@ -294,3 +294,26 @@
     3. **Cleanup i18n** : Nettoyage intégral de `fr.json` et `en.json` pour supprimer les clés de branding "cool" au profit de termes standards (Feed, Review, Files).
     4. **Événements & UI** : Renommage des événements système (`vibe-*` -> `post-*`, `notification`) et des composants UI (`logo-artifact` -> `logo`).
 - **Impact** : Positionnement professionnel renforcé, meilleure accessibilité et cohérence totale de l'expérience utilisateur.
+## 2026-04-09-41 : Système de Feedback Collaboratif Avancé (Reviews & Suggestions)
+- **Auteur** : Antigravity
+- **Statut** : ✅ Implémenté
+- **Contexte** : Besoin d'élever ReviewMe au niveau d'un outil de collaboration d'élite via des retours contextuels, globaux et structurels.
+- **Décision** :
+    1. **Threaded Community Discussion** : Implémentation de commentaires globaux avec support des réponses imbriquées, Like atomiques et épinglage (Admin-Pinning) pour hiérarchiser les retours d'experts.
+    2. **Full Implementation Review (PR-Style)** : Création d'un workflow permettant de proposer des versions alternatives complètes du code métier, incluant une évaluation globale et des notes par fragment.
+    3. **Micro-modifications Contextuelles (Inline)** : 
+        - Détection de sélection textuelle Alpine.js pour un accès instantané à la proposition de changement.
+        - Système de suggestion "Diff-Edit" persistant par post (via session), offrant deux modes de lecture (Visual Diff vs In-place Editing).
+        - Gutter HUD : Visualisation des contributeurs actifs directement dans la gouttière de numérotation des lignes.
+    4. **Architecture de Données** : Extension du schéma via 4 nouvelles tables et intégration de 3 nouveaux patterns d'Action (`StorePostComment`, `StoreFullReview`, `StoreInlineSuggestion`).
+- **Impact** : Transformation de la page de détail en un véritable hub de revue de code interactif, favorisant les échanges de haute précision et la co-construction de solutions.
+
+## 2026-04-09-42: Refonte UI/UX du Système de Feedback (US40)
+
+- **Contexte** : Besoin d'harmoniser le système de feedback avec le design "Monolith & The Lens" et d'ajouter des fonctionnalités sociales avancées (Likes, Threads dynamiques).
+- **Décisions** :
+    1. **Unification Visuelle** : Adoption stricte de la palette sombre (`#1a1b26`, `#0d0e12`) et suppression de tous les éléments d'interface clairs/blancs.
+    2. **Système de Réactions Polymorphique** : Migration des cœurs/likes vers le modèle `Reaction` pour garantir l'unicité des votes et permettre le toggle (unlike).
+    3. **UX de Discussion YouTube** : Masquage des formulaires de réponse par défaut, affichage conditionnel via Alpine.js. Ajout d'états vides illustrés.
+    4. **Moteur de Coloration Blade** : Implémentation d'une coloration syntaxique légère via regex directement dans le template pour une performance et un rendu premium.
+- **Statut** : Accepté et implémenté.

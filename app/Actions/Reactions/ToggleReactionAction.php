@@ -5,7 +5,9 @@ declare(strict_types=1);
 namespace App\Actions\Reactions;
 
 use App\Models\Post;
+use App\Models\PostComment;
 use App\Models\Reaction;
+use App\Models\Review;
 use App\Models\Snippet;
 use App\Models\User;
 use Illuminate\Database\Eloquent\Model;
@@ -21,7 +23,7 @@ final class ToggleReactionAction
      * Si la réaction existante est du même type, elle est supprimée.
      *
      * @param  User  $user  Celui qui réagit
-     * @param  Model  $reactable  Le post ou snippet reactable
+     * @param  Model  $reactable  Le modèle reactable
      * @param  string  $type  Le type de réaction
      */
     public function execute(User $user, Model $reactable, string $type): ?Reaction
@@ -32,6 +34,10 @@ final class ToggleReactionAction
             $author = $reactable->user;
         } elseif ($reactable instanceof Snippet) {
             $author = $reactable->post->user;
+        } elseif ($reactable instanceof PostComment) {
+            $author = $reactable->user;
+        } elseif ($reactable instanceof Review) {
+            $author = $reactable->user;
         }
 
         $existing = Reaction::where([
