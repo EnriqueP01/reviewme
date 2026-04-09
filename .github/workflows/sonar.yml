@@ -55,9 +55,11 @@ jobs:
 
       - name: SonarQube Scan
         uses: sonarsource/sonarqube-scan-action@master
+        if: env.SONAR_TOKEN != '' # Ne s'exécute que si le token est présent
         env:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
-          SONAR_HOST_URL: ${{ secrets.SONAR_HOST_URL }} # Optionnel pour SonarCloud
+          SONAR_HOST_URL: ${{ secrets.SONAR_HOST_URL || 'https://sonarcloud.io' }} 
+        continue-on-error: true # Permet de garder les tests validés même si Sonar est mal configuré
 
       # Facultatif : Échec si la Quality Gate n'est pas passée
       # - name: SonarQube Quality Gate check
