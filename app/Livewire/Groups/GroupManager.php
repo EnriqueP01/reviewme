@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace App\Livewire\Labs;
+namespace App\Livewire\Groups;
 
 use App\Models\Group;
 use App\Models\User;
@@ -44,7 +44,7 @@ final class GroupManager extends Component
         $group->members()->attach(Auth::id(), ['role' => 'moderator']);
 
         $this->reset(['name', 'description', 'isCreating']);
-        session()->flash('success', 'Lab créé avec succès !');
+        session()->flash('success', __('Group created successfully !'));
     }
 
     public function deleteGroup(int $id)
@@ -53,7 +53,7 @@ final class GroupManager extends Component
         $this->authorize('delete', $group);
 
         $group->delete();
-        session()->flash('success', 'Lab supprimé.');
+        session()->flash('success', __('Group deleted.'));
     }
 
     public function selectGroup(int $id)
@@ -121,7 +121,7 @@ final class GroupManager extends Component
             $this->authorize('view', $selectedGroup);
         }
 
-        return view('livewire.labs.group-manager', [
+        return view('livewire.groups.group-manager', [
             'ownedGroups' => $ownedGroups,
             'memberGroups' => $memberGroups,
             'selectedGroup' => $selectedGroup,

@@ -3,10 +3,10 @@
 use App\Http\Controllers\Auth\GithubAuthController;
 use App\Http\Controllers\ProfileController;
 use App\Livewire\Feed;
-use App\Livewire\Labs\GroupManager;
+use App\Livewire\Groups\GroupManager;
+use App\Livewire\PostDetail;
 use App\Livewire\Profile;
 use App\Livewire\PublishWorkflow;
-use App\Livewire\VibeDetail;
 use App\Models\User;
 use Illuminate\Support\Facades\Route;
 
@@ -42,8 +42,8 @@ Route::get('/dashboard', Feed::class)
 Route::middleware('auth')->group(function () {
     Route::get('/profile', Profile::class)->name('profile');
     Route::get('/publish', PublishWorkflow::class)->name('publish');
-    Route::get('/labs', GroupManager::class)->name('labs');
-    Route::get('/vibe/{postId}', VibeDetail::class)->name('vibe.detail');
+    Route::get('/groups', GroupManager::class)->name('groups');
+    Route::get('/posts/{postId}', PostDetail::class)->name('posts.detail');
     Route::get('/settings', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');

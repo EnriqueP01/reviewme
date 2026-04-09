@@ -8,13 +8,13 @@
                     <h1 class="text-4xl font-display font-black tracking-tighter text-on-surface uppercase">{{ __('Settings') }}</h1>
                     <div class="h-1 w-12 bg-primary mt-4"></div>
                     <p class="mt-6 text-sm text-on-surface-variant font-editorial opacity-60 leading-relaxed max-w-xs">
-                        {{ __('Configure your identity and security protocols.') }}
+                        {{ __('Update your profile and security settings.') }}
                     </p>
                 </div>
 
                 <div class="glass-panel p-6 rounded-3xl border border-white/5 space-y-6">
                     <nav class="space-y-1">
-                        @foreach(['Identity' => '#identity', 'Security' => '#security', 'Terminal' => '#danger'] as $label => $id)
+                        @foreach(['Profile' => '#identity', 'Security' => '#security', 'Danger Zone' => '#danger'] as $label => $id)
                             <a href="{{ $id }}" class="flex items-center justify-between p-3 rounded-xl hover:bg-white/5 transition-all group">
                                 <span class="text-[10px] font-black uppercase tracking-widest text-on-surface-variant group-hover:text-primary">{{ __($label) }}</span>
                                 <svg class="w-4 h-4 text-primary/20 group-hover:text-primary transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M9 5l7 7-7 7"/></svg>
@@ -24,8 +24,8 @@
                 </div>
 
                 <div class="p-6 rounded-3xl bg-primary/5 border border-primary/10">
-                    <span class="text-[10px] font-black uppercase tracking-widest text-primary">{{ __('System Notice') }}</span>
-                    <p class="mt-2 text-xs text-on-surface-variant leading-relaxed italic opacity-70">{{ __('Modify your settings with precision.') }}</p>
+                    <span class="text-[10px] font-black uppercase tracking-widest text-primary">{{ __('Info') }}</span>
+                    <p class="mt-2 text-xs text-on-surface-variant leading-relaxed italic opacity-70">{{ __('Settings correctly updated.') }}</p>
                 </div>
             </div>
 
@@ -38,7 +38,7 @@
                     </div>
                     <div class="relative z-10">
                         <div class="mb-10">
-                            <h3 class="font-display font-black text-2xl text-on-surface tracking-tighter uppercase">{{ __('Identity & Essence') }}</h3>
+                            <h3 class="font-display font-black text-2xl text-on-surface tracking-tighter uppercase">{{ __('Profile Information') }}</h3>
                             <div class="h-0.5 w-12 bg-primary mt-2"></div>
                         </div>
                         @include('profile.partials.update-profile-information-form')
@@ -52,7 +52,7 @@
                     </div>
                     <div class="relative z-10">
                         <div class="mb-10">
-                            <h3 class="font-display font-black text-2xl text-on-surface tracking-tighter uppercase">{{ __('Security Protocol') }}</h3>
+                            <h3 class="font-display font-black text-2xl text-on-surface tracking-tighter uppercase">{{ __('Update Password') }}</h3>
                             <div class="h-0.5 w-12 bg-secondary mt-2"></div>
                         </div>
                         @include('profile.partials.update-password-form')
@@ -63,7 +63,7 @@
                 <section id="danger" class="p-10 rounded-[2.5rem] border border-error/20 bg-error/[0.02] relative group/card">
                     <div class="relative z-10">
                         <div class="mb-10">
-                            <h3 class="font-display font-black text-2xl text-error tracking-tighter uppercase">{{ __('Terminal Action') }}</h3>
+                            <h3 class="font-display font-black text-2xl text-error tracking-tighter uppercase">{{ __('Delete Account') }}</h3>
                             <div class="h-0.5 w-12 bg-error mt-2"></div>
                         </div>
                         @include('profile.partials.delete-user-form')

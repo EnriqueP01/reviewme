@@ -5,20 +5,20 @@
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <meta name="csrf-token" content="{{ csrf_token() }}">
 
-        <title>{{ config('app.name', 'ReviewMe') }} — The Digital Curator</title>
-        <meta name="description" content="{{ __('Hand-picked code architecture insights and collaborative curation for elite developers.') }}">
+        <title>{{ config('app.name', 'ReviewMe') }} — Code Review Platform</title>
+        <meta name="description" content="{{ __('Professional code architecture insights and collaborative reviews.') }}">
         
         <!-- Open Graph / Social -->
         <meta property="og:type" content="website">
-        <meta property="og:title" content="ReviewMe — The Digital Curator">
-        <meta property="og:description" content="{{ __('Forge better code through collaborative curation.') }}">
+        <meta property="og:title" content="ReviewMe — Code Review Platform">
+        <meta property="og:description" content="{{ __('Improve your code through collaborative reviews.') }}">
         <meta property="og:image" content="{{ asset('images/og-cover.png') }}">
         <meta name="theme-color" content="#bec2ff">
 
         <!-- Twitter Card -->
         <meta name="twitter:card" content="summary_large_image">
-        <meta name="twitter:title" content="ReviewMe — The Digital Curator">
-        <meta name="twitter:description" content="{{ __('Forge better code through collaborative curation.') }}">
+        <meta name="twitter:title" content="ReviewMe — Code Review Platform">
+        <meta name="twitter:description" content="{{ __('Improve your code through collaborative reviews.') }}">
         <meta name="twitter:image" content="{{ asset('images/og-cover.png') }}">
 
         <!-- Favicon -->

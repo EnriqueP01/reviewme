@@ -5,7 +5,7 @@
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <meta name="csrf-token" content="{{ csrf_token() }}">
 
-        <title>{{ config('app.name', 'ReviewMe') }} — The Digital Curator</title>
+        <title>{{ config('app.name', 'ReviewMe') }} — Code Review Platform</title>
 
         <!-- Scripts & Styles -->
         @vite(['resources/css/app.css', 'resources/js/app.js'])
@@ -20,7 +20,7 @@
             <!-- Global Identity Bar -->
             <div class="w-full flex justify-between items-center px-12 py-6 animate-fade-in-up">
                 <a href="/" class="flex items-center gap-4 group">
-                    <x-ui.logo-artifact size="w-10 h-10" font="text-xl" />
+                    <x-ui.logo size="w-10 h-10" font="text-xl" />
                     <span class="font-display font-bold text-xl tracking-tighter">ReviewMe</span>
                 </a>
                 

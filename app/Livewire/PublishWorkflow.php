@@ -12,7 +12,7 @@ class PublishWorkflow extends Component
 {
     public int $step = 1;
 
-    // Step 1: Introspection & Essence
+    // Step 1: Post Details
     public string $title = '';
 
     public string $short_description = '';
@@ -23,7 +23,7 @@ class PublishWorkflow extends Component
 
     public string $description = ''; // Full description
 
-    // Step 2: Artifacts
+    // Step 2: Files
     public array $files = [];
 
     public function mount()
@@ -316,12 +316,12 @@ class PublishWorkflow extends Component
             $messages = [];
 
             foreach ($this->files as $index => $file) {
-                $fileName = ! empty($file['name']) ? $file['name'] : __('Untitled_Source');
+                $fileName = ! empty($file['name']) ? $file['name'] : __('Untitled File');
                 $rules["files.$index.name"] = 'required|string';
                 $rules["files.$index.content"] = 'required|string|max:524288';
 
-                $messages["files.$index.name.required"] = __('The file name is required for fragment #:index', ['index' => $index + 1]);
-                $messages["files.$index.content.required"] = __('Source code is missing for artifact: :filename', ['filename' => $fileName]);
+                $messages["files.$index.name.required"] = __('The file name is required for file #:index', ['index' => $index + 1]);
+                $messages["files.$index.content.required"] = __('Source code is missing for file: :filename', ['filename' => $fileName]);
             }
 
             $this->validate($rules, $messages);
@@ -377,7 +377,7 @@ class PublishWorkflow extends Component
             'files' => $this->files,
         ]);
 
-        session()->flash('success', 'Artefact déployé avec succès !');
+        session()->flash('success', __('Post published successfully!'));
 
         return redirect()->to(route('dashboard'));
     }

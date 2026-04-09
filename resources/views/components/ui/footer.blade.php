@@ -8,20 +8,20 @@
             <!-- Brand -->
             <div class="col-span-1 md:col-span-1 space-y-8">
                 <a href="/" class="flex items-center gap-4 group">
-                    <x-ui.logo-artifact size="w-12 h-12" font="text-xl" />
+                    <x-ui.logo size="w-12 h-12" font="text-xl" />
                     <span class="font-display text-2xl font-black tracking-tighter text-on-surface">Review<span class="text-primary">Me</span></span>
                 </a>
                 <p class="text-xs text-on-surface-variant font-medium leading-relaxed opacity-40 max-w-xs">
-                    {{ __('The Monolith and The Lens. A high-fidelity network for architectural introspection and structural verification.') }}
+                    {{ __('A professional platform for code review and architectural validation.') }}
                 </p>
             </div>
 
             <!-- Navigation -->
             <div class="space-y-6">
-                <h4 class="text-[10px] font-black uppercase tracking-[0.3em] text-primary">{{ __('Network Nodes') }}</h4>
+                <h4 class="text-[10px] font-black uppercase tracking-[0.3em] text-primary">{{ __('Navigation') }}</h4>
                 <ul class="space-y-4">
                     <li><a href="#" class="text-xs font-bold text-on-surface-variant hover:text-white transition-colors flex items-center gap-2 group"><span class="w-1 h-1 rounded-full bg-white/10 group-hover:bg-primary transition-colors"></span> {{ __('Global Feed') }}</a></li>
-                    <li><a href="#" class="text-xs font-bold text-on-surface-variant hover:text-white transition-colors flex items-center gap-2 group"><span class="w-1 h-1 rounded-full bg-white/10 group-hover:bg-primary transition-colors"></span> {{ __('Elite Labs') }}</a></li>
+                    <li><a href="#" class="text-xs font-bold text-on-surface-variant hover:text-white transition-colors flex items-center gap-2 group"><span class="w-1 h-1 rounded-full bg-white/10 group-hover:bg-primary transition-colors"></span> {{ __('Groups') }}</a></li>
                     <li><a href="#" class="text-xs font-bold text-on-surface-variant hover:text-white transition-colors flex items-center gap-2 group"><span class="w-1 h-1 rounded-full bg-white/10 group-hover:bg-primary transition-colors"></span> {{ __('Leaderboard') }}</a></li>
                 </ul>
             </div>
@@ -38,14 +38,14 @@
 
             <!-- Stats & Meta -->
             <div class="space-y-6">
-                <h4 class="text-[10px] font-black uppercase tracking-[0.3em] text-on-surface/60">{{ __('System Telemetry') }}</h4>
+                <h4 class="text-[10px] font-black uppercase tracking-[0.3em] text-on-surface/60">{{ __('Platform Statistics') }}</h4>
                 <div class="space-y-4">
                     <div class="flex items-center justify-between bg-white/[0.02] border border-white/5 rounded-xl px-4 py-3">
                         <span class="text-[9px] font-black uppercase tracking-widest text-on-surface-variant/40">{{ __('Uptime') }}</span>
                         <span class="text-[10px] font-mono font-bold text-emerald-400">99.98%</span>
                     </div>
                     <div class="flex items-center justify-between bg-white/[0.02] border border-white/5 rounded-xl px-4 py-3">
-                        <span class="text-[9px] font-black uppercase tracking-widest text-on-surface-variant/40">{{ __('Active Nodes') }}</span>
+                        <span class="text-[9px] font-black uppercase tracking-widest text-on-surface-variant/40">{{ __('Active Users') }}</span>
                         <span class="text-[10px] font-mono font-bold text-primary">1,248</span>
                     </div>
                 </div>
@@ -55,7 +55,7 @@
         <!-- Footer Bottom -->
         <div class="pt-12 border-t border-white/5 flex flex-col md:flex-row items-center justify-between gap-8">
             <span class="text-[9px] font-black uppercase tracking-[0.2em] text-on-surface-variant/30">
-                &copy; {{ date('Y') }} REVIEWME NEURAL NETWORK. ALL RIGHTS RESERVED.
+                &copy; {{ date('Y') }} REVIEWME. ALL RIGHTS RESERVED.
             </span>
             <div class="flex items-center gap-8">
                 <a href="#" class="text-[9px] font-black uppercase tracking-widest text-on-surface-variant/40 hover:text-white transition-colors">{{ __('Privacy') }}</a>

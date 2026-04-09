@@ -1,7 +1,7 @@
 <div class="max-w-6xl mx-auto px-6 py-12" x-data="{ activeLine: @entangle('activeLine') }">
     <div class="grid grid-cols-1 lg:grid-cols-3 gap-12">
         
-        <!-- Artefact Column (2/3) -->
+        <!-- Post Column (2/3) -->
         <div class="lg:col-span-2 space-y-8">
             <div class="flex items-start justify-between">
                 <div class="flex-1">
@@ -12,7 +12,7 @@
                                 {{ $post->group->name }}
                             </span>
                         @endif
-                        <span class="text-[10px] font-bold text-on-surface-variant uppercase tracking-widest bg-surface-container px-2 py-0.5 rounded border border-outline-variant/30">{{ $post->visibility }} artifact</span>
+                        <span class="text-[10px] font-bold text-on-surface-variant uppercase tracking-widest bg-surface-container px-2 py-0.5 rounded border border-outline-variant/30">{{ $post->visibility }}</span>
                     </div>
                     <h1 class="text-4xl font-black font-display text-on-surface leading-tight">{{ $post->title }}</h1>
                     <p class="text-on-surface-variant text-lg mt-3 font-medium leading-relaxed italic border-l-2 border-primary/20 pl-4">{{ $post->short_description }}</p>
@@ -52,7 +52,7 @@
                     @can('delete', $post)
                         <button 
                             wire:click="deletePost" 
-                            wire:confirm="{{ __('Permanently disintegrate this artifact?') }}"
+                            wire:confirm="{{ __('Permanently delete this post?') }}"
                             class="p-2.5 rounded-xl border border-secondary/20 bg-secondary/5 text-secondary hover:bg-secondary hover:text-white transition-all shadow-sm group/del"
                             title="{{ __('Delete Post') }}"
                         >
@@ -104,7 +104,7 @@
                                     <td class="py-4 pr-6">
                                         <div x-transition class="bg-surface-container-high p-4 rounded-xl border border-primary/30 shadow-lg">
                                             <textarea wire:model="commentContent" 
-                                                      placeholder="{{ __('Share your insight on this line...') }}"
+                                                      placeholder="{{ __('Share your thoughts on this line...') }}"
                                                       class="w-full bg-surface-container-lowest border-none rounded-lg text-on-surface text-sm focus:ring-1 focus:ring-primary p-3"
                                                       rows="3"></textarea>
                                             <div class="flex justify-end mt-3 gap-2">
@@ -116,7 +116,7 @@
                                                             <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
                                                         </svg>
                                                     </span>
-                                                    {{ __('Post Review') }}
+                                                    {{ __('Submit Review') }}
                                                 </button>
                                             </div>
                                         </div>
@@ -141,7 +141,7 @@
                                             @can('delete', $review)
                                                 <button 
                                                     wire:click="deleteReview({{ $review->id }})"
-                                                    wire:confirm="{{ __('Delete this insight?') }}"
+                                                    wire:confirm="{{ __('Delete this review?') }}"
                                                     @mouseenter="window.fx.play('hover')"
                                                     class="opacity-0 group-hover/review:opacity-100 p-2 text-on-surface-variant/40 hover:text-error transition-all"
                                                 >
@@ -161,7 +161,7 @@
         <!-- Sidebar (Reactions & Social) -->
         <div class="space-y-8">
             <div class="bg-surface-container rounded-2xl p-6 border border-outline-variant">
-                <h3 class="font-display font-bold text-lg mb-6 text-primary">{{ __('Tech Reactions') }}</h3>
+                <h3 class="font-display font-bold text-lg mb-6 text-primary">{{ __('Reactions') }}</h3>
                 <div class="grid grid-cols-2 gap-3">
                     <button wire:click="react('clean')" @mouseenter="window.fx.play('hover')" class="flex flex-col items-center p-4 rounded-xl border {{ $post->reactions->where('user_id', auth()->id())->where('type', 'clean')->count() ? 'bg-primary/20 border-primary' : 'bg-surface-container-high border-transparent' }} hover:border-primary transition-all">
                         <span class="text-2xl mb-1">✨</span>
@@ -183,7 +183,7 @@
             </div>
 
             <div class="bg-surface-container rounded-2xl p-6 border border-outline-variant">
-                <h3 class="font-display font-bold text-lg mb-4">{{ __('Vibe Author') }}</h3>
+                <h3 class="font-display font-bold text-lg mb-4">{{ __('Author') }}</h3>
                 <div class="flex items-center gap-4">
                     <img src="{{ $post->user->avatar }}" class="w-12 h-12 rounded-full border-2 border-primary/30">
                     <div>

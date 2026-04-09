@@ -42,7 +42,7 @@
 - **Décision** : Interdiction absolue de push sur `main`, adoption d'un cycle de branchement obligatoire et directive d'économie de tokens.
 - **Statut** : Actif.
 
-## 2026-04-08-14 : Evolution V2 - Collaborative Labs & Neural Link Paradigm
+## 2026-04-08-14 : Évolution V2 - Collaborative Labs & Neural Link Paradigm
 - **Auteur** : Antigravity
 - **Statut** : ✅ Implémenté
 - **Contexte** : Besoin de structurer la curation en groupes privés et d'élever le lexique vers un univers plus technologique.
@@ -283,3 +283,14 @@
     1. **Spécification Architecturale (Markdown)** : Rédaction détaillée de la norme dans `us/us14_roles_permissions_erreurs.md` classifiant les actions par niveaux et séparant strictement de la logique métier (erreurs 422 vs 403 vs 500).
     2. **Règle IA sur Mesure (.agents/rules/rbac.md)** : Intégration d'une directive d'agent continue ("Custom Rule"). Le but de la règle est d'interdire au modèle de coder des actions en "Black Box" : je suis désormais forcé de vérifier les permissions (via `PostPolicy`, `Gate` ou Middlewares) et de ne jamais ignorer la sécurité du backend, même si l'interface dissimule déjà les actions.
 - **Impact** : Prévention à 100% des erreurs d'authentification "fail-open", structuration forte des cas critiques, et alignement parfait entre les directives d'architecture de haut-niveau et le code généré quotidiennement par l'IA.
+
+## 2026-04-09-40 : Standardisation Lexicale & Refonte Lexique Professionnel
+- **Auteur** : Antigravity
+- **Statut** : ✅ Implémenté
+- **Contexte** : Besoin de crédibiliser la plateforme en remplaçant le lexique "futuriste/SF" par une terminologie professionnelle de l'industrie.
+- **Décision** :
+    1. **Migration Lexicale** : Remplacement systématique de `Vibe/Artifact` par `Post`, `Lab` par `Group`, `Neural Link` par `Email`, `Secret Key` par `Password`.
+    2. **Refonte des Routes** : Migration de `/labs` vers `/groups` et renommage des composants Livewire associés.
+    3. **Cleanup i18n** : Nettoyage intégral de `fr.json` et `en.json` pour supprimer les clés de branding "cool" au profit de termes standards (Feed, Review, Files).
+    4. **Événements & UI** : Renommage des événements système (`vibe-*` -> `post-*`, `notification`) et des composants UI (`logo-artifact` -> `logo`).
+- **Impact** : Positionnement professionnel renforcé, meilleure accessibilité et cohérence totale de l'expérience utilisateur.

@@ -6,7 +6,7 @@
 
             <div class="mb-10 text-center relative z-10">
                 <h1 class="text-3xl font-bold mb-2">{{ __('Welcome Back') }}</h1>
-                <p class="text-on-surface-variant text-sm italic">{{ __('Identify yourself to continue the curation.') }}</p>
+                <p class="text-on-surface-variant text-sm italic">{{ __('Login to your account.') }}</p>
             </div>
 
             <!-- Session Status -->
@@ -29,7 +29,7 @@
 
                 <div class="relative flex items-center py-2">
                     <div class="flex-grow border-t border-white/5"></div>
-                    <span class="flex-shrink mx-4 text-[8px] font-black text-on-surface-variant uppercase tracking-[0.3em] opacity-30">{{ __('Standard Access') }}</span>
+                    <span class="flex-shrink mx-4 text-[8px] font-black text-on-surface-variant uppercase tracking-[0.3em] opacity-30">{{ __('Email login') }}</span>
                     <div class="flex-grow border-t border-white/5"></div>
                 </div>
 
@@ -37,8 +37,8 @@
                 <form method="POST" action="{{ route('login') }}" class="space-y-6">
                     @csrf
                     <div class="space-y-4">
-                        <x-text-input id="email" type="email" name="email" :value="old('email')" required autofocus placeholder="{{ __('Curation Handle') }}" />
-                        <x-text-input id="password" type="password" name="password" required placeholder="{{ __('Secret Key') }}" />
+                        <x-text-input id="email" type="email" name="email" :value="old('email')" required autofocus placeholder="{{ __('Email Address') }}" />
+                        <x-text-input id="password" type="password" name="password" required placeholder="{{ __('Password') }}" />
                     </div>
                     
                     <div class="flex items-center justify-between">
@@ -54,13 +54,13 @@
                     </div>
 
                     <x-ui.button type="submit" variant="primary" class="w-full py-4 uppercase text-[10px] tracking-[0.2em]">
-                        {{ __('Unlock Workspace') }}
+                        {{ __('Login') }}
                     </x-ui.button>
                 </form>
                 
                 <div class="text-center pt-8 border-t border-white/5 mt-8">
-                    <span class="text-on-surface-variant text-xs italic">{{ __('New curator?') }}</span>
-                    <a href="{{ route('register') }}" class="text-primary hover:primary-glow text-xs font-black ml-2 transition-all uppercase tracking-widest">{{ __('Apply Now') }}</a>
+                    <span class="text-on-surface-variant text-xs italic">{{ __('New user?') }}</span>
+                    <a href="{{ route('register') }}" class="text-primary hover:primary-glow text-xs font-black ml-2 transition-all uppercase tracking-widest">{{ __('Sign Up') }}</a>
                 </div>
             </div>
         </div>
