@@ -13,7 +13,7 @@ use Illuminate\Support\Facades\Auth;
 use Livewire\Attributes\Layout;
 use Livewire\Component;
 
-class VibeDetail extends Component
+class PostDetail extends Component
 {
     use AuthorizesRequests;
 
@@ -59,7 +59,7 @@ class VibeDetail extends Component
         $this->activeLine = null;
         $this->post->load('snippets.reviews.user');
 
-        $this->dispatch('vibe-action', type: 'success');
+        $this->dispatch('post-action', type: 'success');
         session()->flash('message', __('Review added successfully!'));
     }
 
@@ -71,7 +71,7 @@ class VibeDetail extends Component
 
         $review->delete();
         $this->post->load('snippets.reviews.user');
-        $this->dispatch('vibe-action', type: 'down');
+        $this->dispatch('post-action', type: 'down');
     }
 
     public function deletePost(): void
@@ -80,8 +80,8 @@ class VibeDetail extends Component
 
         $this->post->delete();
 
-        $this->dispatch('vibe-action', type: 'down');
-        session()->flash('success', __('Artifact disintegrated successfully.'));
+        $this->dispatch('post-action', type: 'down');
+        session()->flash('success', __('Post deleted successfully.'));
         $this->redirect(route('dashboard'));
     }
 
@@ -97,7 +97,7 @@ class VibeDetail extends Component
         $this->post->load('reactions');
 
         $sound = ($type === 'mindblown') ? 'up' : 'down';
-        $this->dispatch('vibe-action', type: $sound);
+        $this->dispatch('post-action', type: 'sound');
     }
 
     #[Layout('layouts.app')]
@@ -105,7 +105,7 @@ class VibeDetail extends Component
     {
         $snippet = $this->post->snippets()->where('id', $this->selectedVersion)->first();
 
-        return view('livewire.vibe-detail', [
+        return view('livewire.post-detail', [
             'currentSnippet' => $snippet,
         ]);
     }

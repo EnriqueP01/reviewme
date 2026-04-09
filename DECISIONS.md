@@ -274,3 +274,14 @@
     3. **Container Hardening** : Retrait de l'exposition publique du port 3306, désactivation du mode debug par défaut et utilisation de variables d'environnement pour les secrets root.
     4. **Injection Sécurisée** : Passage à `@js()` dans les composants Blade pour prévenir toute corruption JSON.
 - **Impact** : Élimination des fuites d'informations techniques et restauration de l'intégrité du système de collaboration privée.
+
+## 2026-04-09-39 : Standardisation Lexicale & Refonte Lexique Professionnel
+- **Auteur** : Antigravity
+- **Statut** : ✅ Implémenté
+- **Contexte** : Besoin de crédibiliser la plateforme en remplaçant le lexique "futuriste/SF" par une terminologie professionnelle de l'industrie.
+- **Décision** :
+    1. **Migration Lexicale** : Remplacement systématique de `Vibe/Artifact` par `Post`, `Lab` par `Group`, `Neural Link` par `Email`, `Secret Key` par `Password`.
+    2. **Refonte des Routes** : Migration de `/labs` vers `/groups` et renommage des composants Livewire associés.
+    3. **Cleanup i18n** : Nettoyage intégral de `fr.json` et `en.json` pour supprimer les clés de branding "cool" au profit de termes standards (Feed, Review, Files).
+    4. **Événements & UI** : Renommage des événements système (`vibe-*` -> `post-*`, `notification`) et des composants UI (`logo-artifact` -> `logo`).
+- **Impact** : Positionnement professionnel renforcé, meilleure accessibilité et cohérence totale de l'expérience utilisateur.

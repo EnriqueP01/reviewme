@@ -2,8 +2,8 @@
     <!-- Feed Header -->
     <div class="flex items-end justify-between mb-16 border-b border-outline-variant/10 pb-10">
         <div class="space-y-3">
-            <h2 class="font-display text-5xl font-black text-on-surface tracking-tighter">{{ __('Perspectives') }}</h2>
-            <p class="text-on-surface-variant text-sm tracking-wide font-medium opacity-60">{{ __('Neural Architecture: Decoding the fabric of logic.') }}</p>
+            <h2 class="font-display text-5xl font-black text-on-surface tracking-tighter">{{ __('Feed') }}</h2>
+            <p class="text-on-surface-variant text-sm tracking-wide font-medium opacity-60">{{ __('Find the best code reviews.') }}</p>
         </div>
 
         <div class="flex flex-col items-end gap-6">
@@ -15,7 +15,7 @@
                 <input 
                     type="text" 
                     wire:model.live.debounce.300ms="search" 
-                    placeholder="{{ __('Search the network...') }}" 
+                    placeholder="{{ __('Search posts...') }}" 
                     class="bg-[#0f111a]/60 backdrop-blur-3xl border border-white/5 rounded-xl py-3.5 pl-12 pr-6 text-xs text-on-surface placeholder:text-on-surface-variant/20 focus:outline-none focus:border-primary/40 transition-all w-64 group-hover/search:w-80 group-focus-within/search:!w-[32rem] shadow-xl shadow-black/60 font-medium tracking-wide"
                 >
                 <div class="absolute inset-0 rounded-xl bg-primary/5 opacity-0 group-focus-within/search:opacity-100 blur-xl -z-10 transition-opacity duration-700"></div>
@@ -138,9 +138,9 @@
                             </div>
                             
                             <div class="opacity-0 group-hover:opacity-100 transition-all duration-300 flex items-center gap-4">
-                                <x-ui.button variant="ghost" size="sm" class="!bg-primary/5 border-primary/10 hover:!bg-primary/20 hover:!text-primary !rounded-xl !relative group/inspect-btn" href="{{ route('vibe.detail', $post->id) }}" static="true">
+                                <x-ui.button variant="ghost" size="sm" class="!bg-primary/5 border-primary/10 hover:!bg-primary/20 hover:!text-primary !rounded-xl !relative group/inspect-btn" href="{{ route('posts.detail', $post->id) }}" static="true">
                                     <svg class="w-4 h-4 pointer-events-none" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" /><path stroke-linecap="round" stroke-linejoin="round" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" /></svg>
-                                    <span class="pointer-events-none">{{ __('Inspect_Post') }}</span>
+                                    <span class="pointer-events-none">{{ __('View Post') }}</span>
                                 </x-ui.button>
                             </div>
                         </div>
@@ -200,7 +200,7 @@
                                     <div class="w-8 h-8 rounded-full bg-white/5 flex items-center justify-center group-hover/stat:bg-primary/10 transition-colors">
                                         <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"/></svg>
                                     </div>
-                                    <span>{{ $post->reviews_count ?? 0 }} {{ __('Analyses') }}</span>
+                                    <span>{{ $post->reviews_count ?? 0 }} {{ __('Reviews') }}</span>
                                 </div>
                              </div>
                         </div>

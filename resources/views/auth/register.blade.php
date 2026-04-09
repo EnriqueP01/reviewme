@@ -5,8 +5,8 @@
             <div class="absolute -inset-px bg-gradient-to-br from-primary/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none"></div>
 
             <div class="mb-10 text-center relative z-10">
-                <h1 class="text-3xl font-bold mb-2">{{ __('Platform Access') }}</h1>
-                <p class="text-on-surface-variant text-sm italic">{{ __('Initialize your curator profile to begin evaluation.') }}</p>
+                <h1 class="text-3xl font-bold mb-2">{{ __('Create Account') }}</h1>
+                <p class="text-on-surface-variant text-sm italic">{{ __('Sign up to start reviewing code.') }}</p>
             </div>
 
             <div class="space-y-6 relative z-10">
@@ -18,7 +18,7 @@
 
                 <div class="relative flex items-center py-4">
                     <div class="flex-grow border-t border-white/5"></div>
-                    <span class="flex-shrink mx-4 text-[8px] font-black text-on-surface-variant uppercase tracking-[0.3em] opacity-30">{{ __('Manual Enrollment') }}</span>
+                    <span class="flex-shrink mx-4 text-[8px] font-black text-on-surface-variant uppercase tracking-[0.3em] opacity-30">{{ __('Email registration') }}</span>
                     <div class="flex-grow border-t border-white/5"></div>
                 </div>
 
@@ -27,40 +27,40 @@
 
                     <!-- Name -->
                     <div class="space-y-2">
-                        <x-input-label for="name" :value="__('Full Identity')" class="text-xs uppercase tracking-widest opacity-60 ml-1" />
+                        <x-input-label for="name" :value="__('Full Name')" class="text-xs uppercase tracking-widest opacity-60 ml-1" />
                         <x-text-input id="name" type="text" name="name" :value="old('name')" required autofocus autocomplete="name" placeholder="Johnathan Curator" />
                         <x-input-error :messages="$errors->get('name')" class="mt-2" />
                     </div>
 
                     <!-- Email Address -->
                     <div class="space-y-2">
-                        <x-input-label for="email" :value="__('Primary Artifact (Email)')" class="text-xs uppercase tracking-widest opacity-60 ml-1" />
+                        <x-input-label for="email" :value="__('Email Address')" class="text-xs uppercase tracking-widest opacity-60 ml-1" />
                         <x-text-input id="email" type="email" name="email" :value="old('email')" required autocomplete="username" placeholder="curator@reviewme.io" />
                         <x-input-error :messages="$errors->get('email')" class="mt-2" />
                     </div>
 
                     <!-- Password -->
                     <div class="space-y-2">
-                        <x-input-label for="password" :value="__('New Secret Key')" class="text-xs uppercase tracking-widest opacity-60 ml-1" />
+                        <x-input-label for="password" :value="__('Password')" class="text-xs uppercase tracking-widest opacity-60 ml-1" />
                         <x-text-input id="password" type="password" name="password" required autocomplete="new-password" placeholder="••••••••" />
                         <x-input-error :messages="$errors->get('password')" class="mt-2" />
                     </div>
 
                     <!-- Confirm Password -->
                     <div class="space-y-2">
-                        <x-input-label for="password_confirmation" :value="__('Verify Secret Key')" class="text-xs uppercase tracking-widest opacity-60 ml-1" />
+                        <x-input-label for="password_confirmation" :value="__('Confirm Password')" class="text-xs uppercase tracking-widest opacity-60 ml-1" />
                         <x-text-input id="password_confirmation" type="password" name="password_confirmation" required autocomplete="new-password" placeholder="••••••••" />
                         <x-input-error :messages="$errors->get('password_confirmation')" class="mt-2" />
                     </div>
 
                     <div class="pt-4">
                         <x-ui.button type="submit" variant="primary" class="w-full py-4 tracking-widest uppercase text-xs">
-                            {{ __('Request Membership') }}
+                            {{ __('Sign Up') }}
                         </x-ui.button>
                     </div>
 
                     <div class="text-center pt-8 border-t border-white/5 mt-8">
-                        <span class="text-on-surface-variant text-xs italic">{{ __('Already authorized?') }}</span>
+                        <span class="text-on-surface-variant text-xs italic">{{ __('Already have an account?') }}</span>
                         <a href="{{ route('login') }}" class="text-primary hover:primary-glow text-xs font-black ml-2 transition-all uppercase tracking-widest">{{ __('Sign In') }}</a>
                     </div>
                 </form>

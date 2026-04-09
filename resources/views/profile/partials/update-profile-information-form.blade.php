@@ -19,8 +19,8 @@
                 <input type="file" id="photo" name="photo" class="hidden" accept="image/*" onchange="previewImage(this)">
             </div>
             <div class="space-y-1">
-                <h4 class="text-sm font-black text-on-surface uppercase tracking-tighter">{{ __('Neural Signature (Avatar)') }}</h4>
-                <p class="text-[10px] text-on-surface-variant opacity-60 font-medium">{{ __('Update your visual representation in the matrix.') }}</p>
+                <h4 class="text-sm font-black text-on-surface uppercase tracking-tighter">{{ __('Profile Photo') }}</h4>
+                <p class="text-[10px] text-on-surface-variant opacity-60 font-medium">{{ __('Update your profile photo image.') }}</p>
                 <x-input-error :messages="$errors->get('photo')" class="mt-2" />
             </div>
         </div>
@@ -38,7 +38,7 @@
         </script>
 
         <div class="space-y-3">
-            <x-input-label for="name" :value="__('Agent Identifier')" />
+            <x-input-label for="name" :value="__('Username')" />
             <div class="relative group/name flex items-center">
                 <div class="absolute inset-y-0 left-0 pl-6 flex items-center pointer-events-none z-10">
                     <span class="text-primary font-mono font-black text-lg group-focus-within/name:scale-110 transition-transform">@</span>
@@ -58,23 +58,23 @@
         </div>
 
         <div class="space-y-3">
-            <x-input-label for="email" :value="__('Neural Link (Email)')" />
+            <x-input-label for="email" :value="__('Email Address')" />
             <x-text-input id="email" name="email" type="email" class="block w-full" :value="old('email', $user->email)" required autocomplete="username" />
             <x-input-error :messages="$errors->get('email')" />
 
             @if ($user instanceof \Illuminate\Contracts\Auth\MustVerifyEmail && ! $user->hasVerifiedEmail())
                 <div class="p-4 rounded-2xl bg-error/5 border border-error/20 mt-4">
                     <p class="text-xs font-bold text-error uppercase tracking-widest">
-                        {{ __('Link Unverified.') }}
+                        {{ __('Email not verified.') }}
 
                         <button form="send-verification" class="ml-4 underline hover:text-white transition-colors">
-                            {{ __('Transmit new verification.') }}
+                            {{ __('Resend verification email.') }}
                         </button>
                     </p>
 
                     @if (session('status') === 'verification-link-sent')
                         <p class="mt-2 text-[10px] font-black uppercase text-secondary">
-                            {{ __('Verification packet transmitted.') }}
+                            {{ __('Verification email sent.') }}
                         </p>
                     @endif
                 </div>
@@ -83,7 +83,7 @@
 
         <div class="flex items-center gap-6 pt-4">
             <x-ui.button variant="primary" size="md">
-                {{ __('Sync Changes') }}
+                {{ __('Save Changes') }}
             </x-ui.button>
 
             @if (session('status') === 'profile-updated')
@@ -97,7 +97,7 @@
                     class="flex items-center gap-2 text-secondary"
                 >
                     <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M5 13l4 4L19 7"/></svg>
-                    <span class="text-[10px] font-black uppercase tracking-widest">{{ __('Synchronized') }}</span>
+                    <span class="text-[10px] font-black uppercase tracking-widest">{{ __('Saved') }}</span>
                 </div>
             @endif
         </div>

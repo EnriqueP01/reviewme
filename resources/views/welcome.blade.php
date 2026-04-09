@@ -18,10 +18,10 @@
                         
                         <div class="flex items-center gap-6 mb-6 transition-all duration-700 delay-100"
                              :style="`transform: translate(${mouse.x * 0.01}px, ${mouse.y * 0.01}px)`">
-                            <x-ui.logo-artifact size="w-14 h-14" font="text-xl" class="hover:rotate-12 transition-transform duration-500" />
+                            <x-ui.logo size="w-14 h-14" font="text-xl" class="hover:rotate-12 transition-transform duration-500" />
                             <div class="inline-flex items-center gap-3 px-4 py-1.5 rounded-full bg-surface-container-high border border-outline-variant text-[10px] font-black uppercase tracking-widest text-primary shadow-[0_0_20px_rgba(190,194,255,0.1)]">
                                 <span class="w-1.5 h-1.5 rounded-full bg-primary animate-pulse"></span>
-                                {{ __('Brainstorming Hub Live') }}
+                                {{ __('Online Now') }}
                             </div>
                         </div>
                         
@@ -37,7 +37,7 @@
                         
                         <div class="flex items-center gap-8 transition-all duration-1000 delay-400">
                             <x-ui.button variant="primary" size="lg" shadow="shadow-[0_0_50px_rgba(190,194,255,0.2)]" href="{{ route('register') }}" class="group">
-                                <span class="group-hover:translate-x-1 transition-transform inline-block">{{ __('Start a Vibe') }}</span>
+                                <span class="group-hover:translate-x-1 transition-transform inline-block">{{ __('Start a Review') }}</span>
                             </x-ui.button>
                             <a href="#benefits" class="text-sm font-black uppercase tracking-widest text-on-surface-variant hover:text-white transition-all flex items-center gap-3 group">
                                 {{ __('Explore') }}
@@ -58,7 +58,7 @@
                         <div class="absolute -top-12 left-1/2 -translate-x-1/2 w-72 glass-panel p-5 rounded-2xl shadow-[0_20px_50px_rgba(0,0,0,0.6)] border border-primary/40 z-50 scale-90 group-hover:scale-105 opacity-0 group-hover:opacity-100 transition-all duration-700 pointer-events-none">
                             <div class="flex items-center gap-3 mb-3">
                                 <div class="w-5 h-5 rounded-full bg-secondary shadow-[0_0_15px_rgba(78,222,163,0.5)] animate-pulse"></div>
-                                <span class="text-[9px] font-black uppercase tracking-widest text-secondary">{{ __('Peer Insight') }}</span>
+                                <span class="text-[9px] font-black uppercase tracking-widest text-secondary">{{ __('Review feedback') }}</span>
                             </div>
                             <p class="text-[11px] text-white/90 leading-relaxed italic">"{{ __('The coupling here seems a bit strong. Let\'s try to inject the logic dependency?') }}"</p>
                         </div>
@@ -76,7 +76,7 @@
                                 <div class="absolute inset-0 bg-grid opacity-10"></div>
                                 <div class="relative z-10 space-y-1">
                                     <p class="text-on-surface-variant"><span class="text-secondary">class</span> <span class="text-primary">ReviewEngine</span> {</p>
-                                    <p class="text-on-surface-variant pl-4"><span class="text-primary-container bg-primary/10 px-1 rounded">/* @vibe-node */</span></p>
+                                    <p class="text-on-surface-variant pl-4"><span class="text-primary-container bg-primary/10 px-1 rounded">/* @post-node */</span></p>
                                     <p class="text-on-surface-variant pl-4"><span class="text-primary">process</span>(data: Buffer) {</p>
                                     <p class="text-on-surface-variant pl-8 text-primary/60">return this.analyze(data);</p>
                                     <p class="text-on-surface-variant pl-4">}</p>
@@ -150,7 +150,7 @@
                                 <svg class="w-6 h-6 text-primary" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"/></svg>
                             </div>
                             <div class="mt-6">
-                                <h3 class="text-2xl font-black uppercase text-white tracking-tighter">{{ __('Private Labs') }}</h3>
+                                <h3 class="text-2xl font-black uppercase text-white tracking-tighter">{{ __('Private Groups') }}</h3>
                                 <p class="text-white/60 text-[13px] mt-2 italic font-medium leading-relaxed">{{ __('Need a safe space? Create groups for your class or team.') }}</p>
                             </div>
                         </div>
@@ -194,7 +194,7 @@
             <div class="max-w-7xl mx-auto px-6 lg:px-12 relative z-10">
                 <div class="text-center mb-12 transition-all duration-1000" :class="revealed ? 'opacity-100 scale-100' : 'opacity-0 scale-95'">
                     <h2 class="text-5xl lg:text-6xl font-black tracking-tighter mb-4">{{ __('THE WORKFLOW') }}</h2>
-                    <p class="text-on-surface-variant italic text-lg">{{ __('From raw logic to architectural clarity in three cycles.') }}</p>
+                    <p class="text-on-surface-variant italic text-lg">{{ __('From code to quality in three steps.') }}</p>
                 </div>
                 
                 <div class="grid grid-cols-1 md:grid-cols-3 gap-12 lg:gap-20">
@@ -217,7 +217,7 @@
                         <div class="text-[80px] font-black text-white/5 absolute -top-12 -left-4 group-hover:text-tertiary/10 transition-all duration-700">03</div>
                         <h4 class="text-2xl font-bold mb-3 relative z-10">{{ __('Evolve') }}</h4>
                         <p class="text-on-surface-variant text-sm italic relative z-10 opacity-70 group-hover:opacity-100 transition-opacity">
-                            {{ __('Iterate based on feedback. Evolve your artifacts into stable modules.') }}
+                            {{ __('Iterate based on feedback. Improve your code with community feedback.') }}
                         </p>
                     </div>
                 </div>
@@ -236,7 +236,7 @@
             <div class="max-w-4xl mx-auto text-center px-6 relative z-10 transition-all duration-1000" :class="revealed ? 'opacity-100 scale-100' : 'opacity-0 scale-90'">
                 <h2 class="text-4xl lg:text-5xl font-black mb-6 tracking-tighter uppercase">{{ __('Join us.') }}</h2>
                 <p class="text-lg text-on-surface-variant mb-10 italic font-medium">
-                    {{ __('Step into the future of peer-to-peer curation.') }}
+                    {{ __('Join the best community of developers.') }}
                 </p>
                 <div class="flex flex-col sm:flex-row items-center justify-center gap-8">
                     <x-ui.button variant="primary" size="lg" shadow="shadow-[0_0_80px_rgba(190,194,255,0.4)]" href="{{ route('register') }}" class="px-10 py-5 text-lg group overflow-hidden relative">

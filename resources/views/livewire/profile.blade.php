@@ -52,8 +52,8 @@
                     </x-ui.button>
                 </a>
                 <x-ui.button variant="ghost" size="sm" @click="share()">
-                    <span x-show="!copied">{{ __('Share Portfolio') }}</span>
-                    <span x-show="copied" x-cloak class="text-secondary">{{ __('Link Secured') }}</span>
+                    <span x-show="!copied">{{ __('Share Profile') }}</span>
+                    <span x-show="copied" x-cloak class="text-secondary">{{ __('Link Copied') }}</span>
                 </x-ui.button>
             </div>
         </div>
@@ -64,14 +64,14 @@
         <!-- Sidebar: Details -->
         <div class="space-y-12">
             <div class="glass-panel p-10 rounded-[2.5rem] border-subtle">
-                <h3 class="font-display font-black text-xl text-on-surface mb-8 italic">{{ __('About Curator') }}</h3>
+                <h3 class="font-display font-black text-xl text-on-surface mb-8 italic">{{ __('About') }}</h3>
                 <p class="text-on-surface-variant leading-relaxed text-sm opacity-70">
                     {{ __('Passionate about micro-optimizations and clean architectural patterns. Currently exploring the intersection of PHP and physics-based UI.') }}
                 </p>
                 <div class="mt-10 pt-10 border-t border-primary/10 space-y-5">
                     <div class="flex justify-between text-sm">
                         <span class="text-on-surface-variant">{{ __('Location') }}</span>
-                        <span class="text-on-surface">{{ __('Remote (Void)') }}</span>
+                        <span class="text-on-surface">{{ __('Remote') }}</span>
                     </div>
                     <div class="flex justify-between text-sm">
                         <span class="text-on-surface-variant">{{ __('Member since') }}</span>
@@ -86,7 +86,7 @@
             <!-- Contribution Heatmap -->
             <div class="glass-panel p-10 rounded-[2.5rem] border-subtle overflow-hidden">
                 <div class="flex items-center justify-between mb-8">
-                    <h3 class="font-display font-bold text-xl text-on-surface italic">{{ __('Sync Density') }}</h3>
+                    <h3 class="font-display font-bold text-xl text-on-surface italic">{{ __('Activity') }}</h3>
                     <div class="flex items-center gap-2">
                         <span class="text-[9px] text-on-surface-variant uppercase tracking-widest opacity-40">{{ __('Less') }}</span>
                         <div class="flex gap-1">
@@ -112,7 +112,7 @@
                 }">
                     <template x-for="day in days" :key="day.date">
                         <div 
-                            :title="day.date + ': ' + day.count + ' artifacts'"
+                            :title="day.date + ': ' + day.count + ' posts'"
                             class="w-3 h-3 rounded-sm transition-all duration-500 hover:scale-150 hover:z-20 cursor-crosshair"
                             :class="{
                                 'bg-surface-highest': day.count === 0,
@@ -125,15 +125,15 @@
                     </template>
                 </div>
                 <p class="mt-6 text-[10px] text-on-surface-variant font-mono opacity-40 uppercase tracking-widest">
-                    {{ count($contributions) }} {{ __('active nodes discovered in the last cycle') }}
+                    {{ count($contributions) }} {{ __('posts in the last year') }}
                 </p>
             </div>
 
-            <h3 class="font-display font-bold text-2xl text-on-surface">{{ __('Dispatch History') }}</h3>
+            <h3 class="font-display font-bold text-2xl text-on-surface">{{ __('Posts') }}</h3>
             
             <div class="space-y-6">
                 @forelse($posts as $post)
-                    <a href="{{ route('vibe.detail', $post->id) }}" wire:navigate class="block">
+                    <a href="{{ route('posts.detail', $post->id) }}" wire:navigate class="block">
                         <x-ui.card tonal="low" class="group hover:bg-surface-high/50 transition-all border-none">
                             <div class="flex items-center justify-between">
                                 <div class="flex items-center gap-6">
@@ -154,15 +154,15 @@
                     </a>
                 @empty
                     <div class="py-20 text-center border-2 border-dashed border-outline-variant/10 rounded-3xl">
-                        <p class="text-on-surface-variant text-sm font-display italic">{{ __('No artifacts dispatched yet.') }}</p>
+                        <p class="text-on-surface-variant text-sm font-display italic">{{ __('No posts yet.') }}</p>
                     </div>
                 @endforelse
             </div>
             
             @if($user->posts()->count() > $perPage)
                 <x-ui.button variant="ghost" class="w-full" wire:click="loadMore" wire:loading.attr="disabled">
-                    <span wire:loading.remove>{{ __('Load More History') }}</span>
-                    <span wire:loading>{{ __('Syncing...') }}</span>
+                    <span wire:loading.remove>{{ __('Load More Posts') }}</span>
+                    <span wire:loading>{{ __('Loading...') }}</span>
                 </x-ui.button>
             @endif
         </div>

@@ -20,7 +20,7 @@
                         "text-primary" => $step >= $s,
                         "text-on-surface-variant opacity-50" => $step < $s
                     ])>
-                        {{ $s == 1 ? __('Introspection') : ($s == 2 ? __("The Artifacts") : __('Distribution')) }}
+                        {{ $s == 1 ? __('Details') : ($s == 2 ? __("Files & Code") : __('Publication')) }}
                     </span>
                 </div>
             @endforeach
@@ -34,15 +34,15 @@
             <!-- Step 1: Introspection -->
             <div class="space-y-4 animate-in fade-in slide-in-from-bottom-4 duration-500">
                 <div class="space-y-2">
-                    <h2 class="font-display text-3xl font-bold text-on-surface tracking-tight">{{ __('Contextual Audit') }} <span class="text-red-500">*</span></h2>
-                    <p class="text-on-surface-variant italic">{{ __('Define the core purpose and technical scope of this curation artifact.') }}</p>
+                    <h2 class="font-display text-3xl font-bold text-on-surface tracking-tight">{{ __('Post Details') }} <span class="text-red-500">*</span></h2>
+                    <p class="text-on-surface-variant italic">{{ __('Define the goal and scope of this code review.') }}</p>
                 </div>
 
 
                 <div class="space-y-6">
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                         <div>
-                            <x-input-label :value="__('Artifact Title') . ' *'" />
+                            <x-input-label :value="__('Post Title') . ' *'" />
                             <x-text-input wire:model="title" placeholder="{{ __('e.g., Memory Optimizer Engine') }}" />
                             <x-input-error :messages="$errors->get('title')" />
                         </div>
@@ -68,7 +68,7 @@
 
 
                     <div>
-                        <x-input-label :value="__('Full Context & Technical Background')" />
+                        <x-input-label :value="__('Technical Description')" />
                         <textarea wire:model="description" rows="5" class="bg-surface-high border-none text-on-surface placeholder:text-on-surface-variant/50 focus:ring-2 focus:ring-primary/50 rounded-round-4 transition-all duration-300 w-full resize-none p-4" placeholder="{{ __('Detailed documentation for the curators...') }}"></textarea>
                     </div>
                 </div>
@@ -84,17 +84,17 @@
                             <div class="w-8 h-8 rounded-round-2 bg-primary/20 flex items-center justify-center text-primary">
                                 <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"/></svg>
                             </div>
-                            <h2 class="font-display text-2xl font-bold text-on-surface tracking-tight">{{ __('The Digital Artifacts') }}</h2>
+                            <h2 class="font-display text-2xl font-bold text-on-surface tracking-tight">{{ __('Source Files') }}</h2>
                         </div>
                         <p class="text-[10px] text-on-surface-variant font-mono uppercase tracking-widest opacity-60">
-                            {{ __('Inject logic fragments into the engine for architectural audit.') }}
+                            {{ __('Add your code files to be reviewed.') }}
                         </p>
                     </div>
                     
                     <x-ui.button type="button" variant="primary" wire:click="addFile" class="shrink-0 group shadow-lg shadow-primary/20">
                         <span class="flex items-center gap-2">
                             <svg class="w-4 h-4 group-hover:rotate-90 transition-transform duration-300" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M12 4v16m8-8H4"/></svg>
-                            {{ __('Add Logic Fragment') }}
+                            {{ __('Add File') }}
                         </span>
                     </x-ui.button>
                 </div>
@@ -137,8 +137,8 @@
                              <svg class="w-8 h-8 text-primary" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12"/></svg>
                         </div>
                         <div class="space-y-1">
-                            <span class="font-display font-bold text-lg text-on-surface uppercase tracking-wider">{{ __('Logic Portal') }}</span>
-                            <p class="text-xs text-on-surface-variant font-mono uppercase tracking-widest opacity-60">{{ __('Drop multiple files to generate fragments instantly.') }}</p>
+                            <span class="font-display font-bold text-lg text-on-surface uppercase tracking-wider">{{ __('File Upload') }}</span>
+                            <p class="text-xs text-on-surface-variant font-mono uppercase tracking-widest opacity-60">{{ __('Drop multiple files to import them instantly.') }}</p>
                         </div>
                     </div>
                 </div>
@@ -159,7 +159,7 @@
                             <!-- Vertical Index Marker -->
                             <div class="absolute -left-12 top-0 bottom-0 w-8 hidden xl:flex flex-col items-center py-6 gap-2">
                                 <div class="w-px flex-1 bg-gradient-to-b from-transparent via-outline-variant/20 to-transparent"></div>
-                                <span class="font-mono text-[10px] text-on-surface-variant/40 font-bold rotate-180 [writing-mode:vertical-lr] tracking-[0.2em]">{{ __('FRAGMENT') }} {{ str_pad($index + 1, 2, '0', STR_PAD_LEFT) }}</span>
+                                <span class="font-mono text-[10px] text-on-surface-variant/40 font-bold rotate-180 [writing-mode:vertical-lr] tracking-[0.2em]">{{ __('FILE') }} {{ str_pad($index + 1, 2, '0', STR_PAD_LEFT) }}</span>
                                 <div class="w-px flex-1 bg-gradient-to-b from-transparent via-outline-variant/20 to-transparent"></div>
                             </div>
 
@@ -196,7 +196,7 @@
 
 
                                             <div class="flex items-center gap-3 mt-1">
-                                                <span class="text-[9px] font-mono text-on-surface-variant uppercase tracking-widest font-bold opacity-60">{{ __('Detected Engine') }}: <span class="text-primary">{{ $file['language'] }}</span></span>
+                                                <span class="text-[9px] font-mono text-on-surface-variant uppercase tracking-widest font-bold opacity-60">{{ __('Detected Language') }}: <span class="text-primary">{{ $file['language'] }}</span></span>
                                                 @if($file['is_duplicate'] ?? false)
                                                     <span class="text-[8px] bg-secondary/10 text-secondary border border-secondary/20 px-2 py-0.5 rounded-full font-bold uppercase tracking-tighter">{{ __('Name Collision') }}</span>
                                                 @endif
@@ -260,7 +260,7 @@
                                                         "text-emerald-400" => in_array($file['language'], ['go', 'rust', 'c', 'cpp']),
                                                         "text-primary" => !in_array($file['language'], ['php', 'python', 'ruby', 'java', 'csharp', 'javascript', 'typescript', 'vue', 'react', 'go', 'rust', 'c', 'cpp'])
                                                     ])
-                                                    placeholder="{{ __('Inject source logic here...') }}"
+                                                    placeholder="{{ __('Paste your code here...') }}"
                                                 ></textarea>
                                             </div>
 
@@ -311,8 +311,8 @@
                                 <div class="w-2 h-2 rounded-full bg-outline-variant/40 animate-ping"></div>
                             </div>
                             <div class="space-y-1">
-                                <h4 class="text-on-surface font-display text-xl font-bold uppercase tracking-widest">{{ __('Zero Artefacts Detected') }}</h4>
-                                <p class="text-on-surface-variant italic">{{ __('The curation engine awaits your initial logic injection.') }}</p>
+                                <h4 class="text-on-surface font-display text-xl font-bold uppercase tracking-widest">{{ __('No Files Found') }}</h4>
+                                <p class="text-on-surface-variant italic">{{ __('The editor awaits your code.') }}</p>
                             </div>
                         </div>
                     @endforelse
@@ -322,8 +322,8 @@
             <!-- Step 3: Distribution & Focus -->
             <div class="space-y-8 animate-in fade-in slide-in-from-bottom-4 duration-500">
                 <div class="space-y-2">
-                    <h2 class="font-display text-3xl font-bold text-on-surface tracking-tight">{{ __('Curation Distribution') }}</h2>
-                    <p class="text-on-surface-variant italic">{{ __('Select multiple focus areas for the specialized curation engine.') }}</p>
+                    <h2 class="font-display text-3xl font-bold text-on-surface tracking-tight">{{ __('Focus Areas') }}</h2>
+                    <p class="text-on-surface-variant italic">{{ __('Select the main areas you want the community to focus on.') }}</p>
                 </div>
 
                 <div class="grid grid-cols-1 md:grid-cols-3 gap-6 animate-in fade-in slide-in-from-bottom-12 duration-1000 fill-mode-both">
@@ -368,7 +368,7 @@
                             ])
                             style="{{ in_array($key, $selectedLens) ? 'color: var(--lens-'.$meta['color'].');' : '' }}"
                             >{{ $meta['label'] }}</h4>
-                            <p class="text-on-surface-variant text-sm opacity-60 flex-grow leading-relaxed">{{ __('Activate the specialized lenses for this artifact.') }}</p>
+                            <p class="text-on-surface-variant text-sm opacity-60 flex-grow leading-relaxed">{{ __('Activate these focus areas for your code.') }}</p>
                         </div>
                     @endforeach
                 </div>
@@ -379,19 +379,19 @@
 
                 <div class="pt-8 border-t border-outline-variant/10 space-y-6">
                     <div>
-                        <x-input-label :value="__('Global Distribution Scope')" />
+                        <x-input-label :value="__('Visibility Settings')" />
                         <div class="flex gap-8 mt-4">
                             <label class="flex items-center gap-3 cursor-pointer group">
                                 <input type="checkbox" wire:model.live="is_public" class="w-5 h-5 rounded bg-surface-high border-outline-variant/20 text-primary focus:ring-primary/50">
                                 <span @class(['text-sm font-medium transition-colors', 'text-primary' => $is_public, 'text-on-surface-variant group-hover:text-on-surface' => !$is_public])>
-                                    {{ __('Public Network') }}
+                                    {{ __('Public') }}
                                 </span>
                             </label>
 
                             <label class="flex items-center gap-3 cursor-pointer group">
                                 <input type="checkbox" wire:model.live="is_private" class="w-5 h-5 rounded bg-surface-high border-outline-variant/20 text-primary focus:ring-primary/50">
                                 <span @class(['text-sm font-medium transition-colors', 'text-primary' => $is_private, 'text-on-surface-variant group-hover:text-on-surface' => !$is_private])>
-                                    {{ __('Private Lab (Private Group)') }}
+                                    {{ __('Private Group') }}
                                 </span>
                             </label>
                         </div>
@@ -403,7 +403,7 @@
                         <div class="space-y-4 animate-in fade-in slide-in-from-top-4 duration-500">
                             <x-input-label :value="__('Select Target Lab Member')" />
                             <div class="relative">
-                                <x-text-input wire:model.live="groupSearch" placeholder="{{ __('Search for a Lab group...') }}" class="pl-12" />
+                                <x-text-input wire:model.live="groupSearch" placeholder="{{ __('Search for a group...') }}" class="pl-12" />
                                 <div class="absolute left-4 top-1/2 -translate-y-1/2 text-on-surface-variant">
                                     <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/></svg>
                                 </div>
@@ -425,7 +425,7 @@
                                     </label>
                                 @empty
                                     <div class="col-span-2 py-4 text-center text-on-surface-variant italic text-sm">
-                                        {{ __('No Labs found for this identity.') }}
+                                        {{ __('No groups found for your account.') }}
                                     </div>
                                 @endforelse
                             @error('groupId') <span class="text-xs text-secondary font-bold font-mono">{{ $message }}</span> @enderror
@@ -442,7 +442,7 @@
                 <x-ui.button type="button" variant="ghost" wire:click="prevStep" class="group">
                     <span class="flex items-center gap-2 group-hover:-translate-x-1 transition-transform">
                         <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M15 19l-7-7 7-7"/></svg>
-                        {{ __('Regress Phase') }}
+                        {{ __('Previous') }}
                     </span>
                 </x-ui.button>
             @else
@@ -450,13 +450,13 @@
             @endif
 
             <div class="flex items-center gap-4 text-on-surface-variant text-[10px] uppercase tracking-widest font-bold">
-                {{ __('Phase') }} {{ $step }} / 3
+                {{ __('Step') }} {{ $step }} / 3
             </div>
 
             @if($step < 3)
                 <x-ui.button type="button" variant="primary" wire:click="nextStep" wire:loading.attr="disabled" wire:target="nextStep" class="group px-8">
                     <span class="flex items-center gap-2 group-hover:translate-x-1 transition-transform">
-                        {{ __('Next Phase') }}
+                        {{ __('Next') }}
                         <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M9 5l7 7-7 7"/></svg>
                     </span>
                 </x-ui.button>
@@ -464,7 +464,7 @@
                 <x-ui.button type="submit" variant="secondary" wire:loading.attr="disabled" wire:target="submit" class="px-10 py-4 shadow-[0_0_30px_rgba(78,222,163,0.2)] hover:scale-105 transition-all">
                     <span class="flex items-center gap-3">
                          <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg>
-                         {{ __('Deploy Curation Artifact') }}
+                         {{ __('Publish Post') }}
                     </span>
                 </x-ui.button>
             @endif

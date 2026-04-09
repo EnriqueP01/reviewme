@@ -114,7 +114,7 @@
             <div class="flex-1 space-y-4 relative z-10">
                 <div class="flex items-center gap-3">
                     <span class="w-2 h-2 rounded-full bg-primary shadow-[0_0_10px_#bec2ff]"></span>
-                    <h4 class="text-[10px] font-black uppercase tracking-[0.4em] text-primary">{{ __('Artifact_Analysis') }}</h4>
+                    <h4 class="text-[10px] font-black uppercase tracking-[0.4em] text-primary">{{ __('Analysis') }}</h4>
                 </div>
                 <!-- File Specific Meta -->
                 <div class="bg-white/5 p-4 rounded-xl border border-white/5">
