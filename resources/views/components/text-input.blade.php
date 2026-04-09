@@ -19,8 +19,7 @@
         :type="inputType"
         @disabled($disabled) 
         placeholder="{{ $placeholder }}"
-        {{ $attributes->merge(['class' => $inputClasses]) }}
-        style="background-image: none !important;" {{-- To prevent some browser icons --}}
+        {{ $attributes->merge(['class' => 'bg-black/20 border border-white/5 text-on-surface placeholder:text-on-surface-variant/10 focus:border-primary/40 focus:ring-0 rounded-2xl transition-all duration-300 w-full px-6 py-4 font-bold tracking-tight selection:bg-primary/20 shadow-inner outline-none']) }}
     >
     
     @if($type === 'password')
@@ -42,7 +41,4 @@
             </template>
         </button>
     @endif
-
-    <!-- High-Impact Focus Ring -->
-    <div class="absolute -inset-[2px] rounded-[1.2rem] border-2 border-primary/40 opacity-0 group-focus-within:opacity-100 transition-all duration-300 pointer-events-none scale-95 group-focus-within:scale-100"></div>
 </div>

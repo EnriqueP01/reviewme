@@ -61,6 +61,9 @@ final class GroupManager extends Component
         $this->authorize('delete', $group);
 
         $group->delete();
+        $this->selectedGroupId = null;
+        $this->isCreating = false;
+
         session()->flash('success', __('Group deleted.'));
     }
 

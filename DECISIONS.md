@@ -1,4 +1,14 @@
 
+## 2026-04-09-57 : Standardisation Visuelle Monolith (Search & Modals)
+- **Auteur** : Antigravity
+- **Statut** : ✅ Implémenté
+- **Contexte** : Besoin d'uniformiser tous les points d'entrée de recherche et les actions de confirmation pour garantir la cohérence du design system.
+- **Décision** :
+    1. **Composant Search Unifié** : Création de `<x-ui.search-input />` adoptant le design des contrôles de tri (`bg-black/20`, `backdrop-blur-3xl`, `rounded-[1.25rem]`). Suppression de l'uppercase au profit d'un style `font-bold tracking-tight` professionnel.
+    2. **Système de Confirmation Monolith** : Refonte de `<x-ui.confirm-modal />` intégrant le composant `<x-ui.button />`. Adoption systématique du style "Ghost-Rose" pour les actions de suppression, incluant la texture de bruit (noise) et les lueurs orbitales.
+    3. **Règle "Copie-Colle Uniquement"** : Ajout d'une directive stricte dans `global.md` interdisant l'invention de nouveaux styles et forçant la réplication exacte des patterns existants.
+- **Impact** : Identité visuelle 100% cohérente, réduction de la dette technique UI et simplification de l'extensibilité du design system.
+
 ## 2026-04-09-56 : Architecture "Zéro-Latence" & Debounced State Sync
 - **Auteur** : Antigravity
 - **Statut** : ✅ Implémenté

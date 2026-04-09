@@ -43,12 +43,12 @@
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                         <div>
                             <x-input-label :value="__('Post Title') . ' *'" />
-                            <x-text-input wire:model="title" placeholder="{{ __('e.g., Memory Optimizer Engine') }}" />
+                            <x-text-input wire:model="title" placeholder="{{ __('e.g., Memory Optimizer v2.0 with Lock-Free Algorithms') }}" />
                             <x-input-error :messages="$errors->get('title')" />
                         </div>
                         <div>
                             <x-input-label :value="__('Short Summary')" />
-                            <x-text-input wire:model="short_description" placeholder="{{ __('Briefly hook the reviewers...') }}" />
+                            <x-text-input wire:model="short_description" placeholder="{{ __('Hook the reviewers... e.g., \'Refactoring the cache invalidation logic for 40% less CPU cycles.\'') }}" />
                             <x-input-error :messages="$errors->get('short_description')" />
                         </div>
                     </div>
@@ -56,12 +56,12 @@
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                         <div>
                             <x-input-label :value="__('Target Review Goals')" />
-                            <textarea wire:model="review_goals" rows="3" class="bg-surface-high border-none text-on-surface placeholder:text-on-surface-variant/50 focus:ring-2 focus:ring-primary/50 rounded-round-4 transition-all duration-300 w-full resize-none p-4" placeholder="{{ __('What logic should be reviewed?') }}"></textarea>
+                            <textarea wire:model="review_goals" rows="3" class="bg-surface-high border-none text-on-surface placeholder:text-on-surface-variant/50 focus:ring-2 focus:ring-primary/50 rounded-round-4 transition-all duration-300 w-full resize-none p-4" placeholder="{{ __('Specific algorithms or patterns to audit... E.g., \'Verify the thread-safety of the singleton implementation.\'') }}"></textarea>
                             <x-input-error :messages="$errors->get('review_goals')" />
                         </div>
                         <div>
                             <x-input-label :value="__('Improvement Desires')" />
-                            <textarea wire:model="improvement_goals" rows="3" class="bg-surface-high border-none text-on-surface placeholder:text-on-surface-variant/50 focus:ring-2 focus:ring-primary/50 rounded-round-4 transition-all duration-300 w-full resize-none p-4" placeholder="{{ __('What do you want to elevate?') }}"></textarea>
+                            <textarea wire:model="improvement_goals" rows="3" class="bg-surface-high border-none text-on-surface placeholder:text-on-surface-variant/50 focus:ring-2 focus:ring-primary/50 rounded-round-4 transition-all duration-300 w-full resize-none p-4" placeholder="{{ __('Desired outcomes... E.g., \'I want to transition from a monolithic handler to a modular strategy pattern.\'') }}"></textarea>
                             <x-input-error :messages="$errors->get('improvement_goals')" />
                         </div>
                     </div>
@@ -69,7 +69,7 @@
 
                     <div>
                         <x-input-label :value="__('Technical Description')" />
-                        <textarea wire:model="description" rows="5" class="bg-surface-high border-none text-on-surface placeholder:text-on-surface-variant/50 focus:ring-2 focus:ring-primary/50 rounded-round-4 transition-all duration-300 w-full resize-none p-4" placeholder="{{ __('Detailed documentation for the reviewers...') }}"></textarea>
+                        <textarea wire:model="description" rows="5" class="bg-surface-high border-none text-on-surface placeholder:text-on-surface-variant/50 focus:ring-2 focus:ring-primary/50 rounded-round-4 transition-all duration-300 w-full resize-none p-4" placeholder="{{ __('Architectural deep dive... Describe the context, dependencies, and complex interactions for the reviewers.') }}"></textarea>
                     </div>
                 </div>
             </div>
@@ -403,10 +403,10 @@
                         <div class="space-y-4 animate-in fade-in slide-in-from-top-4 duration-500">
                             <x-input-label :value="__('Select Target Group Member')" />
                             <div class="relative">
-                                <x-text-input wire:model.live="groupSearch" placeholder="{{ __('Search for a group...') }}" class="pl-12" />
-                                <div class="absolute left-4 top-1/2 -translate-y-1/2 text-on-surface-variant">
-                                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/></svg>
-                                </div>
+                                <x-ui.search-input 
+                                    model="groupSearch" 
+                                    placeholder="{{ __('Example: \'Frontend Security\' or \'Backend Performance\'. Search for a group to share this review with...') }}" 
+                                />
                             </div>
                             
                             <div class="grid grid-cols-1 md:grid-cols-2 gap-3 max-h-48 overflow-y-auto pr-2 custom-scrollbar">

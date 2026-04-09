@@ -40,7 +40,7 @@
                 wire:click="vote({{ $post->id }}, 'up')"
                 wire:loading.attr="disabled"
                 @click="handleVote('up')"
-                :class="voted === 'up' ? 'bg-emerald-500 border-emerald-400 text-white shadow-[0_0_30px_rgba(52,211,153,0.4)] scale-110' : 'bg-surface-container-low text-on-surface-variant hover:text-emerald-400 hover:border-emerald-500/40 active:scale-95 border-white/5'"
+                :class="voted === 'up' ? 'bg-emerald-500 border-emerald-400 text-on-secondary shadow-[0_0_30px_rgba(52,211,153,0.4)] scale-110' : 'bg-surface-container-low text-on-surface-variant hover:text-emerald-400 hover:border-emerald-500/40 active:scale-95 border-white/5'"
                 class="w-14 h-14 rounded-2xl border flex items-center justify-center transition-all duration-300 group/vote"
             >
                 <svg class="w-6 h-6 transition-transform group-hover/vote:-translate-y-1" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="4"><path stroke-linecap="round" stroke-linejoin="round" d="M5 15l7-7 7 7"/></svg>
@@ -57,7 +57,7 @@
                 wire:click="vote({{ $post->id }}, 'down')"
                 wire:loading.attr="disabled"
                 @click="handleVote('down')"
-                :class="voted === 'down' ? 'bg-rose-500 text-white border-rose-400 shadow-[0_0_20px_rgba(244,63,94,0.3)] scale-110' : 'bg-surface-container-low text-on-surface-variant hover:text-rose-400 hover:border-rose-500/40 active:scale-95 border-white/5'"
+                :class="voted === 'down' ? 'bg-rose-500 text-black border-rose-400 shadow-[0_0_20px_rgba(244,63,94,0.3)] scale-110' : 'bg-surface-container-low text-on-surface-variant hover:text-rose-400 hover:border-rose-500/40 active:scale-95 border-white/5'"
                 class="w-14 h-14 rounded-2xl border flex items-center justify-center transition-all duration-300 group/vote"
             >
                 <svg class="w-6 h-6 transition-transform group-hover/vote:translate-y-1" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="4"><path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7"/></svg>
