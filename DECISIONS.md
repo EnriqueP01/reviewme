@@ -431,3 +431,4 @@ The initial "Monolith & The Lens" implementation was too spacious, creating layo
     2. **Gestion des Canaux** : Implémentation de `PrivateChannel('groups.{id}')` avec vérification de l'appartenance au groupe.
     3. **Événements de Broadcast** : Création de `GroupMessageSent` et intégration avec Livewire Echo.
 - **Impact** : Expérience de chat instantanée (latence < 100ms), suppression totale de la charge de polling en base de données, infrastructure moderne prête pour la montée en charge.
+    4. **Workflow Unifié** : Mise à jour du script `composer dev` pour inclure le démarrage automatique du serveur Reverb via `npx concurrently`.
