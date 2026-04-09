@@ -58,7 +58,7 @@
         @livewireScripts
         <script>
             document.addEventListener('livewire:initialized', () => {
-                Livewire.on('vibe-action', (event) => {
+                Livewire.on('post-action', (event) => {
                     if (window.fx) {
                         window.fx.play(event.type);
                     }

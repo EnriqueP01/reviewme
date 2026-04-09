@@ -10,7 +10,7 @@
 - **Auteur** : EnriqueP01
 - **Statut** : ✅ Implémenté
 - **Décision** : 
-    - **Identité** : Migration de la table `users` pour rendre le champ `name` unique et ajout de la règle de validation `Rule::unique` dans `ProfileUpdateRequest`.
+    - **Identité** : Migration de la table `users` pour rendre le camp `name` unique et ajout de la règle de validation `Rule::unique` dans `ProfileUpdateRequest`.
     - **Design** : Restauration du logo procédural ("R") et suppression des animations de transition globales (`fade-in-up`) jugées intrusives.
 - **Impact** : Prévention des doublons d'identité et retour à une esthétique plus sobre et fidèle à l'intention initiale.
 
@@ -301,7 +301,32 @@
 - **Contexte** : Autoriser les curateurs à soumettre des itérations de code (nouvelles versions) sans créer un nouvel artefact, facilitant le suivi des reviews.
 - **Décision** :
     1. **Architecture** : Création de `AddPostVersionAction` gérant l'intégration transactionnelle de nouveaux snippets avec incrémentation automatique de `version_number`.
-    2. **UI Ségrégative** : Ajout du composant Livewire `UpdateVibeCode` avec le routeur dédié `/posts/{postId}/update-code`, reprenant l'ADN du workflow de création et l'heuristique de détection de fichier.
+    2. **UI Ségrégative** : Ajout du composant Livewire `UpdatePost` avec le routeur dédié `/posts/{postId}/update-code`, reprenant l'ADN du workflow de création et l'heuristique de détection de fichier.
     3. **Affichage Dynamique** : Mise à jour de `PostDetail.php` (et son template) pour supporter l'affichage "1 Version = N Fichiers" et ajout du sélecteur interactif de version dans l'entête du snippet.
     4. **Sécurité & Contrôle** : Application stricte de `authorize('update', $post)` limitant l'itération à l'auteur original.
 - **Impact** : Cycle de vie du code continu, traçabilité de l'évolution post-review et réduction mécanique du churn d'artefacts.
+
+## 2026-04-09-42 : Système de Feedback Collaboratif Avancé (Reviews & Suggestions)
+- **Auteur** : Antigravity
+- **Statut** : ✅ Implémenté
+- **Contexte** : Besoin d'élever ReviewMe au niveau d'un outil de collaboration d'élite via des retours contextuels, globaux et structurels.
+- **Décision** :
+    1. **Threaded Community Discussion** : Implémentation de commentaires globaux avec support des réponses imbriquées, Like atomiques et épinglage (Admin-Pinning) pour hiérarchiser les retours d'experts.
+    2. **Full Implementation Review (PR-Style)** : Création d'un workflow permettant de proposer des versions alternatives complètes du code métier, incluant une évaluation globale et des notes par fragment.
+    3. **Micro-modifications Contextuelles (Inline)** : 
+        - Détection de sélection textuelle Alpine.js pour un accès instantané à la proposition de changement.
+        - Système de suggestion "Diff-Edit" persistant par post (via session), offrant deux modes de lecture (Visual Diff vs In-place Editing).
+        - Gutter HUD : Visualisation des contributeurs actifs directement dans la gouttière de numérotation des lignes.
+    4. **Architecture de Données** : Extension du schéma via 4 nouvelles tables et intégration de 3 nouveaux patterns d'Action (`StorePostComment`, `StoreFullReview`, `StoreInlineSuggestion`).
+- **Impact** : Transformation de la page de détail en un véritable hub de revue de code interactif, favorisant les échanges de haute précision et la co-construction de solutions.
+
+## 2026-04-09-43 : Refonte UI/UX du Système de Feedback (US40)
+- **Auteur** : Antigravity
+- **Statut** : ✅ Implémenté
+- **Contexte** : Besoin d'harmoniser le système de feedback avec le design "Monolith & The Lens" et d'ajouter des fonctionnalités sociales avancées (Likes, Threads dynamiques).
+- **Décisions** :
+    1. **Unification Visuelle** : Adoption stricte de la palette sombre (`#1a1b26`, `#0d0e12`) et suppression de tous les éléments d'interface clairs/blancs.
+    2. **Système de Réactions Polymorphique** : Migration des cœurs/likes vers le modèle `Reaction` pour garantir l'unicité des votes et permettre le toggle (unlike).
+    3. **UX de Discussion YouTube** : Masquage des formulaires de réponse par défaut, affichage conditionnel via Alpine.js. Ajout d'états vides illustrés.
+    4. **Moteur de Coloration Blade** : Implémentation d'une coloration syntaxique légère via regex directement dans le template pour une performance et un rendu premium.
+- **Statut** : Accepté et implémenté.

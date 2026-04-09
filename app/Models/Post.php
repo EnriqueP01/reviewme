@@ -51,4 +51,14 @@ class Post extends Model
     {
         return $this->morphMany(Reaction::class, 'reactable');
     }
+
+    public function comments(): HasMany
+    {
+        return $this->hasMany(PostComment::class)->whereNull('parent_id')->orderByDesc('is_pinned')->latest();
+    }
+
+    public function fullReviews(): HasMany
+    {
+        return $this->hasMany(FullReview::class)->latest();
+    }
 }
