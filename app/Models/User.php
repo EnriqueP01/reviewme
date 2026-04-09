@@ -108,4 +108,41 @@ class User extends Authenticatable
     {
         return $this->hasMany(InlineSuggestion::class);
     }
+
+    // --- KARMA & REPUTATION ---
+
+    public function karmaTransactions(): HasMany
+    {
+        return $this->hasMany(KarmaTransaction::class)->latest();
+    }
+
+    public function skills(): HasMany
+    {
+        return $this->hasMany(UserSkill::class);
+    }
+
+    /**
+     * Obtient les détails du niveau actuel de l'utilisateur.
+     */
+    public function getKarmaLevelAttribute(): array
+    {
+        $config = config('karma.levels');
+        $currentLevel = $config['unranked'];
+
+        foreach ($config as $level) {
+            if ($this->reputation_score >= $level['min_score']) {
+                $currentLevel = $level;
+            }
+        }
+
+        return $currentLevel;
+    }
+
+    /**
+     * Vérifie si l'utilisateur possède une permission spécifique basée sur son Karma.
+     */
+    public function hasKarmaPermission(string $permission): bool
+    {
+        return in_array($permission, $this->karma_level['permissions']);
+    }
 }

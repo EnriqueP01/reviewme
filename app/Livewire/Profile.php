@@ -27,22 +27,25 @@ class Profile extends Component
 
     public function getStatsProperty()
     {
-        return Cache::remember("user_stats_{$this->user->id}", 600, function () {
-            $ups = Reaction::whereHasMorph('reactable', [Post::class], function ($q) {
-                $q->where('user_id', $this->user->id);
-            })->where('type', 'mindblown')->count();
+        return [
+            'karma' => $this->user->reputation_score,
+            'posts' => $this->user->posts()->count(),
+            'joined' => $this->user->created_at->format('M Y'),
+            'level' => $this->user->karma_level, // Retourne l'array de config (label, color, etc.)
+        ];
+    }
 
-            $downs = Reaction::whereHasMorph('reactable', [Post::class], function ($q) {
-                $q->where('user_id', $this->user->id);
-            })->where('type', 'optimisable')->count();
+    public function getSkillsProperty()
+    {
+        return $this->user->skills()->orderByDesc('score')->get();
+    }
 
-            return [
-                'karma' => ($ups * 10) - ($downs * 2),
-                'posts' => $this->user->posts()->count(),
-                'joined' => $this->user->created_at->format('M Y'),
-                'level' => 'Senior Curator',
-            ];
-        });
+    public function getKarmaHistoryProperty()
+    {
+        return $this->user->karmaTransactions()
+            ->with('source')
+            ->take(5)
+            ->get();
     }
 
     public function getContributionsProperty()

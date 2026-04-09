@@ -1,6 +1,20 @@
 # Release Notes
 
-## [Unreleased](https://github.com/laravel/laravel/compare/v13.1.1...13.x)
+## [Unreleased]
+### Karma & Reputation System (2026-04-09)
+- **Features** :
+    - Implemented `KarmaTransaction` audit log for full traceability.
+    - Added `UserSkill` model for expertise tracking per Lens.
+    - Created `GrantKarmaAction` for unified reputation updates.
+    - Added `EnsureUserHasKarma` middleware for reputation-gated access (RBAC).
+    - Integrated Karma dashboard into User Profile with rank badges.
+    - Added **Daily Cap** (+200 pts/day) for anti-farming protection.
+    - Added **Quality Bonus** (2x points) for long descriptions/reviews.
+    - Added `php artisan karma:rebuild` command for data integrity checks.
+- **Security** :
+    - Restricted downvotes to "Contributor" level (10+ Karma).
+    - Restricted Group Management to "Certified Reviewer" level (100+ Karma).
+
 
 ## [v13.1.1](https://github.com/laravel/laravel/compare/v13.1.0...v13.1.1) - 2026-03-31
 

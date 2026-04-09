@@ -16,6 +16,10 @@ return Application::configure(basePath: dirname(__DIR__))
         $middleware->web(append: [
             SetLocale::class,
         ]);
+
+        $middleware->alias([
+            'karma' => \App\Http\Middleware\EnsureUserHasKarma::class,
+        ]);
     })
     ->withExceptions(function (Exceptions $exceptions): void {
         //

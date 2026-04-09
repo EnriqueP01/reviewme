@@ -21,6 +21,8 @@ class PostDetail extends Component
 {
     public Post $post;
 
+    public int $postId;
+
     public $activeSnippetId = null;
 
     public $activeLine = null;
@@ -70,7 +72,7 @@ class PostDetail extends Component
     public function mount(int $postId): void
     {
         Log::info("Mounting PostDetail for post {$postId}");
-        $this->post = Post::findOrFail($postId);
+        $this->postId = $postId;
         $this->refreshPost();
 
         $this->selectedVersion = $this->post->snippets->max('version_number') ?: 1;
@@ -112,6 +114,25 @@ class PostDetail extends Component
     }
 
     #[NoRender]
+    public function vote(int $postId, string $direction, ToggleReactionAction $toggleReaction): void
+    {
+        $this->authorizeAction();
+        $post = Post::findOrFail($postId);
+
+        if ($direction === 'none') {
+            \App\Models\Reaction::where([
+                'user_id' => Auth::id(),
+                'reactable_id' => $post->id,
+                'reactable_type' => $post->getMorphClass(),
+            ])->delete();
+            return;
+        }
+
+        $type = $direction === 'up' ? 'mindblown' : 'optimisable';
+        $toggleReaction->execute(Auth::user(), $post, $type);
+    }
+
+    #[NoRender]
     public function toggleCommentLike(int $commentId, ToggleReactionAction $toggleReaction): void
     {
         $comment = PostComment::findOrFail($commentId);
@@ -134,7 +155,8 @@ class PostDetail extends Component
             return;
         }
 
-        $toggleReaction->execute(Auth::user(), $review, $direction);
+        $type = $direction === 'up' ? 'up' : 'down';
+        $toggleReaction->execute(Auth::user(), $review, $type);
     }
 
     // --- QUICK REVIEW (INLINE SUGGESTION) ---
@@ -271,23 +293,30 @@ class PostDetail extends Component
         $this->refreshPost();
     }
 
-    protected function refreshPost(): void
+    public function refreshPost(): void
     {
-        $this->post->load([
-            'user',
+        $this->post = Post::with([
+            'user', 
             'group',
-            'snippets.inlineSuggestions.user',
-            'comments.user',
-            'comments.reactions',
+            'snippets.inlineSuggestions.user', 
+            'fullReviews' => function($query) {
+                $query->withCount([
+                    'reactions as up_count' => fn($q) => $q->where('type', 'up'),
+                    'reactions as down_count' => fn($q) => $q->where('type', 'down')
+                ])->with(['user', 'reactions', 'comments.user', 'modifiedSnippets.snippet', 'comments.reactions']);
+            },
+            'comments.user', 
+            'comments.reactions', 
             'comments.replies.user',
-            'comments.replies.reactions',
-            'fullReviews' => fn ($q) => $q->withCount([
-                'reactions as up_count' => fn($q) => $q->where('type', 'up'),
-                'reactions as down_count' => fn($q) => $q->where('type', 'down')
-            ])->orderBy('score', 'desc')->with(['user', 'modifiedSnippets.snippet', 'reactions', 'comments.user', 'comments.reactions']),
-        ]);
+            'comments.replies.reactions'
+        ])
+        ->withCount([
+            'reactions as up_count' => fn($q) => $q->where('type', 'mindblown'),
+            'reactions as down_count' => fn($q) => $q->where('type', 'optimisable')
+        ])
+        ->findOrFail($this->postId);
 
-        // Refresh snippets after load
+        // Rafraîchir les extraits pour la version sélectionnée
         $this->currentSnippets = $this->post->snippets->where('version_number', $this->selectedVersion);
     }
 

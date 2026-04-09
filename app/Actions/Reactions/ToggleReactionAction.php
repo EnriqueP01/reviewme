@@ -30,6 +30,11 @@ final class ToggleReactionAction
      */
     public function execute(User $user, Model $reactable, string $type): ?Reaction
     {
+        // PROTECTION KARMA : Seuls les "Contributeurs" peuvent voter DOWN
+        if (in_array($type, ['optimisable', 'down']) && !$user->hasKarmaPermission('post.vote_down')) {
+            throw new \Exception(__('Niveau insuffisant pour voter DOWN. (Requis: Contributeur)'));
+        }
+
         // On récupère l'auteur de la ressource pour mettre à jour sa réputation
         $author = null;
         if ($reactable instanceof Post) {
@@ -60,7 +65,7 @@ final class ToggleReactionAction
             if ($existing && $existing->type === $type) {
                 $existing->delete();
                 if ($author) {
-                    $this->updateReputation->execute($author, $type, 'remove');
+                    $this->updateReputation->execute($author, $type, 'remove', null, $reactable);
                 }
 
                 return null;
@@ -72,7 +77,7 @@ final class ToggleReactionAction
                 $existing->update(['type' => $type]);
                 if ($author) {
                     // On passe l'ancien type pour un calcul de delta précis
-                    $this->updateReputation->execute($author, $type, 'switch', $oldType);
+                    $this->updateReputation->execute($author, $type, 'switch', $oldType, $reactable);
                 }
 
                 return $existing;
@@ -87,7 +92,7 @@ final class ToggleReactionAction
             ]);
 
             if ($author) {
-                $this->updateReputation->execute($author, $type, 'add');
+                $this->updateReputation->execute($author, $type, 'add', null, $reactable);
             }
 
             return $reaction;

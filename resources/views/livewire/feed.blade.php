@@ -49,7 +49,7 @@
         <div class="space-y-24">
         @foreach($posts as $post)
             @php
-                $myReaction = $post->reactions->first()?->type;
+                $myReaction = $post->reactions->where('user_id', auth()->id())->first()?->type;
                 $votedState = $myReaction === 'mindblown' ? 'up' : ($myReaction === 'optimisable' ? 'down' : '');
             @endphp
             <article wire:key="post-{{ $post->id }}" @class(['group relative', 'opacity-50 blur-sm grayscale' => false]) x-data="{ hovered: false }" @mouseenter="hovered = true" @mouseleave="hovered = false">
@@ -58,39 +58,36 @@
                      <div class="flex flex-col items-center gap-3 sticky top-32" 
                           x-data="{ 
                               voted: '{{ $votedState }}',
-                              score: {{ $post->up_count - $post->down_count }},
+                              score: parseInt('{{ $post->up_count - $post->down_count }}'),
                               originalVoted: '{{ $votedState }}',
                               timer: null,
                               
-                              handleVote(dir) {
-                                 clearTimeout(this.timer);
-                                 
-                                 // Delta-based robust logic
-                                 let newVoted = (this.voted === dir) ? '' : dir;
-                                 let diff = 0;
-                                 if (this.voted === 'up') diff -= 1;
-                                 if (this.voted === 'down') diff += 1;
-                                 if (newVoted === 'up') diff += 1;
-                                 if (newVoted === 'down') diff -= 1;
-                                 
-                                 this.score += diff;
-                                 this.voted = newVoted;
-
-                                 window.haptic.play(dir);
-                                 
-                                 // Silent sync after 300ms of inactivity
-                                 this.timer = setTimeout(() => {
-                                     if (this.voted !== this.originalVoted) {
-                                         const direction = this.voted === 'up' ? 'up' : (this.voted === 'down' ? 'down' : 'none');
-                                         $wire.vote({{ $post->id }}, direction);
-                                         this.originalVoted = this.voted;
-                                     }
-                                 }, 300);
+                              vote(dir) {
+                                  clearTimeout(this.timer);
+                                  window.haptic.play(dir);
+                                  
+                                  let newVoted = (this.voted === dir) ? '' : dir;
+                                  let diff = 0;
+                                  if (this.voted === 'up') diff -= 1;
+                                  if (this.voted === 'down') diff += 1;
+                                  if (newVoted === 'up') diff += 1;
+                                  if (newVoted === 'down') diff -= 1;
+                                  
+                                  this.score += diff;
+                                  this.voted = newVoted;
+                                  
+                                  this.timer = setTimeout(() => {
+                                      if (this.voted !== this.originalVoted) {
+                                          const target = this.voted === 'up' ? 'up' : (this.voted === 'down' ? 'down' : 'none');
+                                          $wire.vote({{ $post->id }}, target);
+                                          this.originalVoted = this.voted;
+                                      }
+                                  }, 300);
                               }
                           }"
                      >
                          <button 
-                             @click.stop="handleVote('up')"
+                             @click.stop="vote('up')"
                              :class="voted === 'up' ? 'bg-emerald-500 border-emerald-400 text-white shadow-[0_0_30px_rgba(52,211,153,0.4)] scale-110' : 'bg-surface-container-low text-on-surface-variant hover:text-emerald-400 hover:border-emerald-500/40 active:scale-95 border-white/5'"
                              class="w-14 h-14 rounded-2xl border flex items-center justify-center transition-all duration-300 group/vote"
                          >
@@ -105,7 +102,7 @@
                          </div>
                          
                          <button 
-                             @click.stop="handleVote('down')"
+                             @click.stop="vote('down')"
                              :class="voted === 'down' ? 'bg-rose-500 text-white border-rose-400 shadow-[0_0_20px_rgba(244,63,94,0.3)] scale-110' : 'bg-surface-container-low text-on-surface-variant hover:text-rose-400 hover:border-rose-500/40 active:scale-95 border-white/5'"
                              class="w-14 h-14 rounded-2xl border flex items-center justify-center transition-all duration-300 group/vote"
                          >

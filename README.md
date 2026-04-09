@@ -68,6 +68,15 @@ Découvrez l'historique des décisions techniques et des évolutions du projet :
 
 ---
 
+## 🎖️ Système de Réputation & Expertise (Karma)
+La plateforme intègre une méritocratie technique basée sur le **Karma** :
+- **Karma Catégorisé** : Chaque interaction développe vos **Skills** dans des domaines précis (Security, Performance, Logic).
+- **Paliers de Progression** : Devenez un **Reviewer Certifié** (100 Karma) pour accéder à la gestion de groupes ou un **Elite Member** pour influencer la roadmap.
+- **Audit Total** : Chaque point est historisé pour une transparence absolue sur l'expertise des contributeurs.
+- **Bonus de Qualité** : Le système récompense automatiquement les analyses détaillées et constructives.
+
+---
+
 ## 📋 Commandes de l'Agent Antigravity
 
 La plateforme est maintenue par des protocoles robotiques stricts :

@@ -9,6 +9,7 @@ use App\Actions\Reactions\ToggleReactionAction;
 use App\Models\Post;
 use Illuminate\Support\Facades\Auth;
 use Livewire\Attributes\Layout;
+use Livewire\Attributes\NoRender;
 use Livewire\Component;
 use Livewire\WithPagination;
 
