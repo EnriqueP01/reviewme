@@ -372,3 +372,74 @@ The initial "Monolith & The Lens" implementation was too spacious, creating layo
         - Interaction double mode : "Edit" (remplacement direct) et "DIFF" (comparaison de fusion).
     4. **Intégrité Visuelle** : Maintien de la coloration syntaxique cohérente sur tous les nouveaux overlays et modales.
 - **Impact** : Niveau d'interaction sans précédent pour une plateforme web, fusionnant l'ergonomie d'un IDE avec la dynamique d'un réseau social technique.
+
+## 2026-04-09-46 : Finalisation de l'Interface Post & Optimisme UI (Latency Compensation)
+- **Auteur** : Antigravity
+- **Statut** : ✅ Implémenté
+- **Contexte** : Finalisation du système de feedback avec une expérience utilisateur ultra-fluide et une esthétique "Elite Developer".
+- **Décision** :
+    1. **Optimisme UI (Vibe Check)** : Implémentation via Alpine.js du "Latency Compensation" sur les votes des reviews et les likes des commentaires (mise à jour instantanée du DOM).
+    2. **Refonte Quick Review** : Intégration de la photo de l'auteur dans la gouttière de code sans débordement, avec toggle cyclique (ORIGINAL / DIFF / EDIT) au clic.
+    3. **Architecture du Feed (Implementation Feed)** :
+        - Conteneur de flux scrollable (`max-height: 700px`) pour maintenir la structure de page.
+        - Tri automatique par score (popularité) pour les Full Reviews.
+        - Redesign premium des blocs de revue (lueur ambiante, typographie haut-contraste, badges pulsés).
+    4. **Composant Syntax Highlighter** : Centralisation de la coloration syntaxique dans un composant Blade réutilisable, appliqué à toutes les zones de code (Quick/Full Review modals, Feed snippets).
+    5. **UX de Discussion "Node"** : Système de discussion intégré au sein de chaque review, avec input flottant et chargement instantané.
+- **Impact** : Suppression du sentiment de latence serveur, navigation fluide dans les itérations complexes et immersion totale dans l'écosystème Antigravity.
+
+### ID: [2026-04-09-006] - Final Post UI/UX & HUD Multi-file Fix
+**Context**: The post interface suffered from layout inconsistencies, modals not being centered, and a failure to navigate multi-file posts in the HUD.
+**Decision**: 
+1. **Modal HUD Standard**: Switched to a unified modal design with `backdrop-blur-[64px]` and `bg-black/10` for an immersive "HUD" experience. All modals are now strictly centered.
+2. **Auto-Stretch Logic**: Removed fixed heights from code containers in modals. Used dynamic `rows` for textareas and flex-grow for code blocks to ensure they scale with content.
+3. **Multi-file Navigation**: Standardized the use of `CodeBlock`'s internal tab system by passing the entire snippet collection, resolving the bug where only one file was visible.
+4. **Typography & Spacing**: Normalized font sizes (10px for metadata labels, 11-13px for code/descriptions) and increased padding for a more premium, spacious feel.
+**Rationale**: Aligns the post page with the high-fidelity "Monolith & The Lens" aesthetic while ensuring robust functionality for multi-file reviews.
+**Status**: Implemented.
+
+
+## 2026-04-09-47 : Optimisation Drastique de l'Interface Post & Modale (High-Density UX v2)
+- **Auteur** : Antigravity
+- **Statut** : ✅ Implémenté
+- **Contexte** : Nécessité de rendre l'interface plus compacte, professionnelle et alignée sur les standards de l'application (IDE-grade).
+- **Décision** :
+    1. **Structure Modale Full-Height** : Passage des modales en `h-full` (pleine hauteur) avec défilement interne et suppression des marges externes vides.
+    2. **Refonte Terminologique** : Adoption de termes professionnels : `Commentary` pour l'évaluation globale, `Files:` pour les fragments, et `Curate this code !` pour le bouton d'action principal.
+    3. **Cohérence Feed / Post** : Alignement du style de la zone de description des reviews sur le design des cartes du Feed (fond `surface-container-low`, typographie `text-sm`, suppression des bordures lourdes).
+    4. **Densité Visuelle Maximale** : Réduction drastique des paddings et gaps (`p-12` -> `p-6/8`, `gap-12` -> `gap-8`). Navigation par flèches repositionnée et agrandie pour un accès rapide.
+- **Impact** : Expérience utilisateur "expert-focused", élimination du vide inutile et sensation de robustesse technique.
+
+## 2026-04-09-48 : Polissage UI & Nomenclature Finale (Glassmorphism & Terminology)
+- **Auteur** : Antigravity
+- **Statut** : ✅ Implémenté
+- **Contexte** : Suppression définitive des termes "Intel" et uniformisation visuelle premium.
+- **Décision** :
+    1. **Adieu "Intel"** : `Intelligence Intel` -> `Full Reviews`, `Broadcast` -> `Reply`. Simplification radicale des libellés UI.
+    2. **Refonte Discussion Node** : Suppression de l'espace persistant au repli via des classes Alpine dynamiques (`:class`).
+    3. **Esthétique Commentaire** : Passage au style "Glassmorphism" (dégradés `white/[0.03]`, bordures de gauche colorées `border-l-4`, ombres `blur-2xl`) sans bordures blanches.
+    4. **Focus Fichier** : Suppression du préfixe "Files:" pour laisser le nom du fichier en protagoniste. Augmentation de la taille de la description des snippets (`text-sm font-black`).
+- **Impact** : Identité visuelle plus forte, interface plus aérée et langage métier pur.
+
+## 2026-04-09-49 : Refonte Discussion Globale & Expérience "Broadcast"
+- **Auteur** : Antigravity
+- **Statut** : ✅ Implémenté
+- **Contexte** : Extension de la nouvelle nomenclature et esthétique à la zone de discussion communautaire.
+- **Décision** :
+    1. **Nomenclature Globale** : `Community Intel` -> `Community Commentaries`. `Transmit Reply` -> `Reply`. Suppression totale du mot "Intel" résiduel.
+    2. **Input Texture & Glow** : Refonte de la zone de saisie principale avec un plateau en dégradé de verre (`glass-panel`), un halo lumineux (`blur-[100px]`) et un bouton "Broadcast" enrichi d'un effet de balayage lumineux.
+    3. **Visual Threading** : Ajout d'une ligne de thread (`absolute w-px`) sous les avatars pour guider l'œil dans la hiérarchie des commentaires.
+    4. **Densité & Richesse** : Augmentation de la taille des avatars (`w-16`) et utilisation intense des dégradés pour une sensation de profondeur "HUD".
+- **Impact** : Cohérence totale sur l'ensemble de la page Post et renforcement de l'identité visuelle Antigravity.
+
+## 2026-04-09-50 : Harmonisation de l'Interface de Discussion & Optimisation du Layout
+- **Auteur** : Antigravity
+- **Statut** : ✅ Implémenté
+- **Contexte** : Besoin d'unifier l'expérience de saisie des commentaires et de supprimer les déséquilibres visuels (espaces vides) dans la section Full Review.
+- **Décision** :
+    1. **Unification de l'Input (Modèle "Reply")** : Remplacement de tous les champs de saisie (Global, Thread, Review) par un design unique haute-fidélité : fond `black/40`, bordures `primary/10`, avatar intégré et bouton d'action primaire vibrant.
+    2. **Architecture du Flux de Review** : Inversion de la hiérarchie dans les discussions de Full Review. L'input de saisie est désormais placé en tête (Above the Fold) pour favoriser l'interaction immédiate, suivi de la liste historique.
+    3. **Suppression du Vide Structurel** : Retrait des hauteurs fixes (`h-[800px]`) sur le carousel de reviews et passage à un layout flexible. Le repli des commentaires libère désormais instantanément l'espace vertical, garantissant une page compacte.
+    4. **Textures & Transitions** : Application systématique des textures `shadow-inner` et des transitions `x-collapse` pour une sensation de fluidité organique.
+- **Impact** : Expérience utilisateur plus cohérente, navigation verticale optimisée et interface modernisée.
+
