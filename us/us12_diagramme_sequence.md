@@ -17,42 +17,40 @@ sequenceDiagram
     autonumber
     actor Dev as Développeur
     participant UI as Browser (Livewire UI)
-    participant LW as PublishWorkflow (Backend)
-    participant Auth as Laravel Auth
-    participant DB as SQLite Database
+    participant LW as PublishWorkflow (Livewire)
+    participant ACT as CreatePostAction (Action)
+    participant DB as Database (Postgres)
 
-    Note over Dev, DB: Phase de Soumission
-    Dev->>UI: Saisir titre, description et code
-    Dev->>UI: Cliquer sur "Publier"
-    UI->>LW: Appel AJAX submit() (Livewire Sync)
+    Note over Dev, UI: Phase de Saisie
+    Dev->>UI: Dépose les fichiers & saisit les métadonnées
+    UI->>LW: Synchronisation asynchrone ($wire.files)
     
-    Note over LW, Laravel: Phase de Validation
+    Dev->>UI: Clique sur "Publier"
+    UI->>LW: submit()
+    
+    Note over LW, ACT: Phase de Validation & Traitement
     activate LW
-    LW->>LW: validate(inputs)
+    LW->>LW: validate(FormRequest)
     
-    alt Erreur de validation
-        LW-->>UI: Erreur 422 (ValidationErrors)
-        UI-->>Dev: Afficher alertes (champs requis, etc.)
-    else Validation OK
-        Note over LW, DB: Phase de Persistance
-        LW->>Auth: id()
-        Auth-->>LW: Logged-in User ID
+    alt Données Invalides
+        LW-->>UI: ValidationException (422)
+        UI-->>Dev: Affiche les erreurs Toast HUD
+    else Données Valides
+        LW->>ACT: execute(User, Payload)
+        activate ACT
         
-        LW->>DB: INSERT INTO posts (user_id, title...)
-        activate DB
-        DB-->>LW: Post ID
+        ACT->>DB: TRANSACTION: BEGIN
+        ACT->>DB: INSERT post (metadata)
+        ACT->>DB: INSERT snippets (loop)
+        ACT->>DB: TRANSACTION: COMMIT
         
-        loop Pour chaque fichier
-            LW->>DB: INSERT INTO snippets (post_id, content...)
-        end
-        deactivate DB
+        ACT-->>LW: Post Instance
+        deactivate ACT
         
-        Note over Dev, UI: Phase de Réponse
-        LW->>LW: Session::flash('success')
-        LW-->>UI: RedirectResponse (route dashboard)
+        Note over LW, Dev: Phase de Finalisation
+        LW-->>UI: Redirect (Dashboard)
         deactivate LW
-        
-        UI->>Dev: Redirection et Message de succès
+        UI-->>Dev: Affiche succès & Redirection
     end
 ```
 

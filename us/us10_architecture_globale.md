@@ -17,38 +17,40 @@ AFIN DE éviter un assemblage opaque et préparer une réalisation maintenable
 
 ```mermaid
 graph TD
-    subgraph "Frontend (Browser)"
-        UI["Interface Livewire (HUD Components)"]
-        AL["AlpineJS (Client Logic / D&D)"]
-        TW["TailwindCSS (Style System)"]
+    subgraph Frontend ["Espace Client (Interface & HUD)"]
+        UI["Livewire Views (HUD Components)"]
+        AL["AlpineJS (Reactive Logic & D&D)"]
+        TW["TailwindCSS (Design System)"]
     end
 
-    subgraph "Backend (Laravel)"
-        LVW["Livewire Components (State Managers)"]
-        ACT["Business Actions (DTOs & Operations)"]
+    subgraph Backend ["Cœur Applicatif (Laravel 11)"]
+        LW["Livewire Components (Stateful Bridge)"]
+        ACT["Business Actions (Service Layer)"]
+        SEC["Policies / Gates (RBAC Security)"]
         MOD["Eloquent Models (Domain Logic)"]
-        SEC["Policies & Gates (RBAC)"]
     end
 
-    subgraph "Infrastructure & Data"
-        DB[("PostgreSQL")]
-        CH["Redis (Cache & Queue)"]
-        FS["Local/S3 Storage (Avatars)"]
+    subgraph Infra ["Persistance & Infrastructure"]
+        DB[("PostgreSQL / MariaDB")]
+        RED["Redis (Cache & WebSockets)"]
+        STOR["Storage (Artifact Files & Avatars)"]
     end
 
-    subgraph "External Services"
-        GTH["GitHub OAuth (Identity)"]
-        RVB["Laravel Reverb (WebSockets)"]
+    subgraph External ["Ponts Externes"]
+        GH["GitHub OAuth (Provider)"]
+        RVB["Laravel Reverb (Real-time)"]
     end
 
-    UI <--> LVW
-    AL <--> LVW
-    LVW --> ACT
+    %% Interactions
+    UI <--> LW
+    AL <--> UI
+    LW --> SEC
+    LW --> ACT
     ACT --> MOD
     MOD <--> DB
-    LVW --> SEC
-    LVW <--> RVB
-    LVW --> GTH
+    LW <--> RVB
+    LW --> GH
+    ACT -.-> RED
 ```
 
 ### 2. Responsabilités des Blocs
