@@ -2,7 +2,7 @@
 
 namespace Tests\Feature;
 
-use App\Models\Post;
+use App\Livewire\PublishWorkflow;
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Livewire\Livewire;
@@ -20,7 +20,7 @@ class PublishWorkflowTest extends TestCase
         $user = User::factory()->create();
 
         Livewire::actingAs($user)
-            ->test(\App\Livewire\PublishWorkflow::class)
+            ->test(PublishWorkflow::class)
             // Step 1
             ->set('title', 'Ma nouvelle Vibe')
             ->set('short_description', 'Un résumé court et concis de l\'artefact.')
@@ -30,7 +30,7 @@ class PublishWorkflowTest extends TestCase
             ->assertSet('step', 2)
             // Step 2
             ->set('files', [
-                ['id' => 'test_1', 'name' => 'test.php', 'content' => '<?php echo "hello";', 'language' => 'php', 'description' => 'Un fichier de test', 'is_duplicate' => false]
+                ['id' => 'test_1', 'name' => 'test.php', 'content' => '<?php echo "hello";', 'language' => 'php', 'description' => 'Un fichier de test', 'is_duplicate' => false],
             ])
             ->call('nextStep')
             ->assertSet('step', 3)
@@ -59,10 +59,10 @@ class PublishWorkflowTest extends TestCase
         $user = User::factory()->create();
 
         Livewire::actingAs($user)
-            ->test(\App\Livewire\PublishWorkflow::class)
+            ->test(PublishWorkflow::class)
             ->call('importMultipleFiles', [
                 ['name' => 'core.php', 'content' => "<?php\n// line 2\n// line 3"],
-                ['name' => 'style.css', 'content' => "body { color: red; }"],
+                ['name' => 'style.css', 'content' => 'body { color: red; }'],
             ])
             ->assertCount('files', 2)
             ->assertSet('files.0.name', 'core.php')
@@ -71,12 +71,12 @@ class PublishWorkflowTest extends TestCase
             ->assertSet('files.1.language', 'css');
 
         // Check stats telemetry
-        $component = new \App\Livewire\PublishWorkflow();
+        $component = new PublishWorkflow;
         $component->files = [
-            ['name' => 'core.php', 'content' => "Line 1\nLine 2\nLine 3"]
+            ['name' => 'core.php', 'content' => "Line 1\nLine 2\nLine 3"],
         ];
         $stats = $component->getFileStats(0);
-        
+
         $this->assertEquals(3, $stats['lines']);
         $this->assertStringContainsString('B', $stats['size']);
     }
@@ -89,7 +89,7 @@ class PublishWorkflowTest extends TestCase
         $user = User::factory()->create();
 
         Livewire::actingAs($user)
-            ->test(\App\Livewire\PublishWorkflow::class)
+            ->test(PublishWorkflow::class)
             ->set('files.0.name', 'file.php')
             ->call('addFile')
             ->call('importFile', 1, 'file.php', 'some content')
@@ -105,7 +105,7 @@ class PublishWorkflowTest extends TestCase
         $user = User::factory()->create();
 
         Livewire::actingAs($user)
-            ->test(\App\Livewire\PublishWorkflow::class)
+            ->test(PublishWorkflow::class)
             ->set('files', [
                 ['id' => 'f1', 'name' => 'A.php', 'content' => 'A', 'is_duplicate' => false],
                 ['id' => 'f2', 'name' => 'B.php', 'content' => 'B', 'is_duplicate' => false],
@@ -117,4 +117,3 @@ class PublishWorkflowTest extends TestCase
             ->assertSet('files.2.name', 'B.php');
     }
 }
-

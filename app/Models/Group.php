@@ -9,6 +9,7 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Support\Str;
 
 final class Group extends Model
 {
@@ -27,8 +28,8 @@ final class Group extends Model
     protected static function boot()
     {
         parent::boot();
-        static::creating(function ($group) {
-            $group->slug = \Illuminate\Support\Str::slug($group->name);
+        self::creating(function ($group) {
+            $group->slug = Str::slug($group->name);
         });
     }
 

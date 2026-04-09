@@ -13,8 +13,7 @@ final class RegisterUserAction
     /**
      * Crée un nouvel utilisateur et déclenche l'événement d'inscription.
      *
-     * @param array{name: string, email: string, password: string} $data
-     * @return User
+     * @param  array{name: string, email: string, password: string}  $data
      */
     public function execute(array $data): User
     {

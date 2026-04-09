@@ -10,7 +10,8 @@ class GroupFactory extends Factory
 {
     public function definition(): array
     {
-        $name = fake()->company() . ' Devs';
+        $name = fake()->company().' Devs';
+
         return [
             'name' => $name,
             'slug' => Str::slug($name),

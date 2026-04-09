@@ -13,7 +13,7 @@ return new class extends Migration
     {
         // On modifie la table users existante pour ajouter les champs GitHub
         Schema::table('users', function (Blueprint $table) {
-            if (!Schema::hasColumn('users', 'github_id')) {
+            if (! Schema::hasColumn('users', 'github_id')) {
                 $table->string('github_id')->nullable()->unique()->after('id');
                 $table->string('avatar')->nullable()->after('name');
                 $table->integer('reputation_score')->default(0)->after('avatar');
@@ -79,7 +79,7 @@ return new class extends Migration
         Schema::dropIfExists('snippets');
         Schema::dropIfExists('posts');
         Schema::dropIfExists('groups');
-        
+
         Schema::table('users', function (Blueprint $table) {
             $table->dropColumn(['github_id', 'avatar', 'reputation_score', 'bio']);
             $table->string('password')->nullable(false)->change();

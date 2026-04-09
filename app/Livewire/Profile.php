@@ -2,13 +2,17 @@
 
 namespace App\Livewire;
 
-use Livewire\Component;
-use Livewire\Attributes\Layout;
+use App\Models\Post;
+use App\Models\Reaction;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Cache;
+use Livewire\Attributes\Layout;
+use Livewire\Component;
 
 class Profile extends Component
 {
     public $user;
+
     public $perPage = 3;
 
     public function mount()
@@ -23,14 +27,14 @@ class Profile extends Component
 
     public function getStatsProperty()
     {
-        return \Illuminate\Support\Facades\Cache::remember("user_stats_{$this->user->id}", 600, function() {
-            $ups = \App\Models\Reaction::whereHasMorph('reactable', [\App\Models\Post::class], function($q) {
-                    $q->where('user_id', $this->user->id);
-                })->where('type', 'mindblown')->count();
-                
-            $downs = \App\Models\Reaction::whereHasMorph('reactable', [\App\Models\Post::class], function($q) {
-                    $q->where('user_id', $this->user->id);
-                })->where('type', 'optimisable')->count();
+        return Cache::remember("user_stats_{$this->user->id}", 600, function () {
+            $ups = Reaction::whereHasMorph('reactable', [Post::class], function ($q) {
+                $q->where('user_id', $this->user->id);
+            })->where('type', 'mindblown')->count();
+
+            $downs = Reaction::whereHasMorph('reactable', [Post::class], function ($q) {
+                $q->where('user_id', $this->user->id);
+            })->where('type', 'optimisable')->count();
 
             return [
                 'karma' => ($ups * 10) - ($downs * 2),
@@ -43,8 +47,8 @@ class Profile extends Component
 
     public function getContributionsProperty()
     {
-        return \Illuminate\Support\Facades\Cache::remember("user_contributions_{$this->user->id}", 600, function() {
-            return \App\Models\Post::where('user_id', $this->user->id)
+        return Cache::remember("user_contributions_{$this->user->id}", 600, function () {
+            return Post::where('user_id', $this->user->id)
                 ->where('created_at', '>=', now()->subDays(365))
                 ->selectRaw('DATE(created_at) as date, count(*) as count')
                 ->groupBy('date')

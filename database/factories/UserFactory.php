@@ -31,7 +31,7 @@ class UserFactory extends Factory
             'password' => static::$password ??= Hash::make('password'),
             'remember_token' => Str::random(10),
             'github_id' => fake()->unique()->numberBetween(100000, 999999),
-            'avatar' => 'https://i.pravatar.cc/150?u=' . fake()->uuid(),
+            'avatar' => 'https://i.pravatar.cc/150?u='.fake()->uuid(),
             'reputation_score' => fake()->numberBetween(0, 5000),
             'bio' => fake()->sentence(10),
         ];

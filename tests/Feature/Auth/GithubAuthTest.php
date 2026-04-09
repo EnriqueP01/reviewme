@@ -5,8 +5,8 @@ namespace Tests\Feature\Auth;
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Laravel\Socialite\Facades\Socialite;
-use Tests\TestCase;
 use Mockery;
+use Tests\TestCase;
 
 class GithubAuthTest extends TestCase
 {
@@ -37,7 +37,7 @@ class GithubAuthTest extends TestCase
         $response = $this->get('/auth/github/callback');
 
         $this->assertAuthenticated();
-        
+
         $user = User::where('github_id', '123456')->first();
         $this->assertNotNull($user);
         $this->assertEquals('test@example.com', $user->email);

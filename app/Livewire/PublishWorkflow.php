@@ -2,22 +2,26 @@
 
 namespace App\Livewire;
 
-use Livewire\Component;
-use Livewire\Attributes\Layout;
-
+use App\Actions\Posts\CreatePostAction;
 use Illuminate\Support\Facades\Auth;
+use Livewire\Attributes\Layout;
+use Livewire\Component;
 
 class PublishWorkflow extends Component
 {
     public int $step = 1;
-    
+
     // Step 1: Introspection & Essence
     public string $title = '';
+
     public string $short_description = '';
+
     public string $review_goals = '';
+
     public string $improvement_goals = '';
+
     public string $description = ''; // Full description
-    
+
     // Step 2: Artifacts
     public array $files = [];
 
@@ -61,16 +65,19 @@ class PublishWorkflow extends Component
     public function getSupportedLanguages(): array
     {
         return [
-            'php', 'javascript', 'typescript', 'python', 'css', 'html', 'sql', 'markdown', 
-            'json', 'yaml', 'xml', 'c', 'cpp', 'java', 'go', 'rust', 'ruby', 'csharp', 
-            'swift', 'kotlin', 'dart', 'bash', 'vue', 'blade'
+            'php', 'javascript', 'typescript', 'python', 'css', 'html', 'sql', 'markdown',
+            'json', 'yaml', 'xml', 'c', 'cpp', 'java', 'go', 'rust', 'ruby', 'csharp',
+            'swift', 'kotlin', 'dart', 'bash', 'vue', 'blade',
         ];
     }
-    
+
     // Step 3: Global Focus & Distribution
     public array $selectedLens = ['clarity'];
+
     public string $visibility = 'public';
+
     public ?int $groupId = null;
+
     public string $groupSearch = '';
 
     public function updatedFiles($value, $key)
@@ -86,7 +93,7 @@ class PublishWorkflow extends Component
     {
         $filename = $this->files[$index]['name'] ?? '';
         $extension = strtolower(pathinfo($filename, PATHINFO_EXTENSION));
-        
+
         if (isset($this->extensionMap[$extension])) {
             $this->files[$index]['language'] = $this->extensionMap[$extension];
         } else {
@@ -117,7 +124,7 @@ class PublishWorkflow extends Component
                 'content' => $data['content'],
                 'language' => $this->getLanguageByExtension($data['name']),
                 'description' => '',
-                'is_duplicate' => false
+                'is_duplicate' => false,
             ];
         }
         $this->checkDuplicates();
@@ -128,7 +135,7 @@ class PublishWorkflow extends Component
         $names = [];
         foreach ($this->files as $index => &$file) {
             $file['is_duplicate'] = false;
-            if (!empty($file['name'])) {
+            if (! empty($file['name'])) {
                 if (isset($names[$file['name']])) {
                     $file['is_duplicate'] = true;
                     $this->files[$names[$file['name']]]['is_duplicate'] = true;
@@ -141,6 +148,7 @@ class PublishWorkflow extends Component
     protected function getLanguageByExtension($filename)
     {
         $extension = strtolower(pathinfo($filename, PATHINFO_EXTENSION));
+
         return $this->extensionMap[$extension] ?? 'php';
     }
 
@@ -153,8 +161,8 @@ class PublishWorkflow extends Component
 
         return [
             'lines' => $lines,
-            'size' => $kb > 0 ? $kb . ' KB' : $bytes . ' B',
-            'is_duplicate' => $this->files[$index]['is_duplicate'] ?? false
+            'size' => $kb > 0 ? $kb.' KB' : $bytes.' B',
+            'is_duplicate' => $this->files[$index]['is_duplicate'] ?? false,
         ];
     }
 
@@ -221,7 +229,7 @@ class PublishWorkflow extends Component
         $this->step--;
     }
 
-    public function submit(\App\Actions\Posts\CreatePostAction $createPost)
+    public function submit(CreatePostAction $createPost)
     {
         $this->validate([
             'visibility' => 'required|in:public,private',
@@ -241,6 +249,7 @@ class PublishWorkflow extends Component
         ]);
 
         session()->flash('success', 'Artefact déployé avec succès !');
+
         return redirect()->to(route('dashboard'));
     }
 

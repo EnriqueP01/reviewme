@@ -10,11 +10,10 @@ final class UpdateUserReputationAction
 {
     /**
      * Calcule et met à jour le score de réputation d'un utilisateur.
-     * 
-     * @param User $user L'utilisateur qui reçoit la réputation (auteur du post)
-     * @param string $type Le type de réaction (mindblown, optimisable)
-     * @param string $action 'add' | 'remove' | 'switch'
-     * @return void
+     *
+     * @param  User  $user  L'utilisateur qui reçoit la réputation (auteur du post)
+     * @param  string  $type  Le type de réaction (mindblown, optimisable)
+     * @param  string  $action  'add' | 'remove' | 'switch'
      */
     public function execute(User $user, string $type, string $action): void
     {

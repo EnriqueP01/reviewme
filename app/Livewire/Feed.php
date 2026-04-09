@@ -4,17 +4,20 @@ declare(strict_types=1);
 
 namespace App\Livewire;
 
+use App\Actions\Posts\SearchPostsAction;
+use App\Actions\Reactions\ToggleReactionAction;
 use App\Models\Post;
-use Livewire\Component;
 use Illuminate\Support\Facades\Auth;
-use Livewire\WithPagination;
 use Livewire\Attributes\Layout;
+use Livewire\Component;
+use Livewire\WithPagination;
 
 class Feed extends Component
 {
     use WithPagination;
 
     public string $sort = 'recent';
+
     public string $search = '';
 
     protected $queryString = [
@@ -33,9 +36,9 @@ class Feed extends Component
         $this->resetPage();
     }
 
-    public function vote(int $postId, string $direction, \App\Actions\Reactions\ToggleReactionAction $toggleReaction)
+    public function vote(int $postId, string $direction, ToggleReactionAction $toggleReaction)
     {
-        if (!Auth::check()) {
+        if (! Auth::check()) {
             return redirect()->route('login');
         }
 
@@ -46,13 +49,13 @@ class Feed extends Component
     }
 
     #[Layout('layouts.app')]
-    public function render(\App\Actions\Posts\SearchPostsAction $searchPosts)
+    public function render(SearchPostsAction $searchPosts)
     {
         $posts = $searchPosts->execute($this->search, $this->sort)
             ->paginate(30);
 
         return view('livewire.feed', [
-            'posts' => $posts
+            'posts' => $posts,
         ]);
     }
 }
