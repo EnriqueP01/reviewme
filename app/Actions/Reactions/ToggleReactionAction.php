@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Actions\Reactions;
 
+use App\Models\FullReview;
 use App\Models\Post;
 use App\Models\PostComment;
 use App\Models\Reaction;
@@ -38,7 +39,7 @@ final class ToggleReactionAction
             $author = $reactable->user;
         } elseif ($reactable instanceof Review) {
             $author = $reactable->user;
-        } elseif ($reactable instanceof \App\Models\FullReview) {
+        } elseif ($reactable instanceof FullReview) {
             $author = $reactable->user;
         }
 

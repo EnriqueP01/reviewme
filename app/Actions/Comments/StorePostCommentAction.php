@@ -12,12 +12,13 @@ final class StorePostCommentAction
     /**
      * Crée un nouveau commentaire global ou une réponse.
      */
-    public function execute(User $user, int $postId, string $content, ?int $parentId = null): PostComment
+    public function execute(User $user, int $postId, string $content, ?int $parentId = null, ?int $fullReviewId = null): PostComment
     {
         return PostComment::create([
             'user_id' => $user->id,
             'post_id' => $postId,
             'parent_id' => $parentId,
+            'full_review_id' => $fullReviewId,
             'content' => $content,
         ]);
     }

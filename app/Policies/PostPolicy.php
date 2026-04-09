@@ -23,17 +23,7 @@ final class PostPolicy
      */
     public function delete(User $user, Post $post): bool
     {
-        $allowed = $user->id === $post->user_id;
-
-        if (! $allowed) {
-            Log::warning('Unauthorized deletion attempt', [
-                'user_id' => $user->id,
-                'post_id' => $post->id,
-                'ip' => request()->ip(),
-            ]);
-        }
-
-        return $allowed;
+        return $user->id === $post->user_id;
     }
 
     /**

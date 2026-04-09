@@ -6,7 +6,6 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
-
 use Illuminate\Database\Eloquent\Relations\MorphMany;
 
 class PostComment extends Model
@@ -16,6 +15,7 @@ class PostComment extends Model
     protected $fillable = [
         'user_id',
         'post_id',
+        'full_review_id',
         'parent_id',
         'content',
         'likes_count',
@@ -45,5 +45,10 @@ class PostComment extends Model
     public function reactions(): MorphMany
     {
         return $this->morphMany(Reaction::class, 'reactable');
+    }
+
+    public function fullReview(): BelongsTo
+    {
+        return $this->belongsTo(FullReview::class);
     }
 }
