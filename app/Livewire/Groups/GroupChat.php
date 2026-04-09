@@ -15,6 +15,13 @@ final class GroupChat extends Component
 
     public string $message = '';
 
+    public function getListeners()
+    {
+        return [
+            "echo-private:groups.{$this->group->id},GroupMessageSent" => 'render',
+        ];
+    }
+
     protected $rules = [
         'message' => 'required|string|max:1000',
     ];
@@ -23,14 +30,16 @@ final class GroupChat extends Component
     {
         $this->validate();
 
-        $this->group->messages()->create([
+        $message = $this->group->messages()->create([
             'user_id' => Auth::id(),
             'content' => $this->message,
         ]);
 
+        broadcast(new \App\Events\GroupMessageSent($message))->toOthers();
+
         $this->reset('message');
         
-        // Dispatch event for UI scroll behavior
+        // Dispatch event for local UI scroll behavior
         $this->dispatch('message-sent');
     }
 

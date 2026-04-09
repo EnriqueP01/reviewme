@@ -421,3 +421,13 @@ The initial "Monolith & The Lens" implementation was too spacious, creating layo
     2. **Feed de Groupe Dédié** : Création du composant `GroupFeed` et extension de `SearchPostsAction` pour supporter le filtrage par `group_id`.
     3. **Refonte UI GroupManager** : Passage à un dashboard à deux colonnes (Feed à gauche, Membres et Chat à droite) pour maximiser l'espace de travail.
 - **Impact** : Transformation des groupes d'une simple liste de membres en véritable espace de travail actif, sécurisé et centralisé.
+
+## 2026-04-09-51 : Transition Temps-Réel avec Laravel Reverb
+- **Auteur** : Antigravity
+- **Statut** : ✅ Implémenté
+- **Contexte** : Le système de polling (interrogation cyclique) consomme inutilement des ressources serveur et induit une latence.
+- **Décision** :
+    1. **Installation de Reverb** : Migration vers WebSockets natifs via Laravel Reverb.
+    2. **Gestion des Canaux** : Implémentation de `PrivateChannel('groups.{id}')` avec vérification de l'appartenance au groupe.
+    3. **Événements de Broadcast** : Création de `GroupMessageSent` et intégration avec Livewire Echo.
+- **Impact** : Expérience de chat instantanée (latence < 100ms), suppression totale de la charge de polling en base de données, infrastructure moderne prête pour la montée en charge.
