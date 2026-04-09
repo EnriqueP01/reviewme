@@ -336,17 +336,18 @@
                             wire:click="toggleLens('{{ $key }}')"
                             @class([
                                 "cursor-pointer group flex flex-col h-full relative border-2 p-8 rounded-round-4 transition-all duration-500 overflow-hidden",
-                                "bg-[var(--lens-{$meta['color']})] !bg-opacity-10 border-[var(--lens-{$meta['color']})] shadow-[0_0_30px_rgba(var(--lens-{$meta['color']}-rgb),0.1)]" => in_array($key, $selectedLens),
                                 "bg-surface-low border-outline-variant/10 hover:bg-surface-high" => !in_array($key, $selectedLens)
                             ])
+                            style="{{ in_array($key, $selectedLens) ? 'background-color: rgba(var(--lens-'.$meta['color'].'-rgb), 0.1); border-color: var(--lens-'.$meta['color'].'); box-shadow: 0 0 30px rgba(var(--lens-'.$meta['color'].'-rgb), 0.1);' : '' }}"
                         >
                             <!-- Checkmark Overlay -->
                             <div 
                                 @class([
                                     "absolute top-4 right-4 w-6 h-6 rounded-full border flex items-center justify-center transition-all duration-500",
-                                    "bg-[var(--lens-{$meta['color']})] border-transparent scale-110" => in_array($key, $selectedLens),
+                                    "border-transparent scale-110" => in_array($key, $selectedLens),
                                     "border-outline-variant/20" => !in_array($key, $selectedLens)
                                 ])
+                                style="{{ in_array($key, $selectedLens) ? 'background-color: var(--lens-'.$meta['color'].');' : '' }}"
                             >
                                 <svg @class(["w-4 h-4 text-black transition-opacity", "opacity-100" => in_array($key, $selectedLens), "opacity-0" => !in_array($key, $selectedLens)]) fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="4" d="M5 13l4 4L19 7"/></svg>
                             </div>
@@ -354,7 +355,6 @@
                             <div 
                                 @class([
                                     "w-12 h-12 rounded-round-4 flex items-center justify-center mb-6 font-display font-black text-xl transition-all duration-500",
-                                    "text-black bg-[var(--lens-{$meta['color']})]" => in_array($key, $selectedLens),
                                     "bg-surface-highest/20 text-on-surface-variant group-hover:bg-primary/20 group-hover:text-primary" => !in_array($key, $selectedLens)
                                 ])
                                 style="{{ in_array($key, $selectedLens) ? 'background-color: var(--lens-'.$meta['color'].'); color: black;' : '' }}"
