@@ -1,8 +1,11 @@
 import './bootstrap';
 
 import Alpine from 'alpinejs';
+import collapse from '@alpinejs/collapse';
 
+Alpine.plugin(collapse);
 window.Alpine = Alpine;
+// Note: Alpine.start() est géré par Livewire 3
 
 // Service Audio Premium & Haptique
 window.fx = {

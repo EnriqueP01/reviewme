@@ -57,19 +57,30 @@
                 </div>
             </div>
         @elseif($step == 2)
-            <!-- Step 2: Artifacts (Files) -->
-            <div class="space-y-8 animate-in fade-in slide-in-from-bottom-4 duration-500">
-                <div class="flex justify-between items-end">
-                    <div class="space-y-2">
-                        <h2 class="font-display text-3xl font-bold text-on-surface tracking-tight">{{ __('The Artifacts') }}</h2>
-                        <p class="text-on-surface-variant italic">{{ __('Input the files you wish to have curated. Drag & drop files directly into code blocks or use the master zone.') }}</p>
+            <!-- Step 2: Artifacts (The Digital Logic) -->
+            <div class="space-y-12 animate-in fade-in slide-in-from-bottom-8 duration-700">
+                <div class="flex flex-col md:flex-row justify-between items-start md:items-end gap-6">
+                    <div class="space-y-4 max-w-2xl">
+                        <div class="flex items-center gap-3">
+                            <div class="w-8 h-8 rounded-round-2 bg-primary/20 flex items-center justify-center text-primary">
+                                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"/></svg>
+                            </div>
+                            <h2 class="font-display text-4xl font-bold text-on-surface tracking-tight">{{ __('The Digital Artifacts') }}</h2>
+                        </div>
+                        <p class="text-on-surface-variant font-editorial leading-relaxed">
+                            {{ __('Inject your core logic fragments into the curation engine. Each artifact is audited individually for architectural integrity.') }}
+                        </p>
                     </div>
-                    <div class="flex gap-4">
-                        <x-ui.button type="button" variant="ghost" wire:click="addFile" size="sm">+ {{ __('Add Fragment') }}</x-ui.button>
-                    </div>
+                    
+                    <x-ui.button type="button" variant="primary" wire:click="addFile" class="shrink-0 group">
+                        <span class="flex items-center gap-2">
+                            <svg class="w-4 h-4 group-hover:rotate-90 transition-transform duration-300" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M12 4v16m8-8H4"/></svg>
+                            {{ __('Add Logic Fragment') }}
+                        </span>
+                    </x-ui.button>
                 </div>
 
-                <!-- Master Drop Zone -->
+                <!-- Master Portal Link-up -->
                 <div 
                     x-data="{ active: false }"
                     @dragover.prevent="active = true"
@@ -91,111 +102,199 @@
                             reader.readAsText(file);
                         });
                     "
-                    class="relative h-24 border-2 border-dashed border-outline-variant/20 rounded-round-4 flex flex-col items-center justify-center transition-all duration-300 group hover:border-primary/40 hover:bg-primary/5"
-                    :class="{ 'border-primary bg-primary/10 scale-[1.01]': active }"
+                    class="relative overflow-hidden border-2 border-dashed rounded-round-4 p-8 transition-all duration-500 group flex flex-col items-center justify-center text-center"
+                    :class="active ? 'border-primary bg-primary/10 shadow-[0_0_40px_-10px_rgba(190,194,255,0.3)] scale-[1.005]' : 'border-outline-variant/20 hover:border-primary/40 hover:bg-primary/5'"
                 >
-                    <div class="flex items-center gap-3 text-on-surface-variant group-hover:text-primary transition-colors">
-                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12"/></svg>
-                        <span class="font-display font-bold uppercase tracking-widest text-xs">{{ __('Master Import Zone') }}</span>
+                    <!-- Background Pulser -->
+                    <div class="absolute inset-0 bg-gradient-to-br from-primary/5 via-transparent to-transparent opacity-50"></div>
+                    
+                    <div class="relative z-10 flex flex-col items-center gap-4">
+                        <div class="w-16 h-16 rounded-full bg-surface-high flex items-center justify-center border border-outline-variant/10 group-hover:scale-110 group-hover:rotate-12 transition-all duration-500">
+                             <svg class="w-8 h-8 text-primary" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12"/></svg>
+                        </div>
+                        <div class="space-y-1">
+                            <span class="font-display font-bold text-lg text-on-surface uppercase tracking-wider">{{ __('Logic Portal') }}</span>
+                            <p class="text-xs text-on-surface-variant font-mono uppercase tracking-widest opacity-60">{{ __('Drop multiple files to generate fragments instantly.') }}</p>
+                        </div>
                     </div>
-                    <span class="text-[10px] text-on-surface-variant/50 mt-1">{{ __('Drop all files here to automate fragment generation') }}</span>
                 </div>
 
-                <div class="space-y-6">
-                <div class="space-y-4">
-                    @foreach($files as $index => $file)
+                <!-- Fragments Stack -->
+                <div class="space-y-10 stagger-in">
+                    @forelse($files as $index => $file)
                         @php $stats = $this->getFileStats($index); @endphp
                         <div 
-                            wire:key="file-fragment-{{ $file['id'] }}"
-                            id="file-fragment-{{ $file['id'] }}"
-                            x-data="{ collapsed: {{ $index > 0 ? 'true' : 'false' }} }"
-                            class="transition-all duration-500"
+                            wire:key="frag-{{ $file['id'] }}"
+                            x-data="{ focused: {{ $index === 0 ? 'true' : 'false' }} }"
+                            class="relative group"
                         >
-                            <x-ui.card tonal="container" padding="p-0" class="relative group overflow-hidden border border-outline-variant/10 hover:border-primary/30 transition-all duration-500 {{ ($file['is_duplicate'] ?? false) ? 'border-secondary/50 ring-1 ring-secondary/20' : '' }}">
-                                <!-- Header -->
-                                <div class="p-4 bg-surface-high/50 flex items-center justify-between border-b border-outline-variant/5">
-                                    <div class="flex items-center gap-4">
-                                        <div class="flex flex-col items-center justify-center -space-y-1">
-                                            <button type="button" wire:click="moveUp({{ $index }})" class="p-1 text-on-surface-variant/50 hover:text-primary transition-colors focus:outline-none disabled:opacity-20 disabled:cursor-not-allowed" @if($index == 0) disabled @endif>
-                                                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M5 15l7-7 7 7"/></svg>
+                            <!-- Vertical Index Marker -->
+                            <div class="absolute -left-12 top-0 bottom-0 w-8 hidden xl:flex flex-col items-center py-6 gap-2">
+                                <div class="w-px flex-1 bg-gradient-to-b from-transparent via-outline-variant/20 to-transparent"></div>
+                                <span class="font-mono text-[10px] text-on-surface-variant/40 font-bold rotate-180 [writing-mode:vertical-lr] tracking-[0.2em]">{{ __('FRAGMENT') }} {{ str_pad($index + 1, 2, '0', STR_PAD_LEFT) }}</span>
+                                <div class="w-px flex-1 bg-gradient-to-b from-transparent via-outline-variant/20 to-transparent"></div>
+                            </div>
+
+                            <div class="glass-panel rounded-round-4 overflow-hidden border border-outline-variant/10 hover:border-primary/40 transition-all duration-700 shadow-2xl {{ ($file['is_duplicate'] ?? false) || ($file['is_content_duplicate'] ?? false) ? 'ring-1 ring-secondary/40 border-secondary/20' : '' }}">
+                                <!-- HUD Header -->
+                                <div class="px-6 py-4 bg-surface-container-low/80 flex items-center justify-between border-b border-outline-variant/10 gap-6">
+                                    <div class="flex items-center gap-6 flex-1">
+                                        <!-- Order Controls -->
+                                        <div class="flex flex-col gap-1">
+                                            <button type="button" wire:click="moveUp({{ $index }}); if(window.fx) window.fx.play('click')" 
+                                                class="p-1.5 rounded-round-1 hover:bg-primary/20 hover:text-primary transition-all text-on-surface-variant/40 disabled:opacity-0"
+                                                @if($index == 0) disabled @endif
+                                            >
+                                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M5 15l7-7 7 7"/></svg>
                                             </button>
-                                            <button type="button" wire:click="moveDown({{ $index }})" class="p-1 text-on-surface-variant/50 hover:text-primary transition-colors focus:outline-none disabled:opacity-20 disabled:cursor-not-allowed" @if($index == count($files) - 1) disabled @endif>
-                                                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M19 9l-7 7-7-7" style="transform: scaleY(-1); transform-origin: center;"/></svg>
+                                            <button type="button" wire:click="moveDown({{ $index }}); if(window.fx) window.fx.play('click')" 
+                                                class="p-1.5 rounded-round-1 hover:bg-primary/20 hover:text-primary transition-all text-on-surface-variant/40 disabled:opacity-0"
+                                                @if($index == count($files) - 1) disabled @endif
+                                            >
+                                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M19 9l-7 7-7-7"/></svg>
                                             </button>
                                         </div>
-                                        <div class="flex flex-col">
-                                            <div class="flex items-center gap-2">
-                                                <span class="text-[10px] uppercase tracking-widest font-bold text-on-surface-variant">{{ __('Fragment') }} #{{ $index + 1 }}</span>
+
+                                        <!-- Title Identity -->
+                                        <div class="flex-1 min-w-0 group/identity">
+                                            <input 
+                                                type="text" 
+                                                wire:model.live="files.{{ $index }}.name" 
+                                                placeholder="{{ __('Untitled_Source') }}"
+                                                class="bg-transparent border-none p-0 w-full font-display text-xl font-bold text-on-surface placeholder:text-on-surface-variant/30 focus:ring-0 truncate transition-all group-hover/identity:text-primary"
+                                            >
+                                            <div class="flex items-center gap-3 mt-1">
+                                                <span class="text-[9px] font-mono text-on-surface-variant uppercase tracking-widest font-bold opacity-60">{{ __('Detected Engine') }}: <span class="text-primary">{{ $file['language'] }}</span></span>
                                                 @if($file['is_duplicate'] ?? false)
-                                                    <span class="text-[9px] bg-secondary/20 text-secondary px-2 py-0.5 rounded-full font-bold uppercase tracking-tight">{{ __('Duplicate') }}</span>
+                                                    <span class="text-[8px] bg-secondary/10 text-secondary border border-secondary/20 px-2 py-0.5 rounded-full font-bold uppercase tracking-tighter">{{ __('Name Collision') }}</span>
+                                                @endif
+                                                @if($file['is_content_duplicate'] ?? false)
+                                                    <span class="text-[8px] bg-secondary/10 text-secondary border border-secondary/20 px-2 py-0.5 rounded-full font-bold uppercase tracking-tighter">{{ __('Logic Clone') }}</span>
                                                 @endif
                                             </div>
-                                            <span class="text-sm font-medium text-on-surface">{{ $file['name'] ?: __('Untitled_Module') }}</span>
                                         </div>
                                     </div>
 
-                                    <div class="flex items-center gap-4">
-                                        <!-- Inline Stats HUD -->
-                                        <div class="hidden md:flex items-center gap-4 px-4 border-r border-outline-variant/10">
-                                            <div class="flex flex-col items-end">
-                                                <span class="text-[9px] text-on-surface-variant/50 uppercase font-bold">{{ __('Lines') }}</span>
-                                                <span class="text-xs font-mono text-primary">{{ $stats['lines'] }}</span>
-                                            </div>
-                                            <div class="flex flex-col items-end">
-                                                <span class="text-[9px] text-on-surface-variant/50 uppercase font-bold">{{ __('Weight') }}</span>
-                                                <span class="text-xs font-mono text-on-surface">{{ $stats['size'] }}</span>
+                                    <!-- Fragment Stats HUD -->
+                                    <div class="hidden md:flex items-center gap-8 self-stretch border-x border-outline-variant/10 px-8">
+                                        <div class="flex flex-col">
+                                            <span class="text-[8px] text-on-surface-variant uppercase font-bold tracking-widest opacity-40">{{ __('Volume') }}</span>
+                                            <span class="font-mono text-sm text-on-surface group-hover:text-primary transition-colors">{{ $stats['lines'] }} <span class="text-[10px] opacity-40">lns</span></span>
+                                        </div>
+                                        <div class="flex flex-col">
+                                            <span class="text-[8px] text-on-surface-variant uppercase font-bold tracking-widest opacity-40">{{ __('Payload') }}</span>
+                                            <span class="font-mono text-sm text-on-surface">{{ $stats['size'] }}</span>
+                                        </div>
+                                        <div class="flex flex-col w-20">
+                                            <span class="text-[8px] text-on-surface-variant uppercase font-bold tracking-widest opacity-40">{{ __('Logic Density') }}</span>
+                                            <div class="h-1.5 w-full bg-surface-high rounded-full mt-1.5 overflow-hidden">
+                                                <div class="h-full bg-secondary shadow-[0_0_8px_rgba(78,222,163,0.5)] transition-all duration-1000" style="width: {{ $stats['complexity'] }}%"></div>
                                             </div>
                                         </div>
+                                    </div>
 
                                     <div class="flex items-center gap-2">
-                                        <button type="button" @click="collapsed = !collapsed" class="p-2 text-on-surface-variant hover:text-primary transition-all">
-                                            <svg class="w-5 h-5 transition-transform duration-300" :class="{ 'rotate-180': !collapsed }" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>
+                                        <button type="button" @click="focused = !focused" class="w-10 h-10 rounded-full hover:bg-white/5 flex items-center justify-center text-on-surface-variant hover:text-on-surface transition-all">
+                                            <svg class="w-5 h-5 transition-transform duration-500" :class="{ 'rotate-180': focused }" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>
                                         </button>
-                                        <button type="button" wire:click="removeFile({{ $index }})" class="p-2 text-on-surface-variant hover:text-secondary transition-all">
-                                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
+                                        <button type="button" wire:click="removeFile({{ $index }})" class="w-10 h-10 rounded-full hover:bg-secondary/10 flex items-center justify-center text-on-surface-variant hover:text-secondary transition-all">
+                                            <svg class="w-5 h-5 font-bold" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M6 18L18 6M6 6l12 12"/></svg>
                                         </button>
                                     </div>
                                 </div>
 
-                                <!-- Content (Collapsible) -->
-                                <div x-show="!collapsed" x-collapse x-cloak class="p-6 space-y-6">
-                                    <div class="flex flex-col md:flex-row gap-6">
-                                        <div class="flex-1">
-                                            <x-input-label :value="__('Filename') . ' *'" />
-                                            <x-text-input wire:model.live="files.{{ $index }}.name" placeholder="core_logic.php" class="w-full" />
+                                <!-- Editor Interface -->
+                                <div x-show="focused" x-collapse x-cloak class="p-8 space-y-8 animate-in fade-in zoom-in-95 duration-500">
+                                    <div class="grid grid-cols-1 md:grid-cols-12 gap-8">
+                                        <div class="md:col-span-8 space-y-4">
+                                            <div class="flex justify-between items-center px-1">
+                                                <label class="text-[10px] font-mono text-primary uppercase tracking-widest font-black flex items-center gap-2">
+                                                    <span class="w-1.5 h-1.5 rounded-full bg-primary animate-pulse"></span>
+                                                    {{ __('Editor Component') }}
+                                                </label>
+                                                <span class="text-[8px] font-mono text-on-surface-variant/60 uppercase">{{ __('V-CORE-R2') }}</span>
+                                            </div>
+                                            <div class="relative group/editor rounded-round-4 overflow-hidden border border-outline-variant/10 focus-within:border-primary/50 transition-all">
+                                                <textarea 
+                                                    wire:model.blur="files.{{ $index }}.content" 
+                                                    rows="14" 
+                                                    class="block w-full bg-surface-lowest text-primary p-6 font-mono text-sm leading-relaxed placeholder:text-primary/10 border-none focus:ring-0 resize-none selection:bg-primary selection:text-on-primary" 
+                                                    placeholder="{{ __('Inject source logic here...') }}"
+                                                ></textarea>
+                                                
+                                                <!-- Overlay Lines UI -->
+                                                @if(empty($file['content']))
+                                                    <div class="absolute inset-0 pointer-events-none flex flex-col p-6 opacity-20 font-mono text-[10px] space-y-2">
+                                                        <div class="flex gap-4"><span>01</span><span class="h-2 w-32 bg-primary/40 rounded-full"></span></div>
+                                                        <div class="flex gap-4"><span>02</span><span class="h-2 w-48 bg-primary/40 rounded-full ml-4"></span></div>
+                                                        <div class="flex gap-4"><span>03</span><span class="h-2 w-24 bg-primary/40 rounded-full ml-8"></span></div>
+                                                        <div class="flex gap-4"><span>04</span><span class="h-2 w-40 bg-primary/40 rounded-full ml-4"></span></div>
+                                                    </div>
+                                                @endif
+                                            </div>
                                         </div>
-                                        <div class="w-full md:w-48">
-                                            <x-input-label :value="__('Detected Engine')" />
-                                            <select 
-                                                wire:model.live="files.{{ $index }}.language"
-                                                class="w-full h-[46px] px-4 bg-surface-high rounded-round-4 text-on-surface-variant font-mono text-xs uppercase tracking-widest border border-outline-variant/10 focus:ring-1 focus:ring-primary/50 appearance-none cursor-pointer hover:bg-surface-highest transition-colors"
-                                            >
-                                                @foreach($this->getSupportedLanguages() as $lang)
-                                                    <option value="{{ $lang }}">{{ $lang }}</option>
-                                                @endforeach
-                                            </select>
+
+                                        <div class="md:col-span-4 space-y-8">
+                                            <!-- Engine Selector -->
+                                            <div class="space-y-3">
+                                                <label class="text-[10px] text-on-surface-variant uppercase tracking-widest font-black px-1">{{ __('Audit Lens Engine') }}</label>
+                                                <select 
+                                                    wire:model.live="files.{{ $index }}.language"
+                                                    class="w-full bg-surface-high rounded-round-4 h-12 px-5 text-on-surface font-mono text-xs uppercase tracking-[0.2em] border border-outline-variant/5 focus:ring-1 focus:ring-primary/50 appearance-none cursor-pointer hover:bg-surface-highest transition-all"
+                                                >
+                                                    @foreach($this->getSupportedLanguages() as $lang)
+                                                        <option value="{{ $lang }}">{{ $lang }}</option>
+                                                    @endforeach
+                                                </select>
+                                                <x-input-error :messages="$errors->get('files.' . $index . '.language')" />
+                                            </div>
+
+                                            <!-- Metadata Note -->
+                                            <div class="space-y-3">
+                                                <label class="text-[10px] text-on-surface-variant uppercase tracking-widest font-black px-1">{{ __('Curation Context') }}</label>
+                                                <textarea 
+                                                    wire:model="files.{{ $index }}.description" 
+                                                    rows="6" 
+                                                    class="w-full bg-surface-high border border-outline-variant/5 text-on-surface-variant placeholder:text-on-surface-variant/20 rounded-round-3 p-5 text-sm font-editorial leading-relaxed resize-none focus:ring-1 focus:ring-primary/40" 
+                                                    placeholder="{{ __('Describe the specific challenges or architectural nuances of this fragment...') }}"
+                                                ></textarea>
+                                            </div>
+
+                                            <!-- Mini Health Report -->
+                                            <div class="p-6 rounded-round-3 bg-primary/5 border border-primary/10 space-y-4">
+                                                <div class="flex items-center gap-2 text-primary font-bold text-[10px] uppercase tracking-widest">
+                                                    <svg class="w-3.5 h-3.5" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"/></svg>
+                                                    {{ __('Sync Status') }}
+                                                </div>
+                                                <div class="space-y-2">
+                                                    <div class="flex justify-between text-[10px] font-mono text-on-surface-variant">
+                                                        <span>INTEGRITY</span>
+                                                        <span class="text-primary font-bold">100%</span>
+                                                    </div>
+                                                    <div class="h-1 bg-surface-high rounded-full overflow-hidden">
+                                                        <div class="h-full bg-primary w-full shadow-[0_0_4px_var(--primary)]"></div>
+                                                    </div>
+                                                </div>
+                                            </div>
                                         </div>
                                     </div>
-
-                                    <div class="relative w-full">
-                                        <x-input-label :value="__('Logic Body') . ' *'" />
-                                        <textarea 
-                                            wire:model="files.{{ $index }}.content" 
-                                            rows="12" 
-                                            class="font-mono text-sm bg-surface-lowest flex-1 w-full border border-outline-variant/5 text-primary placeholder:text-primary/30 focus:ring-1 focus:ring-primary/50 rounded-round-4 transition-all duration-300 resize-y p-4 block" 
-                                            placeholder="{{ __('Paste code implementation here...') }}"
-                                        ></textarea>
-                                    </div>
-
-                                    <div class="w-full">
-                                        <x-input-label :value="__('Contextual Note (Optional)')" />
-                                        <textarea wire:model="files.{{ $index }}.description" rows="2" class="bg-surface-low border border-outline-variant/5 text-on-surface-variant placeholder:text-on-surface-variant/30 focus:ring-2 focus:ring-primary/30 rounded-round-4 transition-all duration-300 w-full resize-y p-3 text-sm" placeholder="{{ __('What is unique about this file?') }}"></textarea>
-                                    </div>
+                                    
+                                    @error('files.'.$index.'.name') <span class="text-xs text-secondary font-bold font-mono uppercase">{{ $message }}</span> @enderror
+                                    @error('files.'.$index.'.content') <span class="text-xs text-secondary font-bold font-mono uppercase">{{ $message }}</span> @enderror
                                 </div>
-                            </x-ui.card>
+                            </div>
                         </div>
-                    @endforeach
-                </div>
+                    @empty
+                        <div class="py-24 flex flex-col items-center justify-center text-center space-y-6">
+                            <div class="w-12 h-12 rounded-full border border-dashed border-outline-variant/40 flex items-center justify-center">
+                                <div class="w-2 h-2 rounded-full bg-outline-variant/40 animate-ping"></div>
+                            </div>
+                            <div class="space-y-1">
+                                <h4 class="text-on-surface font-display text-xl font-bold uppercase tracking-widest">{{ __('Zero Artefacts Detected') }}</h4>
+                                <p class="text-on-surface-variant italic">{{ __('The curation engine awaits your initial logic injection.') }}</p>
+                            </div>
+                        </div>
+                    @endforelse
                 </div>
             </div>
         @elseif($step == 3)

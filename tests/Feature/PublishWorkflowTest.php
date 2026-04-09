@@ -4,6 +4,7 @@ namespace Tests\Feature;
 
 use App\Models\Post;
 use App\Models\User;
+use App\Models\Group;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Livewire\Livewire;
 use Tests\TestCase;
@@ -115,6 +116,69 @@ class PublishWorkflowTest extends TestCase
             ->assertSet('files.0.name', 'C.php')
             ->assertSet('files.1.name', 'A.php')
             ->assertSet('files.2.name', 'B.php');
+    }
+
+    /**
+     * Test Artifacts V3: Moving files up and down directly.
+     */
+    public function test_files_move_up_down()
+    {
+        $user = User::factory()->create();
+
+        Livewire::actingAs($user)
+            ->test(\App\Livewire\PublishWorkflow::class)
+            ->set('files', [
+                ['id' => 'f1', 'name' => 'A.php', 'content' => 'A', 'is_duplicate' => false],
+                ['id' => 'f2', 'name' => 'B.php', 'content' => 'B', 'is_duplicate' => false],
+                ['id' => 'f3', 'name' => 'C.php', 'content' => 'C', 'is_duplicate' => false],
+            ])
+            ->call('moveUp', 1) // Moves B up to 0 -> B, A, C
+            ->assertSet('files.0.name', 'B.php')
+            ->assertSet('files.1.name', 'A.php')
+            ->call('moveDown', 1) // Moves A down to 2 -> B, C, A
+            ->assertSet('files.1.name', 'C.php')
+            ->assertSet('files.2.name', 'A.php');
+    }
+
+    /**
+     * Test that a user can publish a private artifact in a group.
+     */
+    public function test_user_can_publish_private_artifact_in_group()
+    {
+        $user = User::factory()->create();
+        $group = Group::create([
+            'name' => 'My Lab',
+            'owner_id' => $user->id,
+            'slug' => 'my-lab-1',
+            'is_private' => true
+        ]);
+        $user->groups()->attach($group->id, ['role' => 'owner']);
+
+        Livewire::actingAs($user)
+            ->test(\App\Livewire\PublishWorkflow::class)
+            ->set('title', 'Test Private Lab')
+            ->set('short_description', 'Lab Description Minimum Length')
+            ->set('review_goals', 'test goals 10 chars minimum')
+            ->set('improvement_goals', 'improv goals 10 chars min')
+            ->call('nextStep')
+            ->assertSet('step', 2)
+            ->set('files', [
+                ['id' => 'f1', 'name' => 'test.php', 'content' => 'some code', 'language' => 'php', 'description' => '', 'is_duplicate' => false]
+            ])
+            ->call('nextStep')
+            ->assertSet('step', 3)
+            ->set('selectedLens', ['security'])
+            ->set('visibility', 'private')
+            ->set('groupId', $group->id)
+            ->call('submit')
+            ->assertRedirect(route('dashboard'));
+
+        $this->assertDatabaseHas('posts', [
+            'user_id' => $user->id,
+            'group_id' => $group->id,
+            'title' => 'Test Private Lab',
+            'visibility' => 'group',
+        ]);
     }
 }
 

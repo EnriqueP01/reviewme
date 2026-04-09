@@ -12,10 +12,11 @@
     // If a collection of snippets is passed, initialize the data
     $snippetList = $snippets ? $snippets->map(fn($s, $index) => [
         'id' => $s->id,
-        'name' => $s->description ?: 'file_' . ($index + 1) . '.' . ($s->language === 'javascript' ? 'js' : $s->language),
+        'name' => $s->filename ?: ($s->description ?: 'file_' . ($index + 1) . '.' . ($s->language === 'javascript' ? 'js' : $s->language)),
+        'description' => $s->description,
         'code' => $s->code_content,
         'lang' => $s->language
-    ]) : collect([['id' => 0, 'name' => 'Source.' . $language, 'code' => $code, 'lang' => $language]]);
+    ]) : collect([['id' => 0, 'name' => 'Source.' . $language, 'description' => null, 'code' => $code, 'lang' => $language]]);
 
     // Minimalistic Syntax Highlighter Engine
     $highlight = function($text, $lang) {
@@ -69,6 +70,7 @@
         return [
             'id' => $s['id'],
             'name' => $s['name'],
+            'description' => $s['description'],
             'lang' => $s['lang'],
             'raw' => $s['code'],
             'lines' => explode("\n", $hCode)
@@ -138,6 +140,14 @@
                         <h4 class="text-[10px] font-black uppercase tracking-[0.4em] text-secondary">{{ __('Application_Context') }}</h4>
                     </div>
                     <p class="text-sm text-on-surface-variant font-medium leading-relaxed opacity-80 border-l-2 border-secondary/10 pl-4">{{ $context }}</p>
+                    
+                    <!-- Dynamic Fragment Description -->
+                    <template x-if="snippets[activeTab].description">
+                        <div class="mt-6 pt-6 border-t border-secondary/10">
+                             <h4 class="text-[9px] font-black uppercase tracking-[0.2em] text-secondary/40 mb-2">{{ __('Curation Context') }}</h4>
+                             <p class="text-xs text-on-surface-variant leading-relaxed italic opacity-70" x-text="snippets[activeTab].description"></p>
+                        </div>
+                    </template>
                 </div>
             @endif
         </div>

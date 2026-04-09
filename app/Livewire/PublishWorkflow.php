@@ -4,6 +4,7 @@ namespace App\Livewire;
 
 use Livewire\Component;
 use Livewire\Attributes\Layout;
+use Livewire\Attributes\Computed;
 
 use Illuminate\Support\Facades\Auth;
 
@@ -24,7 +25,7 @@ class PublishWorkflow extends Component
     public function mount()
     {
         $this->files = [
-            ['id' => uniqid('file_'), 'name' => '', 'content' => '', 'language' => 'php', 'description' => '', 'is_duplicate' => false],
+            ['id' => (string) str()->uuid(), 'name' => '', 'content' => '', 'language' => 'php', 'description' => '', 'is_duplicate' => false, 'is_content_duplicate' => false],
         ];
     }
 
@@ -73,6 +74,21 @@ class PublishWorkflow extends Component
     public ?int $groupId = null;
     public string $groupSearch = '';
 
+    #[Computed]
+    public function groups()
+    {
+        $user = Auth::user();
+        if (!$user) return collect();
+
+        $query = $user->groups();
+        
+        if (!empty($this->groupSearch)) {
+            $query->where('name', 'like', '%' . $this->groupSearch . '%');
+        }
+        
+        return $query->get();
+    }
+
     public function updatedFiles($value, $key)
     {
         if (str_ends_with($key, '.name')) {
@@ -112,12 +128,13 @@ class PublishWorkflow extends Component
 
         foreach ($filesData as $data) {
             $this->files[] = [
-                'id' => uniqid('file_'),
+                'id' => (string) str()->uuid(),
                 'name' => $data['name'],
                 'content' => $data['content'],
                 'language' => $this->getLanguageByExtension($data['name']),
                 'description' => '',
-                'is_duplicate' => false
+                'is_duplicate' => false,
+                'is_content_duplicate' => false
             ];
         }
         $this->checkDuplicates();
@@ -126,14 +143,27 @@ class PublishWorkflow extends Component
     protected function checkDuplicates()
     {
         $names = [];
+        $contents = [];
+        
         foreach ($this->files as $index => &$file) {
             $file['is_duplicate'] = false;
+            $file['is_content_duplicate'] = false;
+            
             if (!empty($file['name'])) {
                 if (isset($names[$file['name']])) {
                     $file['is_duplicate'] = true;
                     $this->files[$names[$file['name']]]['is_duplicate'] = true;
                 }
                 $names[$file['name']] = $index;
+            }
+
+            if (!empty($file['content'])) {
+                $hash = md5($file['content']);
+                if (isset($contents[$hash])) {
+                    $file['is_content_duplicate'] = true;
+                    $this->files[$contents[$hash]]['is_content_duplicate'] = true;
+                }
+                $contents[$hash] = $index;
             }
         }
     }
@@ -146,7 +176,10 @@ class PublishWorkflow extends Component
 
     public function getFileStats($index)
     {
-        $content = $this->files[$index]['content'] ?? '';
+        $file = $this->files[$index] ?? null;
+        if (!$file) return ['lines' => 0, 'size' => '0 B', 'is_duplicate' => false];
+
+        $content = $file['content'] ?? '';
         $lines = empty($content) ? 0 : count(explode("\n", $content));
         $bytes = strlen($content);
         $kb = round($bytes / 1024, 1);
@@ -154,19 +187,43 @@ class PublishWorkflow extends Component
         return [
             'lines' => $lines,
             'size' => $kb > 0 ? $kb . ' KB' : $bytes . ' B',
-            'is_duplicate' => $this->files[$index]['is_duplicate'] ?? false
+            'is_duplicate' => $file['is_duplicate'] ?? false,
+            'is_content_duplicate' => $file['is_content_duplicate'] ?? false,
+            'complexity' => $this->calculateComplexity($content)
         ];
+    }
+
+    protected function calculateComplexity($content)
+    {
+        if (empty($content)) return 0;
+        // Simple heuristic for UI visualization: count of keywords / lines
+        $keywords = ['if', 'else', 'for', 'while', 'foreach', 'switch', 'case', 'function', 'class', 'public', 'private', 'protected'];
+        $count = 0;
+        foreach ($keywords as $kw) {
+            $count += substr_count($content, $kw);
+        }
+        $lines = count(explode("\n", $content));
+        return min(100, round(($count / max(1, $lines)) * 100));
     }
 
     public function addFile()
     {
-        $this->files[] = ['id' => uniqid('file_'), 'name' => '', 'content' => '', 'language' => 'php', 'description' => '', 'is_duplicate' => false];
+        $this->files[] = [
+            'id' => (string) str()->uuid(), 
+            'name' => '', 
+            'content' => '', 
+            'language' => 'php', 
+            'description' => '', 
+            'is_duplicate' => false,
+            'is_content_duplicate' => false
+        ];
     }
 
     public function removeFile($index)
     {
         unset($this->files[$index]);
         $this->files = array_values($this->files);
+        $this->checkDuplicates();
     }
 
     public function moveUp($index)
@@ -175,6 +232,7 @@ class PublishWorkflow extends Component
             $temp = $this->files[$index - 1];
             $this->files[$index - 1] = $this->files[$index];
             $this->files[$index] = $temp;
+            $this->files = array_values($this->files);
         }
     }
 
@@ -184,6 +242,7 @@ class PublishWorkflow extends Component
             $temp = $this->files[$index + 1];
             $this->files[$index + 1] = $this->files[$index];
             $this->files[$index] = $temp;
+            $this->files = array_values($this->files);
         }
     }
 
@@ -191,7 +250,9 @@ class PublishWorkflow extends Component
     {
         $newFiles = [];
         foreach ($orderedIndices as $index) {
-            $newFiles[] = $this->files[$index];
+            if (isset($this->files[$index])) {
+                $newFiles[] = $this->files[$index];
+            }
         }
         $this->files = $newFiles;
     }
@@ -234,8 +295,9 @@ class PublishWorkflow extends Component
             'description' => $this->description,
             'review_goals' => $this->review_goals,
             'improvement_goals' => $this->improvement_goals,
-            'visibility' => $this->visibility,
-            'group_id' => $this->groupId,
+            // Si c'est 'private' mais avec un groupe, on stocke 'group' en DB
+            'visibility' => ($this->visibility === 'private' && $this->groupId) ? 'group' : $this->visibility,
+            'group_id' => ($this->visibility === 'private') ? $this->groupId : null,
             'lens' => implode(',', $this->selectedLens),
             'files' => $this->files,
         ]);
