@@ -62,8 +62,7 @@
         class="absolute top-4 right-4"
     >
         <div class="relative w-8 h-8">
-            <div class="absolute inset-0 border-2 border-primary/20 rounded-full"></div>
-            <div class="absolute inset-0 border-2 border-t-primary rounded-full animate-spin"></div>
+            <x-ui.loader />
         </div>
     </div>
 </div>

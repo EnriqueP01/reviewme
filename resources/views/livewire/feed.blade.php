@@ -13,17 +13,11 @@
 
         <!-- Refined Controls -->
         <div class="flex items-center gap-6">
-            <div class="relative group/search">
-                <div class="absolute inset-y-0 left-0 pl-5 flex items-center pointer-events-none">
-                    <svg class="h-3.5 w-3.5 text-on-surface-variant/20 group-focus-within/search:text-primary transition-colors duration-500" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="4"><path stroke-linecap="round" stroke-linejoin="round" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/></svg>
-                </div>
-                <input 
-                    type="text" 
-                    wire:model.live.debounce.300ms="search" 
-                    placeholder="{{ __('Search...') }}" 
-                    class="w-[200px] group-focus-within/search:w-[320px] bg-black/20 border border-white/5 rounded-2xl py-3 pl-12 pr-6 text-[10px] text-on-surface placeholder:text-on-surface-variant/10 focus:outline-none focus:border-primary/40 focus:ring-4 focus:ring-primary/2 transition-all duration-700 font-black uppercase tracking-widest shadow-2xl backdrop-blur-3xl"
-                >
-            </div>
+            <x-ui.search-input 
+                model="search" 
+                placeholder="{{ __('Search posts by title, technology or lens...') }}" 
+                class="!w-[200px] focus:!w-[320px]"
+            />
 
             <div class="flex items-center gap-2 bg-black/20 backdrop-blur-3xl rounded-[1.25rem] p-1.5 border border-white/5 shadow-2xl">
                 <button 
@@ -34,7 +28,7 @@
                 </button>
                 <button 
                     wire:click="sortBy('trending')"
-                    @class(['px-6 py-2 rounded-xl text-[9px] font-black uppercase tracking-[0.2em] transition-all duration-500', 'bg-primary text-on-primary shadow-xl scale-105' => $sort === 'trending', 'text-on-surface-variant/40 hover:text-white hover:bg-white/5' => $sort !== 'recent'])
+                    @class(['px-6 py-2 rounded-xl text-[9px] font-black uppercase tracking-[0.2em] transition-all duration-500', 'bg-primary text-on-primary shadow-xl scale-105' => $sort === 'trending', 'text-on-surface-variant/40 hover:text-white hover:bg-white/5' => $sort !== 'trending'])
                 >
                     {{ __('Trending') }}
                 </button>

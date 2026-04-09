@@ -3,6 +3,12 @@
 @tailwind components;
 @tailwind utilities;
 
+@layer base {
+    *:focus {
+        outline: none !important;
+    }
+}
+
 @layer utilities {
     /* Centralized Lens Pin System (Premium Colors) */
     .tag-lens-opti { color: var(--lens-opti); background-color: color-mix(in srgb, var(--lens-opti) 10%, transparent); border: 1px solid color-mix(in srgb, var(--lens-opti) 30%, transparent); box-shadow: 0 0 15px color-mix(in srgb, var(--lens-opti) 10%, transparent); }

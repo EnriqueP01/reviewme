@@ -21,6 +21,13 @@ export default {
                     high: 'var(--surface-container-high)',
                     highest: 'var(--surface-container-highest)',
                 },
+                'surface-container': {
+                    lowest: 'var(--surface-container-lowest)',
+                    low: 'var(--surface-container-low)',
+                    DEFAULT: 'var(--surface-container)',
+                    high: 'var(--surface-container-high)',
+                    highest: 'var(--surface-container-highest)',
+                },
                 primary: {
                     DEFAULT: 'var(--primary)',
                     container: 'var(--primary-container)',
@@ -33,6 +40,9 @@ export default {
                     DEFAULT: 'var(--tertiary)',
                     container: 'var(--tertiary-container)',
                 },
+                'on-primary': 'var(--on-primary)',
+                'on-secondary': 'var(--on-secondary)',
+                'on-tertiary': 'var(--on-tertiary)',
                 'on-surface': {
                     DEFAULT: 'var(--on-surface)',
                     variant: 'var(--on-surface-variant)',

@@ -287,7 +287,7 @@
                         <template x-for="(line, lIndex) in snippet.lines" :key="lIndex">
                             <div class="group/linerow relative flex items-start">
                                 <!-- LINE CONTENT -->
-                                <div class="flex-1 flex items-start group/line hover:bg-white/[0.03] -mx-6 px-6 transition-all duration-300 selection:bg-primary/40 selection:text-white relative"
+                                <div class="flex-1 flex items-start group/line hover:bg-white/[0.03] -mx-6 px-6 transition-all duration-300 selection:bg-primary/40 selection:text-on-primary relative"
                                      :data-snippet="snippet.id"
                                      :data-line="lIndex + 1"
                                      :class="{

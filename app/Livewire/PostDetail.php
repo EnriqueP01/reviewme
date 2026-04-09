@@ -10,12 +10,12 @@ use App\Models\FullReview;
 use App\Models\InlineSuggestion;
 use App\Models\Post;
 use App\Models\PostComment;
+use App\Models\Reaction;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use Livewire\Attributes\NoRender;
 use Livewire\Component;
-
 
 class PostDetail extends Component
 {
@@ -147,11 +147,12 @@ class PostDetail extends Component
         $review = FullReview::findOrFail($reviewId);
 
         if ($direction === 'none') {
-            \App\Models\Reaction::where([
+            Reaction::where([
                 'user_id' => Auth::id(),
                 'reactable_id' => $review->id,
                 'reactable_type' => $review->getMorphClass(),
             ])->delete();
+
             return;
         }
 
@@ -303,7 +304,9 @@ class PostDetail extends Component
                 $query->withCount([
                     'reactions as up_count' => fn($q) => $q->where('type', 'up'),
                     'reactions as down_count' => fn($q) => $q->where('type', 'down')
-                ])->with(['user', 'reactions', 'comments.user', 'modifiedSnippets.snippet', 'comments.reactions']);
+                ])
+                ->orderBy('score', 'desc')
+                ->with(['user', 'reactions', 'comments.user', 'modifiedSnippets.snippet', 'comments.reactions']);
             },
             'comments.user', 
             'comments.reactions', 
