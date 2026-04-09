@@ -2,17 +2,17 @@
 
 use App\Http\Controllers\Auth\GithubAuthController;
 use App\Http\Controllers\ProfileController;
+use App\Livewire\Changelog;
+use App\Livewire\Documentation;
 use App\Livewire\Feed;
 use App\Livewire\Groups\GroupManager;
+use App\Livewire\Leaderboard;
+use App\Livewire\Legal;
 use App\Livewire\PostDetail;
 use App\Livewire\Profile;
 use App\Livewire\PublishWorkflow;
-use App\Livewire\UpdatePost;
-use App\Livewire\Leaderboard;
-use App\Livewire\Documentation;
-use App\Livewire\Changelog;
 use App\Livewire\Status;
-use App\Livewire\Legal;
+use App\Livewire\UpdatePost;
 use App\Models\User;
 use Illuminate\Support\Facades\Route;
 
@@ -50,7 +50,7 @@ Route::middleware('auth')->group(function () {
     Route::get('/publish', PublishWorkflow::class)->name('publish');
     Route::get('/groups', GroupManager::class)->name('groups');
     Route::get('/posts/{postId}', PostDetail::class)->name('posts.detail');
-    Route::get('/posts/{postId}/update-code', UpdatePost::class)->name('posts.update-code');
+    Route::get('/posts/{postId}/update', UpdatePost::class)->name('posts.update');
     Route::get('/settings', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');

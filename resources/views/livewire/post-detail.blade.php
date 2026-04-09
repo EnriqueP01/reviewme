@@ -7,6 +7,7 @@
         replyTo: @entangle('replyToId'),
         
         handleMouseUp(e) {
+            if (@js($this->isAuthor())) return;
             if (e.target.closest('button') || e.target.closest('a') || e.target.closest('textarea')) return;
             const selection = window.getSelection();
             const text = selection.toString().trim();
@@ -109,9 +110,29 @@
             </div>
             
             <div class="flex items-center gap-6 relative">
-                <x-ui.button wire:click="toggleReviewMode" variant="{{ $isReviewing ? 'primary' : 'ghost' }}" class="whitespace-nowrap rounded-2xl px-8 py-4 font-black uppercase text-xs tracking-widest shadow-2xl">
-                    {{ $isReviewing ? __('Abort Session') : __('Make Full Review') }}
-                </x-ui.button>
+                <!-- Version Selector -->
+                <div class="flex items-center gap-2 bg-black/20 rounded-2xl p-1.5 border border-white/5">
+                    <span class="text-[9px] font-black uppercase tracking-[0.2em] text-on-surface-variant/40 px-3">{{ __('Version') }}</span>
+                    @php $maxVersion = $post->snippets->max('version_number'); @endphp
+                    <select wire:model.live="selectedVersion" class="bg-surface-container-highest border-none rounded-xl text-xs font-black text-primary py-2 pl-4 pr-10 focus:ring-1 focus:ring-primary/20 outline-none cursor-pointer">
+                        @for($v = 1; $v <= $maxVersion; $v++)
+                            <option value="{{ $v }}">V{{ $v }} {{ $v == $maxVersion ? __('(Latest)') : '' }}</option>
+                        @endfor
+                    </select>
+                </div>
+
+                @if($this->isAuthor())
+                    <!-- Author Actions -->
+                    <a href="{{ route('posts.update', $post->id) }}" class="whitespace-nowrap rounded-2xl px-8 py-4 font-black uppercase text-xs tracking-widest shadow-2xl bg-primary text-white hover:scale-105 active:scale-95 transition-all flex items-center gap-3">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                        {{ __('Update Code') }}
+                    </a>
+                @else
+                    <!-- Reviewer Actions -->
+                    <x-ui.button wire:click="toggleReviewMode" variant="{{ $isReviewing ? 'primary' : 'ghost' }}" class="whitespace-nowrap rounded-2xl px-8 py-4 font-black uppercase text-xs tracking-widest shadow-2xl">
+                        {{ $isReviewing ? __('Abort Session') : __('Make Full Review') }}
+                    </x-ui.button>
+                @endif
             </div>
         </div>
 
@@ -194,11 +215,12 @@
         @endif
 
         <!-- Code Block : Monolith HUD -->
-        <div class="rounded-[2.5rem] overflow-hidden border border-white/5 shadow-2xl relative" @mouseup="handleMouseUp($event)">
+        <div class="rounded-[2.5rem] overflow-hidden border border-white/5 shadow-2xl relative" wire:key="code-block-v{{ $selectedVersion }}" @mouseup="handleMouseUp($event)">
             <x-ui.code-block 
-                :snippets="$post->snippets"
+                :snippets="$currentSnippets"
                 :title="$post->title"
                 :suggestions="$post->inlineSuggestions"
+                :selectedVersion="$selectedVersion"
             />
         </div>
 

@@ -40,4 +40,8 @@ trigger: always_on
 * **Environnement** : Vérifie systématiquement si une modif nécessite l'ajout d'une variable dans `.env` et mets à jour `.env.example`.
 * **Migrations** : Toute modification de la structure de données doit passer par une migration Laravel propre.
 * **Logs & Erreurs** : Utilise les Logs Laravel (`Log::info()`, `Log::error()`) pour les actions critiques et implémente une gestion d'erreurs robuste (Try/Catch).
-* **Internationalisation (i18n)** : À chaque modification ou ajout sur le frontend (Blade, JavaScript, etc.), tu dois impérativement extraire les chaînes de texte vers `lang/en.json` et `lang/fr.json` et utiliser `{{ __('...') }}` ou `lang()` pour l'affichage. Ne laisse aucune chaîne en dur.
+* **Internationalisation (i18n) (STRICT)** : 
+    * AUCUNE chaîne de texte utilisateur ne doit être laissée en dur dans le code (Blade, JS, PHP). 
+    * Utilise systématiquement `{{ __('...') }}` ou `lang('...')`.
+    * À chaque ajout/modification, extrais les chaînes vers `lang/en.json` ET `lang/fr.json`. 
+    * Toute régression (texte en dur) sera considérée comme un bug bloquant.

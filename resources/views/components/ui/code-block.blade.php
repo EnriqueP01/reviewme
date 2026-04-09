@@ -6,7 +6,8 @@
     'type' => 'elegant',
     'goals' => null,
     'context' => null,
-    'suggestions' => collect([])
+    'suggestions' => collect([]),
+    'selectedVersion' => 1
 ])
 
 @php
@@ -126,7 +127,7 @@
         if (window.fx) window.fx.play('success');
         setTimeout(() => this.copied = false, 2000);
     }
-}" wire:ignore class="relative group/lens w-full">
+}" wire:ignore.self x-init="console.log('CodeBlock initialized with', snippets.length, 'snippets')" class="relative group/lens w-full">
     
     <!-- Info Overlay (Slide Down & Reveal) -->
     <div 
@@ -208,9 +209,12 @@
                             <span class="inline-block max-w-[0px] group-hover/inspect:max-w-[150px] truncate align-bottom text-primary/70 transition-all duration-700 opacity-0 group-hover/inspect:opacity-100 -translate-x-2 group-hover/inspect:translate-x-0 font-mono italic">{{ $context }}</span>
                         @endif
                     </span>
-                    <span class="text-[11px] font-mono font-bold text-on-surface tracking-wide flex items-center gap-2">
+                    <span class="text-[11px] font-mono font-bold text-on-surface tracking-wide flex items-center gap-3">
                         <span class="w-1 h-1 rounded-full bg-primary animate-pulse shadow-[0_0_10px_rgba(190,194,255,0.8)]"></span>
-                        {{ $title ?: 'UNNAMED_MODULE' }}
+                        <div class="flex items-center gap-2">
+                            <span class="px-2 py-0.5 rounded-lg bg-primary/10 text-primary text-[9px] font-black border border-primary/20">V{{ $selectedVersion }}</span>
+                            {{ $title ?: 'UNNAMED_MODULE' }}
+                        </div>
                     </span>
                 </div>
             </div>
@@ -345,9 +349,9 @@
                                             'text-red-200/70 bg-red-500/[0.05]': activeSuggestion && suggestionMode === 'diff' && (lIndex + 1) >= activeSuggestion.line && (lIndex + 1) <= activeSuggestion.end_line,
                                             'text-emerald-200/90 font-bold bg-emerald-500/[0.05]': activeSuggestion && suggestionMode === 'edit' && (lIndex + 1) >= activeSuggestion.line && (lIndex + 1) <= activeSuggestion.end_line
                                          }"
-                                         x-html="(activeSuggestion && (lIndex + 1) >= activeSuggestion.line && (lIndex + 1) <= activeSuggestion.end_line && suggestionMode === 'edit') 
+                                         x-html="activeSuggestion && (lIndex + 1) >= activeSuggestion.line && (lIndex + 1) <= activeSuggestion.end_line && suggestionMode === 'edit'
                                                  ? (lIndex + 1 === activeSuggestion.line ? activeSuggestion.suggested : '') 
-                                                 : line || '&nbsp;'">
+                                                 : (line.trim() === '' ? '&nbsp;' : line)">
                                     </div>
                                 </div>
 
