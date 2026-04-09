@@ -9,9 +9,11 @@ use App\Actions\Reactions\ToggleReactionAction;
 use App\Actions\Reviews\StoreFullReviewAction;
 use App\Actions\Reviews\StoreReviewAction;
 use App\Actions\Suggestions\StoreInlineSuggestionAction;
+use App\Models\FullReview;
 use App\Models\Post;
 use App\Models\PostComment;
 use App\Models\Review;
+use Illuminate\Database\Eloquent\Model;
 use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 use Illuminate\Support\Facades\Auth;
 use Livewire\Attributes\Layout;
@@ -22,6 +24,7 @@ class PostDetail extends Component
     use AuthorizesRequests;
 
     public Post $post;
+    public $activeSnippetId = null;
 
     // Current selection tracking
     public $activeLine = null;
@@ -30,6 +33,7 @@ class PostDetail extends Component
 
     // Global Comments
     public string $globalCommentContent = '';
+    public string $replyContent = ''; // For replies
 
     public ?int $replyToId = null;
 
@@ -42,6 +46,8 @@ class PostDetail extends Component
 
     // Inline Suggestions
     public ?int $suggestingLine = null;
+
+    public ?int $suggestingEndLine = null;
 
     public string $suggestedContent = '';
 
@@ -67,11 +73,18 @@ class PostDetail extends Component
             'comments.replies.user',
             'comments.replies.reactions',
             'fullReviews.user',
-            'fullReviews.modifiedSnippets',
+            'fullReviews.modifiedSnippets.snippet',
+            'fullReviews.reactions',
         ])->findOrFail($postId);
 
         $this->selectedVersion = $this->post->snippets->max('version_number') ?: 1;
+        $this->activeSnippetId = $this->post->snippets->where('version_number', $this->selectedVersion)->first()?->id;
         $this->inlineViewMode = session("post_{$postId}_view_mode", 'diff');
+    }
+
+    public function updatedSelectedVersion($value): void
+    {
+        $this->activeSnippetId = $this->post->snippets->where('version_number', (int)$value)->first()?->id;
     }
 
     public function selectLine(int $snippetId, int $line): void
@@ -108,32 +121,56 @@ class PostDetail extends Component
         $this->dispatch('post-action', type: 'success');
     }
 
-    public function saveGlobalComment(StorePostCommentAction $storeComment): void
+    public function saveGlobalComment(StorePostCommentAction $storeComment, ?int $parentId = null): void
     {
         $this->authorizeAction();
 
-        $this->validate(['globalCommentContent' => 'required|min:2']);
+        if ($parentId) {
+            $this->validate(['replyContent' => 'required|min:2']);
+            $content = $this->replyContent;
+        } else {
+            $this->validate(['globalCommentContent' => 'required|min:2']);
+            $content = $this->globalCommentContent;
+        }
 
         $storeComment->execute(
             Auth::user(),
             $this->post->id,
-            $this->globalCommentContent,
-            $this->replyToId
+            $content,
+            $parentId ?? $this->replyToId
         );
 
         $this->globalCommentContent = '';
+        $this->replyContent = '';
         $this->replyToId = null;
         $this->refreshPost();
 
         $this->dispatch('post-action', type: 'success');
     }
 
+    /**
+     * Gère les likes sur les commentaires et réponses (YouTube style).
+     */
     public function toggleCommentLike(int $commentId, ToggleReactionAction $toggleReaction): void
     {
         $this->authorizeAction();
 
         $comment = PostComment::findOrFail($commentId);
         $toggleReaction->execute(Auth::user(), $comment, 'like');
+
+        $this->refreshPost();
+        $this->dispatch('post-action', type: 'success');
+    }
+
+    /**
+     * Gère les Up/Down votes sur les Reviewscomplètes.
+     */
+    public function voteReview(int $reviewId, string $type, ToggleReactionAction $toggleReaction): void
+    {
+        $this->authorizeAction();
+
+        $review = FullReview::findOrFail($reviewId);
+        $toggleReaction->execute(Auth::user(), $review, $type); // 'up' or 'down'
 
         $this->refreshPost();
         $this->dispatch('post-action', type: 'success');
@@ -152,9 +189,11 @@ class PostDetail extends Component
         $this->dispatch('post-action', type: 'success');
     }
 
-    public function setInlineSuggestion(int $line, string $original): void
+    public function setInlineSuggestion(int $snippetId, int $start, int $end, string $original): void
     {
-        $this->suggestingLine = $line;
+        $this->activeSnippetId = $snippetId;
+        $this->suggestingLine = $start;
+        $this->suggestingEndLine = $end;
         $this->originalContent = $original;
         $this->suggestedContent = $original;
     }
@@ -168,14 +207,10 @@ class PostDetail extends Component
             'suggestionDescription' => 'required|min:3',
         ]);
 
-        // Find the specific snippet for the current version to associate the suggestion
-        // This assumes we have at least one snippet for the version
-        $targetSnippet = $this->post->snippets()
-            ->where('version_number', $this->selectedVersion)
-            ->first();
+        $targetSnippet = $this->post->snippets()->find($this->activeSnippetId);
 
         if (!$targetSnippet) {
-            $this->addError('suggestingLine', 'No target file found for this version.');
+            $this->addError('suggestingLine', __('No target file found.'));
             return;
         }
 
@@ -183,12 +218,14 @@ class PostDetail extends Component
             Auth::user(),
             $targetSnippet->id,
             (int) $this->suggestingLine,
+            (int) $this->suggestingEndLine,
             $this->originalContent,
             $this->suggestedContent,
             $this->suggestionDescription
         );
 
         $this->suggestingLine = null;
+        $this->suggestingEndLine = null;
         $this->suggestionDescription = '';
         $this->refreshPost();
 
@@ -200,7 +237,6 @@ class PostDetail extends Component
         $this->isReviewing = ! $this->isReviewing;
 
         if ($this->isReviewing) {
-            // Get files for current version to review
             $currentFiles = $this->post->snippets()
                 ->where('version_number', $this->selectedVersion)
                 ->get();
@@ -208,7 +244,7 @@ class PostDetail extends Component
             foreach ($currentFiles as $snippet) {
                 $this->reviewFilesData[$snippet->id] = [
                     'snippet_id' => $snippet->id,
-                    'name' => $snippet->name,
+                    'name' => $snippet->filename ?: 'file',
                     'content' => $snippet->code_content,
                     'description' => '',
                     'modified' => false,
@@ -222,10 +258,19 @@ class PostDetail extends Component
         $this->authorizeAction();
         $this->validate(['reviewDescription' => 'required|min:10']);
 
-        $modifiedFiles = array_filter($this->reviewFilesData, fn ($f) => $f['modified']);
+        $currentFiles = $this->post->snippets()->where('version_number', $this->selectedVersion)->get();
+        $modifiedFiles = [];
+        
+        foreach ($currentFiles as $snippet) {
+            $data = $this->reviewFilesData[$snippet->id] ?? null;
+            if ($data && trim($data['content']) !== trim($snippet->code_content)) {
+                $data['modified'] = true;
+                $modifiedFiles[] = $data;
+            }
+        }
 
         if (empty($modifiedFiles)) {
-            $this->addError('reviewFilesData', __('Please modify at least one file to create a review.'));
+            $this->addError('reviewDescription', __('Please modify at least one file to create a review.'));
             return;
         }
 
@@ -283,6 +328,7 @@ class PostDetail extends Component
             'comments.replies.reactions',
             'fullReviews.user',
             'fullReviews.modifiedSnippets',
+            'fullReviews.reactions',
         ]);
     }
 
@@ -294,8 +340,22 @@ class PostDetail extends Component
             ->orderBy('sort_order')
             ->get();
 
+        $previewDiffs = [];
+        if ($this->isReviewing) {
+            foreach ($snippets as $snippet) {
+                $newData = $this->reviewFilesData[$snippet->id] ?? null;
+                if ($newData) {
+                    $previewDiffs[$snippet->id] = \App\Helpers\TextDiffHelper::diffLines(
+                        $snippet->code_content,
+                        $newData['content']
+                    );
+                }
+            }
+        }
+
         return view('livewire.post-detail', [
             'currentSnippets' => $snippets,
+            'previewDiffs' => $previewDiffs,
         ]);
     }
 }

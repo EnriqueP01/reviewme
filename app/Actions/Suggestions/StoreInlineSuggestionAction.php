@@ -10,12 +10,13 @@ use App\Models\User;
 final class StoreInlineSuggestionAction
 {
     /**
-     * Crée une suggestion de modification sur une ligne spécifique.
+     * Crée une suggestion de modification sur un bloc de lignes.
      */
     public function execute(
         User $user,
         int $snippetId,
-        int $lineNumber,
+        int $startLine,
+        int $endLine,
         string $originalContent,
         string $suggestedContent,
         string $description
@@ -23,7 +24,8 @@ final class StoreInlineSuggestionAction
         return InlineSuggestion::create([
             'user_id' => $user->id,
             'snippet_id' => $snippetId,
-            'line_number' => $lineNumber,
+            'line_number' => $startLine,
+            'end_line_number' => $endLine,
             'original_content' => $originalContent,
             'suggested_content' => $suggestedContent,
             'description' => $description,

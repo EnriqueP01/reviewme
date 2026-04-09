@@ -48,7 +48,7 @@
                         </div>
                         <div>
                             <x-input-label :value="__('Short Summary')" />
-                            <x-text-input wire:model="short_description" placeholder="{{ __('Briefly hook the curators...') }}" />
+                            <x-text-input wire:model="short_description" placeholder="{{ __('Briefly hook the reviewers...') }}" />
                             <x-input-error :messages="$errors->get('short_description')" />
                         </div>
                     </div>
@@ -56,7 +56,7 @@
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                         <div>
                             <x-input-label :value="__('Target Review Goals')" />
-                            <textarea wire:model="review_goals" rows="3" class="bg-surface-high border-none text-on-surface placeholder:text-on-surface-variant/50 focus:ring-2 focus:ring-primary/50 rounded-round-4 transition-all duration-300 w-full resize-none p-4" placeholder="{{ __('What logic should be audited?') }}"></textarea>
+                            <textarea wire:model="review_goals" rows="3" class="bg-surface-high border-none text-on-surface placeholder:text-on-surface-variant/50 focus:ring-2 focus:ring-primary/50 rounded-round-4 transition-all duration-300 w-full resize-none p-4" placeholder="{{ __('What logic should be reviewed?') }}"></textarea>
                             <x-input-error :messages="$errors->get('review_goals')" />
                         </div>
                         <div>
@@ -69,14 +69,14 @@
 
                     <div>
                         <x-input-label :value="__('Technical Description')" />
-                        <textarea wire:model="description" rows="5" class="bg-surface-high border-none text-on-surface placeholder:text-on-surface-variant/50 focus:ring-2 focus:ring-primary/50 rounded-round-4 transition-all duration-300 w-full resize-none p-4" placeholder="{{ __('Detailed documentation for the curators...') }}"></textarea>
+                        <textarea wire:model="description" rows="5" class="bg-surface-high border-none text-on-surface placeholder:text-on-surface-variant/50 focus:ring-2 focus:ring-primary/50 rounded-round-4 transition-all duration-300 w-full resize-none p-4" placeholder="{{ __('Detailed documentation for the reviewers...') }}"></textarea>
                     </div>
                 </div>
             </div>
         @elseif($step == 2)
             <!-- Step 2: Artifacts (The Digital Logic) -->
             <div class="space-y-12 animate-in fade-in slide-in-from-bottom-8 duration-700">
-                <div class="sticky top-20 z-40 flex flex-col md:flex-row justify-between items-start md:items-end gap-6 bg-surface-lowest/95 backdrop-blur-2xl p-6 -mx-6 rounded-b-round-4 border-b border-outline-variant/20 shadow-[0_20px_50px_-10px_rgba(0,0,0,0.5)] transition-all duration-500">
+                <div class="sticky top-24 z-40 flex flex-col md:flex-row justify-between items-start md:items-end gap-6 bg-surface-lowest/95 backdrop-blur-2xl p-6 -mx-6 rounded-b-round-4 border-b border-outline-variant/20 shadow-[0_20px_50px_-10px_rgba(0,0,0,0.5)] transition-all duration-500">
 
 
                     <div class="space-y-4 max-w-2xl">
@@ -190,7 +190,7 @@
                                             <input 
                                                 type="text" 
                                                 wire:model.live="files.{{ $index }}.name" 
-                                                placeholder="{{ __('Untitled_Source.rme') }}"
+                                                placeholder="{{ __('untitled_source.rme') }}"
                                                 class="bg-transparent border-none p-0 w-full font-display text-xl font-bold text-on-surface placeholder:text-on-surface-variant/30 focus:ring-0 truncate transition-all group-hover/identity:text-primary"
                                             >
 
@@ -401,7 +401,7 @@
                     @if($is_private)
 
                         <div class="space-y-4 animate-in fade-in slide-in-from-top-4 duration-500">
-                            <x-input-label :value="__('Select Target Lab Member')" />
+                            <x-input-label :value="__('Select Target Group Member')" />
                             <div class="relative">
                                 <x-text-input wire:model.live="groupSearch" placeholder="{{ __('Search for a group...') }}" class="pl-12" />
                                 <div class="absolute left-4 top-1/2 -translate-y-1/2 text-on-surface-variant">
@@ -464,7 +464,7 @@
                 <x-ui.button type="submit" variant="secondary" wire:loading.attr="disabled" wire:target="submit" class="px-10 py-4 shadow-[0_0_30px_rgba(78,222,163,0.2)] hover:scale-105 transition-all">
                     <span class="flex items-center gap-3">
                          <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg>
-                         {{ __('Publish Post') }}
+                         {{ __('Publish Artifact') }}
                     </span>
                 </x-ui.button>
             @endif

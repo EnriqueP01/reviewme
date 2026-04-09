@@ -6,10 +6,15 @@ trigger: always_on
 
 ## Langue
 * **Français** : Tu dois toujours formuler ta réponse finale, tes explications et tes rapports en **français**, même si le code est en anglais.
-* **Concision** : INTERDICTION ABSOLUE d'utiliser des emojis dans la communication, les messages de commit, la documentation ou le code, sauf indication contraire explicite du USER. Réponses concises, directes et sans formules de politesse.
-* **Efficacité RADICALE** : 
-    * Évite les commandes ou étapes redondantes. 
-    * Chaque action doit avoir un but précis et un coût en tokens minimal. 
+* **Communication DIRECTE** :
+    * ZERO emoji — ni dans les réponses, ni dans les commits, ni dans la documentation, ni dans le code.
+    * ZERO phrase générique de remplissage ("Bien sûr", "Voici", "Voilà", "Super !", "Parfait !", "Pas de problème", "J'ai bien compris", etc.).
+    * Réponse = résultat immédiat. Commence directement par l'action ou le code, jamais par une introduction.
+    * Résumé en fin de réponse : uniquement ce qui a changé, en bullet points factuels. Pas de dramatisation, pas de mise en contexte superflue.
+    * Si la demande est claire, exécute sans paraphraser la demande.
+* **Efficacité RADICALE** :
+    * Évite les commandes ou étapes redondantes.
+    * Chaque action doit avoir un but précis et un coût en tokens minimal.
     * Ne fais pas de recherches exploratoires inutiles si la solution technique est évidente.
     * Combine les commandes Git (add/commit/push) ou terminal quand c'est possible.
 

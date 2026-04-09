@@ -22,4 +22,12 @@
         
         <div class="absolute -inset-[2px] rounded-[1.2rem] border-2 border-primary/40 opacity-0 group-focus-within:opacity-100 transition-all duration-300 pointer-events-none scale-[0.98] group-focus-within:scale-100"></div>
     </div>
+    @if($attributes->has('wire:model'))
+        @error($attributes->get('wire:model'))
+            <p class="text-[10px] uppercase font-black tracking-widest text-error/90 mt-1 ml-2 flex items-center gap-1">
+                <svg class="w-3 h-3" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/></svg>
+                {{ $message }}
+            </p>
+        @enderror
+    @endif
 </div>

@@ -30,15 +30,15 @@ final class AddPostVersionAction
         ])->validate();
 
         DB::transaction(function () use ($post, $data) {
-            $latestVersion = $post->snippets()->max('version_number') ?? 0;
-            $newVersion = $latestVersion + 1;
+            $latestVersion = Snippet::where('post_id', $post->id)->max('version_number') ?? 0;
+            $newVersion = (int) $latestVersion + 1;
 
             foreach ($data['files'] as $index => $file) {
                 Snippet::create([
                     'post_id' => $post->id,
                     'filename' => $file['filename'] ?? $file['name'] ?? 'file_'.($index + 1),
                     'version_number' => $newVersion,
-                    'code_content' => e($file['content']),
+                    'code_content' => $file['content'],
                     'description' => $file['description'] ?? null,
                     'language' => $file['language'] ?? 'php',
                     'sort_order' => $index,

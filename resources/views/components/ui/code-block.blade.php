@@ -185,7 +185,7 @@
                 <div class="flex items-center gap-1 bg-black/40 rounded-xl p-0.5 max-w-full overflow-x-auto no-scrollbar scroll-smooth">
                     <template x-for="(snippet, index) in snippets" :key="index">
                         <button 
-                            @click="activeTab = index; if(window.fx) window.fx.play('click')"
+                            @click="activeTab = index; $dispatch('snippet-changed', { id: snippet.id }); if(window.fx) window.fx.play('click')"
                             :class="activeTab === index ? 'bg-primary/20 text-primary shadow-[0_0_15px_rgba(190,194,255,0.1)]' : 'text-on-surface-variant/30 hover:text-on-surface-variant hover:bg-white/5'"
                             class="px-5 py-2 rounded-lg text-[10px] font-black font-mono tracking-widest transition-all duration-500 whitespace-nowrap"
                             x-text="snippet.name"
@@ -247,9 +247,11 @@
                     x-transition:leave-end="opacity-0 -translate-x-8"
                     class="p-6"
                 >
-                    <div class="font-mono text-[12px] leading-[2rem] relative z-10 space-y-0.5">
+                    <div class="font-mono text-[12px] leading-5 relative z-10 space-y-0">
                         <template x-for="(line, lIndex) in snippet.lines" :key="lIndex">
-                            <div class="flex items-start group/line hover:bg-white/[0.03] -mx-6 px-6 transition-all duration-300 snap-start snap-always scroll-mt-0">
+                            <div class="flex items-start group/line hover:bg-white/[0.03] -mx-6 px-6 transition-all duration-300 snap-start snap-always scroll-mt-0 selection:bg-primary/40 selection:text-white"
+                                 :data-snippet="snippet.id"
+                                 :data-line="lIndex + 1">
                                 <div class="w-12 shrink-0 text-right pr-6 select-none text-on-surface-variant/10 group-hover/line:text-primary transition-colors font-bold text-[10px]">
                                     <span x-text="lIndex + 1"></span>
                                 </div>

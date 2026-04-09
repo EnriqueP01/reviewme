@@ -64,7 +64,7 @@ return new class extends Migration
             $table->foreignId('user_id')->constrained()->cascadeOnDelete();
             // Polymorphisme pour réagir aux posts ou reviews si besoin
             $table->morphs('reactable');
-            $table->enum('type', ['clean', 'optimisable', 'mindblown', 'security']);
+            $table->string('type', 50);
             $table->timestamps();
         });
     }
