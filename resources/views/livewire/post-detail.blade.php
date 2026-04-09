@@ -87,15 +87,6 @@
                     <div class="flex items-center gap-3 mt-1">
                         @php
                             $lensColors = [
-                                'Logic' => ['bg' => 'bg-primary/10', 'text' => 'text-primary', 'border' => 'border-primary/20'],
-                                'Security' => ['bg' => 'bg-red-500/10', 'text' => 'text-red-400', 'border' => 'border-red-500/20'],
-                                'Performance' => ['bg' => 'bg-amber-500/10', 'text' => 'text-amber-400', 'border' => 'border-amber-500/20'],
-                                'Elegant' => ['bg' => 'bg-indigo-500/10', 'text' => 'text-indigo-400', 'border' => 'border-indigo-500/20'],
-                                'Clean' => ['bg' => 'bg-emerald-500/10', 'text' => 'text-emerald-400', 'border' => 'border-emerald-500/20'],
-                                'Opti' => ['bg' => 'bg-blue-500/10', 'text' => 'text-blue-400', 'border' => 'border-blue-500/20'],
-                            ];
-                            $color = $lensColors[$post->lens] ?? $lensColors['Logic'];
-                        @endphp
                         <span class="px-2 py-0.5 rounded text-[9px] font-black uppercase tracking-widest {{ $color['bg'] }} {{ $color['text'] }} border {{ $color['border'] }}">{{ $post->lens ?: 'Logic' }}</span>
                         <span class="text-[10px] uppercase tracking-[0.2em] text-on-surface-variant font-black opacity-40 flex items-center gap-2">
                             {{ $post->created_at->diffForHumans() }}
@@ -127,7 +118,7 @@
                 @else
                     <!-- Reviewer Actions -->
                     <x-ui.button wire:click="toggleReviewMode" variant="{{ $isReviewing ? 'primary' : 'ghost' }}" class="whitespace-nowrap rounded-2xl px-8 py-4 font-black uppercase text-xs tracking-widest shadow-2xl">
-                        {{ $isReviewing ? __('Abort Session') : __('Make Full Review') }}
+                        {{ $isReviewing ? __('Cancel') : __('Make Full Review') }}
                     </x-ui.button>
                 @endif
             </div>
@@ -144,7 +135,7 @@
                                 <div class="w-10 h-10 rounded-xl bg-primary/10 flex items-center justify-center text-primary shadow-inner">
                                     <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"></path></svg>
                                 </div>
-                                <h2 class="text-xs font-black uppercase tracking-widest text-on-surface">{{ __('Dispatch Full Review') }}</h2>
+                                <h2 class="text-xs font-black uppercase tracking-widest text-on-surface">{{ __('Full Review Form') }}</h2>
                             </div>
                             <button wire:click="toggleReviewMode" class="p-2 rounded-xl hover:bg-white/5 text-on-surface-variant hover:text-white transition-all">
                                 <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M6 18L18 6M6 6l12 12" stroke-width="2.5" stroke-linecap="round"/></svg>
@@ -155,8 +146,8 @@
                         <div class="flex-1 overflow-y-auto p-8 custom-scrollbar space-y-8">
                             <!-- Global Eval -->
                             <div class="space-y-3">
-                                <label class="px-1 text-[9px] font-black uppercase tracking-[0.4em] text-primary/60">{{ __('Commentary') }}</label>
-                                <textarea wire:model="reviewDescription" placeholder="{{ __('State the overall impact and patterns used...') }}" 
+                                <label class="px-1 text-[9px] font-black uppercase tracking-[0.4em] text-primary/60">{{ __('Summary') }}</label>
+                                <textarea wire:model="reviewDescription" placeholder="{{ __('Overall thoughts on the code...') }}" 
                                           class="w-full bg-black/20 border border-white/5 rounded-2xl p-6 text-sm text-on-surface focus:border-primary/20 min-h-[120px] outline-none transition-all shadow-inner custom-scrollbar resize-none font-medium italic"></textarea>
                             </div>
 
@@ -190,7 +181,7 @@
                                             <div class="px-8 py-5 bg-white/[0.01] border-t border-white/5">
                                                 <div class="flex items-center gap-4">
                                                     <svg class="w-4 h-4 text-primary/40" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M7 8h10M7 12h4m1 8l-4-4H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-3l-4 4z"></path></svg>
-                                                    <input type="text" wire:model="reviewFilesData.{{ $snippet->id }}.description" placeholder="{{ __('Logic notes for this file...') }}" class="flex-1 bg-transparent border-none p-0 text-sm text-on-surface focus:ring-0 placeholder:text-on-surface-variant/20 font-medium italic">
+                                                    <input type="text" wire:model="reviewFilesData.{{ $snippet->id }}.description" placeholder="{{ __('File specific notes...') }}" class="flex-1 bg-transparent border-none p-0 text-sm text-on-surface focus:ring-0 placeholder:text-on-surface-variant/20 font-medium italic">
                                                 </div>
                                             </div>
                                         </div>
@@ -201,9 +192,9 @@
 
                         <!-- Footer -->
                         <div class="px-8 py-5 border-t border-white/5 flex justify-end items-center gap-8 shrink-0 bg-white/[0.02]">
-                            <button wire:click="toggleReviewMode" class="text-[10px] font-black uppercase text-on-surface-variant hover:text-white transition-colors tracking-widest">{{ __('Abandon') }}</button>
+                            <button wire:click="toggleReviewMode" class="text-[10px] font-black uppercase text-on-surface-variant hover:text-white transition-colors tracking-widest">{{ __('Cancel') }}</button>
                             <x-ui.button wire:click="saveFullReview" variant="primary" class="rounded-2xl px-12 py-5 shadow-[0_0_40px_rgba(190,194,255,0.2)] text-[10px] font-black uppercase tracking-widest">
-                                {{ __('Curate this code !') }}
+                                {{ __('Submit Review') }}
                             </x-ui.button>
                         </div>
                     </div>
@@ -405,7 +396,7 @@
             <!-- GLOBAL DISCUSSION SECTION -->
             <div class="space-y-12">
                 <h2 class="text-[10px] font-black uppercase tracking-[0.5em] text-on-surface-variant/20 flex items-center gap-6">
-                    {{ __('Community Commentaries') }}
+                    {{ __('Discussion') }}
                     <div class="h-px flex-1 bg-gradient-to-r from-white/5 via-white/[0.02] to-transparent"></div>
                 </h2>
 
@@ -524,7 +515,7 @@
                                     <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"></path></svg>
                                 </div>
                                 <div>
-                                    <h2 class="text-xs font-black uppercase tracking-widest text-on-surface">{{ __('Inject Global Suggestion') }}</h2>
+                                    <h2 class="text-xs font-black uppercase tracking-widest text-on-surface">{{ __('Suggest Change') }}</h2>
                                     <p class="text-[10px] font-black uppercase text-primary/60 tracking-widest mt-0.5">LINES {{ $suggestingLine }} — {{ $suggestingEndLine ?: $suggestingLine }}</p>
                                 </div>
                             </div>
@@ -540,18 +531,18 @@
                                 <div class="flex flex-col space-y-4">
                                     <div class="flex items-center gap-3 px-1">
                                         <div class="w-2 h-2 rounded-full bg-red-500 shadow-[0_0_15px_rgba(239,68,68,0.5)]"></div>
-                                        <span class="text-[9px] font-black uppercase tracking-widest text-on-surface-variant/60">{{ __('Outdated Fragment') }}</span>
+                                        <span class="text-[9px] font-black uppercase tracking-widest text-on-surface-variant/60">{{ __('Original Code') }}</span>
                                     </div>
                                     <div class="flex-1 rounded-2xl border border-white/5 overflow-hidden shadow-inner bg-black/20">
                                         <x-ui.syntax-highlighter :code="$originalContent" lang="php" class="text-[12px] h-full" />
                                     </div>
                                 </div>
                                 
-                                <!-- Optimized Patch -->
+                                <!-- Suggested change -->
                                 <div class="flex flex-col space-y-4">
                                     <div class="flex items-center gap-3 px-1">
                                         <div class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse shadow-[0_0_15px_rgba(16,185,129,0.5)]"></div>
-                                        <span class="text-[9px] font-black uppercase tracking-widest text-emerald-400">{{ __('Optimized Patch') }}</span>
+                                        <span class="text-[9px] font-black uppercase tracking-widest text-emerald-400">{{ __('Suggested Change') }}</span>
                                     </div>
                                     <div class="flex-1 flex flex-col bg-[#0d0e12] rounded-2xl border-2 border-emerald-500/20 focus-within:border-emerald-500/50 transition-all shadow-2xl relative overflow-hidden group/patch">
                                         <textarea wire:model.live="suggestedContent" 
@@ -571,9 +562,9 @@
 
                         <!-- Footer -->
                         <div class="px-8 py-5 border-t border-white/5 flex justify-end items-center gap-8 shrink-0 bg-white/[0.02]">
-                            <button wire:click="$set('suggestingLine', null)" class="text-[10px] font-black uppercase text-on-surface-variant hover:text-white tracking-widest transition-colors">{{ __('Discard Payload') }}</button>
+                            <button wire:click="$set('suggestingLine', null)" class="text-[10px] font-black uppercase text-on-surface-variant hover:text-white tracking-widest transition-colors">{{ __('Cancel') }}</button>
                             <x-ui.button wire:click="saveInlineSuggestion" variant="primary" class="rounded-2xl px-12 py-5 shadow-[0_0_40px_rgba(16,185,129,0.2)] text-[10px] font-black uppercase tracking-widest hover:scale-105 active:scale-95 transition-all">
-                                {{ __('Propose Modification') }}
+                                {{ __('Submit Suggestion') }}
                             </x-ui.button>
                         </div>
                     </div>

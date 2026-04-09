@@ -51,3 +51,9 @@ trigger: always_on
 * Utilise systématiquement `{{ __('...') }}` ou `lang('...')`.
 * À chaque ajout/modification, extrais les chaînes vers `lang/en.json` ET `lang/fr.json`. 
 * Toute régression (texte en dur) sera considérée comme un bug bloquant.
+
+## Nomenclature & Terminologie (STRICT)
+* **Zéro Roleplay** : Interdiction ABSOLUE d'utiliser des termes "fantaisistes", "futuristes" ou "roleplay" (ex: "Intelligence Unit", "Tactical Node", "Encrypted Pulse", "Uplink", "Initialize Cluster", "Mission Brief").
+* **Standard Technique** : Utilise uniquement des termes techniques standards, sobres et directs (ex: "Group", "Member", "Message", "Create Group", "Connected", "Feed", "Description").
+* **Cohérence** : Aligne-toi sur le langage déjà utilisé dans le reste de l'application (Laravel standard). Toute déviation vers du jargon original ou complexe est une erreur.
+
