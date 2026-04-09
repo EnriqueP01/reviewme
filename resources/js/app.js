@@ -1,11 +1,10 @@
 import './bootstrap';
 
-import Alpine from 'alpinejs';
-import collapse from '@alpinejs/collapse';
-
-Alpine.plugin(collapse);
-window.Alpine = Alpine;
-// Note: Alpine.start() est géré par Livewire 3
+// Alpine.js est automatiquement injecté par Livewire 3.
+// On enregistre les plugins et les données globales via le hook livewire:init pour éviter les doubles instances.
+document.addEventListener('livewire:init', () => {
+    // window.Alpine est déjà disponible ici.
+});
 
 // Service Audio Premium & Haptique
 window.fx = {

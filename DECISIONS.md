@@ -1,3 +1,19 @@
+## 2026-04-09-57 : Moteur de Réputation "Expert-Driven" & Système de Karma
+- **Auteur** : Antigravity
+- **Statut** : ✅ Implémenté
+- **Contexte** : Besoin d'un système de curation et de modération communautaire auto-géré, valorisant l'expertise technique et décourageant la toxicité.
+- **Décision** :
+    1. **Architecture de Persistance** : Utilisation d'une table `karma_transactions` (audit log polymorphique) et `user_skills` (expertise par Lens/thématique).
+    2. **Moteur d'Action Centralisé** : Création de `GrantKarmaAction` pour garantir l'atomicité des gains de points, des logs et de l'évolution des skills.
+    3. **Stratégie de Gamification** :
+        - Paliers de progression (Apprenti, Contributeur, Reviewer, Expert, Elite) débloquant des privilèges.
+        - Bonus de Qualité : Points doublés pour les descriptions de plus de 500 caractères.
+        - Daily Cap : Plafond journalier de +200 Karma pour prévenir le farming.
+    4. **Permissions par Karma (RBAC)** : Gatekeepers sur les actions sensibles (Downvote réservé aux "Contributeurs" (10+), Protection des routes critiques via Middleware `EnsureUserHasKarma`).
+    5. **Engagement UI** : Intégration d'un dashboard de réputation sur le profil avec badge de rang, radar de compétences et historique filtrable. Émission d'événements Livewire pour notifications en temps réel.
+    6. **Outillage de Maintenance** : Commande Artisan `karma:rebuild` pour recalculer les scores à partir des transactions en cas de changement de barème.
+- **Impact** : Création d'un cercle vertueux de contribution, sécurisation de la plateforme contre le trollage et mise en place d'une méritocratie technique.
+
 
 ## 2026-04-09-56 : Architecture "Zéro-Latence" & Debounced State Sync
 - **Auteur** : Antigravity

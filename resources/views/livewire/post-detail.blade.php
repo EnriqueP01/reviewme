@@ -85,6 +85,7 @@
                         <span class="text-xs font-mono font-bold text-primary tracking-wider font-black">@<span>{{ $post->user->name }}</span></span>
                     </div>
                     <div class="flex items-center gap-3 mt-1">
+                    <div class="flex items-center gap-3 mt-1">
                         @foreach(explode(',', $post->lens ?? 'Logic') as $l)
                             @php $lKey = strtolower(trim($l)); @endphp
                             <span 
@@ -101,7 +102,48 @@
                 </div>
             </div>
             
-            <div class="flex items-center gap-6 relative">
+            <div class="flex items-center gap-10 relative">
+                <!-- Post Karma HUD (NEW) -->
+                @php
+                    $myPostReaction = $post->reactions->where('user_id', Auth::id())->first()?->type;
+                    $postVotedState = $myPostReaction === 'mindblown' ? 'up' : ($myPostReaction === 'optimisable' ? 'down' : '');
+                @endphp
+                <div class="flex items-center gap-3 bg-black/20 p-2 px-4 rounded-[2rem] border border-white/5"
+                     x-data="{ 
+                         score: parseInt('{{ $post->up_count - $post->down_count }}'),
+                         voted: '{{ $postVotedState }}',
+                         originalVoted: '{{ $postVotedState }}',
+                         timer: null,
+                         vote(dir) {
+                             clearTimeout(this.timer);
+                             let newVoted = (this.voted === dir) ? '' : dir;
+                             let diff = 0;
+                             if (this.voted === 'up') diff -= 1;
+                             if (this.voted === 'down') diff += 1;
+                             if (newVoted === 'up') diff += 1;
+                             if (newVoted === 'down') diff -= 1;
+                             this.score += diff;
+                             this.voted = newVoted;
+                             this.timer = setTimeout(() => {
+                                 if (this.voted !== this.originalVoted) {
+                                     $wire.vote({{ $post->id }}, this.voted === 'up' ? 'up' : (this.voted === 'down' ? 'down' : 'none'));
+                                     this.originalVoted = this.voted;
+                                 }
+                             }, 300);
+                         }
+                     }"
+                >
+                    <button @click="vote('up')" 
+                            class="p-2 rounded-xl transition-all active:scale-75" :class="voted === 'up' ? 'text-emerald-400 bg-emerald-500/10' : 'text-on-surface-variant hover:text-emerald-400'">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M5 15l7-7 7 7" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                    </button>
+                    <span class="text-sm font-black italic w-6 text-center" :class="score > 0 ? 'text-emerald-400' : (score < 0 ? 'text-red-400' : 'opacity-20')" x-text="score"></span>
+                    <button @click="vote('down')" 
+                            class="p-2 rounded-xl transition-all active:scale-75" :class="voted === 'down' ? 'text-red-400 bg-red-500/10' : 'text-on-surface-variant hover:text-red-400'">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M19 9l-7 7-7-7" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                    </button>
+                </div>
+
                 <!-- Version Selector -->
                 <div class="flex items-center gap-2 bg-black/20 rounded-2xl p-1.5 border border-white/5">
                     <span class="text-[9px] font-black uppercase tracking-[0.2em] text-on-surface-variant/40 px-3">{{ __('Version') }}</span>
@@ -302,6 +344,7 @@
                                                           
                                                          vote(dir) {
                                                              clearTimeout(this.timer);
+                                                             window.haptic.play(dir);
                                                               
                                                              let newVoted = (this.voted === dir) ? '' : dir;
                                                              let diff = 0;
@@ -324,12 +367,12 @@
                                                      }"
                                                 >
                                                      <div class="flex items-center gap-2 p-2 bg-[#0d0e12]/60 rounded-[1.5rem] border border-white/5 shadow-inner">
-                                                         <button @click="vote('up')" 
+                                                         <button @click.stop="vote('up')" 
                                                                  class="p-3.5 rounded-2xl transition-all active:scale-75" :class="voted === 'up' ? 'text-emerald-400 bg-emerald-500/10 shadow-[0_0_30px_rgba(52,211,153,0.15)]' : 'text-on-surface-variant hover:text-emerald-400 hover:bg-emerald-500/5'">
                                                              <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M5 15l7-7 7 7" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/></svg>
                                                          </button>
                                                          <span class="text-sm font-black tracking-tighter w-8 text-center" :class="score > 0 ? 'text-emerald-400' : (score < 0 ? 'text-red-400' : 'text-on-surface-variant/40')" x-text="score"></span>
-                                                         <button @click="vote('down')" 
+                                                         <button @click.stop="vote('down')" 
                                                                  class="p-3.5 rounded-2xl transition-all active:scale-75" :class="voted === 'down' ? 'text-red-400 bg-red-500/10 shadow-[0_0_30px_rgba(248,113,113,0.15)]' : 'text-on-surface-variant hover:text-red-400 hover:bg-red-500/5'">
                                                              <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M19 9l-7 7-7-7" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/></svg>
                                                          </button>

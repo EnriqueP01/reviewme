@@ -25,7 +25,10 @@
                     <h1 class="font-display text-5xl font-bold tracking-tight text-on-surface flex items-center gap-4 justify-center md:justify-start">
                         <span class="text-primary opacity-20 font-mono">@</span>{{ $user->name }}
                     </h1>
-                    <p class="text-on-surface-variant text-xl mt-2 font-display italic tracking-wide">{{ __($stats['level']) }}</p>
+                    <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-surface-container mt-4 border border-white/5">
+                        <div class="w-2 h-2 rounded-full {{ str_replace('text-', 'bg-', $stats['level']['color']) }} animate-pulse"></div>
+                        <span class="{{ $stats['level']['color'] }} text-xs font-black uppercase tracking-widest">{{ __($stats['level']['label']) }}</span>
+                    </div>
                 </div>
                 
                 <div class="flex flex-wrap justify-center md:justify-start gap-4">
@@ -64,19 +67,52 @@
         <!-- Sidebar: Details -->
         <div class="space-y-12">
             <div class="glass-panel p-10 rounded-[2.5rem] border-subtle">
-                <h3 class="font-display font-black text-xl text-on-surface mb-8 italic">{{ __('About') }}</h3>
-                <p class="text-on-surface-variant leading-relaxed text-sm opacity-70">
-                    {{ __('Passionate about micro-optimizations and clean architectural patterns. Currently exploring the intersection of PHP and physics-based UI.') }}
-                </p>
-                <div class="mt-10 pt-10 border-t border-primary/10 space-y-5">
-                    <div class="flex justify-between text-sm">
-                        <span class="text-on-surface-variant">{{ __('Location') }}</span>
-                        <span class="text-on-surface">{{ __('Remote') }}</span>
-                    </div>
-                    <div class="flex justify-between text-sm">
-                        <span class="text-on-surface-variant">{{ __('Member since') }}</span>
-                        <span class="text-on-surface">{{ $stats['joined'] }}</span>
-                    </div>
+                <h3 class="font-display font-black text-xl text-on-surface mb-8 italic">{{ __('Expertise') }}</h3>
+                <div class="grid grid-cols-1 gap-4">
+                    @forelse($this->skills as $skill)
+                        <div class="flex items-center justify-between p-4 bg-[#0d0e12]/40 rounded-2xl border border-white/5 group/skill hover:bg-primary/5 transition-colors">
+                            <span class="text-on-surface-variant font-bold text-sm tracking-tight group-hover/skill:text-primary transition-colors">{{ __($skill->lens) }}</span>
+                            <span class="font-display font-black text-on-surface">{{ number_format($skill->score) }}</span>
+                        </div>
+                    @empty
+                        <p class="text-on-surface-variant text-xs opacity-50">{{ __('No specialized skills yet.') }}</p>
+                    @endforelse
+                </div>
+            </div>
+
+            <div class="glass-panel p-10 rounded-[2.5rem] border-subtle">
+                <h3 class="font-display font-black text-xl text-on-surface mb-8 italic">{{ __('Recent Karma') }}</h3>
+                <div class="space-y-6">
+                    @forelse($this->karmaHistory as $tx)
+                        <div class="flex items-start gap-4">
+                            <div class="mt-1">
+                                @if($tx->points > 0)
+                                    <div class="w-6 h-6 rounded-lg bg-emerald-500/20 text-emerald-400 flex items-center justify-center">
+                                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M5 15l7-7 7 7" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                                    </div>
+                                @else
+                                    <div class="w-6 h-6 rounded-lg bg-rose-500/20 text-rose-400 flex items-center justify-center">
+                                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M19 9l-7 7-7-7" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                                    </div>
+                                @endif
+                            </div>
+                            <div class="flex-grow">
+                                <p class="text-[11px] text-on-surface font-bold leading-tight line-clamp-2 italic opacity-80 decoration-primary/20">
+                                    {{ __($tx->description ?: $tx->type) }}
+                                </p>
+                                <p class="text-[9px] text-on-surface-variant mt-1 uppercase tracking-widest font-black opacity-30">
+                                    {{ $tx->created_at->diffForHumans() }}
+                                </p>
+                            </div>
+                            <div class="text-right">
+                                <span class="font-mono text-xs font-bold {{ $tx->points > 0 ? 'text-emerald-400' : 'text-rose-400' }}">
+                                    {{ $tx->points > 0 ? '+' : '' }}{{ $tx->points }}
+                                </span>
+                            </div>
+                        </div>
+                    @empty
+                        <p class="text-on-surface-variant text-xs opacity-50">{{ __('No recent transactions.') }}</p>
+                    @endforelse
                 </div>
             </div>
         </div>
