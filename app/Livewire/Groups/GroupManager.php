@@ -25,6 +25,8 @@ final class GroupManager extends Component
 
     public array $searchResults = [];
 
+    public string $activeTab = 'feed';
+
     protected $rules = [
         'name' => 'required|min:3|max:255|unique:groups,name',
         'description' => 'nullable|string',
