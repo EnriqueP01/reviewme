@@ -36,6 +36,7 @@
     "Cancel Review": "Annuler la Revue",
     "Changelog": "Journal des Modifications",
     "Clean Code": "Propre",
+    "Cleaned and optimized translation dictionaries.": "Nettoyage et optimisation des dictionnaires de traduction.",
     "Clone the elite stack": "Cloner la stack d'élite",
     "Code Content": "Contenu du Code",
     "Code Content (Paste or Drag & Drop)": "Contenu du Code (Coller ou Déposer)",
@@ -102,6 +103,7 @@
     "Full Code Review": "Revue de Code Complète",
     "Full Implementation Reviews": "Revues d'Implémentation Complètes",
     "Full Name": "Nom Complet",
+    "Full site-wide internationalization (FR/EN).": "Internationalisation complète du site (FR/EN).",
     "Getting Started": "Mise en Route",
     "Ghost": "Fantôme",
     "Github OAuth": "Github OAuth",
@@ -205,12 +207,14 @@
     "RTT": "RTT",
     "Rank": "Rang",
     "Rapid Feedback": "Retours Rapides",
+    "Real-time group chat integration (Reverb).": "Intégration du chat de groupe en temps réel (Reverb).",
     "Real-time health monitoring of the ReviewMe ecosystem.": "Surveillance en temps réel de l'écosystème ReviewMe.",
     "Real-time interactions powered by Reverb for instant mentorship.": "Interactions en temps réel propulsées par Reverb pour un mentorat instantané.",
     "Recent": "Récents",
     "Recent Posts": "Derniers Posts",
     "Recognizing the most helpful contributors who consistently elevate the architectural quality of the platform.": "Reconnaissance des contributeurs les plus utiles qui élèvent constamment la qualité architecturale de la plateforme.",
     "Register": "S'inscrire",
+    "Reinforced architectural rules (STRICT i18n & Changelog).": "Renforcement des règles architecturales (STRICT i18n & Changelog).",
     "Remember": "Se Souvenir",
     "Remember Me": "Rester connecté",
     "Remote": "À distance",
@@ -311,5 +315,6 @@
     "Zero Files Detected": "Aucun fichier détecté",
     "active users": "utilisateurs actifs",
     "improved": "amélioré",
-    "lns": "lig"
+    "lns": "lig",
+    "v1.3.0 - Global Localization & Collaboration Sync": "v1.3.0 - Synchronisation de Collaboration & Localisation Globale"
 }
