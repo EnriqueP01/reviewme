@@ -403,11 +403,11 @@ The initial "Monolith & The Lens" implementation was too spacious, creating layo
     2. **Validation Automatique** : Mise à jour immédiate de l'US35 (Docker) pour valider le concept.
 - **Impact** : Documentation produit toujours à jour, traçabilité parfaite des fonctionnalités et alignement PO/Dev garanti.
 
-## 2026-04-09-49 : Raffinement Automatique des Prompts (Auto-PRD)
+## 2026-04-09-49 : Raffinement Adaptatif des Prompts (Auto-PRD)
 - **Auteur** : Antigravity
 - **Statut** : ✅ Implémenté
-- **Contexte** : Volonté d'améliorer la qualité des réponses et la rigueur technique lors de demandes de nouvelles fonctionnalités.
+- **Contexte** : Volonté d'optimiser le temps de réponse tout en maintenant une rigueur technique maximale adaptée à chaque type de tâche.
 - **Décision** :
-    1. **Règle auto_prd** : Ajout de `.agents/rules/auto_prd.md` définissant un protocole de "Traduction technique" pour chaque prompt utilisateur complexe.
-    2. **Format Mini-Spec** : L'agent doit désormais structurer ses étapes (Contexte, Architecture, Sécurité, US Link) avant de coder.
-- **Impact** : Réduction drastique des erreurs d'interprétation, meilleure isolation des composants et respect strict des règles de sécurité.
+    1. **Règle auto_prd Adaptative** : Mise à jour de `.agents/rules/auto_prd.md` pour introduire une matrice d'adaptation (Full PRD, Mini-PRD, Note Technique, Fast-Track).
+    2. **Logique de Sélection** : L'agent choisit dynamiquement le niveau de formalisme selon la complexité fonctionnelle de la demande.
+- **Impact** : Rigueur documentaire sur les gros chantiers et efficacité maximale sur les petites tâches, sans compromis sur la qualité.
