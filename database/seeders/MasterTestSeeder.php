@@ -171,10 +171,12 @@ class MasterTestSeeder extends Seeder
 
                             // Add reactions to the review
                             if (rand(0, 1)) {
-                                Reaction::create([
-                                    'user_id' => $usersCollection->random()->id,
+                                $reactor = $usersCollection->where('id', '!=', $reviewer->id)->random();
+                                Reaction::updateOrCreate([
+                                    'user_id' => $reactor->id,
                                     'reactable_id' => $review->id,
                                     'reactable_type' => Review::class,
+                                ], [
                                     'type' => $faker->randomElement($reactionTypes),
                                 ]);
                             }
@@ -184,11 +186,13 @@ class MasterTestSeeder extends Seeder
 
                 // Add reactions to the post itself
                 $reactionCount = rand(2, 6);
-                for ($r = 0; $r < $reactionCount; $r++) {
-                    Reaction::create([
-                        'user_id' => $usersCollection->random()->id,
+                $reactors = $usersCollection->where('id', '!=', $user->id)->random($reactionCount);
+                foreach ($reactors as $reactor) {
+                    Reaction::updateOrCreate([
+                        'user_id' => $reactor->id,
                         'reactable_id' => $post->id,
                         'reactable_type' => Post::class,
+                    ], [
                         'type' => $faker->randomElement($reactionTypes),
                     ]);
                 }
@@ -203,17 +207,19 @@ class MasterTestSeeder extends Seeder
         foreach ($sampledOtherPosts as $post) {
             $snippet = $post->snippets()->first();
             if ($snippet) {
-                Review::create([
+                Review::updateOrCreate([
                     'snippet_id' => $snippet->id,
                     'user_id' => $celestin->id,
                     'line_number' => 2,
+                ], [
                     'content' => "C'est une implémentation très propre ! Personnellement j'aurais utilisé un Early Return ici pour éviter la pyramide de l'enfer. Sinon super !",
                 ]);
 
-                Reaction::create([
+                Reaction::updateOrCreate([
                     'user_id' => $celestin->id,
                     'reactable_id' => $post->id,
                     'reactable_type' => Post::class,
+                ], [
                     'type' => $faker->randomElement($reactionTypes),
                 ]);
             }

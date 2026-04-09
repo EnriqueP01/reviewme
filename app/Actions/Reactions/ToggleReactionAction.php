@@ -43,44 +43,53 @@ final class ToggleReactionAction
             $author = $reactable->user;
         }
 
-        $existing = Reaction::where([
-            'user_id' => $user->id,
-            'reactable_id' => $reactable->getKey(),
-            'reactable_type' => $reactable->getMorphClass(),
-        ])->first();
-
-        // Cas 1 : Suppression (Toggle off)
-        if ($existing && $existing->type === $type) {
-            $existing->delete();
-            if ($author) {
-                $this->updateReputation->execute($author, $type, 'remove');
-            }
-
+        // PROTECTION : Interdiction de voter sur ses propres ressources
+        if ($author && $author->id === $user->id) {
             return null;
         }
 
-        // Cas 2 : Changement de type (Switch)
-        if ($existing && $existing->type !== $type) {
-            $existing->update(['type' => $type]);
-            if ($author) {
-                $this->updateReputation->execute($author, $type, 'switch');
+        return \Illuminate\Support\Facades\DB::transaction(function () use ($user, $reactable, $type, $author) {
+            $existing = Reaction::where([
+                'user_id' => $user->id,
+                'reactable_id' => $reactable->getKey(),
+                'reactable_type' => $reactable->getMorphClass(),
+            ])->lockForUpdate()->first();
+
+            // Cas 1 : Suppression (Toggle off)
+            if ($existing && $existing->type === $type) {
+                $existing->delete();
+                if ($author) {
+                    $this->updateReputation->execute($author, $type, 'remove');
+                }
+
+                return null;
             }
 
-            return $existing;
-        }
+            // Cas 2 : Changement de type (Switch)
+            if ($existing && $existing->type !== $type) {
+                $oldType = $existing->type;
+                $existing->update(['type' => $type]);
+                if ($author) {
+                    // On passe l'ancien type pour un calcul de delta précis
+                    $this->updateReputation->execute($author, $type, 'switch', $oldType);
+                }
 
-        // Cas 3 : Ajout pur
-        $reaction = Reaction::create([
-            'user_id' => $user->id,
-            'reactable_id' => $reactable->getKey(),
-            'reactable_type' => $reactable->getMorphClass(),
-            'type' => $type,
-        ]);
+                return $existing;
+            }
 
-        if ($author) {
-            $this->updateReputation->execute($author, $type, 'add');
-        }
+            // Cas 3 : Ajout pur
+            $reaction = Reaction::create([
+                'user_id' => $user->id,
+                'reactable_id' => $reactable->getKey(),
+                'reactable_type' => $reactable->getMorphClass(),
+                'type' => $type,
+            ]);
 
-        return $reaction;
+            if ($author) {
+                $this->updateReputation->execute($author, $type, 'add');
+            }
+
+            return $reaction;
+        });
     }
 }
