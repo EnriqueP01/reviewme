@@ -11,22 +11,10 @@
         @vite(['resources/css/app.css', 'resources/js/app.js'])
         @livewireStyles
     </head>
-    <body class="bg-surface text-on-surface font-sans antialiased overflow-x-hidden selection:bg-primary/30"
-          x-data="{ mouseX: 0, mouseY: 0 }"
-          @mousemove.window="mouseX = ($event.clientX / window.innerWidth) * 100; mouseY = ($event.clientY / window.innerHeight) * 100; document.body.style.setProperty('--mouse-x', mouseX + '%'); document.body.style.setProperty('--mouse-y', mouseY + '%')">
+    <body class="bg-surface text-on-surface font-sans antialiased overflow-x-hidden selection:bg-primary/30">
         
-        <!-- Deep Desktop Texture -->
-        <div class="fixed inset-0 pointer-events-none z-0">
-            <!-- Macro Atmospheric Glows -->
-            <div class="absolute inset-0 bg-gradient-to-tr from-primary/5 via-transparent to-secondary/5 opacity-50"></div>
-            
-            <!-- Mouse Follower Light -->
-            <div class="absolute w-[1000px] h-[1000px] rounded-full opacity-20 blur-[120px] pointer-events-none transition-all duration-300"
-                 :style="`background: radial-gradient(circle at 50% 50%, var(--primary), transparent 70%); left: ${mouseX}%; top: ${mouseY}%; transform: translate(-50%, -50%);` "></div>
-            
-            <!-- Structural Lines -->
-            <div class="absolute inset-0 bg-grid opacity-20"></div>
-        </div>
+        <!-- Deep Desktop Texture: Unified Interactive Grid -->
+        <x-ui.interactive-grid />
 
         <div class="relative min-h-screen flex flex-col z-10 w-full">
             <!-- Global Identity Bar -->
@@ -67,9 +55,9 @@
                 {{ $slot }}
             </main>
             
-            <div class="py-10 text-on-surface-variant text-[10px] font-display uppercase tracking-[0.3em] flex justify-center opacity-40 animate-fade-in-up" style="animation-delay: 0.2s">
-                {{ __('Advanced Artifact Evaluation Platform') }}
-            </div>
+            <!-- Shared Footer Component -->
+            <x-ui.footer />
+            
             @livewireScripts
         </div>
     </body>

@@ -183,7 +183,11 @@
                         <div class="flex items-center gap-8 pt-6 border-t border-white/[0.03]">
                              <div class="flex gap-2">
                                 @foreach(explode(',', $post->lens ?? 'Review') as $l)
-                                    <span @class(['px-4 py-1.5 rounded-xl text-[9px] font-black uppercase tracking-[0.2em] transition-all hover:scale-105 cursor-default', 'tag-lens-' . strtolower(trim($l))])>#{{ strtoupper(trim($l)) }}</span>
+                                    @php $lKey = strtolower(trim($l)); @endphp
+                                    <span 
+                                        class="px-4 py-1.5 rounded-xl text-[9px] font-black uppercase tracking-[0.2em] transition-all hover:scale-105 cursor-default border"
+                                        style="color: var(--lens-{{ $lKey }}); background-color: rgba(var(--lens-{{ $lKey }}-rgb), 0.1); border-color: rgba(var(--lens-{{ $lKey }}-rgb), 0.3); box-shadow: 0 0 15px rgba(var(--lens-{{ $lKey }}-rgb), 0.1);"
+                                    >#{{ strtoupper(trim($l)) }}</span>
                                 @endforeach
                                 <span class="px-4 py-1.5 rounded-xl bg-surface-container-highest text-[9px] font-black uppercase tracking-[0.2em] text-on-surface-variant/60 border border-white/[0.03] hover:border-secondary/30 transition-colors cursor-default">#{{ strtoupper($post->latestSnippet->language ?? 'PHP') }}</span>
                              </div>
