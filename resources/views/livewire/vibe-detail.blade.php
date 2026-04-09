@@ -42,12 +42,23 @@
                         {{ $post->description }}
                     </div>
                 </div>
-                <div class="flex gap-2 ml-6">
+                <div class="flex items-center gap-4 ml-6">
                     <select wire:model.live="selectedVersion" class="bg-surface-container border border-outline-variant/50 text-on-surface rounded-2xl text-xs font-bold px-4 py-2 hover:border-primary transition-all cursor-pointer shadow-sm">
                         @foreach($post->snippets as $s)
                             <option value="{{ $s->id }}">{{ __('Version') }} {{ $s->version_number }}</option>
                         @endforeach
                     </select>
+
+                    @can('delete', $post)
+                        <button 
+                            wire:click="deletePost" 
+                            wire:confirm="{{ __('Permanently disintegrate this artifact?') }}"
+                            class="p-2.5 rounded-xl border border-secondary/20 bg-secondary/5 text-secondary hover:bg-secondary hover:text-white transition-all shadow-sm group/del"
+                            title="{{ __('Delete Post') }}"
+                        >
+                            <svg class="w-4 h-4 group-hover/del:scale-110 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/></svg>
+                        </button>
+                    @endcan
                 </div>
             </div>
 

@@ -68,6 +68,17 @@ class VibeDetail extends Component
         $this->dispatch('vibe-action', type: 'down');
     }
 
+    public function deletePost(): void
+    {
+        $this->authorize('delete', $this->post);
+        
+        $this->post->delete();
+        
+        $this->dispatch('vibe-action', type: 'down');
+        session()->flash('success', __('Artifact disintegrated successfully.'));
+        $this->redirect(route('dashboard'));
+    }
+
     public function react(string $type, \App\Actions\Reactions\ToggleReactionAction $toggleReaction): void
     {
         if (!Auth::check()) {

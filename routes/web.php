@@ -7,6 +7,18 @@ Route::get('/', function () {
     return view('welcome');
 });
 
+Route::get('/dev/login', function () {
+    if (app()->environment('local')) {
+        $user = \App\Models\User::first();
+        if (!$user) {
+            $user = \App\Models\User::factory()->create();
+        }
+        auth()->login($user);
+        return redirect()->route('dashboard');
+    }
+    abort(403);
+});
+
 Route::get('lang/{locale}', function ($locale) {
     if (in_array($locale, ['en', 'fr'])) {
         session()->put('locale', $locale);

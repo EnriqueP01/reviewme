@@ -14,6 +14,19 @@
     - **Design** : Restauration du logo procédural ("R") et suppression des animations de transition globales (`fade-in-up`) jugées intrusives.
 - **Impact** : Prévention des doublons d'identité et retour à une esthétique plus sobre et fidèle à l'intention initiale.
 
+## 2026-04-09-31 : Refonte Hyper-Sensorielle & Télémétrie Artifacts (V5)
+- **Auteur** : Antigravity
+- **Statut** : ✅ Implémenté
+- **Contexte** : Besoin d'une expérience "Elite" pour la phase critique de saisie de code, avec une meilleure visibilité sur la qualité et les doublons.
+- **Décision** :
+    1. **Architecture HUD (Heads-Up Display)** : Intégration d'un tableau de bord de télémétrie par fragment (Volume LOC, Payload KB, Logic Density).
+    2. **Algorithme d'Intégrité MD5** : Détection automatique des doublons de contenu (Logic Clone) en plus des collisions de noms.
+    3. **Evolution du Schéma (V5)** : Introduction de la colonne `filename` dans la table `snippets` pour séparer l'identité technique du fichier de son contexte de curation.
+    4. **Sécurité & Maintenance** : Ajout d'une route `/dev/login` (local uniquement) et de la fonctionnalité de suppression d'artefact (`deletePost`) avec autorisation.
+    5. **UX de Réorganisation** : Support du tri manuel via boutons `Move Up / Down` en complément du drag-and-drop pour une précision absolue.
+- **Impact** : Transformation radicale de la curation en une expérience de type IDE moderne, éliminant les erreurs de duplication et offrant un contrôle total sur le cycle de vie des artefacts.
+
+
 ## 2026-04-08-12 : Optimisation Globale et Performance
 - **Auteur** : Antigravity
 - **Contexte** : Amélioration de la scalabilité et de la sécurité du projet.
