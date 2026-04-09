@@ -42,7 +42,7 @@ final class CreatePostAction
             foreach ($data['files'] as $index => $file) {
                 Snippet::create([
                     'post_id' => $post->id,
-                    'filename' => $file['name'],
+                    'filename' => $file['name'] ?? $file['filename'] ?? 'artifact_'.($index + 1),
                     'version_number' => 1,
                     'code_content' => e($file['content']),
                     'description' => $file['description'] ?? null,
