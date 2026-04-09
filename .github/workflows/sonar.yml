@@ -1,0 +1,57 @@
+name: SonarQube Analysis
+
+on:
+  push:
+    branches:
+      - main
+      - dev
+  pull_request:
+    types: [opened, synchronize, reopened]
+
+permissions:
+  contents: read
+
+jobs:
+  sonarqube:
+    name: SonarQube Scan
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0 # Important pour la pertinence de l'analyse Sonar
+
+      - name: Setup PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.3'
+          extensions: dom, curl, libxml, mbstring, zip, pcntl, pdo, sqlite, pdo_sqlite
+          coverage: pcov # Utilisation de pcov pour la rapidité de la couverture
+
+      - name: Install Composer dependencies
+        run: composer install --prefer-dist --no-interaction --no-progress
+
+      - name: Copy environment file
+        run: cp .env.example .env
+
+      - name: Generate app key
+        run: php artisan key:generate
+
+      - name: Run Tests with Coverage
+        run: php artisan test --coverage-clover=clover.xml --log-junit=junit.xml
+        env:
+          XDEBUG_MODE: coverage
+
+      - name: SonarQube Scan
+        uses: sonarsource/sonarqube-scan-action@master
+        env:
+          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+          SONAR_HOST_URL: ${{ secrets.SONAR_HOST_URL }} # Optionnel pour SonarCloud
+
+      # Facultatif : Échec si la Quality Gate n'est pas passée
+      # - name: SonarQube Quality Gate check
+      #   uses: sonarsource/sonarqube-quality-gate-action@master
+      #   timeout-minutes: 5
+      #   env:
+      #     SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
