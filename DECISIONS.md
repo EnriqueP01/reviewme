@@ -661,3 +661,16 @@ The initial "Monolith & The Lens" implementation was too spacious, creating layo
     4. **Précision du Popup** : Réduction de l'offset vertical du popup de sélection pour une proximité immédiate avec le texte séléctionné.
 - **Impact** : Processus de contribution fluide et informatif, renforçant la fiabilité perçue de l'outil de revue.
 
+
+## 2026-04-10-70 : Refonte de l'Authentification (Hub d'Identité & Accès Standard)
+- **Auteur** : Antigravity
+- **Statut** : ✅ Implémenté
+- **Contexte** : Nécessité de moderniser l'expérience d'entrée sur la plateforme. L'ancien slider global était trop minimaliste pour un écran large et ne valorisait pas assez l'authentification GitHub.
+- **Décision** :
+    1. **Architecture Bi-Colonne (6xl)** : Passage à un layout large. Gauche : Hub d'Identité (Social/GitHub). Droite : Accès Standard (Email).
+    2. **Identity Hub (Mock Profile)** : Ajout d'une carte de profil holographique décorative à gauche pour combler l'espace et illustrer le concept d'identité numérique sur ReviewMe.
+    3. **Slider Contextuel** : Ré-implémentation du slider Alpine.js uniquement dans la colonne de droite, permettant de switcher entre Connexion et Inscription de manière fluide.
+    4. **Correctifs Backend** : 
+        - Résolution des collisions SQLSTATE[23000] sur le `handle` lors des connexions GitHub via un système de suffixe numérique.
+        - Nettoyage des variables Reverb dans le `.env` pour supprimer les erreurs de driver broadcast.
+- **Impact** : Première impression "Wow" conforme au design Monolith, tunnel de conversion fluidifié et suppression des bugs d'onboarding majeurs.
