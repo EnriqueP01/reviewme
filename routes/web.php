@@ -50,6 +50,7 @@ Route::middleware('auth')->group(function () {
         if (! auth()->user()->handle) {
             auth()->user()->update(['handle' => 'user-'.auth()->id()]);
         }
+
         return redirect()->route('profile.show', auth()->user()->handle);
     })->name('profile');
 

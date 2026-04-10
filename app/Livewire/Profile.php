@@ -2,7 +2,10 @@
 
 namespace App\Livewire;
 
+use App\Models\FullReview;
+use App\Models\InlineSuggestion;
 use App\Models\Post;
+use App\Models\PostComment;
 use App\Models\User;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Cache;
@@ -70,26 +73,26 @@ class Profile extends Component
     {
         return Cache::remember("user_activity_heatmap_{$this->user->id}", 600, function () {
             $since = now()->subDays(365);
-            
+
             $posts = Post::where('user_id', $this->user->id)
                 ->where('created_at', '>=', $since)
                 ->selectRaw('DATE(created_at) as date, count(*) as count')
                 ->groupBy('date')
                 ->pluck('count', 'date')->toArray();
 
-            $reviews = \App\Models\FullReview::where('user_id', $this->user->id)
+            $reviews = FullReview::where('user_id', $this->user->id)
                 ->where('created_at', '>=', $since)
                 ->selectRaw('DATE(created_at) as date, count(*) as count')
                 ->groupBy('date')
                 ->pluck('count', 'date')->toArray();
 
-            $comments = \App\Models\PostComment::where('user_id', $this->user->id)
+            $comments = PostComment::where('user_id', $this->user->id)
                 ->where('created_at', '>=', $since)
                 ->selectRaw('DATE(created_at) as date, count(*) as count')
                 ->groupBy('date')
                 ->pluck('count', 'date')->toArray();
 
-            $suggestions = \App\Models\InlineSuggestion::where('user_id', $this->user->id)
+            $suggestions = InlineSuggestion::where('user_id', $this->user->id)
                 ->where('created_at', '>=', $since)
                 ->selectRaw('DATE(created_at) as date, count(*) as count')
                 ->groupBy('date')
@@ -111,6 +114,7 @@ class Profile extends Component
             return $merged;
         });
     }
+
     public function getRecentActivityProperty()
     {
         return $this->user->posts()

@@ -1,8 +1,10 @@
 <?php
 
+use App\Models\User;
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
+use Illuminate\Support\Str;
 
 return new class extends Migration
 {
@@ -12,16 +14,16 @@ return new class extends Migration
     public function up(): void
     {
         // Remplir les handles manquants
-        \App\Models\User::all()->each(function ($user) {
+        User::all()->each(function ($user) {
             if (empty($user->handle)) {
-                $baseHandle = \Illuminate\Support\Str::slug($user->name, '');
+                $baseHandle = Str::slug($user->name, '');
                 if (empty($baseHandle)) {
-                    $baseHandle = 'user' . $user->id;
+                    $baseHandle = 'user'.$user->id;
                 }
                 $handle = $baseHandle;
                 $counter = 1;
 
-                while (\App\Models\User::where('handle', $handle)->exists()) {
+                while (User::where('handle', $handle)->exists()) {
                     $handle = $baseHandle.$counter;
                     $counter++;
                 }

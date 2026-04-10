@@ -7,6 +7,16 @@
     *:focus {
         outline: none !important;
     }
+
+    input:focus, textarea:focus, select:focus {
+        border-color: var(--primary) !important;
+        box-shadow: 0 0 0 3px color-mix(in srgb, var(--primary) 25%, transparent) !important;
+        --tw-ring-color: var(--primary) !important;
+        --tw-ring-opacity: 0.5 !important;
+        --tw-ring-offset-shadow: 0 0 #0000 !important;
+        --tw-ring-shadow: 0 0 0 3px var(--tw-ring-color) !important;
+        outline: none !important;
+    }
 }
 
 @layer utilities {
