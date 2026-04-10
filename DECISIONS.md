@@ -878,3 +878,4 @@ The initial "Monolith & The Lens" implementation was too spacious, creating layo
     3. **Optimisation du Cache Heatmap** : Réduction de la durée du cache de 600s à 10s dans `Profile.php` pour un feedback visuel quasi instantané.
     4. **Correction UI (Vue Profil)** : Calcul du score net des publications (`Up - Down`) dans la liste des contenus du profil.
 - **Impact** : Plateforme vivante où chaque action est valorisée et visible immédiatement, renforçant l'engagement utilisateur.
+$decision

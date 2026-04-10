@@ -314,7 +314,7 @@ class PostDetail extends Component
 
             $this->post->delete();
             session()->flash('success', __('Publication supprimée du système.'));
-            $this->redirect(route('feed'));
+            $this->redirect(route('dashboard'));
         });
     }
 
