@@ -55,7 +55,7 @@ Route::middleware('auth')->group(function () {
     })->name('profile');
 
     Route::get('/publish', PublishWorkflow::class)->name('publish');
-    Route::get('/groups/{slug?}', GroupManager::class)->middleware('karma:group.create')->name('groups');
+    Route::get('/groups/{slug?}', GroupManager::class)->name('groups');
     Route::get('/posts/{postId}', PostDetail::class)->name('posts.detail');
     Route::get('/posts/{postId}/update', UpdatePost::class)->name('posts.update');
     Route::get('/settings', [ProfileController::class, 'edit'])->name('profile.edit');

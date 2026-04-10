@@ -69,7 +69,7 @@ class ToggleReactionActionTest extends TestCase
         $this->assertEquals(0, $author->fresh()->reputation_score);
     }
 
-    /** @test */
+    #[Test]
     public function it_switches_reaction_type_and_calculates_delta(): void
     {
         $voter = User::factory()->create();

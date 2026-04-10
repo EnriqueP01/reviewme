@@ -52,7 +52,7 @@ class UserProfileTest extends TestCase
         $this->assertEquals('New bio description', $user->bio);
     }
 
-    /** @test */
+    #[Test]
     public function handles_must_be_unique()
     {
         User::factory()->create(['handle' => 'taken']);
