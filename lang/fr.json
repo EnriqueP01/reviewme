@@ -517,5 +517,7 @@
     "Critical Action: Delete Post": "Action Critique : Supprimer le Post",
     "This action is irreversible. The source code, activity feed, and associated reviews will be permanently purged from the system.": "Cette action est irréversible. Le code source, le flux d'activité et les revues associées seront définitivement purgés du système.",
     "Purge Post": "Purger le Post",
-    "Leave Group": "Quitter le Groupe"
+    "Leave Group": "Quitter le Groupe",
+    "Posts": "Posts",
+    "Group Members": "Membres du groupe"
 }

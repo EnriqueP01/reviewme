@@ -161,7 +161,7 @@ final class GroupManager extends Component
     public function updatedLogo()
     {
         $this->validate([
-            'logo' => 'image|max:1024', // 1MB Max
+            'logo' => 'image|max:2048', // 2MB Max
         ]);
 
         if (! $this->selectedGroupId) {
