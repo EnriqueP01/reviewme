@@ -1,9 +1,13 @@
-## 2026-04-10-65 : Finalisation du Bouton Retour & Indicateur GitHub Profil
+## 2026-04-10-65 : Refonte Premium du Bouton Retour & Indicateur GitHub Profil
 - **Auteur** : Antigravity
 - **Statut** : ✅ Implémenté
-- **Contexte** : L'activité GitHub a été retirée du profil au profit d'un indicateur de statut discret. Un composant `x-ui.back-button` réutilisable a été déployé sur les pages Changelog, Status, Documentation, Legal et GroupManager.
-- **Décision** : Composant Blade `back-button` avec animation CSS cohérente avec le design existant. Navigation "retour" via `history.back()` côté JS avec son et micro-animation.
-- **Impact** : Navigation cohérente sur toutes les pages secondaires. Suppression de la dépendance à l'API GitHub pour l'affichage de l'activité.
+- **Contexte** : Amélioration de l'UX de navigation. L'activité GitHub a été retirée du profil. Intégration d'un bouton retour haute fidélité.
+- **Décision** : 
+    1. **Audio Procedural** : Implémentation d'un son de retour généré via Web Audio API (oscillateur sine 440->220Hz) pour un feedback tactile.
+    2. **Ripple Effect** : Animation d'expansion au point de clic calculée dynamiquement via Alpine.js.
+    3. **Design Monolith** : Glassmorphism, lueur hover et micro-translation de l'icône.
+    4. **Déploiement Extendu** : Ajout du bouton sur la page `update-post`.
+- **Impact** : Navigation plus immersive et organique. Correction des tests `PublishWorkflow` impactés par les manques de clés dans les structures de données.
 
 ## 2026-04-10-64 : Correction de Compatibilité SQLite dans GrantKarmaAction
 - **Auteur** : Antigravity
