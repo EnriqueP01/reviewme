@@ -1,3 +1,13 @@
+## 2026-04-10-70 : Durcissement de la CI/CD & Activation de la Quality Gate SonarQube (US32)
+- **Auteur** : Antigravity
+- **Statut** : ✅ Implémenté
+- **Contexte** : L'analyse statique SonarQube était configurée mais non contraignante (commentée dans la CI/CD), risquant l'accumulation de dette technique.
+- **Décision** :
+    1. **Strict Enforcement** : Activation de l'étape `SonarQube Quality Gate check` dans le workflow `.github/workflows/sonar.yml`. La suppression de `continue-on-error` garantit que les échecs de qualité bloquent désormais le déploiement.
+    2. **Formalisation Documentaire** : Création de `us/us32_sonarqube.md` pour ancrer les critères d'acceptation et les seuils entreprise au cœur du projet.
+    3. **Alignement PSR-12** : Exécution globale de `Laravel Pint` pour garantir un "clean slate" avant les prochaines analyses Sonar.
+- **Impact** : Sécurisation du flux de merge, traçabilité de l'évolution de la qualité et adoption d'un standard industriel de maintenance.
+
 ## 2026-04-10-69 : Standardisation des Profils Cliquables & Universalisme du Composant Avatar
 - **Auteur** : Antigravity
 - **Statut** : ✅ Implémenté
