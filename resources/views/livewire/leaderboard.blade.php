@@ -44,20 +44,20 @@
                                 </div>
                             </td>
                             <td class="px-8 py-6">
-                                <div class="flex items-center gap-4">
-                                    <div class="relative">
-                                        <img src="{{ $user->avatar ?? 'https://ui-avatars.com/api/?name='.urlencode($user->name) }}" class="w-12 h-12 rounded-xl object-cover border border-white/10 group-hover:border-primary/40 transition-colors">
+                                <a href="{{ route('profile.show', $user->handle) }}" wire:navigate class="flex items-center gap-4 group/expert">
+                                    <div class="relative shrink-0">
+                                        <x-ui.avatar :model="$user" size="lg" class="group-hover/expert:scale-105 group-hover/expert:border-primary/40 transition-all shadow-xl" />
                                         @if($index < 3)
-                                            <div class="absolute -top-2 -right-2 transform translate-x-1 -translate-y-1">
+                                            <div class="absolute -top-2 -right-2 transform translate-x-1 -translate-y-1 z-10">
                                                 <svg class="w-5 h-5 @if($index === 0) text-amber-400 @elseif($index === 1) text-slate-300 @else text-amber-700 @endif" fill="currentColor" viewBox="0 0 20 20"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/></svg>
                                             </div>
                                         @endif
                                     </div>
                                     <div>
-                                        <div class="font-bold text-on-surface group-hover:text-primary transition-colors">{{ $user->name }}</div>
+                                        <div class="font-bold text-on-surface group-hover/expert:text-primary transition-colors">{{ $user->name }}</div>
                                         <div class="text-[10px] font-mono text-on-surface-variant/40 uppercase tracking-widest">{{ $user->bio ?? __('Elite Contributor') }}</div>
                                     </div>
-                                </div>
+                                </a>
                             </td>
                             <td class="px-8 py-6">
                                 <div class="flex flex-col">

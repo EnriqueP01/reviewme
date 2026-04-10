@@ -10,9 +10,9 @@
             if (@js($this->isAuthor())) return;
             if (e.target.closest('button') || e.target.closest('a') || e.target.closest('textarea')) return;
             const selection = window.getSelection();
-            const text = selection.toString().trim();
+            const text = selection.toString();
             
-            if (text.length > 0) {
+            if (text.trim().length > 0) {
                 const range = selection.getRangeAt(0);
                 const rect = range.getBoundingClientRect();
                 const lineEl = selection.anchorNode.parentElement.closest('.group\\/line');
@@ -22,7 +22,7 @@
                     this.selectionPopup = {
                         show: true,
                         x: rect.left + (rect.width / 2),
-                        y: rect.top - 10,
+                        y: rect.top - 6,
                         text: text,
                         snippetId: lineEl.getAttribute('data-snippet'),
                         start: Math.min(parseInt(lineEl.getAttribute('data-line')), parseInt(endLineEl.getAttribute('data-line'))),
@@ -79,15 +79,11 @@
         <div class="bg-surface-container-low/40 backdrop-blur-2xl border border-white/5 rounded-[2.5rem] p-8 flex items-center justify-between gap-6 shadow-2xl relative overflow-hidden group/header">
             <div class="absolute inset-0 bg-gradient-to-r from-primary/5 to-transparent opacity-0 group-hover/header:opacity-100 transition-opacity pointer-events-none"></div>
             <div class="flex items-center gap-6 relative">
-                <div class="relative group/avatar">
-                    <div class="w-14 h-14 rounded-2xl bg-surface-container-highest border border-primary/10 flex items-center justify-center text-xl font-black font-display text-primary italic overflow-hidden transition-all duration-500 group-hover/avatar:scale-105 shadow-xl">
-                        <img src="{{ $post->user->avatar }}" class="w-full h-full object-cover">
-                    </div>
-                </div>
+                <x-ui.avatar :model="$post->user" size="lg" class="shadow-2xl border-primary/20" />
                 <div class="flex flex-col min-w-0">
                     <div class="flex items-center gap-3">
-                        <span class="text-lg font-black text-on-surface tracking-tight">{{ $post->user->name }}</span>
-                        <span class="text-xs font-mono font-bold text-primary tracking-wider font-black">@<span>{{ $post->user->name }}</span></span>
+                        <a href="{{ route('profile.show', $post->user->handle) }}" wire:navigate class="text-lg font-black text-on-surface tracking-tight hover:text-primary transition-colors">{{ $post->user->name }}</a>
+                        <span class="text-xs font-mono font-bold text-primary tracking-wider font-black opacity-40">@<span>{{ $post->user->handle }}</span></span>
                     </div>
                     <div class="flex items-center gap-3 mt-1 overflow-x-auto no-scrollbar">
                         @foreach(explode(',', $post->lens ?? 'Logic') as $l)
@@ -326,11 +322,11 @@
                                             <!-- Review Header -->
                                             <div class="flex items-start justify-between gap-8">
                                                 <div class="flex items-start gap-6">
-                                                    <img src="{{ $fr->user->avatar }}" class="w-16 h-16 rounded-2xl border-2 border-primary/20 shadow-2xl object-cover">
+                                                    <x-ui.avatar :model="$fr->user" size="xl" class="border-2 border-primary/20" />
                                                     <div class="space-y-4">
                                                         <div class="flex items-center gap-4">
-                                                            <h3 class="text-2xl font-black text-on-surface tracking-tighter">{{ $fr->user->name }}</h3>
-                                                            <span class="text-xs font-mono font-bold text-primary/60 tracking-wider">@<span>{{ $fr->user->name }}</span></span>
+                                                            <a href="{{ route('profile.show', $fr->user->handle) }}" wire:navigate class="text-2xl font-black text-on-surface tracking-tighter hover:text-primary transition-colors">{{ $fr->user->name }}</a>
+                                                            <span class="text-xs font-mono font-bold text-primary/60 tracking-wider">@<span>{{ $fr->user->handle }}</span></span>
                                                                 <span class="px-3 py-1 rounded-full bg-primary/10 text-primary text-[10px] font-black uppercase tracking-widest border border-primary/20">{{ __('Score') }}: {{ $fr->score }}/10</span>
                                                         </div>
                                                         <span class="text-[10px] font-black uppercase tracking-[0.3em] text-on-surface-variant/40 flex items-center gap-2">
@@ -442,11 +438,11 @@
                                                     @foreach($fr->comments as $comment)
                                                         <div wire:key="fr-comment-v8-{{ $comment->id }}" class="flex gap-6 relative group/frc">
                                                             <div class="absolute left-6 top-12 bottom-0 w-px bg-white/5 group-hover/frc:bg-primary/20 transition-all"></div>
-                                                            <img src="{{ $comment->user->avatar }}" class="w-12 h-12 rounded-2xl border border-white/10 shrink-0 relative z-10 bg-surface-container">
+                                                            <x-ui.avatar :model="$comment->user" size="md" />
                                                             <div class="space-y-2 flex-1">
                                                                 <div class="flex items-center gap-4">
-                                                                    <span class="text-sm font-black text-on-surface">{{ $comment->user->name }}</span>
-                                                                    <span class="text-[10px] font-mono font-bold text-primary/40">@<span>{{ $comment->user->name }}</span></span>
+                                                                    <a href="{{ route('profile.show', $comment->user->handle) }}" wire:navigate class="text-sm font-black text-on-surface hover:text-primary transition-colors">{{ $comment->user->name }}</a>
+                                                                    <span class="text-[10px] font-mono font-bold text-primary/40">@<span>{{ $comment->user->handle }}</span></span>
                                                                     <span class="text-[9px] font-black text-on-surface-variant/30 uppercase tracking-widest">{{ $comment->created_at->diffForHumans() }}</span>
                                                                 </div>
                                                                 <div class="text-sm text-on-surface/70 leading-relaxed">{{ $comment->content }}</div>
@@ -505,11 +501,11 @@
                         @foreach($post->comments->whereNull('full_review_id')->whereNull('parent_id') as $comment)
                             <div wire:key="global-comment-v7-{{ $comment->id }}" class="flex gap-6 group/comment relative" x-data="{ replying: false }">
                                 <div class="absolute left-6 top-12 bottom-0 w-px bg-gradient-to-b from-primary/20 via-primary/5 to-transparent"></div>
-                                <img src="{{ $comment->user->avatar }}" class="w-12 h-12 rounded-2xl border border-white/10 shadow-2xl object-cover shrink-0 relative z-10 bg-surface-container">
+                                <x-ui.avatar :model="$comment->user" size="md" />
                                 <div class="flex-1 space-y-3">
                                     <div class="flex items-center gap-4">
-                                        <span class="text-sm font-black text-on-surface leading-none">{{ $comment->user->name }}</span>
-                                        <span class="text-[10px] font-mono font-bold text-primary/40 tracking-wider">@<span>{{ $comment->user->name }}</span></span>
+                                        <a href="{{ route('profile.show', $comment->user->handle) }}" wire:navigate class="text-sm font-black text-on-surface leading-none hover:text-primary transition-colors">{{ $comment->user->name }}</a>
+                                        <span class="text-[10px] font-mono font-bold text-primary/40 tracking-wider">@<span>{{ $comment->user->handle }}</span></span>
                                         <span class="text-[9px] font-black text-on-surface-variant/30 uppercase tracking-[0.2em] flex items-center gap-2">
                                             <div class="w-1 h-1 rounded-full bg-primary/40"></div>
                                             {{ $comment->created_at->diffForHumans() }}
@@ -558,11 +554,11 @@
                                         <div class="space-y-8 pt-8 pl-6 border-l-2 border-white/5">
                                             @foreach($comment->replies as $reply)
                                                 <div wire:key="reply-v7-{{ $reply->id }}" class="flex gap-6 animate-in slide-in-from-top-2 duration-300">
-                                                    <img src="{{ $reply->user->avatar }}" class="w-10 h-10 rounded-xl object-cover shrink-0 border border-white/10 shadow-xl">
+                                                    <x-ui.avatar :model="$reply->user" size="sm" />
                                                     <div class="flex-1 space-y-2">
                                                         <div class="flex items-center gap-3">
-                                                            <span class="text-[11px] font-black text-on-surface">{{ $reply->user->name }}</span>
-                                                            <span class="text-[10px] font-mono font-bold text-primary/40">@<span>{{ $reply->user->name }}</span></span>
+                                                            <a href="{{ route('profile.show', $reply->user->handle) }}" wire:navigate class="text-[11px] font-black text-on-surface hover:text-primary transition-colors">{{ $reply->user->name }}</a>
+                                                            <span class="text-[10px] font-mono font-bold text-primary/40">@<span>{{ $reply->user->handle }}</span></span>
                                                             <span class="text-[9px] font-black text-on-surface-variant/20 uppercase tracking-widest flex items-center gap-2">
                                                                 <div class="w-1 h-1 rounded-full bg-primary/20"></div>
                                                                 {{ $reply->created_at->diffForHumans() }}
@@ -588,76 +584,89 @@
             </div>
         </div>
 
-        <!-- Quick Review Modal -->
-        @if($suggestingLine)
-            <template x-teleport="body">
-                <div class="fixed inset-0 z-[2100] flex items-center justify-center bg-black/80 backdrop-blur-2xl px-4 py-8 overflow-hidden" @click.self="$set('suggestingLine', null)">
-                    <div class="bg-surface-container-highest border border-white/10 w-full max-w-5xl rounded-[2.5rem] shadow-[0_0_120px_rgba(0,0,0,1)] flex flex-col max-h-[90vh] overflow-hidden relative animate-in zoom-in-95 duration-300">
-                        <!-- Header -->
-                        <div class="px-8 py-5 border-b border-white/5 flex items-center justify-between shrink-0 bg-white/[0.02]">
-                            <div class="flex items-center gap-4">
-                                <div class="w-10 h-10 rounded-xl bg-primary/10 flex items-center justify-center text-primary shadow-inner">
-                                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"></path></svg>
-                                </div>
-                                <div>
-                                    <h2 class="text-xs font-black uppercase tracking-widest text-on-surface">{{ __('Suggest Change') }}</h2>
-                                    <p class="text-[10px] font-black uppercase text-primary/60 tracking-widest mt-0.5">LINES {{ $suggestingLine }} — {{ $suggestingEndLine ?: $suggestingLine }}</p>
-                                </div>
-                            </div>
-                            <button wire:click="$set('suggestingLine', null)" class="p-2 rounded-xl hover:bg-white/5 text-on-surface-variant hover:text-white transition-all">
-                                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M6 18L18 6M6 6l12 12" stroke-width="2.5" stroke-linecap="round"/></svg>
-                            </button>
-                        </div>
+    @php
+        $activeSnippet = $post->snippets->find($activeSnippetId);
+        $snippetLang = $activeSnippet ? $activeSnippet->language : 'php';
+    @endphp
 
-                        <!-- Body -->
-                        <div class="flex-1 overflow-y-auto p-8 custom-scrollbar space-y-8">
-                            <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 items-stretch min-h-[400px]">
-                                <!-- Outdated Block -->
-                                <div class="flex flex-col space-y-4">
-                                    <div class="flex items-center gap-3 px-1">
-                                        <div class="w-2 h-2 rounded-full bg-red-500 shadow-[0_0_15px_rgba(239,68,68,0.5)]"></div>
-                                        <span class="text-[9px] font-black uppercase tracking-widest text-on-surface-variant/60">{{ __('Original Code') }}</span>
-                                    </div>
-                                    <div class="flex-1 rounded-2xl border border-white/5 overflow-hidden shadow-inner bg-black/20">
-                                        <x-ui.syntax-highlighter :code="$originalContent" lang="php" class="text-[12px] h-full" />
-                                    </div>
-                                </div>
-                                
-                                <!-- Suggested change -->
-                                <div class="flex flex-col space-y-4">
-                                    <div class="flex items-center gap-3 px-1">
-                                        <div class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse shadow-[0_0_15px_rgba(16,185,129,0.5)]"></div>
-                                        <span class="text-[9px] font-black uppercase tracking-widest text-emerald-400">{{ __('Suggested Change') }}</span>
-                                    </div>
-                                    <div class="flex-1 flex flex-col bg-[#0d0e12] rounded-2xl border-2 border-emerald-500/20 focus-within:border-emerald-500/50 transition-all shadow-2xl relative overflow-hidden group/patch">
-                                        <textarea wire:model.live="suggestedContent" 
-                                                  class="flex-1 bg-transparent p-6 font-mono text-[12px] text-emerald-400 outline-none resize-none custom-scrollbar leading-relaxed selection:bg-emerald-500/30 font-black h-full"
-                                                  spellcheck="false"
-                                                  rows="{{ max(5, count(explode('\n', $suggestedContent))) }}"></textarea>
-                                    </div>
-                                </div>
+    <!-- Quick Review Modal -->
+    @if($suggestingLine)
+        <template x-teleport="body">
+            <div class="fixed inset-0 z-[2100] flex items-center justify-center bg-black/80 backdrop-blur-2xl px-4 py-8 overflow-hidden" @click.self="$set('suggestingLine', null)">
+                <div class="bg-surface-container-highest border border-white/10 w-full max-w-5xl rounded-[2.5rem] shadow-[0_0_120px_rgba(0,0,0,1)] flex flex-col max-h-[90vh] overflow-hidden relative animate-in zoom-in-95 duration-300">
+                    <!-- Header -->
+                    <div class="px-8 py-5 border-b border-white/5 flex items-center justify-between shrink-0 bg-white/[0.02]">
+                        <div class="flex items-center gap-4">
+                            <div class="w-10 h-10 rounded-xl bg-primary/10 flex items-center justify-center text-primary shadow-inner">
+                                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"></path></svg>
                             </div>
-
-                            <!-- Rationale -->
-                            <div class="space-y-3">
-                                <label class="px-1 text-[9px] font-black uppercase tracking-[0.4em] text-on-surface-variant/40">{{ __('Technical Rationale & Benchmarks') }}</label>
-                                <textarea wire:model="suggestionDescription" 
-                                          wire:key="suggestion-desc-{{ $post->id }}"
-                                          placeholder="{{ __('Example: \'This refactoring targets the memory leaks in the stream handler. By ensuring the file pointers are closed in a Finally block, we prevent resource exhaustion under heavy load.\'') }}" 
-                                          class="w-full bg-black/20 border border-white/5 rounded-2xl p-6 text-sm text-on-surface min-h-[140px] outline-none focus:border-primary/20 transition-all shadow-inner italic font-medium"></textarea>
+                            <div>
+                                <h2 class="text-xs font-black uppercase tracking-widest text-on-surface">{{ __('Suggest Change') }}</h2>
+                                <p class="text-[10px] font-black uppercase text-primary/60 tracking-widest mt-0.5">
+                                    {{ $activeSnippet?->filename ?: 'File' }} — {{ __('LINES') }} {{ $suggestingLine }} : {{ $suggestingEndLine ?: $suggestingLine }}
+                                </p>
                             </div>
                         </div>
+                        <button wire:click="$set('suggestingLine', null)" class="p-2 rounded-xl hover:bg-white/5 text-on-surface-variant hover:text-white transition-all">
+                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M6 18L18 6M6 6l12 12" stroke-width="2.5" stroke-linecap="round"/></svg>
+                        </button>
+                    </div>
 
-                        <!-- Footer -->
-                        <div class="px-8 py-5 border-t border-white/5 flex justify-end items-center gap-8 shrink-0 bg-white/[0.02]">
-                            <button wire:click="$set('suggestingLine', null)" class="text-[10px] font-black uppercase text-on-surface-variant hover:text-white tracking-widest transition-colors">{{ __('Cancel') }}</button>
-                            <x-ui.button wire:click="saveInlineSuggestion" variant="primary" class="rounded-2xl px-12 py-5 shadow-[0_0_40px_rgba(16,185,129,0.2)] text-[10px] font-black uppercase tracking-widest hover:scale-105 active:scale-95 transition-all">
-                                {{ __('Submit Suggestion') }}
-                            </x-ui.button>
+                    <!-- Body -->
+                    <div class="flex-1 overflow-y-auto p-8 custom-scrollbar space-y-8">
+                        <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 items-stretch min-h-[300px]">
+                            <!-- Original Block -->
+                            <div class="flex flex-col space-y-4">
+                                <div class="flex items-center gap-3 px-1">
+                                    <div class="w-2 h-2 rounded-full bg-red-500 shadow-[0_0_15px_rgba(239,68,68,0.5)]"></div>
+                                    <span class="text-[9px] font-black uppercase tracking-widest text-on-surface-variant/60">{{ __('Original Code') }}</span>
+                                </div>
+                                <div class="flex-1 rounded-2xl border border-white/5 overflow-hidden shadow-inner bg-black/20">
+                                    <x-ui.syntax-highlighter :code="$originalContent" :lang="$snippetLang" :startLine="$suggestingLine" class="text-[12px] h-full" />
+                                </div>
+                            </div>
+                            
+                            <!-- Suggested change -->
+                            <div class="flex flex-col space-y-4">
+                                <div class="flex items-center gap-3 px-1">
+                                    <div class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse shadow-[0_0_15px_rgba(16,185,129,0.5)]"></div>
+                                    <span class="text-[9px] font-black uppercase tracking-widest text-emerald-400">{{ __('Suggested Change') }}</span>
+                                </div>
+                                <div class="flex-1 flex bg-[#0d0e12] rounded-2xl border-2 border-emerald-500/20 focus-within:border-emerald-500/50 transition-all shadow-2xl relative overflow-hidden group/patch">
+                                    <!-- Pseudo Gutter -->
+                                    <div class="w-12 bg-emerald-500/5 border-r border-emerald-500/10 flex flex-col pt-6 items-center select-none shrink-0">
+                                        <span class="text-[10px] font-black text-emerald-500/30">+</span>
+                                    </div>
+                                    <textarea wire:model="suggestedContent" 
+                                              class="flex-1 bg-transparent p-6 font-mono text-[12px] text-emerald-400 outline-none resize-none custom-scrollbar leading-relaxed selection:bg-emerald-500/30 font-medium h-full"
+                                              spellcheck="false"></textarea>
+                                </div>
+                                @error('suggestedContent') <span class="text-[10px] text-red-400 font-bold uppercase ml-2 tracking-widest italic">{{ $message }}</span> @enderror
+                            </div>
+                        </div>
+
+                        <!-- Rationale -->
+                        <div class="space-y-3">
+                            <label class="px-1 text-[9px] font-black uppercase tracking-[0.4em] text-on-surface-variant/40">{{ __('Technical Rationale & Benchmarks') }}</label>
+                            <textarea wire:model="suggestionDescription" 
+                                      wire:key="suggestion-desc-{{ $post->id }}"
+                                      placeholder="{{ __('Example: \'This refactoring targets the memory leaks in the stream handler. By ensuring the file pointers are closed in a Finally block, we prevent resource exhaustion under heavy load.\'') }}" 
+                                      class="w-full bg-black/20 border border-white/5 rounded-2xl p-6 text-sm text-on-surface min-h-[120px] outline-none focus:border-primary/20 transition-all shadow-inner italic font-medium @error('suggestionDescription') border-red-500/50 @enderror"></textarea>
+                            @error('suggestionDescription') <span class="text-[10px] text-red-400 font-bold uppercase ml-2 tracking-widest italic">{{ $message }}</span> @enderror
                         </div>
                     </div>
+
+                    <!-- Footer -->
+                    <div class="px-8 py-5 border-t border-white/5 flex justify-end items-center gap-8 shrink-0 bg-white/[0.02]">
+                        <button wire:click="$set('suggestingLine', null)" class="text-[10px] font-black uppercase text-on-surface-variant hover:text-white tracking-widest transition-colors">{{ __('Cancel') }}</button>
+                        <x-ui.button wire:click="saveInlineSuggestion" variant="primary" class="rounded-2xl px-12 py-5 shadow-[0_0_40px_rgba(16,185,129,0.2)] text-[10px] font-black uppercase tracking-widest hover:scale-105 active:scale-95 transition-all">
+                            <svg wire:loading wire:target="saveInlineSuggestion" class="animate-spin -ml-1 mr-3 h-4 w-4 text-white" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path></svg>
+                            {{ __('Submit Suggestion') }}
+                        </x-ui.button>
+                    </div>
                 </div>
-            </template>
-        @endif
+            </div>
+        </template>
+    @endif
     </div>
 </div>

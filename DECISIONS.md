@@ -1,3 +1,13 @@
+## 2026-04-10-69 : Standardisation des Profils Cliquables & Universalisme du Composant Avatar
+- **Auteur** : Antigravity
+- **Statut** : ✅ Implémenté
+- **Contexte** : Manque de fluidité dans la navigation sociale. Plusieurs avatars et noms d'utilisateurs à travers l'application (Leaderboard, Tchat, Feed) étaient purement décoratifs et non interactifs.
+- **Décision** :
+    1. **Universalisme de l'Avatar** : Refonte du composant `x-ui.avatar` pour intégrer nativement la logique de lien vers les profils publics (Utilisateurs/Groupes) via `wire:navigate`. Ajout d'une propriété `link` (true par défaut) pour contrôler l'interactivité.
+    2. **Uniformisation de la Navigation sociale** : Remplacement systématique des balises `<img>` brutes par le composant `x-ui.avatar` dans les sections critiques : Leaderboard, Discussion de Groupe (Tchat), Page de Détail (Commentaires, Revues).
+    3. **Micro-Interactions Premium** : Application d'un effet de survol `scale-105` et d'une lueur orbitale sur tous les points d'entrée vers un profil pour renforcer l'aspect dynamique et interactif de la plateforme.
+- **Impact** : Expérience utilisateur plus organique, navigation simplifiée entre contributeurs et renforcement de la dimension communautaire de ReviewMe.
+
 ## 2026-04-10-65 : Refonte Premium du Bouton Retour & Indicateur GitHub Profil
 - **Auteur** : Antigravity
 - **Statut** : ✅ Implémenté
@@ -610,3 +620,34 @@ The initial "Monolith & The Lens" implementation was too spacious, creating layo
     2. **Algorithme de Fusion** : Mise en place d'une logique de fusion de dates où chaque action compte pour `+1` dans la case journalière. Utilisation d'un cache de 600 secondes pour optimiser le rendu sur 365 jours.
     3. **UX & i18n** : Mise à jour des libellés ("Activity" -> "ReviewMe Activity") et des tooltips pour refléter l'ensemble des contributions. Centralisation des traductions dans `fr.json` et `en.json`.
 - **Impact** : Renforcement du sentiment d'appartenance à ReviewMe et valorisation de tous les types d'expertise (curation, revue et conseil).
+
+## 2026-04-10-66 : Amélioration UX/UI du Search Input (Hover)
+- **Auteur** : Antigravity
+- **Statut** : ✅ Implémenté
+- **Contexte** : Le composant de recherche (`search-input`) présentait un rectangle inesthétique au survol et au focus, causé par le style natif ou le plugin Tailwind Forms.
+- **Décision** :
+    1. **Refonte du Wrapper** : Ajout d'états dynamiques `hover:border-primary/30`, `hover:bg-[#1a1b26]/50`, et d'une micro-translation verticale (`-translate-y-0.5`) sur le conteneur principal.
+    2. **Neutralisation de l'Input Interne** : Forçage explicite (`!important`) de la suppression des bordures, shadows et de l'outline sur l'input natif pour empêcher la rupture visuelle des angles arrondis (`rounded-[1.25rem]`).
+- **Impact** : Expérience fluide dans le Feed et les groupes, avec un composant de recherche totalement respectueux de l'esthétique "Glass/Monolith".
+
+## 2026-04-10-67 : Rénovation de l'Affichage Quick Review (Style GitHub Diff)
+- **Auteur** : Antigravity
+- **Statut** : ✅ Implémenté
+- **Contexte** : L'affichage des suggestions de code ("Quick Review") buggait visuellement : l'indentation sautait, les lignes disparaissaient (collapse) et la disposition horizontale des conteneurs brisait la structure.
+- **Décision** :
+    1. **Architecture "Stack" (Flex-col)** : Remplacement de la structure flexible par `flex-col` sur la ligne parente, garantissant que la suggestion (`+`) s'affiche toujours parfaitement sous la ligne originale (`-`).
+    2. **Conservation de la Coloration** : La ligne supprimée garde ses couleurs syntaxiques d'origine, seul le background passe au rouge (`bg-red-500/[0.15]`), mimant le standard GitHub. La ligne ajoutée a un background vert (`bg-emerald-500/[0.15]`).
+    3. **Toggle Simplifié** : L'expérience utilisateur a été réduite à un simple toggle (clic sur l'avatar) pour afficher ou masquer la refactorisation (suppression des modes obsolètes "edit/original/diff").
+- **Impact** : Lecture et révision de code sans faille géométrique, familière pour les développeurs, sans bug d'alignement sur les numéros de ligne.
+
+## 2026-04-10-68 : Stabilisation Mécanique et visuelle des Quick Reviews
+- **Auteur** : Antigravity
+- **Statut** : ✅ Implémenté
+- **Contexte** : L'enregistrement des Quick Reviews échouait silencieusement (erreurs de validation non affichées) et l'interface du modal manquait de cohérence technique (numéros de ligne erronés, fallback de langage).
+- **Décision** :
+    1. **Feedback de Validation** : Intégration des directives `@error` directement sous les champs `Rationale` et `Suggested Change` pour que l'utilisateur comprenne pourquoi l'action s'arrête.
+    2. **Gouttière de Ligne Dynamique** : Mise à jour du composant `syntax-highlighter` pour accepter un `startLine`, permettant d'afficher les vrais numéros de ligne du fichier dans le bloc "Original Code" du modal.
+    3. **Cohérence Visuelle du Patch** : Ajout d'une gouttière décorative (`+`) sur le `textarea` de suggestion pour s'aligner esthétiquement sur les standards d'IDE et de forge logicielle.
+    4. **Précision du Popup** : Réduction de l'offset vertical du popup de sélection pour une proximité immédiate avec le texte séléctionné.
+- **Impact** : Processus de contribution fluide et informatif, renforçant la fiabilité perçue de l'outil de revue.
+

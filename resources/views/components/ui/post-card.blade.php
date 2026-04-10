@@ -84,10 +84,10 @@
                     </a>
                 </div>
                 
-                <div class="opacity-0 group-hover:opacity-100 transition-all duration-300 flex items-center gap-4">
-                    <x-ui.button variant="ghost" size="sm" class="!bg-primary/5 border-primary/10 hover:!bg-primary/20 hover:!text-primary !rounded-xl !relative group/inspect-btn" href="{{ route('posts.detail', $post->id) }}" static="true">
-                        <svg class="w-4 h-4 pointer-events-none" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" /><path stroke-linecap="round" stroke-linejoin="round" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" /></svg>
-                        <span class="pointer-events-none">{{ __('View Post') }}</span>
+                <div class="opacity-0 group-hover:opacity-100 transition-all duration-500 transform translate-x-4 group-hover:translate-x-0 flex items-center gap-4">
+                    <x-ui.button variant="primary" size="sm" class="shadow-xl !px-6 !py-3 !rounded-xl" href="{{ route('posts.detail', $post->id) }}">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" /><path stroke-linecap="round" stroke-linejoin="round" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" /></svg>
+                        <span>{{ __('View Post') }}</span>
                     </x-ui.button>
                 </div>
             </div>

@@ -118,7 +118,10 @@
                                         'text-on-surface' => $selectedGroupId == $group->id,
                                         'text-on-surface/60 group-hover/btn:text-on-surface' => $selectedGroupId != $group->id
                                     ])>{{ $group->name }}</div>
-                                    <div class="text-[9px] font-mono font-bold uppercase tracking-widest text-on-surface-variant/40 mt-0.5">{{ __('Owner:') }} {{ strtoupper($group->owner->name) }}</div>
+                                    <div class="text-[9px] font-mono font-bold uppercase tracking-widest text-on-surface-variant/40 mt-0.5">
+                                        {{ __('Owner:') }} 
+                                        <a href="{{ route('profile.show', $group->owner->handle) }}" wire:navigate class="text-primary hover:text-white transition-colors">{{ strtoupper($group->owner->name) }}</a>
+                                    </div>
                                 </div>
                             </div>
                         </button>
@@ -257,7 +260,7 @@
                                                 </div>
 
                                                 <div class="flex flex-col">
-                                                    <span class="text-xs font-black text-on-surface tracking-tight">{{ $member->name }}</span>
+                                                    <a href="{{ route('profile.show', $member->handle) }}" wire:navigate class="text-xs font-black text-on-surface tracking-tight hover:text-primary transition-colors">{{ $member->name }}</a>
                                                     <span class="text-[9px] font-mono font-bold text-primary/40 uppercase tracking-tighter">{{ $selectedGroup->owner_id === $member->id ? 'OWNER' : 'MEMBER' }}</span>
                                                 </div>
                                             </div>

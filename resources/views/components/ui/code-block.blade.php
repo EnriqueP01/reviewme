@@ -284,26 +284,27 @@
                     class="p-6"
                 >
                     <div class="font-mono text-[12px] leading-6 relative z-10 space-y-0">
-                        <template x-for="(line, lIndex) in snippet.lines" :key="lIndex">
-                            <div class="group/linerow relative flex items-start">
-                                <!-- LINE CONTENT -->
-                                <div class="flex-1 flex items-start group/line hover:bg-white/[0.03] -mx-6 px-6 transition-all duration-300 selection:bg-primary/40 selection:text-on-primary relative"
+<template x-for="(line, lIndex) in snippet.lines" :key="lIndex">
+                            <div class="group/linerow relative flex flex-col w-full">
+                                <!-- ORIGINAL LINE -->
+                                <div class="flex items-start group/line transition-all duration-300 selection:bg-primary/40 selection:text-on-primary relative w-full -mx-6 px-6"
                                      :data-snippet="snippet.id"
                                      :data-line="lIndex + 1"
                                      :class="{
-                                         'bg-primary/5': activeSuggestion && (lIndex + 1) >= activeSuggestion.line && (lIndex + 1) <= activeSuggestion.end_line && suggestionMode === 'edit',
-                                         'opacity-30': activeSuggestion && (lIndex + 1) >= activeSuggestion.line && (lIndex + 1) <= activeSuggestion.end_line && suggestionMode === 'diff'
+                                         'bg-red-500/[0.15]': activeSuggestion && (lIndex + 1) >= activeSuggestion.line && (lIndex + 1) <= activeSuggestion.end_line,
+                                         'hover:bg-white/[0.03]': !(activeSuggestion && (lIndex + 1) >= activeSuggestion.line && (lIndex + 1) <= activeSuggestion.end_line)
                                      }">
                                     
                                     <!-- Quick Review Anchor (Photo) Integrated -->
                                     <template x-for="sug in suggestions.filter(s => s.snippet_id === snippet.id && s.line === (lIndex + 1))" :key="sug.id">
-                                        <div class="absolute left-0 top-1/2 -translate-y-1/2 z-50 flex items-center group/picaction h-full">
-                                            <div class="relative">
-                                                <button @click="if(activeSuggestion && activeSuggestion.id === sug.id) { suggestionMode = (suggestionMode === 'diff' ? 'edit' : (suggestionMode === 'edit' ? 'original' : 'diff')) } else { activeSuggestion = sug; suggestionMode = 'diff' }"
-                                                        class="w-8 h-8 rounded-lg overflow-hidden border-2 border-[#1a1b26] shadow-xl hover:scale-110 active:scale-95 transition-all outline-none"
-                                                        :class="activeSuggestion && activeSuggestion.id === sug.id ? 'ring-2 ring-primary ring-offset-2 ring-offset-[#0d0e14] border-white' : 'border-white/10'">
+                                        <div class="absolute left-6 top-1/2 -translate-y-1/2 z-50 flex items-center group/picaction h-full">
+                                            <div class="relative cursor-pointer" 
+                                                 @click="activeSuggestion = (activeSuggestion && activeSuggestion.id === sug.id) ? null : sug"
+                                            >
+                                                <div class="w-8 h-8 rounded-lg overflow-hidden border-2 border-[#1a1b26] shadow-xl hover:scale-110 active:scale-95 transition-all outline-none"
+                                                     :class="activeSuggestion && activeSuggestion.id === sug.id ? 'ring-2 ring-primary ring-offset-2 ring-offset-[#0d0e14] border-white' : 'border-white/10'">
                                                     <img :src="sug.user.avatar" class="w-full h-full object-cover">
-                                                </button>
+                                                </div>
                                                 <!-- Status Indicator -->
                                                 <div class="absolute -bottom-1 -right-1 w-3 h-3 rounded-full border-2 border-[#1a1b26] shadow-md"
                                                      :class="activeSuggestion && activeSuggestion.id === sug.id ? 'bg-primary' : 'bg-on-surface-variant/40'"></div>
@@ -320,48 +321,35 @@
                                                 </div>
                                                 <p class="text-[12px] text-on-surface/80 font-medium leading-relaxed" x-text="sug.description"></p>
                                                 <div class="mt-3 pt-3 border-t border-white/5 flex items-center justify-between">
-                                                    <span class="text-[9px] font-black uppercase text-on-surface-variant/40">{{ __('Click to toggle Mode') }}</span>
-                                                    <div class="flex gap-1.5">
-                                                        <div class="w-1.5 h-1.5 rounded-full" :class="suggestionMode === 'original' ? 'bg-primary' : 'bg-white/10'"></div>
-                                                        <div class="w-1.5 h-1.5 rounded-full" :class="suggestionMode === 'diff' ? 'bg-primary' : 'bg-white/10'"></div>
-                                                        <div class="w-1.5 h-1.5 rounded-full" :class="suggestionMode === 'edit' ? 'bg-primary' : 'bg-white/10'"></div>
-                                                    </div>
+                                                    <span class="text-[9px] font-black uppercase text-on-surface-variant/40">{{ __('Click to toggle diff') }}</span>
                                                 </div>
                                             </div>
                                         </div>
                                     </template>
                                     
                                     <!-- Gutter -->
-                                    <div class="w-14 shrink-0 text-right pr-6 select-none border-r border-white/5 font-mono font-bold text-[10px] flex items-center justify-end h-7"
+                                    <div class="w-14 shrink-0 text-right pr-6 select-none border-r border-white/5 font-mono font-bold text-[10px] flex items-center justify-end min-h-[1.75rem]"
                                          :class="{
-                                            'text-red-400/50 bg-red-400/5': activeSuggestion && suggestionMode === 'diff' && (lIndex + 1) >= activeSuggestion.line && (lIndex + 1) <= activeSuggestion.end_line,
-                                            'text-emerald-400/50 bg-emerald-400/5': activeSuggestion && suggestionMode === 'edit' && (lIndex + 1) >= activeSuggestion.line && (lIndex + 1) <= activeSuggestion.end_line,
-                                            'text-on-surface-variant/10 group-hover/line:text-primary transition-colors': !activeSuggestion || (lIndex + 1) < activeSuggestion.line || (lIndex + 1) > activeSuggestion.end_line
+                                            'text-red-400 bg-red-400/10': activeSuggestion && (lIndex + 1) >= activeSuggestion.line && (lIndex + 1) <= activeSuggestion.end_line,
+                                            'text-on-surface-variant/20 group-hover/line:text-primary transition-colors': !(activeSuggestion && (lIndex + 1) >= activeSuggestion.line && (lIndex + 1) <= activeSuggestion.end_line)
                                          }">
-                                        <span x-text="lIndex + 1" x-show="!(activeSuggestion && suggestionMode === 'diff' && (lIndex + 1) >= activeSuggestion.line && (lIndex + 1) <= activeSuggestion.end_line)"></span>
-                                        <span x-show="activeSuggestion && suggestionMode === 'diff' && (lIndex + 1) >= activeSuggestion.line && (lIndex + 1) <= activeSuggestion.end_line" class="font-black text-xs">-</span>
-                                        <span x-show="activeSuggestion && suggestionMode === 'edit' && (lIndex + 1) >= activeSuggestion.line && (lIndex + 1) <= activeSuggestion.end_line" class="font-black text-xs">+</span>
+                                        <span x-text="lIndex + 1" x-show="!(activeSuggestion && (lIndex + 1) >= activeSuggestion.line && (lIndex + 1) <= activeSuggestion.end_line)"></span>
+                                        <span x-show="activeSuggestion && (lIndex + 1) >= activeSuggestion.line && (lIndex + 1) <= activeSuggestion.end_line" class="font-black text-xs">-</span>
                                     </div>
                                     
                                     <!-- Actual Code Display -->
                                     <div class="flex-1 whitespace-pre-wrap break-all text-on-surface/90 font-mono text-[11px] leading-relaxed py-1 px-6 transition-all"
-                                         :class="{
-                                            'text-red-200/70 bg-red-500/[0.05]': activeSuggestion && suggestionMode === 'diff' && (lIndex + 1) >= activeSuggestion.line && (lIndex + 1) <= activeSuggestion.end_line,
-                                            'text-emerald-200/90 font-bold bg-emerald-500/[0.05]': activeSuggestion && suggestionMode === 'edit' && (lIndex + 1) >= activeSuggestion.line && (lIndex + 1) <= activeSuggestion.end_line
-                                         }"
-                                         x-html="activeSuggestion && (lIndex + 1) >= activeSuggestion.line && (lIndex + 1) <= activeSuggestion.end_line && suggestionMode === 'edit'
-                                                 ? (lIndex + 1 === activeSuggestion.line ? activeSuggestion.suggested : '') 
-                                                 : (line.trim() === '' ? '&nbsp;' : line)">
+                                         x-html="(line.trim() === '' ? '&nbsp;' : line)">
                                     </div>
                                 </div>
 
                                 <!-- Inline Suggestion Block (The '+' part for DIFF mode) -->
-                                <template x-if="activeSuggestion && suggestionMode === 'diff' && lIndex + 1 === activeSuggestion.end_line && snippet.id === activeSuggestion.snippet_id">
-                                    <div class="bg-emerald-500/[0.08] flex items-start animate-in slide-in-from-top-2 duration-300">
-                                        <div class="w-14 shrink-0 text-right pr-6 select-none border-r border-white/5 font-mono font-bold text-[10px] flex items-center justify-end h-auto min-h-[1.75rem] text-emerald-400/50 bg-emerald-400/5">
+                                <template x-if="activeSuggestion && lIndex + 1 === activeSuggestion.end_line && snippet.id === activeSuggestion.snippet_id">
+                                    <div class="w-full flex items-start animate-in slide-in-from-top-2 duration-300 bg-emerald-500/[0.15] -mx-6 px-6">
+                                        <div class="w-14 shrink-0 text-right pr-6 select-none border-r border-white/5 font-mono font-bold text-[10px] flex items-center justify-end min-h-[1.75rem] text-emerald-400 bg-emerald-400/10">
                                             <span class="font-black text-xs">+</span>
                                         </div>
-                                        <div class="flex-1 whitespace-pre-wrap break-all text-emerald-400 font-mono text-[11px] leading-relaxed py-1 px-6 font-black bg-emerald-500/[0.12]">
+                                        <div class="flex-1 whitespace-pre-wrap break-all text-on-surface/90 font-mono text-[11px] leading-relaxed py-1 px-6">
                                             <div x-html="activeSuggestion.suggested"></div>
                                         </div>
                                     </div>

@@ -1,7 +1,8 @@
 @props([
     'model',
     'size' => 'md',
-    'class' => ''
+    'class' => '',
+    'link' => true
 ])
 
 @php
@@ -10,18 +11,19 @@
 
     $imagePath = null;
     $name = $model->name ?? 'User';
+    $href = null;
     
     if ($isUser) {
         $imagePath = $model->profile_photo_path;
-        // Check if there's an 'avatar' field which might contain an OAuth URL
+        $href = route('profile.show', $model->handle);
         if (!$imagePath && !empty($model->avatar)) {
-            // Some systems store the URL in 'avatar' field
             if (filter_var($model->avatar, FILTER_VALIDATE_URL)) {
                 $imagePath = $model->avatar;
             }
         }
     } elseif ($isGroup) {
         $imagePath = $model->logo_path;
+        $href = route('groups.show', $model->slug);
     }
 
     $initials = strtoupper(substr($name, 0, 1));
@@ -45,16 +47,23 @@
             $hasImage = true;
             $imageUrl = $imagePath;
         } else {
-            // Check if file exists locally
             if (\Illuminate\Support\Facades\Storage::disk('public')->exists($imagePath)) {
                 $hasImage = true;
                 $imageUrl = asset('storage/' . $imagePath);
             }
         }
     }
+
+    $tag = ($link && $href) ? 'a' : 'div';
 @endphp
 
-<div {{ $attributes->merge(['class' => "relative flex-shrink-0 $sizeClass rounded-xl border border-white/10 shadow-lg overflow-hidden $class"]) }}>
+<{{ $tag }} 
+    @if($link && $href) 
+        href="{{ $href }}" 
+        wire:navigate 
+    @endif
+    {{ $attributes->merge(['class' => "relative flex-shrink-0 $sizeClass rounded-xl border border-white/10 shadow-lg overflow-hidden $class " . (($link && $href) ? 'hover:scale-105 hover:border-primary/50 transition-all duration-300 cursor-pointer' : '')]) }}
+>
     @if($hasImage)
         <img src="{{ $imageUrl }}" alt="{{ $name }}" class="w-full h-full object-cover">
     @else
@@ -67,4 +76,4 @@
     @if($isUser)
         <div class="absolute -bottom-1 -right-1 w-3 h-3 bg-primary border-2 border-[#0d0e12] rounded-full shadow-lg"></div>
     @endif
-</div>
+</{{ $tag }}>
