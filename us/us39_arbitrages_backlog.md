@@ -27,10 +27,10 @@ AFIN DE prouver que le backlog n'est pas une liste arbitraire mais un outil de p
 
 ## 2. Matrice des Compromis (Compromise Matrix)
 
-Pour tenir les dates de livraison, la stratégie de compromis suivante a été appliquée :
+Pour tenir les dates de livraison tout en maximisant la valeur, la stratégie de compromis suivante a été appliquée :
 
-1.  **Délai vs Périmètre** : Réduction drastique du périmètre (retrait de l'IA) pour garantir une livraison à date stable (Time-boxing).
-2.  **Qualité vs Ergonomie** : Priorité au moteur de revue (Qualité technique) sur les fioritures visuelles inutiles.
+1.  **Délai vs Périmètre (Optimisation)** : Le retrait de l'IA (périmètre complexe) a été le pivot permettant de sécuriser les fonctionnalités à "haute densité" initialement menacées (Suggestions Inline, Heatmap). Cette efficacité a même permis la réintégration du **Chat Instantané**.
+2.  **Qualité vs Ergonomie** : Priorité absolue au moteur de revue (Qualité technique) sur les fioritures visuelles inutiles, assurant une expérience "Pro-grade".
 3.  **Sécurité vs Rapidité** : Utilisation exclusive des standards natifs Laravel (verified via US33) plutôt que le développement d'une couche crypto sur-mesure coûteuse en temps.
 
 ---
@@ -44,10 +44,11 @@ Les stories suivantes ont été placées en **Haute Priorité** car elles répon
 
 ---
 
-## 4. Backlog Repoussé (Dé-priorisation)
+## 4. Backlog Repoussé & Réintégrations
 
-Les fonctionnalités suivantes ont été repoussées ou annulées selon trois critères :
+Certaines fonctionnalités ont été arbitrées selon des critères de valeur, risque et coût :
 
-- **Analyse IA (Valeur/Risque)** : Trop complexe à fiabiliser dans le temps imparti. Risque de faux positifs élevé dégradant la confiance.
-- **Application Mobile (Utilité)** : Lucas code sur laptop. Une version mobile n'apporte que très peu de valeur pour un hub de revue de code.
-- **Multi-Provider Auth (Coût)** : L'implémentation de Google/Apple auth n'apporte pas de nouveaux utilisateurs dans la cible "Développeur" et coûte du temps d'intégration.
+- **Analyse IA (Retirée)** : Trop complexe à fiabiliser dans le temps imparti. Risque de faux positifs élevé dégradant la confiance dans les revues.
+- **Application Mobile (Retirée)** : Lucas code sur laptop. Une version mobile n'apporte que très peu de valeur pour un hub de revue de code technique.
+- **Chat Instantané (Réintégré)** : Initialement hors périmètre, cette fonctionnalité a été réintégrée par opportunité architecturale (usage de Laravel Reverb), offrant une valeur collaborative immédiate sans surcoût de délai majeur.
+- **Multi-Provider Auth (Annulée)** : L'implémentation de Google/Apple auth n'apporte pas de nouveaux utilisateurs dans la cible "Développeur" et a été écartée au profit de la qualité du moteur de suggestions.

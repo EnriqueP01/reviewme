@@ -810,10 +810,31 @@ The initial "Monolith & The Lens" implementation was too spacious, creating layo
 
 # [080] 2026-04-10 : Audit & Correction des Interactions Livewire/Alpine (Toggle Assistants)
 - **Auteur** : Antigravity
-- **Statut** : âœ… ImplÃ©mentÃ©
-- **Contexte** : Utilisation invalide de l'assistant `$wire.toggle('property')` provoquant des erreurs d'exÃ©cution (Livewire 3 ne supportant pas cette propriÃ©tÃ© magique pour les membres publics). RÃ©gression de sÃ©curitÃ© sur la route `/groups` identifiÃ©e par les tests.
-- **DÃ©cisions** :
-    1. **Standardisation des Toggles** : Remplacement des assistants `$wire.toggle()` par des mÃ©thodes explicites dans les composants PHP (`App\Livewire\Groups\GroupManager::toggleCreating()`).
-    2. **Correction des Appels Alpine** : Mise Ã  jour des vues Blade (`group-manager`, `post-detail`) pour utiliser des appels de mÃ©thodes explicites `$wire.method()`.
-    3. **Restauration SÃ©curitÃ© Karma** : RÃ©-application du middleware `karma:group.create` sur la route `/groups` dans `routes/web.php`.
-- **Impact** : Ã‰limination des erreurs runtime silencieuses, interactions Alpine/Livewire robustes et conformitÃ© totale avec la suite de tests Karma.
+- **Statut** : ✅ Implémenté
+- **Contexte** : Utilisation invalide de l'assistant `$wire.toggle('property')` provoquant des erreurs d'exécution (Livewire 3 ne supportant pas cette propriété magique pour les membres publics). Régression de sécurité sur la route `/groups` identifiée par les tests.
+- **Décisions** :
+    1. **Standardisation des Toggles** : Remplacement des assistants `$wire.toggle()` par des méthodes explicites dans les composants PHP (`App\Livewire\Groups\GroupManager::toggleCreating()`).
+    2. **Correction des Appels Alpine** : Mise à jour des vues Blade (`group-manager`, `post-detail`) pour utiliser des appels de méthodes explicites `$wire.method()`.
+    3. **Restauration Sécurité Karma** : Ré-application du middleware `karma:group.create` sur la route `/groups` dans `routes/web.php`.
+- **Impact** : Élimination des erreurs runtime silencieuses, interactions Alpine/Livewire robustes et conformité totale avec la suite de tests Karma.
+
+# [081] 2026-04-10 : Standardisation du Feedback d'Erreur et Internationalisation (PostDetail)
+- **Auteur** : Antigravity
+- **Statut** : ✅ Implémenté
+- **Contexte** : Manque de feedback visuel (Toasts) dans la vue détaillée des posts lors de tentatives d'actions non autorisées ou bloquées par le Karma. Usage de chaînes en français en dur.
+- **Décisions** :
+    1. **Robustesse des Interactions** : Wrap systématique des méthodes Livewire (`PostDetail`) dans des blocs `try-catch`. Capture des exceptions et dispatch immédiat via `notifyError()`.
+    2. **Généralisation du système de Toast** : Remplacement des `session()->flash('error', ...)` par `notifyError()` pour une réactivité instantanée via Alpine.js sans rechargement nécessaire.
+    3. **Standard i18n Laravel** : Migration de tous les labels d'erreur/succès vers des clés anglaises traduisibles. Mise à jour des dictionnaires `fr.json` et `en.json`.
+    4. **Mise à jour des Tests** : Synchronisation des assertions de messages d'exception dans `KarmaSystemTest` pour utiliser les nouvelles clés de traduction.
+- **Impact** : Expérience utilisateur premium avec feedback immédiat quel que soit le niveau de permission, et conformité totale avec les directives d'architecture et d'internationalisation.
+
+# [082] 2026-04-10 : Refactorisation DRY et Centralisation de la Gestion d'Actions (vibeAction)
+- **Auteur** : Antigravity
+- **Statut** : ✅ Implémenté
+- **Contexte** : Duplication excessive des blocs `try-catch` dans les composants Livewire et mélange de la logique métier avec le feedback utilisateur.
+- **Décisions** :
+    1. **Abstraction Technique** : Introduction de la méthode `vibeAction(callable $callback, ?string $successMessage)` dans le trait `HasVibeNotifications`.
+    2. **Refactoring Global** : Migration de l'intégralité des méthodes d'interaction de `PostDetail.php` (7+ méthodes) vers ce nouveau pattern.
+    3. **Standardisation du Feedback** : Unification du traitement des exceptions et des notifications de succès/erreur au sein du trait, facilitant la maintenance et l'évolution du système de notifications.
+- **Impact** : Réduction drastique de la taille du code (~50 lignes supprimées), amélioration de la lisibilité et garantie d'un comportement cohérent sur toutes les actions sécurisées.
