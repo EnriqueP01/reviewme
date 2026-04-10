@@ -36,11 +36,11 @@ final class AddPostVersionAction
             foreach ($data['files'] as $index => $file) {
                 Snippet::create([
                     'post_id' => $post->id,
-                    'filename' => $file['filename'] ?? $file['name'] ?? 'file_'.($index + 1),
+                    'filename' => $file['filename'],
                     'version_number' => $newVersion,
                     'code_content' => $file['content'],
                     'description' => $file['description'] ?? null,
-                    'language' => $file['language'] ?? 'php',
+                    'language' => $file['language'],
                     'sort_order' => $index,
                 ]);
             }

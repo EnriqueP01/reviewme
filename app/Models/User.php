@@ -9,6 +9,12 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 
+/**
+ * @property int $reputation_score
+ * @property-read array $karma_level
+ * @property-read string $avatar
+ * @property-read \Illuminate\Database\Eloquent\Relations\Pivot $pivot
+ */
 class User extends Authenticatable
 {
     /** @use HasFactory<UserFactory> */

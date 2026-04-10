@@ -8,6 +8,11 @@ use Illuminate\Support\Facades\Cache;
 use Livewire\Attributes\Layout;
 use Livewire\Component;
 
+/**
+ * @property-read array $stats
+ * @property-read array $contributions
+ * @property-read \Illuminate\Support\Collection $recentActivity
+ */
 class Profile extends Component
 {
     public $user;

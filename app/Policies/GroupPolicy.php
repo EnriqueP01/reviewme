@@ -39,9 +39,17 @@ final class GroupPolicy
      */
     public function manage(User $user, Group $group): bool
     {
-        $userRole = $group->members()
+        $member = $group->members()
             ->where('user_id', $user->id)
-            ->first()?->pivot?->role;
+            ->first();
+
+        /** @var \App\Models\User|null $member */
+        /** @var \Illuminate\Database\Eloquent\Relations\Pivot|null $pivot */
+        $pivot = $member?->pivot;
+
+        // On vérifie le rôle sur le pivot
+        /** @phpstan-ignore-next-line */
+        $userRole = $pivot?->role;
 
         return $group->owner_id === $user->id || $userRole === 'moderator';
     }

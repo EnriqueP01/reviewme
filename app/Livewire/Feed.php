@@ -11,7 +11,7 @@ use App\Models\Reaction;
 use Illuminate\Pagination\LengthAwarePaginator;
 use Illuminate\Support\Facades\Auth;
 use Livewire\Attributes\Layout;
-use Livewire\Attributes\NoRender;
+use Livewire\Attributes\Renderless;
 use Livewire\Component;
 use Livewire\WithPagination;
 
@@ -53,7 +53,7 @@ class Feed extends Component
         $this->resetPage();
     }
 
-    #[NoRender]
+    #[Renderless]
     public function vote(int $postId, string $direction, ToggleReactionAction $toggleReaction)
     {
         if (! Auth::check()) {

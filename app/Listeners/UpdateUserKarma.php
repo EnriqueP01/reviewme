@@ -17,7 +17,7 @@ class UpdateUserKarma
     /**
      * Handle the event.
      */
-    public function handle(ModelCreated $event): void
+    public function handle(object $event): void
     {
         //
     }

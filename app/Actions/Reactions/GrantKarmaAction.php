@@ -48,7 +48,7 @@ final class GrantKarmaAction
                 'type' => $type,
                 'description' => $description,
                 'source_type' => $source ? $source->getMorphClass() : null,
-                'source_id' => $source ? $source->id : null,
+                'source_id' => $source ? $source->getKey() : null,
                 'metadata' => $lens ? ['lens' => $lens] : null,
             ]);
 
@@ -68,9 +68,10 @@ final class GrantKarmaAction
 
         // NOTIFICATION UI (Livewire Event)
         // Utilisation d'un check sécurisé pour éviter de casser les tests hors-contexte Livewire
-        if ($points > 0 && class_exists(Livewire::class)) {
+        if ($points > 0 && class_exists(\Livewire\Livewire::class)) {
             try {
-                Livewire::dispatch('karma-updated', [
+                /** @phpstan-ignore-next-line */
+                \Livewire\Livewire::dispatch('karma-updated', [
                     'points' => $points,
                     'total' => $user->fresh()->reputation_score,
                     'type' => $type,

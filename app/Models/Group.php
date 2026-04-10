@@ -11,6 +11,10 @@ use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Support\Str;
 
+/**
+ * @property-read \Illuminate\Database\Eloquent\Relations\Pivot $pivot
+ * @property-read string $avatar
+ */
 final class Group extends Model
 {
     use HasFactory;

@@ -10,6 +10,11 @@ use Illuminate\Database\Eloquent\Relations\HasManyThrough;
 use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Database\Eloquent\Relations\MorphMany;
 
+/**
+ * @property int $upvotes
+ * @property int $downvotes
+ * @property int $up_count
+ */
 class Post extends Model
 {
     use HasFactory;

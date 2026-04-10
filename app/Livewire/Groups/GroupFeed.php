@@ -10,7 +10,7 @@ use App\Models\Group;
 use App\Models\Post;
 use App\Models\Reaction;
 use Illuminate\Support\Facades\Auth;
-use Livewire\Attributes\NoRender;
+use Livewire\Attributes\Renderless;
 use Livewire\Component;
 use Livewire\WithPagination;
 
@@ -35,7 +35,7 @@ final class GroupFeed extends Component
         $this->resetPage();
     }
 
-    #[NoRender]
+    #[Renderless]
     public function vote(int $postId, string $direction, ToggleReactionAction $toggleReaction)
     {
         if (! Auth::check()) {

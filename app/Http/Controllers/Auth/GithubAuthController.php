@@ -17,6 +17,7 @@ class GithubAuthController extends Controller
      */
     public function redirect()
     {
+        /** @var \Laravel\Socialite\Two\AbstractProvider $driver */
         $driver = Socialite::driver('github');
 
         if (app()->environment('local')) {
@@ -32,6 +33,7 @@ class GithubAuthController extends Controller
     public function callback(HandleGithubCallbackAction $handleGithubCallback)
     {
         try {
+            /** @var \Laravel\Socialite\Two\AbstractProvider $driver */
             $driver = Socialite::driver('github');
 
             if (app()->environment('local')) {

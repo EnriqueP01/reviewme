@@ -18,12 +18,14 @@ final class CreatePostAction
      *
      * @param array{
      *     title: string,
+     *     short_description?: string,
      *     description: string,
+     *     review_goals?: string,
+     *     improvement_goals?: string,
      *     visibility: string,
-     *     goal: string,
-     *     context: string,
+     *     group_id?: int,
      *     lens: string,
-     *     files: array<int, array{content: string, language: string}>
+     *     files: array<int, array{content: string, language: string, name?: string, filename?: string, description?: string}>
      * } $data
      *
      * @throws ValidationException
@@ -59,7 +61,7 @@ final class CreatePostAction
                     'version_number' => 1,
                     'code_content' => $file['content'],
                     'description' => $file['description'] ?? null,
-                    'language' => $file['language'] ?? 'php',
+                    'language' => $file['language'],
                     'sort_order' => $index,
                 ]);
             }

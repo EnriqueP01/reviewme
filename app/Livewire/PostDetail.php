@@ -14,7 +14,7 @@ use App\Models\Reaction;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
-use Livewire\Attributes\NoRender;
+use Livewire\Attributes\Renderless;
 use Livewire\Component;
 
 class PostDetail extends Component
@@ -126,7 +126,7 @@ class PostDetail extends Component
         $this->dispatch('post-action', type: 'success');
     }
 
-    #[NoRender]
+    #[Renderless]
     public function vote(int $postId, string $direction, ToggleReactionAction $toggleReaction): void
     {
         $this->authorizeAction();
@@ -146,7 +146,7 @@ class PostDetail extends Component
         $toggleReaction->execute(Auth::user(), $post, $type);
     }
 
-    #[NoRender]
+    #[Renderless]
     public function toggleCommentLike(int $commentId, ToggleReactionAction $toggleReaction): void
     {
         $comment = PostComment::findOrFail($commentId);
@@ -154,7 +154,7 @@ class PostDetail extends Component
         $this->refreshPost();
     }
 
-    #[NoRender]
+    #[Renderless]
     public function voteReview(int $reviewId, string $direction, ToggleReactionAction $toggleReaction): void
     {
         $this->authorizeAction();
