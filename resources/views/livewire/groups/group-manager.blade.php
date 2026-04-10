@@ -19,7 +19,7 @@
         <div class="flex items-center gap-6" x-data="{ hasPermission: {{ Auth::user()->hasKarmaPermission('group.create') ? 'true' : 'false' }} }">
             <x-ui.button 
                 variant="{{ $isCreating ? 'primary' : 'ghost' }}" 
-                x-on:click="hasPermission ? $wire.toggle('isCreating') : $dispatch('vibe-notif', { type: 'error', message: '{{ __('Niveau de karma insuffisant pour créer un groupe.') }}' })" 
+                x-on:click="hasPermission ? $wire.toggleCreating() : $dispatch('vibe-notif', { type: 'error', message: '{{ __('Niveau de karma insuffisant pour créer un groupe.') }}' })" 
                 class="!px-10 !py-5 !rounded-2xl shadow-2xl {{ !$isCreating ? '!bg-white/5 !border-white/10 hover:!bg-white/10' : '' }}"
             >
                 <div class="flex items-center gap-3">

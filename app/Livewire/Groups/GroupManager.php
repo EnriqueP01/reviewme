@@ -44,6 +44,14 @@ final class GroupManager extends Component
         }
     }
 
+    /**
+     * Bascule l'état d'affichage du formulaire de création de groupe.
+     */
+    public function toggleCreating(): void
+    {
+        $this->isCreating = ! $this->isCreating;
+    }
+
     protected $rules = [
         'name' => 'required|min:3|max:255|unique:groups,name',
         'description' => 'nullable|string',
