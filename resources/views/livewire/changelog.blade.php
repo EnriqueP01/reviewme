@@ -1,4 +1,9 @@
 <div class="max-w-4xl mx-auto px-6 py-12">
+    <!-- Back Button -->
+    <div class="mb-8 hover-trigger">
+        <x-ui.back-button fallback="{{ route('dashboard') }}" />
+    </div>
+
     <div class="mb-16 space-y-4 animate-in fade-in slide-in-from-top-8 duration-1000">
         <h1 class="text-4xl lg:text-5xl font-black tracking-tighter uppercase">{{ __('Changelog') }}</h1>
         <p class="text-on-surface-variant italic">{{ __('Tracking the evolution of the ReviewMe ecosystem.') }}</p>

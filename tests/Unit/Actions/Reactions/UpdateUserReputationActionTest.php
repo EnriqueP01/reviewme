@@ -18,7 +18,7 @@ class UpdateUserReputationActionTest extends TestCase
     protected function setUp(): void
     {
         parent::setUp();
-        $this->action = new UpdateUserReputationAction;
+        $this->action = app(UpdateUserReputationAction::class);
     }
 
     /**
@@ -26,12 +26,12 @@ class UpdateUserReputationActionTest extends TestCase
      *
      * @dataProvider reputationProvider
      */
-    public function it_calculates_correct_reputation_impact(string $type, string $action, int $expectedDelta): void
+    public function it_calculates_correct_reputation_impact(string $type, string $action, int $expectedDelta, ?string $oldType = null): void
     {
         /** @var User $user */
         $user = User::factory()->create(['reputation_score' => 100]);
 
-        $this->action->execute($user, $type, $action);
+        $this->action->execute($user, $type, $action, $oldType);
 
         $this->assertEquals(100 + $expectedDelta, $user->reputation_score);
     }
@@ -45,8 +45,8 @@ class UpdateUserReputationActionTest extends TestCase
             'add optimisable' => ['optimisable', 'add', -2],
             'remove mindblown' => ['mindblown', 'remove', -10],
             'remove optimisable' => ['optimisable', 'remove', 2],
-            'switch to mindblown' => ['mindblown', 'switch', 12],
-            'switch to optimisable' => ['optimisable', 'switch', -12],
+            'switch to mindblown' => ['mindblown', 'switch', 12, 'optimisable'],
+            'switch to optimisable' => ['optimisable', 'switch', -12, 'mindblown'],
         ];
     }
 }

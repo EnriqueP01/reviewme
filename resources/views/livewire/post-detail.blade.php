@@ -70,6 +70,11 @@
     </div>
 
     <div class="w-full space-y-8" @mouseup="handleMouseUp($event)">
+        <!-- Back Button -->
+        <div class="mb-4">
+            <x-ui.back-button fallback="{{ route('dashboard') }}" />
+        </div>
+        
         <!-- Header Monolith -->
         <div class="bg-surface-container-low/40 backdrop-blur-2xl border border-white/5 rounded-[2.5rem] p-8 flex items-center justify-between gap-6 shadow-2xl relative overflow-hidden group/header">
             <div class="absolute inset-0 bg-gradient-to-r from-primary/5 to-transparent opacity-0 group-hover/header:opacity-100 transition-opacity pointer-events-none"></div>

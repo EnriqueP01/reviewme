@@ -1,3 +1,17 @@
+## 2026-04-10-64 : Correction de Compatibilité SQLite dans GrantKarmaAction
+- **Auteur** : Antigravity
+- **Statut** : ✅ Implémenté
+- **Contexte** : `UserSkill::updateOrCreate()` avec `DB::raw("score + $points")` échouait sous SQLite (base de test) car le driver interprétait l'expression comme une valeur littérale et non une référence de colonne.
+- **Décision** : Remplacement de l'`updateOrCreate` par un pattern `firstOrCreate(['score' => 0])` + `$skill->increment('score', $points)`. Comportement identique en production MySQL/PgSQL, compatible SQLite.
+- **Impact** : `PostDetailTest > user can react` passe au vert. `MasterTestSeeder` corrigé pour inclure le champ `handle` (contrainte NOT NULL ajoutée).
+
+## 2026-04-10-65 : Finalisation du Bouton Retour & Indicateur GitHub Profil
+- **Auteur** : Antigravity
+- **Statut** : ✅ Implémenté
+- **Contexte** : L'activité GitHub a été retirée du profil au profit d'un indicateur de statut discret. Un composant `x-ui.back-button` réutilisable a été déployé sur les pages Changelog, Status, Documentation, Legal et GroupManager.
+- **Décision** : Composant Blade `back-button` avec animation CSS cohérente avec le design existant. Navigation "retour" via `history.back()` côté JS avec son et micro-animation.
+- **Impact** : Navigation cohérente sur toutes les pages secondaires. Suppression de la dépendance à l'API GitHub pour l'affichage de l'activité.
+
 ## 2026-04-09-57 : Moteur de Réputation "Expert-Driven" & Système de Karma
 - **Auteur** : Antigravity
 - **Statut** : ✅ Implémenté

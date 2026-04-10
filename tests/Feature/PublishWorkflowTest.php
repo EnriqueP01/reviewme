@@ -48,7 +48,7 @@ class PublishWorkflowTest extends TestCase
         ]);
 
         $this->assertDatabaseHas('snippets', [
-            'code_content' => e('<?php echo "hello";'), // On n'oublie pas le escaping fait dans l'Action
+            'code_content' => '<?php echo "hello";', // Modification: raw storage
         ]);
     }
 

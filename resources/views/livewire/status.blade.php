@@ -1,4 +1,9 @@
 <div class="max-w-4xl mx-auto px-6 py-12">
+    <!-- Back Button -->
+    <div class="mb-8 hover-trigger">
+        <x-ui.back-button fallback="{{ route('dashboard') }}" />
+    </div>
+
     <div class="mb-16 flex items-center justify-between animate-in fade-in slide-in-from-top-8 duration-1000">
         <div class="space-y-2">
             <h1 class="text-4xl lg:text-5xl font-black tracking-tighter uppercase">{{ __('System Status') }}</h1>

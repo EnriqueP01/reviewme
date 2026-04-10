@@ -16,7 +16,7 @@ class ProfileTest extends TestCase
 
         $response = $this
             ->actingAs($user)
-            ->get('/profile');
+            ->get('/profile/' . $user->handle);
 
         $response->assertOk();
     }
@@ -31,6 +31,7 @@ class ProfileTest extends TestCase
             ->actingAs($user)
             ->patch('/profile', [
                 'name' => 'Test User',
+                'handle' => 'test_user',
                 'email' => 'test@example.com',
             ]);
 
@@ -57,6 +58,7 @@ class ProfileTest extends TestCase
             ->actingAs($user)
             ->patch('/profile', [
                 'name' => 'Test User',
+                'handle' => 'test_user_2',
                 'email' => 'test@example.com',
             ]);
 

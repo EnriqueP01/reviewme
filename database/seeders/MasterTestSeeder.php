@@ -31,6 +31,7 @@ class MasterTestSeeder extends Seeder
         // 2. CREATE ELITE USERS (NO SPACES IN IDENTIFIERS)
         $celestin = User::create([
             'name' => 'celestin_dev',
+            'handle' => 'celestin_dev',
             'email' => 'celestin@reviewme.io',
             'password' => Hash::make('password'),
             'reputation_score' => 7500,
@@ -40,6 +41,7 @@ class MasterTestSeeder extends Seeder
 
         $sarah = User::create([
             'name' => 'sarah_arch',
+            'handle' => 'sarah_arch',
             'email' => 'sarah@reviewme.io',
             'password' => Hash::make('password'),
             'reputation_score' => 9200,
@@ -49,6 +51,7 @@ class MasterTestSeeder extends Seeder
 
         $marcus = User::create([
             'name' => 'marcus_sec',
+            'handle' => 'marcus_sec',
             'email' => 'marcus@reviewme.io',
             'password' => Hash::make('password'),
             'reputation_score' => 4500,
@@ -58,6 +61,7 @@ class MasterTestSeeder extends Seeder
 
         $lea = User::create([
             'name' => 'lea_pixel',
+            'handle' => 'lea_pixel',
             'email' => 'lea@pixel.io',
             'password' => Hash::make('password'),
             'reputation_score' => 3800,
@@ -67,6 +71,7 @@ class MasterTestSeeder extends Seeder
 
         $david = User::create([
             'name' => 'david_optim',
+            'handle' => 'david_optim',
             'email' => 'david@performance.com',
             'password' => Hash::make('password'),
             'reputation_score' => 8100,
