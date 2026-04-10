@@ -20,6 +20,7 @@ use Livewire\Component;
 class PostDetail extends Component
 {
     public Post $post;
+    public bool $readyToLoad = false;
 
     public int $postId;
 
@@ -73,10 +74,17 @@ class PostDetail extends Component
     {
         Log::info("Mounting PostDetail for post {$postId}");
         $this->postId = $postId;
-        $this->refreshPost();
+        $this->post = Post::findOrFail($postId); // On ne charge que le strict minimum ici
+    }
 
+    public function loadData(): void
+    {
+        $this->refreshPost();
+        
         $this->selectedVersion = $this->post->snippets->max('version_number') ?: 1;
         $this->activeSnippetId = $this->post->snippets->where('version_number', $this->selectedVersion)->first()?->id;
+        
+        $this->readyToLoad = true;
     }
 
     public function updatedSelectedVersion($value): void
@@ -297,7 +305,7 @@ class PostDetail extends Component
 
     public function refreshPost(): void
     {
-        $this->post = Post::with([
+        $query = Post::with([
             'user',
             'group',
             'snippets.inlineSuggestions.user',
@@ -317,8 +325,9 @@ class PostDetail extends Component
             ->withCount([
                 'reactions as up_count' => fn ($q) => $q->where('type', 'mindblown'),
                 'reactions as down_count' => fn ($q) => $q->where('type', 'optimisable'),
-            ])
-            ->findOrFail($this->postId);
+            ]);
+
+        $this->post = $query->findOrFail($this->postId);
 
         // Rafraîchir les extraits pour la version sélectionnée
         $this->currentSnippets = $this->post->snippets->where('version_number', $this->selectedVersion);

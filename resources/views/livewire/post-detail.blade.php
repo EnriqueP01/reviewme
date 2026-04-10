@@ -8,6 +8,7 @@
         
         handleMouseUp(e) {
             if (@js($this->isAuthor())) return;
+            if (!@js(Auth::user()?->hasKarmaPermission('suggestion.inline'))) return;
             if (e.target.closest('button') || e.target.closest('a') || e.target.closest('textarea')) return;
             const selection = window.getSelection();
             const text = selection.toString().trim();
@@ -41,6 +42,7 @@
         }
      }"
      class="w-full space-y-8"
+     wire:init="loadData"
 >
     <!-- Status Messages -->
     <div class="fixed top-24 left-1/2 transform -translate-x-1/2 z-[100] space-y-2 w-full max-w-sm pointer-events-none">
@@ -74,8 +76,63 @@
         <div class="mb-4">
             <x-ui.back-button fallback="{{ route('dashboard') }}" />
         </div>
-        
-        <!-- Header Monolith -->
+
+        @if(!$readyToLoad)
+            <!-- SKELETON STATE -->
+            <div class="space-y-8 animate-pulse">
+                <!-- Header Skeleton -->
+                <div class="bg-surface-container-low/40 border border-white/5 rounded-[2.5rem] p-8 flex items-center justify-between gap-6">
+                    <div class="flex items-center gap-6">
+                        <x-ui.skeleton class="w-14 h-14 rounded-2xl" />
+                        <div class="space-y-3">
+                            <div class="flex items-center gap-3">
+                                <x-ui.skeleton class="w-32 h-5" />
+                                <x-ui.skeleton class="w-20 h-4" />
+                            </div>
+                            <x-ui.skeleton class="w-48 h-8" />
+                        </div>
+                    </div>
+                    <div class="flex items-center gap-6">
+                        <x-ui.skeleton class="w-32 h-10 rounded-2xl" />
+                        <x-ui.skeleton class="w-40 h-10 rounded-2xl" />
+                    </div>
+                </div>
+
+                <!-- Code Block Skeleton -->
+                <div class="glass-panel rounded-[2.5rem] border border-white/5 h-[600px] flex flex-col overflow-hidden">
+                    <div class="h-16 bg-white/[0.04] border-b border-white/5 px-8 flex items-center justify-between">
+                        <x-ui.skeleton class="w-48 h-6" />
+                        <x-ui.skeleton class="w-64 h-8" />
+                        <x-ui.skeleton class="w-32 h-6" />
+                    </div>
+                    <div class="flex-1 p-8 space-y-4">
+                        @for($i=0; $i<15; $i++)
+                            <div class="flex gap-4">
+                                <x-ui.skeleton class="w-8 h-4 opacity-20" />
+                                <x-ui.skeleton class="w-full h-4 opacity-10" />
+                            </div>
+                        @endfor
+                    </div>
+                </div>
+
+                <!-- Discussion Skeleton -->
+                <div class="space-y-6 pt-12">
+                    <x-ui.skeleton class="w-40 h-4 opacity-20" />
+                    <div class="bg-[#1a1b26] rounded-[2.5rem] p-8 border border-white/5 space-y-8">
+                        @for($i=0; $i<2; $i++)
+                            <div class="flex gap-6">
+                                <x-ui.skeleton class="w-12 h-12 rounded-2xl shrink-0" />
+                                <div class="flex-1 space-y-3">
+                                    <x-ui.skeleton class="w-48 h-4" />
+                                    <x-ui.skeleton class="w-full h-16" />
+                                </div>
+                            </div>
+                        @endfor
+                    </div>
+                </div>
+            </div>
+        @else
+            <!-- REAL CONTENT -->
         <div class="bg-surface-container-low/40 backdrop-blur-2xl border border-white/5 rounded-[2.5rem] p-8 flex items-center justify-between gap-6 shadow-2xl relative overflow-hidden group/header">
             <div class="absolute inset-0 bg-gradient-to-r from-primary/5 to-transparent opacity-0 group-hover/header:opacity-100 transition-opacity pointer-events-none"></div>
             <div class="flex items-center gap-6 relative">
@@ -107,8 +164,10 @@
             </div>
             
             <div class="flex items-center gap-10 relative">
-                <!-- Post Karma HUD (NEW) -->
+                <!-- Post Karma HUD (Secured) -->
                 @php
+                    $canUpvote = Auth::user()?->hasKarmaPermission('post.vote_up');
+                    $canDownvote = Auth::user()?->hasKarmaPermission('post.vote_down');
                     $myPostReaction = $post->reactions->where('user_id', Auth::id())->first()?->type;
                     $postVotedState = $myPostReaction === 'mindblown' ? 'up' : ($myPostReaction === 'optimisable' ? 'down' : '');
                 @endphp
@@ -117,8 +176,19 @@
                          score: parseInt('{{ $post->up_count - $post->down_count }}'),
                          voted: '{{ $postVotedState }}',
                          originalVoted: '{{ $postVotedState }}',
+                         canUp: {{ $canUpvote ? 'true' : 'false' }},
+                         canDown: {{ $canDownvote ? 'true' : 'false' }},
                          timer: null,
                          vote(dir) {
+                             if (dir === 'up' && !this.canUp) {
+                                 $dispatch('vibe-notif', { type: 'error', message: '{{ __('Niveau de karma insuffisant') }}' });
+                                 return;
+                             }
+                             if (dir === 'down' && !this.canDown) {
+                                 $dispatch('vibe-notif', { type: 'error', message: '{{ __('Niveau de karma insuffisant') }}' });
+                                 return;
+                             }
+                             
                              clearTimeout(this.timer);
                              let newVoted = (this.voted === dir) ? '' : dir;
                              let diff = 0;
@@ -138,13 +208,27 @@
                      }"
                 >
                     <button @click="vote('up')" 
-                            class="p-2 rounded-xl transition-all active:scale-75" :class="voted === 'up' ? 'text-emerald-400 bg-emerald-500/10' : 'text-on-surface-variant hover:text-emerald-400'">
-                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M5 15l7-7 7 7" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                            class="p-2 rounded-xl transition-all active:scale-75 group/btn" 
+                            :class="!canUp ? 'opacity-20 cursor-not-allowed' : (voted === 'up' ? 'text-emerald-400 bg-emerald-500/10' : 'text-on-surface-variant hover:text-emerald-400')">
+                        <template x-if="!canUp">
+                            <svg class="w-4 h-4 opacity-50" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                        </template>
+                        <template x-if="canUp">
+                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M5 15l7-7 7 7" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                        </template>
                     </button>
+                    
                     <span class="text-sm font-black italic w-6 text-center" :class="score > 0 ? 'text-emerald-400' : (score < 0 ? 'text-red-400' : 'opacity-20')" x-text="score"></span>
+                    
                     <button @click="vote('down')" 
-                            class="p-2 rounded-xl transition-all active:scale-75" :class="voted === 'down' ? 'text-red-400 bg-red-500/10' : 'text-on-surface-variant hover:text-red-400'">
-                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M19 9l-7 7-7-7" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                            class="p-2 rounded-xl transition-all active:scale-75 group/btn" 
+                            :class="!canDown ? 'opacity-20 cursor-not-allowed' : (voted === 'down' ? 'text-red-400 bg-red-500/10' : 'text-on-surface-variant hover:text-red-400')">
+                        <template x-if="!canDown">
+                            <svg class="w-4 h-4 opacity-50" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                        </template>
+                        <template x-if="canDown">
+                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M19 9l-7 7-7-7" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                        </template>
                     </button>
                 </div>
 
@@ -340,15 +424,30 @@
                                                     </div>
                                                 </div>
 
-                                                <!-- Vote Engine (Radical) -->
+                                                <!-- Vote Engine (Secured) -->
+                                                @php
+                                                    $canUpvoteReview = Auth::user()?->hasKarmaPermission('review.vote_up');
+                                                    $canDownvoteReview = Auth::user()?->hasKarmaPermission('review.vote_down');
+                                                @endphp
                                                 <div class="flex items-center gap-3"
                                                      x-data="{ 
                                                          score: parseInt('{{ $fr->up_count - $fr->down_count }}'),
                                                          voted: '{{ $fr->reactions->where('user_id', Auth::id())->first()?->type }}',
                                                          originalVoted: '{{ $fr->reactions->where('user_id', Auth::id())->first()?->type }}',
+                                                         canUp: {{ $canUpvoteReview ? 'true' : 'false' }},
+                                                         canDown: {{ $canDownvoteReview ? 'true' : 'false' }},
                                                          timer: null,
                                                           
                                                          vote(dir) {
+                                                             if (dir === 'up' && !this.canUp) {
+                                                                 $dispatch('vibe-notif', { type: 'error', message: '{{ __('Niveau de karma insuffisant') }}' });
+                                                                 return;
+                                                             }
+                                                             if (dir === 'down' && !this.canDown) {
+                                                                 $dispatch('vibe-notif', { type: 'error', message: '{{ __('Niveau de karma insuffisant') }}' });
+                                                                 return;
+                                                             }
+
                                                              clearTimeout(this.timer);
                                                              window.haptic.play(dir);
                                                               
@@ -374,13 +473,25 @@
                                                 >
                                                      <div class="flex items-center gap-2 p-2 bg-[#0d0e12]/60 rounded-[1.5rem] border border-white/5 shadow-inner">
                                                          <button @click.stop="vote('up')" 
-                                                                 class="p-3.5 rounded-2xl transition-all active:scale-75" :class="voted === 'up' ? 'text-emerald-400 bg-emerald-500/10 shadow-[0_0_30px_rgba(52,211,153,0.15)]' : 'text-on-surface-variant hover:text-emerald-400 hover:bg-emerald-500/5'">
-                                                             <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M5 15l7-7 7 7" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                                                                 class="p-3.5 rounded-2xl transition-all active:scale-75 group/btn" 
+                                                                 :class="!canUp ? 'opacity-20 cursor-not-allowed' : (voted === 'up' ? 'text-emerald-400 bg-emerald-500/10 shadow-[0_0_30px_rgba(52,211,153,0.15)]' : 'text-on-surface-variant hover:text-emerald-400 hover:bg-emerald-500/5')">
+                                                             <template x-if="!canUp">
+                                                                <svg class="w-5 h-5 opacity-50" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                                                             </template>
+                                                             <template x-if="canUp">
+                                                                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M5 15l7-7 7 7" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                                                             </template>
                                                          </button>
                                                          <span class="text-sm font-black tracking-tighter w-8 text-center" :class="score > 0 ? 'text-emerald-400' : (score < 0 ? 'text-red-400' : 'text-on-surface-variant/40')" x-text="score"></span>
                                                          <button @click.stop="vote('down')" 
-                                                                 class="p-3.5 rounded-2xl transition-all active:scale-75" :class="voted === 'down' ? 'text-red-400 bg-red-500/10 shadow-[0_0_30px_rgba(248,113,113,0.15)]' : 'text-on-surface-variant hover:text-red-400 hover:bg-red-500/5'">
-                                                             <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M19 9l-7 7-7-7" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                                                                 class="p-3.5 rounded-2xl transition-all active:scale-75 group/btn" 
+                                                                 :class="!canDown ? 'opacity-20 cursor-not-allowed' : (voted === 'down' ? 'text-red-400 bg-red-500/10 shadow-[0_0_30px_rgba(248,113,113,0.15)]' : 'text-on-surface-variant hover:text-red-400 hover:bg-red-500/5')">
+                                                             <template x-if="!canDown">
+                                                                <svg class="w-5 h-5 opacity-50" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                                                             </template>
+                                                             <template x-if="canDown">
+                                                                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M19 9l-7 7-7-7" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                                                             </template>
                                                          </button>
                                                      </div>
                                                 </div>
@@ -494,8 +605,21 @@
                                    wire:keydown.enter="saveGlobalComment"
                                    placeholder="{{ __('Example: \'The database indexing strategy on the metadata JSON field seems suboptimal for large datasets. I suspect it might lead to full table scans.\'') }}" 
                                    class="bg-transparent border-none flex-1 py-3 text-sm text-on-surface focus:ring-0 placeholder:text-on-surface-variant/20 font-semibold tracking-tight">
-                            <x-ui.button wire:click="saveGlobalComment" variant="primary" size="sm" class="!px-4 !py-4 shadow-[0_0_20px_rgba(190,194,255,0.25)]">
-                                <svg wire:loading.remove class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="4" d="M13 5l7 7m0 0l-7 7m7-7H3"></path></svg>
+                            @php $canComment = Auth::user()?->hasKarmaPermission('post.comment'); @endphp
+                            <x-ui.button 
+                                wire:click="{{ $canComment ? 'saveGlobalComment' : '' }}" 
+                                @click="if(!@js($canComment)) $dispatch('vibe-notif', { type: 'error', message: '{{ __('Niveau de karma insuffisant') }}' })"
+                                variant="primary" 
+                                size="sm" 
+                                class="!px-4 !py-4 shadow-[0_0_20px_rgba(190,194,255,0.25)] group/comment-btn"
+                                :class="!@js($canComment) ? 'opacity-20 cursor-not-allowed' : ''"
+                            >
+                                <template x-if="!@js($canComment)">
+                                    <svg class="w-5 h-5 opacity-50" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                                </template>
+                                <template x-if="@js($canComment)">
+                                    <svg wire:loading.remove class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="4" d="M13 5l7 7m0 0l-7 7m7-7H3"></path></svg>
+                                </template>
                             </x-ui.button>
                         </div>
                     </div>
@@ -521,20 +645,41 @@
                                          x-data="{ 
                                             likes: {{ $comment->reactions->count() }}, 
                                             isLiked: {{ $comment->reactions->where('user_id', Auth::id())->count() > 0 ? 'true' : 'false' }},
+                                            canLike: {{ Auth::user()?->hasKarmaPermission('comment.like') ? 'true' : 'false' }},
                                             toggle() {
+                                                if (!this.canLike) {
+                                                    $dispatch('vibe-notif', { type: 'error', message: '{{ __('Niveau de karma insuffisant') }}' });
+                                                    return;
+                                                }
                                                 this.isLiked = !this.isLiked;
                                                 this.likes = this.isLiked ? this.likes + 1 : this.likes - 1;
                                                 $wire.toggleCommentLike({{ $comment->id }});
                                             }
                                          }">
-                                        <button @click="toggle()" class="flex items-center gap-2.5 group/like transition-all active:scale-90">
+                                        <button @click="toggle()" 
+                                                class="flex items-center gap-2.5 group/like transition-all active:scale-90"
+                                                :class="!canLike ? 'opacity-20 cursor-not-allowed' : ''">
                                             <div class="p-2 px-3 rounded-xl bg-white/5 flex items-center gap-2 group-hover/like:bg-emerald-500/10 transition-all border border-transparent group-hover/like:border-emerald-500/20">
-                                                <svg class="w-4 h-4 transition-all duration-300" :class="isLiked ? 'text-emerald-400 fill-emerald-400 scale-110' : 'text-on-surface-variant group-hover/like:text-emerald-400'" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" stroke-width="3"/></svg>
+                                                <template x-if="!canLike">
+                                                    <svg class="w-3.5 h-3.5 opacity-50" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                                                </template>
+                                                <template x-if="canLike">
+                                                    <svg class="w-4 h-4 transition-all duration-300" :class="isLiked ? 'text-emerald-400 fill-emerald-400 scale-110' : 'text-on-surface-variant group-hover/like:text-emerald-400'" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" stroke-width="3"/></svg>
+                                                </template>
                                                 <span class="text-[11px] font-black transition-colors" :class="likes > 0 ? 'text-on-surface' : 'text-on-surface-variant opacity-30'" x-text="likes"></span>
                                             </div>
                                         </button>
-                                        <button @click="replying = !replying; if(replying) { $nextTick(() => $el.closest('.group\\/comment').querySelector('input')?.focus()); $wire.replyToId = {{ $comment->id }}; }" class="text-[10px] font-black uppercase tracking-[0.3em] text-on-surface-variant/40 hover:text-primary transition-all flex items-center gap-3 group/reply-btn">
-                                            <svg class="w-3 h-3 group-hover/reply-btn:translate-x-0.5 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M3 10h10a8 8 0 018 8v2M3 10l6 6m-6-6l6-6" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                                        <button 
+                                            @click="if(@js($canComment)) { replying = !replying; if(replying) { $nextTick(() => $el.closest('.group\\/comment').querySelector('input')?.focus()); $wire.replyToId = {{ $comment->id }}; } } else { $dispatch('vibe-notif', { type: 'error', message: '{{ __('Niveau de karma insuffisant') }}' }); }" 
+                                            class="text-[10px] font-black uppercase tracking-[0.3em] transition-all flex items-center gap-3 group/reply-btn"
+                                            :class="!@js($canComment) ? 'text-on-surface-variant/10 cursor-not-allowed opacity-20' : 'text-on-surface-variant/40 hover:text-primary'"
+                                        >
+                                            <template x-if="!@js($canComment)">
+                                                <svg class="w-3.5 h-3.5 opacity-50" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                                            </template>
+                                            <template x-if="@js($canComment)">
+                                                <svg class="w-3 h-3 group-hover/reply-btn:translate-x-0.5 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M3 10h10a8 8 0 018 8v2M3 10l6 6m-6-6l6-6" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                                            </template>
                                             {{ __('Reply') }}
                                         </button>
                                     </div>
@@ -570,7 +715,9 @@
                                                         </div>
                                                         <p class="text-sm text-on-surface-variant opacity-80 leading-relaxed">{{ $reply->content }}</p>
                                                         <div class="flex items-center gap-4 pt-1">
-                                                            <button wire:click="toggleCommentLike({{ $reply->id }})" class="flex items-center gap-2 group/rlike transition-all active:scale-90">
+                                                            <button @click="if(@js($canLike)) { $wire.toggleCommentLike({{ $reply->id }}); } else { $dispatch('vibe-notif', { type: 'error', message: '{{ __('Niveau de karma insuffisant') }}' }); }" 
+                                                                    class="flex items-center gap-2 group/rlike transition-all active:scale-90"
+                                                                    :class="!@js($canLike) ? 'opacity-20 cursor-not-allowed' : ''">
                                                                 <svg class="w-3.5 h-3.5 {{ $reply->reactions->where('user_id', Auth::id())->count() > 0 ? 'text-emerald-400 fill-emerald-400 scale-110' : 'text-on-surface-variant/20 group-hover/rlike:text-emerald-400' }} transition-all" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" stroke-width="3"/></svg>
                                                                 <span class="text-[10px] font-black {{ $reply->reactions->count() > 0 ? 'text-on-surface/60' : 'text-on-surface-variant/10' }}">{{ $reply->reactions->count() }}</span>
                                                             </button>
@@ -658,6 +805,7 @@
                     </div>
                 </div>
             </template>
+        @endif
         @endif
     </div>
 </div>

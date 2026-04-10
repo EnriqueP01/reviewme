@@ -1,7 +1,9 @@
 @props(['post'])
 
 @php
-    $myReaction = $post->reactions->first()?->type;
+    $canUpvote = Auth::user()?->hasKarmaPermission('post.vote_up');
+    $canDownvote = Auth::user()?->hasKarmaPermission('post.vote_down');
+    $myReaction = $post->reactions->where('user_id', Auth::id())->first()?->type;
     $votedState = $myReaction === 'mindblown' ? 'up' : ($myReaction === 'optimisable' ? 'down' : '');
     $score = ($post->up_count ?? 0) - ($post->down_count ?? 0);
 @endphp
@@ -14,36 +16,52 @@
                  voted: '{{ $votedState }}',
                  score: {{ $score }},
                  isVoting: false,
+                 canUp: {{ $canUpvote ? 'true' : 'false' }},
+                 canDown: {{ $canDownvote ? 'true' : 'false' }},
                  handleVote(dir) {
-                    if (this.isVoting) return;
-                    this.isVoting = true;
+                    if (dir === 'up' && !this.canUp) {
+                        $dispatch('vibe-notif', { type: 'error', message: '{{ __('Niveau de karma insuffisant') }}' });
+                        return;
+                    }
+                    if (dir === 'down' && !this.canDown) {
+                        $dispatch('vibe-notif', { type: 'error', message: '{{ __('Niveau de karma insuffisant') }}' });
+                        return;
+                    }
+                    
                     if (window.haptic) window.haptic.play(dir);
 
-                    if (dir === 'up') {
-                        if (this.voted === 'up') { this.score--; this.voted = ''; }
-                        else {
-                            this.score += (this.voted === 'down' ? 2 : 1);
-                            this.voted = 'up';
-                        }
-                    } else {
-                        if (this.voted === 'down') { this.score++; this.voted = ''; }
-                        else {
-                            this.score -= (this.voted === 'up' ? 2 : 1);
-                            this.voted = 'down';
-                        }
-                    }
-                    setTimeout(() => { this.isVoting = false; }, 500);
+                    let oldVoted = this.voted;
+                    let newVoted = (this.voted === dir) ? '' : dir;
+                    
+                    // Optimistic UI update
+                    let diff = 0;
+                    if (this.voted === 'up') diff -= 1;
+                    if (this.voted === 'down') diff += 1;
+                    if (newVoted === 'up') diff += 1;
+                    if (newVoted === 'down') diff -= 1;
+                    
+                    this.score += diff;
+                    this.voted = newVoted;
+
+                    clearTimeout(this.voteTimer);
+                    this.voteTimer = setTimeout(() => {
+                        $wire.vote({{ $post->id }}, this.voted === 'up' ? 'up' : (this.voted === 'down' ? 'down' : 'none'));
+                    }, 400);
                  }
              }"
         >
             <button 
-                wire:click="vote({{ $post->id }}, 'up')"
-                wire:loading.attr="disabled"
                 @click="handleVote('up')"
-                :class="voted === 'up' ? 'bg-emerald-500 border-emerald-400 text-on-secondary shadow-[0_0_30px_rgba(52,211,153,0.4)] scale-110' : 'bg-surface-container-low text-on-surface-variant hover:text-emerald-400 hover:border-emerald-500/40 active:scale-95 border-white/5'"
-                class="w-14 h-14 rounded-2xl border flex items-center justify-center transition-all duration-300 group/vote"
+                wire:loading.attr="disabled"
+                :class="!canUp ? 'opacity-20 cursor-not-allowed contrast-50' : (voted === 'up' ? 'bg-emerald-500 border-emerald-400 text-on-secondary shadow-[0_0_30px_rgba(52,211,153,0.4)] scale-110' : 'bg-surface-container-low text-on-surface-variant hover:text-emerald-400 hover:border-emerald-500/40 active:scale-95 border-white/5')"
+                class="w-14 h-14 rounded-2xl border flex items-center justify-center transition-all duration-300 group/vote relative overflow-hidden"
             >
                 <svg class="w-6 h-6 transition-transform group-hover/vote:-translate-y-1" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="4"><path stroke-linecap="round" stroke-linejoin="round" d="M5 15l7-7 7 7"/></svg>
+                <template x-if="!canUp">
+                    <div class="absolute inset-0 flex items-center justify-center bg-black/40">
+                        <svg class="w-3.5 h-3.5 text-white/40" fill="currentColor" viewBox="0 0 24 24"><path d="M18 8h-1V6c0-2.76-2.24-5-5-5S7 3.24 7 6v2H6c-1.1 0-2 .9-2 2v10c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V10c0-1.1-.9-2-2-2zm-6 9c-1.1 0-2-.9-2-2s.9-2 2-2 2 .9 2 2-.9 2-2 2zm3.1-9H8.9V6c0-1.71 1.39-3.1 3.1-3.1s3.1 1.39 3.1 3.1v2z"/></svg>
+                    </div>
+                </template>
             </button>
             
             <div class="py-2 flex flex-col items-center select-none">
@@ -54,13 +72,17 @@
             </div>
             
             <button 
-                wire:click="vote({{ $post->id }}, 'down')"
-                wire:loading.attr="disabled"
                 @click="handleVote('down')"
-                :class="voted === 'down' ? 'bg-rose-500 text-black border-rose-400 shadow-[0_0_20px_rgba(244,63,94,0.3)] scale-110' : 'bg-surface-container-low text-on-surface-variant hover:text-rose-400 hover:border-rose-500/40 active:scale-95 border-white/5'"
-                class="w-14 h-14 rounded-2xl border flex items-center justify-center transition-all duration-300 group/vote"
+                wire:loading.attr="disabled"
+                :class="!canDown ? 'opacity-20 cursor-not-allowed contrast-50' : (voted === 'down' ? 'bg-rose-500 text-black border-rose-400 shadow-[0_0_20px_rgba(244,63,94,0.3)] scale-110' : 'bg-surface-container-low text-on-surface-variant hover:text-rose-400 hover:border-rose-500/40 active:scale-95 border-white/5')"
+                class="w-14 h-14 rounded-2xl border flex items-center justify-center transition-all duration-300 group/vote relative overflow-hidden"
             >
                 <svg class="w-6 h-6 transition-transform group-hover/vote:translate-y-1" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="4"><path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7"/></svg>
+                <template x-if="!canDown">
+                    <div class="absolute inset-0 flex items-center justify-center bg-black/40" title="{{ __('Contributor level required') }}">
+                        <svg class="w-3.5 h-3.5 text-white/40" fill="currentColor" viewBox="0 0 24 24"><path d="M18 8h-1V6c0-2.76-2.24-5-5-5S7 3.24 7 6v2H6c-1.1 0-2 .9-2 2v10c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V10c0-1.1-.9-2-2-2zm-6 9c-1.1 0-2-.9-2-2s.9-2 2-2 2 .9 2 2-.9 2-2 2zm3.1-9H8.9V6c0-1.71 1.39-3.1 3.1-3.1s3.1 1.39 3.1 3.1v2z"/></svg>
+                    </div>
+                </template>
             </button>
         </div>
 

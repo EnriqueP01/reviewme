@@ -20,6 +20,14 @@ class Profile extends Component
 
     public $perPage = 3;
 
+    public $period = 'year'; // week, month, year
+    public $readyToLoad = false;
+
+    public function loadData()
+    {
+        $this->readyToLoad = true;
+    }
+
     public function mount(?string $handle = null)
     {
         if ($handle) {
@@ -39,6 +47,12 @@ class Profile extends Component
     public function loadMore()
     {
         $this->perPage += 3;
+    }
+
+    public function setPeriod(string $period)
+    {
+        $this->period = $period;
+        Cache::forget("user_activity_heatmap_{$this->user->id}");
     }
 
     public function getIsOwnProfileProperty(): bool
@@ -71,52 +85,68 @@ class Profile extends Component
 
     public function getContributionsProperty()
     {
-        return Cache::remember("user_activity_heatmap_{$this->user->id}", 600, function () {
-            $since = now()->subDays(365);
+        if (!$this->readyToLoad) return [];
 
-            $posts = Post::where('user_id', $this->user->id)
-                ->where('created_at', '>=', $since)
+        return Cache::remember("user_activity_heatmap_{$this->user->id}_{$this->period}", 600, function () {
+            $daysMap = ['week' => 7, 'month' => 30, 'year' => 365];
+            $days = $daysMap[$this->period] ?? 365;
+            $since = now()->subDays($days);
+
+            // Requête groupée performante
+            $activity = \DB::table('posts')
                 ->selectRaw('DATE(created_at) as date, count(*) as count')
-                ->groupBy('date')
-                ->pluck('count', 'date')->toArray();
-
-            $reviews = FullReview::where('user_id', $this->user->id)
+                ->where('user_id', $this->user->id)
                 ->where('created_at', '>=', $since)
-                ->selectRaw('DATE(created_at) as date, count(*) as count')
                 ->groupBy('date')
-                ->pluck('count', 'date')->toArray();
+                ->unionAll(
+                    \DB::table('full_reviews')
+                        ->selectRaw('DATE(created_at) as date, count(*) as count')
+                        ->where('user_id', $this->user->id)
+                        ->where('created_at', '>=', $since)
+                        ->groupBy('date')
+                )
+                ->unionAll(
+                    \DB::table('post_comments')
+                        ->selectRaw('DATE(created_at) as date, count(*) as count')
+                        ->where('user_id', $this->user->id)
+                        ->where('created_at', '>=', $since)
+                        ->groupBy('date')
+                )
+                ->get();
 
-            $comments = PostComment::where('user_id', $this->user->id)
-                ->where('created_at', '>=', $since)
-                ->selectRaw('DATE(created_at) as date, count(*) as count')
-                ->groupBy('date')
-                ->pluck('count', 'date')->toArray();
-
-            $suggestions = InlineSuggestion::where('user_id', $this->user->id)
-                ->where('created_at', '>=', $since)
-                ->selectRaw('DATE(created_at) as date, count(*) as count')
-                ->groupBy('date')
-                ->pluck('count', 'date')->toArray();
-
-            // Fusionner toutes les dates uniques
-            $allDates = array_unique(array_merge(
-                array_keys($posts),
-                array_keys($reviews),
-                array_keys($comments),
-                array_keys($suggestions)
-            ));
-
-            $merged = [];
-            foreach ($allDates as $date) {
-                $merged[$date] = ($posts[$date] ?? 0) + ($reviews[$date] ?? 0) + ($comments[$date] ?? 0) + ($suggestions[$date] ?? 0);
-            }
-
-            return $merged;
+            return $activity->groupBy('date')->map->sum('count')->toArray();
         });
+    }
+
+    public function getActivityGridProperty()
+    {
+        if (!$this->readyToLoad) return [];
+
+        $daysMap = [
+            'week' => 7,
+            'month' => 30,
+            'year' => 140, // Affichage compact pour l'année
+        ];
+
+        $count = $daysMap[$this->period] ?? 140;
+        $contributions = $this->contributions;
+        $grid = [];
+
+        for ($i = 0; $i < $count; $i++) {
+            $date = now()->subDays($count - 1 - $i)->format('Y-m-d');
+            $grid[] = [
+                'date' => $date,
+                'count' => $contributions[$date] ?? 0,
+            ];
+        }
+
+        return $grid;
     }
 
     public function getRecentActivityProperty()
     {
+        if (!$this->readyToLoad) return collect();
+
         return $this->user->posts()
             ->withCount('reactions')
             ->latest()

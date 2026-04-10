@@ -13,6 +13,31 @@ class Reaction extends Model
 
     protected $fillable = ['user_id', 'reactable_id', 'reactable_type', 'type'];
 
+    /**
+     * Automatisation du Karma.
+     */
+    protected static function booted(): void
+    {
+        static::saved(function (Reaction $reaction) {
+            $reaction->updateAuthorKarma();
+        });
+
+        static::deleted(function (Reaction $reaction) {
+            $reaction->updateAuthorKarma();
+        });
+    }
+
+    /**
+     * Identifie l'auteur du contenu et recalcule son score.
+     */
+    protected function updateAuthorKarma(): void
+    {
+        $author = $this->reactable?->user;
+        if ($author) {
+            $author->recalculateReputationScore();
+        }
+    }
+
     public function user(): BelongsTo
     {
         return $this->belongsTo(User::class);
