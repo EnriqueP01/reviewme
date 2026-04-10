@@ -156,29 +156,38 @@ class PostDetail extends Component
     #[Renderless]
     public function toggleCommentLike(int $commentId, ToggleReactionAction $toggleReaction): void
     {
-        $comment = PostComment::findOrFail($commentId);
-        $toggleReaction->execute(Auth::user(), $comment, 'clean');
-        $this->refreshPost();
+        try {
+            $this->authorizeAction();
+            $comment = PostComment::findOrFail($commentId);
+            $toggleReaction->execute(Auth::user(), $comment, 'clean');
+            $this->refreshPost();
+        } catch (\Exception $e) {
+            $this->notifyError($e->getMessage());
+        }
     }
 
     #[Renderless]
     public function voteReview(int $reviewId, string $direction, ToggleReactionAction $toggleReaction): void
     {
-        $this->authorizeAction();
-        $review = FullReview::findOrFail($reviewId);
+        try {
+            $this->authorizeAction();
+            $review = FullReview::findOrFail($reviewId);
 
-        if ($direction === 'none') {
-            Reaction::where([
-                'user_id' => Auth::id(),
-                'reactable_id' => $review->id,
-                'reactable_type' => $review->getMorphClass(),
-            ])->delete();
+            if ($direction === 'none') {
+                Reaction::where([
+                    'user_id' => Auth::id(),
+                    'reactable_id' => $review->id,
+                    'reactable_type' => $review->getMorphClass(),
+                ])->delete();
 
-            return;
+                return;
+            }
+
+            $type = $direction === 'up' ? 'up' : 'down';
+            $toggleReaction->execute(Auth::user(), $review, $type);
+        } catch (\Exception $e) {
+            $this->notifyError($e->getMessage());
         }
-
-        $type = $direction === 'up' ? 'up' : 'down';
-        $toggleReaction->execute(Auth::user(), $review, $type);
     }
 
     // --- QUICK REVIEW (INLINE SUGGESTION) ---
@@ -195,26 +204,24 @@ class PostDetail extends Component
 
     public function saveInlineSuggestion(): void
     {
-        $this->authorizeAction();
-
-        if ($this->isAuthor()) {
-            session()->flash('error', __('You cannot suggest changes on your own post.'));
-
-            return;
-        }
-
-        Log::info('Attempting to save inline suggestion. User: '.Auth::id());
-
-        $this->validate([
-            'suggestionDescription' => 'required|min:3',
-            'suggestedContent' => 'required',
-        ], [
-            'suggestionDescription.required' => __('L\'explication est indispensable.'),
-            'suggestionDescription.min' => __('L\'explication est trop courte.'),
-            'suggestedContent.required' => __('Le code suggéré ne peut pas être vide.'),
-        ]);
-
         try {
+            $this->authorizeAction();
+
+            if ($this->isAuthor()) {
+                throw new \Exception(__('You cannot suggest changes on your own post.'));
+            }
+
+            Log::info('Attempting to save inline suggestion. User: '.Auth::id());
+
+            $this->validate([
+                'suggestionDescription' => 'required|min:3',
+                'suggestedContent' => 'required',
+            ], [
+                'suggestionDescription.required' => __('L\'explication est indispensable.'),
+                'suggestionDescription.min' => __('L\'explication est trop courte.'),
+                'suggestedContent.required' => __('Le code suggéré ne peut pas être vide.'),
+            ]);
+
             InlineSuggestion::create([
                 'user_id' => Auth::id(),
                 'snippet_id' => (int) $this->activeSnippetId,
@@ -229,7 +236,7 @@ class PostDetail extends Component
             $this->notifySuccess(__('Suggestion de refactoring enregistrée !'));
         } catch (\Exception $e) {
             Log::error('Error saving inline suggestion: '.$e->getMessage());
-            $this->notifyError(__('Erreur lors de l\'enregistrement.'));
+            $this->notifyError($e->getMessage());
         }
 
         $this->reset(['suggestingLine', 'suggestingEndLine', 'suggestionDescription', 'suggestedContent', 'originalContent']);
@@ -255,23 +262,21 @@ class PostDetail extends Component
 
     public function saveFullReview(): void
     {
-        $this->authorizeAction();
-
-        if ($this->isAuthor()) {
-            session()->flash('error', __('You cannot publish reviews on your own post.'));
-
-            return;
-        }
-
-        Log::info('Attempting to save full review. User: '.Auth::id());
-
-        $this->validate([
-            'reviewDescription' => 'required|min:3',
-        ], [
-            'reviewDescription.required' => __('L\'évaluation globale est requise.'),
-        ]);
-
         try {
+            $this->authorizeAction();
+
+            if ($this->isAuthor()) {
+                throw new \Exception(__('You cannot publish reviews on your own post.'));
+            }
+
+            Log::info('Attempting to save full review. User: '.Auth::id());
+
+            $this->validate([
+                'reviewDescription' => 'required|min:3',
+            ], [
+                'reviewDescription.required' => __('L\'évaluation globale est requise.'),
+            ]);
+
             DB::transaction(function () {
                 $fullReview = FullReview::create([
                     'user_id' => Auth::id(),
@@ -293,55 +298,64 @@ class PostDetail extends Component
 
             Log::info('Full review saved successfully.');
             $this->notifySuccess(__('Revue complète publiée avec succès !'));
+            $this->reset(['isReviewing', 'reviewDescription', 'reviewFilesData']);
+            $this->refreshPost();
         } catch (\Exception $e) {
             Log::error('Error saving full review: '.$e->getMessage());
-            $this->notifyError(__('Échec de la publication de la revue.'));
+            $this->notifyError($e->getMessage());
         }
-
-        $this->reset(['isReviewing', 'reviewDescription', 'reviewFilesData']);
-        $this->refreshPost();
     }
 
     public function deleteReview(int $reviewId): void
     {
-        $this->authorizeAction();
-        $review = FullReview::findOrFail($reviewId);
-        if (Auth::id() === $review->user_id) {
-            $review->delete();
-            Log::info("Review {$reviewId} deleted by owner.");
-            $this->notifySuccess(__('Revue supprimée avec succès.'));
+        try {
+            $this->authorizeAction();
+            $review = FullReview::findOrFail($reviewId);
+            if (Auth::id() === $review->user_id) {
+                $review->delete();
+                Log::info("Review {$reviewId} deleted by owner.");
+                $this->notifySuccess(__('Review deleted successfully.'));
+            } else {
+                throw new \Exception(__('Unauthorized action.'));
+            }
+        } catch (\Exception $e) {
+            $this->notifyError($e->getMessage());
         }
         $this->refreshPost();
     }
 
     public function deletePost(): void
     {
-        $this->authorizeAction();
-        if (! $this->isAuthor() && ! Auth::user()->is_admin) {
-            $this->notifyError(__('Action non autorisée.'));
+        try {
+            $this->authorizeAction();
+            if (! $this->isAuthor() && ! Auth::user()->is_admin) {
+                throw new \Exception(__('Unauthorized action.'));
+            }
 
-            return;
+            $this->post->delete();
+            session()->flash('success', __('Publication supprimée du système.'));
+            $this->redirect(route('feed'));
+        } catch (\Exception $e) {
+            $this->notifyError($e->getMessage());
         }
-
-        $this->post->delete();
-        session()->flash('success', __('Publication supprimée du système.'));
-        $this->redirect(route('feed'));
     }
 
     public function deleteComment(int $commentId): void
     {
-        $this->authorizeAction();
-        $comment = PostComment::findOrFail($commentId);
+        try {
+            $this->authorizeAction();
+            $comment = PostComment::findOrFail($commentId);
 
-        if (Auth::id() !== $comment->user_id && ! $this->isAuthor() && ! Auth::user()->is_admin) {
-            $this->notifyError(__('Action non autorisée.'));
+            if (Auth::id() !== $comment->user_id && ! $this->isAuthor() && ! Auth::user()->is_admin) {
+                throw new \Exception(__('Unauthorized action.'));
+            }
 
-            return;
+            $comment->delete();
+            $this->notifySuccess(__('Comment removed.'));
+            $this->refreshPost();
+        } catch (\Exception $e) {
+            $this->notifyError($e->getMessage());
         }
-
-        $comment->delete();
-        $this->notifySuccess(__('Commentaire retiré.'));
-        $this->refreshPost();
     }
 
     public function refreshPost(): void
@@ -393,7 +407,7 @@ class PostDetail extends Component
     {
         if (! Auth::check()) {
             $this->redirect(route('login'));
-            throw new \Exception('Unauthorized');
+            throw new \Exception(__('Unauthorized'));
         }
     }
 

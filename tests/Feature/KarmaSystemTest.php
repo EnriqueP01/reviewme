@@ -38,7 +38,7 @@ class KarmaSystemTest extends TestCase
         $action = app(ToggleReactionAction::class);
 
         $this->expectException(\Exception::class);
-        $this->expectExceptionMessage('Niveau insuffisant pour voter DOWN');
+        $this->expectExceptionMessage('Insufficient reputation to vote DOWN');
 
         $action->execute($user, $post, 'down');
     }
