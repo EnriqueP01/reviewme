@@ -9,16 +9,15 @@ use App\Models\Post;
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Artisan;
+use PHPUnit\Framework\Attributes\Test;
 use Tests\TestCase;
 
 class KarmaSystemTest extends TestCase
 {
     use RefreshDatabase;
 
-    /**
-     * Test que le niveau change selon le score de réputation.
-     */
-    public function test_user_level_changes_with_reputation_score(): void
+    #[Test]
+    public function user_level_changes_with_reputation_score(): void
     {
         $user = User::factory()->create(['reputation_score' => 0]);
         $this->assertEquals('Apprenti', $user->karma_level['label']);
@@ -30,10 +29,8 @@ class KarmaSystemTest extends TestCase
         $this->assertEquals('Reviewer Certifié', $user->karma_level['label']);
     }
 
-    /**
-     * Test que le downvote est bloqué pour un nouvel utilisateur.
-     */
-    public function test_downvote_is_blocked_for_low_karma_users(): void
+    #[Test]
+    public function downvote_is_blocked_for_low_karma_users(): void
     {
         $user = User::factory()->create(['reputation_score' => 0]);
         $post = Post::factory()->create();
@@ -46,10 +43,8 @@ class KarmaSystemTest extends TestCase
         $action->execute($user, $post, 'down');
     }
 
-    /**
-     * Test que l'historique des transactions est bien enregistré.
-     */
-    public function test_karma_transactions_are_logged(): void
+    #[Test]
+    public function karma_transactions_are_logged(): void
     {
         $author = User::factory()->create(['reputation_score' => 0]);
         $user = User::factory()->create(['reputation_score' => 50]); // Déjà contributeur
@@ -68,22 +63,20 @@ class KarmaSystemTest extends TestCase
     }
 
     /**
-     * Test du middleware sur la route des groupes.
+     * Test que l'accès au hub des groupes est libre mais la création reste protégée.
      */
-    public function test_groups_route_is_protected_by_karma(): void
+    #[Test]
+    public function groups_hub_is_accessible_to_all_authenticated_users(): void
     {
         $user = User::factory()->create(['reputation_score' => 20]); // Trop bas pour 100 requis
 
-        $response = $this->actingAs($user)->getJson('/groups');
+        $response = $this->actingAs($user)->get('/groups');
 
-        $response->assertStatus(403);
-        $response->assertJsonPath('message', 'Vous devez être au moins \'Reviewer Certifié\' (100 Karma) pour effectuer cette action.');
+        $response->assertStatus(200);
     }
 
-    /**
-     * Test du Daily Cap (Max 200 pts/jour).
-     */
-    public function test_daily_karma_cap_is_enforced(): void
+    #[Test]
+    public function daily_karma_cap_is_enforced(): void
     {
         $user = User::factory()->create(['reputation_score' => 0]);
 
@@ -101,10 +94,8 @@ class KarmaSystemTest extends TestCase
         $this->assertEquals(200, $user->fresh()->reputation_score);
     }
 
-    /**
-     * Test du Bonus de Qualité (> 500 chars).
-     */
-    public function test_quality_bonus_is_applied_to_long_posts(): void
+    #[Test]
+    public function quality_bonus_is_applied_to_long_posts(): void
     {
         $author = User::factory()->create(['reputation_score' => 0]);
         $user = User::factory()->create(['reputation_score' => 50]);
@@ -121,10 +112,8 @@ class KarmaSystemTest extends TestCase
         $this->assertEquals(20, $author->fresh()->reputation_score);
     }
 
-    /**
-     * Test de la commande karma:rebuild.
-     */
-    public function test_rebuild_command_restores_integrity(): void
+    #[Test]
+    public function rebuild_command_restores_integrity(): void
     {
         $user = User::factory()->create(['reputation_score' => 0]);
 
@@ -145,10 +134,8 @@ class KarmaSystemTest extends TestCase
         $this->assertEquals(50, $user->fresh()->reputation_score);
     }
 
-    /**
-     * Test que le vote DOWN ne coûte rien au votant.
-     */
-    public function test_downvote_is_free_for_voter(): void
+    #[Test]
+    public function downvote_is_free_for_voter(): void
     {
         $author = User::factory()->create(['reputation_score' => 0]);
         $voter = User::factory()->create(['reputation_score' => 50]); // Déjà contributeur

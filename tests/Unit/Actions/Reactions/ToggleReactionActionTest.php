@@ -9,6 +9,7 @@ use App\Models\Post;
 use App\Models\Reaction;
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use PHPUnit\Framework\Attributes\Test;
 use Tests\TestCase;
 
 class ToggleReactionActionTest extends TestCase
@@ -24,7 +25,7 @@ class ToggleReactionActionTest extends TestCase
         $this->action = app(ToggleReactionAction::class);
     }
 
-    /** @test */
+    #[Test]
     public function it_adds_a_reaction_and_updates_reputation(): void
     {
         $voter = User::factory()->create();
@@ -43,7 +44,7 @@ class ToggleReactionActionTest extends TestCase
         $this->assertEquals(10, $author->fresh()->reputation_score);
     }
 
-    /** @test */
+    #[Test]
     public function it_removes_a_reaction_on_toggle_off(): void
     {
         $voter = User::factory()->create();

@@ -4,13 +4,14 @@ namespace Tests\Feature;
 
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use PHPUnit\Framework\Attributes\Test;
 use Tests\TestCase;
 
 class UserProfileTest extends TestCase
 {
     use RefreshDatabase;
 
-    /** @test */
+    #[Test]
     public function users_can_view_a_profile_by_handle()
     {
         $user = User::factory()->create([
@@ -28,7 +29,7 @@ class UserProfileTest extends TestCase
         $response->assertSee('Sample bio content');
     }
 
-    /** @test */
+    #[Test]
     public function users_can_update_their_profile_including_handle_and_bio()
     {
         $user = User::factory()->create([

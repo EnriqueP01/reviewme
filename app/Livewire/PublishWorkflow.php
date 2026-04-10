@@ -166,6 +166,9 @@ class PublishWorkflow extends Component
     public function updatedFiles($value, $key)
     {
         $parts = explode('.', $key);
+        if (count($parts) < 2) {
+            return;
+        }
         $index = (int) $parts[count($parts) - 2];
 
         if (str_ends_with($key, '.name')) {

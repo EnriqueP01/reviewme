@@ -7,6 +7,8 @@ namespace Tests\Unit\Actions\Reactions;
 use App\Actions\Reactions\UpdateUserReputationAction;
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use PHPUnit\Framework\Attributes\DataProvider;
+use PHPUnit\Framework\Attributes\Test;
 use Tests\TestCase;
 
 class UpdateUserReputationActionTest extends TestCase
@@ -21,11 +23,8 @@ class UpdateUserReputationActionTest extends TestCase
         $this->action = app(UpdateUserReputationAction::class);
     }
 
-    /**
-     * @test
-     *
-     * @dataProvider reputationProvider
-     */
+    #[Test]
+    #[DataProvider('reputationProvider')]
     public function it_calculates_correct_reputation_impact(string $type, string $action, int $expectedDelta, ?string $oldType = null): void
     {
         /** @var User $user */
