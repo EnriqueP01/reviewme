@@ -9,6 +9,11 @@
         }
     }"
 >
+    <!-- Back Button -->
+    <div class="mb-4">
+        <x-ui.back-button fallback="{{ route('dashboard') }}" />
+    </div>
+
     <style>[x-cloak] { display: none !important; }</style>
     <!-- Stepper Navigation -->
     <div class="mb-16 relative mx-auto max-w-2xl">

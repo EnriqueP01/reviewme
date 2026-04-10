@@ -1,5 +1,8 @@
 <x-app-layout>
     <div class="py-10 max-w-7xl mx-auto px-8 lg:px-12 stagger-in">
+        <div class="mb-8">
+            <x-ui.back-button fallback="{{ route('dashboard') }}" />
+        </div>
         <div class="flex flex-col lg:flex-row items-start gap-12">
             
             <!-- Sidebar header: Compact & Aligned -->
