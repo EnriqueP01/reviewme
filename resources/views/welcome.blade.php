@@ -89,6 +89,33 @@
             </div>
         </section>
 
+        <!-- Live Pulse Stats (Real Data) -->
+        <div class="max-w-7xl mx-auto px-6 lg:px-12 -mt-12 relative z-20">
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                <div class="glass-panel p-8 rounded-[2rem] border-white/5 shadow-2xl group hover:border-primary/20 transition-all duration-700">
+                    <div class="flex items-center justify-between mb-4">
+                        <span class="text-[9px] font-black uppercase tracking-[0.3em] text-on-surface-variant opacity-40">{{ __('Contributors') }}</span>
+                        <div class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></div>
+                    </div>
+                    <div class="text-4xl font-display font-black text-on-surface group-hover:text-primary transition-colors">{{ \App\Models\User::count() }}</div>
+                </div>
+                <div class="glass-panel p-8 rounded-[2rem] border-white/5 shadow-2xl group hover:border-secondary/20 transition-all duration-700">
+                    <div class="flex items-center justify-between mb-4">
+                        <span class="text-[9px] font-black uppercase tracking-[0.3em] text-on-surface-variant opacity-40">{{ __('Architecture Posts') }}</span>
+                        <div class="w-2 h-2 rounded-full bg-primary/40"></div>
+                    </div>
+                    <div class="text-4xl font-display font-black text-on-surface group-hover:text-secondary transition-colors">{{ \App\Models\Post::count() }}</div>
+                </div>
+                <div class="glass-panel p-8 rounded-[2rem] border-white/5 shadow-2xl group hover:border-tertiary/20 transition-all duration-700">
+                    <div class="flex items-center justify-between mb-4">
+                        <span class="text-[9px] font-black uppercase tracking-[0.3em] text-on-surface-variant opacity-40">{{ __('Peer Evaluations') }}</span>
+                        <div class="w-2 h-2 rounded-full bg-tertiary/40"></div>
+                    </div>
+                    <div class="text-4xl font-display font-black text-on-surface group-hover:text-tertiary transition-colors">{{ \App\Models\FullReview::count() }}</div>
+                </div>
+            </div>
+        </div>
+
         <!-- Premium Separator -->
         <div class="max-w-7xl mx-auto px-12 py-8">
             <div class="glow-divider" x-intersect="$el.classList.add('visible')"></div>

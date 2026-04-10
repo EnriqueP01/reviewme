@@ -92,7 +92,7 @@
                                 <div class="mt-4 glass-panel overflow-hidden rounded-[2rem] border border-white/10 shadow-[0_30px_80px_-20px_rgba(0,0,0,0.8)] animate-fade-in-up">
                                     <!-- Profile Capsule -->
                                     <div class="relative p-8 bg-white/[0.03] border-b border-white/5">
-                                        <div class="absolute top-4 right-4 text-[8px] font-black uppercase tracking-widest text-primary/40">{{ __('Member') }}</div>
+                                        <div class="absolute top-4 right-4 text-[8px] font-black uppercase tracking-widest text-primary/40">{{ Auth::user()->karma_level['label'] }}</div>
                                         <div class="flex items-center gap-6">
                                             <div class="w-16 h-16 rounded-2xl bg-primary text-on-primary flex items-center justify-center text-3xl font-display font-black italic shadow-2xl overflow-hidden">
                                                  <img src="{{ Auth::user()->profile_photo_url }}" alt="{{ Auth::user()->name }}" class="w-full h-full object-cover">
@@ -101,8 +101,16 @@
                                                 <span class="text-sm font-black text-on-surface leading-none">{{ Auth::user()->name }}</span>
                                                 <span class="text-[10px] font-medium text-on-surface-variant mt-2 opacity-60">{{ Auth::user()->email }}</span>
                                                 <div class="mt-3 flex items-center gap-2">
+                                                    @php
+                                                        $level = Auth::user()->karma_level;
+                                                        $levels = config('karma.levels');
+                                                        $nextLevel = collect($levels)->first(fn($l) => $l['min_score'] > Auth::user()->reputation_score);
+                                                        $percent = $nextLevel 
+                                                            ? min(100, (Auth::user()->reputation_score - $level['min_score']) / ($nextLevel['min_score'] - $level['min_score']) * 100)
+                                                            : 100;
+                                                    @endphp
                                                     <div class="h-1.5 w-16 bg-white/5 rounded-full overflow-hidden">
-                                                        <div class="h-full bg-primary w-2/3"></div>
+                                                        <div class="h-full bg-primary transition-all duration-1000" style="width: {{ $percent }}%"></div>
                                                     </div>
                                                     <span class="text-[8px] font-black uppercase text-primary">Rep {{ Auth::user()->reputation_score }}</span>
                                                 </div>

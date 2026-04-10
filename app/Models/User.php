@@ -206,6 +206,14 @@ class User extends Authenticatable
 
         $this->update(['reputation_score' => max(0, $score)]);
     }
+    public function getKarmaGainedTodayAttribute(): int
+    {
+        return (int) $this->karmaTransactions()
+            ->whereDate('created_at', now()->toDateString())
+            ->where('points', '>', 0)
+            ->sum('points');
+    }
+
     public function recordContribution(): void
     {
         UserContribution::record($this->id);
