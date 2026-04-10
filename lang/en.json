@@ -18,6 +18,8 @@
     "Shares": "Shares",
     "Review": "Review",
     "Details": "Details",
+    "Posts": "Posts",
+    "Group Members": "Group Members",
     "Title": "Title",
     "Summary": "Summary",
     "Review Goals": "Review Goals",
@@ -344,5 +346,7 @@
     "Critical Action: Delete Post": "Critical Action: Delete Post",
     "This action is irreversible. The source code, activity feed, and associated reviews will be permanently purged from the system.": "This action is irreversible. The source code, activity feed, and associated reviews will be permanently purged from the system.",
     "Purge Post": "Purge Post",
-    "Leave Group": "Leave Group"
+    "Leave Group": "Leave Group",
+    "Posts": "Posts",
+    "Group Members": "Group Members"
 }
