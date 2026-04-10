@@ -12,6 +12,7 @@ use App\Models\InlineSuggestion;
 use App\Models\Post;
 use App\Models\PostComment;
 use App\Models\Reaction;
+use App\Models\UserContribution;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
@@ -76,7 +77,6 @@ class PostDetail extends Component
 
     public function mount(int $postId): void
     {
-        Log::info("Mounting PostDetail for post {$postId}");
         $this->postId = $postId;
         $this->post = Post::findOrFail($postId); // On ne charge que le strict minimum ici
 
@@ -109,7 +109,6 @@ class PostDetail extends Component
     {
         $this->vibeAction(function() use ($parentId, $fullReviewId) {
             $this->authorizeAction('post.comment');
-            Log::info("Saving global comment. Parent: {$parentId}, Review: {$fullReviewId}");
 
             $content = $parentId ? $this->replyContent : ($fullReviewId ? $this->reviewCommentContent : $this->globalCommentContent);
 
@@ -124,6 +123,8 @@ class PostDetail extends Component
                 parentId: $parentId,
                 fullReviewId: $fullReviewId
             );
+
+            UserContribution::record(Auth::id());
 
             $this->reset(['globalCommentContent', 'replyContent', 'reviewCommentContent', 'replyToId']);
             $this->refreshPost();
@@ -189,7 +190,6 @@ class PostDetail extends Component
 
     public function setInlineSuggestion(int $snippetId, int $start, int $end, string $original): void
     {
-        Log::info("Setting inline suggestion prompt. Snippet: {$snippetId}, Lines: {$start}-{$end}");
         $this->activeSnippetId = $snippetId;
         $this->suggestingLine = $start;
         $this->suggestingEndLine = $end;
@@ -205,8 +205,6 @@ class PostDetail extends Component
             if ($this->isAuthor()) {
                 throw new \Exception(__('You cannot suggest changes on your own post.'));
             }
-
-            Log::info('Attempting to save inline suggestion. User: '.Auth::id());
 
             $this->validate([
                 'suggestionDescription' => 'required|min:3',
@@ -227,7 +225,7 @@ class PostDetail extends Component
                 'description' => (string) $this->suggestionDescription,
             ]);
 
-            Log::info('Inline suggestion saved successfully.');
+            UserContribution::record(Auth::id());
         }, __('Suggestion de refactoring enregistrée !'));
 
         $this->reset(['suggestingLine', 'suggestingEndLine', 'suggestionDescription', 'suggestedContent', 'originalContent']);
@@ -260,8 +258,6 @@ class PostDetail extends Component
                 throw new \Exception(__('You cannot publish reviews on your own post.'));
             }
 
-            Log::info('Attempting to save full review. User: '.Auth::id());
-
             $this->validate([
                 'reviewDescription' => 'required|min:3',
             ], [
@@ -285,9 +281,9 @@ class PostDetail extends Component
                         ]);
                     }
                 }
-            });
 
-            Log::info('Full review saved successfully.');
+                UserContribution::record(Auth::id());
+            });
             $this->reset(['isReviewing', 'reviewDescription', 'reviewFilesData']);
             $this->refreshPost();
         }, __('Revue complète publiée avec succès !'));
@@ -298,9 +294,8 @@ class PostDetail extends Component
         $this->vibeAction(function() use ($reviewId) {
             $this->authorizeAction();
             $review = FullReview::findOrFail($reviewId);
-            if (Auth::id() === $review->user_id) {
+            if (Auth::id() === $review->user_id || Auth::user()->is_admin || Auth::user()->hasKarmaPermission('platform.moderation')) {
                 $review->delete();
-                Log::info("Review {$reviewId} deleted by owner.");
                 $this->refreshPost();
             } else {
                 throw new \Exception(__('Unauthorized action.'));
@@ -312,7 +307,7 @@ class PostDetail extends Component
     {
         $this->vibeAction(function() {
             $this->authorizeAction();
-            if (! $this->isAuthor() && ! Auth::user()->is_admin) {
+            if (! $this->isAuthor() && ! Auth::user()->is_admin && ! Auth::user()->hasKarmaPermission('platform.moderation')) {
                 throw new \Exception(__('Unauthorized action.'));
             }
 
@@ -328,7 +323,7 @@ class PostDetail extends Component
             $this->authorizeAction();
             $comment = PostComment::findOrFail($commentId);
 
-            if (Auth::id() !== $comment->user_id && ! $this->isAuthor() && ! Auth::user()->is_admin) {
+            if (Auth::id() !== $comment->user_id && ! $this->isAuthor() && ! Auth::user()->is_admin && ! Auth::user()->hasKarmaPermission('platform.moderation')) {
                 throw new \Exception(__('Unauthorized action.'));
             }
 

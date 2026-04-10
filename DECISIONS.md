@@ -867,3 +867,14 @@ The initial "Monolith & The Lens" implementation was too spacious, creating layo
     3. **Unification du Feedback (VibeAction)** : Utilisation systÈmatique du trait HasVibeNotifications pour transformer les exceptions d'autorisation en notifications Toast 'Premium' (avec retour sonore et visuel), garantissant une expÈrience transparente et Èducative.
     4. **Audit d'IntÈgritÈ des RÙles** : VÈrification complËte de la chaÓne de permissions (Unranked -> Contributor -> Reviewer -> Expert -> Elite) pour assurer la cohÈrence des droits de modÈration et de contribution.
 - **Impact** : Protection totale de l'intÈgritÈ des donnÈes, Èlimination des vecteurs d'attaque par simulateur de clavier et renforcement de l'aspect mÈritocratique de la plateforme.
+
+# [085] 2026-04-10 : Synchronisation de l'Activit√© et de la R√©putation en Temps R√©el
+- **Auteur** : Antigravity
+- **Statut** : ‚úÖ Impl√©ment√©
+- **Contexte** : Les statistiques du profil (heatmap d'activit√© et score de r√©putation) ne se mettaient pas √† jour dynamiquement lors des interactions sur le site.
+- **D√©cisions** :
+    1. **Automatisation des Contributions** : Ajout d'une m√©thode `UserContribution::record()` et injection dans tous les points d'interaction (Post, Commentaire, Suggestion, Revue, R√©action).
+    2. **Recalibrage de la R√©putation** : Correction de la m√©thode `recalculateReputationScore` dans `User.php` pour s'aligner sur les types de r√©actions r√©els (`mindblown`, `optimisable`).
+    3. **Optimisation du Cache Heatmap** : R√©duction de la dur√©e du cache de 600s √† 10s dans `Profile.php` pour un feedback visuel quasi instantan√©.
+    4. **Correction UI (Vue Profil)** : Calcul du score net des publications (`Up - Down`) dans la liste des contenus du profil.
+- **Impact** : Plateforme vivante o√π chaque action est valoris√©e et visible imm√©diatement, renfor√ßant l'engagement utilisateur.

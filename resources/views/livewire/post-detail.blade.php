@@ -1,4 +1,4 @@
-<div class="w-full max-w-none px-12 py-6"
+<div class="w-full max-w-none px-12 py-6 space-y-8"
      x-data="{
         isReviewing: @entangle('isReviewing'),
         suggestingLine: @entangle('suggestingLine'),
@@ -46,7 +46,6 @@
             this.selectionPopup.show = false;
         }
      }"
-     class="w-full space-y-8"
      wire:init="loadData"
 >
 
@@ -152,7 +151,7 @@
             </div>
 
             <div class="flex flex-wrap items-center gap-6 xl:gap-10 relative shrink-0">
-                @if($this->isAuthor() || Auth::user()?->is_admin)
+                @if($this->isAuthor() || Auth::user()?->is_admin || Auth::user()?->hasKarmaPermission('platform.moderation'))
                     <button 
                         x-on:click="$dispatch('open-modal', 'delete-post-modal')"
                         class="p-4 rounded-2xl bg-rose-500/5 hover:bg-rose-500/10 border border-rose-500/10 text-rose-500 transition-all group/delete"
@@ -540,7 +539,7 @@
                                                         <input type="text"
                                                                wire:model="reviewCommentContent"
                                                                wire:key="fr-comment-input-{{ $fr->id }}"
-                                                               wire:keydown.enter="if(canComment) { $wire.saveGlobalComment(null, {{ $fr->id }}) } else { $dispatch('vibe-notif', { type: 'error', message: karmaError }) }"
+                                                               x-on:keydown.enter.prevent="if(canComment) { $wire.saveGlobalComment(null, {{ $fr->id }}); } else { $dispatch('vibe-notif', { type: 'error', message: karmaError }); }"
                                                                placeholder="{{ __('Example: \'How does this refactoring impact the hydration cost? Can we ensure the Reactive Store handles this asynchronously?\'') }}"
                                                                class="bg-transparent border-none flex-1 py-3 text-sm text-on-surface focus:ring-0 placeholder:text-on-surface-variant/20 font-semibold italic">
                                                         <button type="button" wire:click="saveGlobalComment(null, {{ $fr->id }})" class="p-3 rounded-2xl bg-primary text-on-primary hover:scale-105 active:scale-95 transition-all">
@@ -600,7 +599,7 @@
                             <input type="text"
                                    wire:model="globalCommentContent"
                                    wire:key="global-comment-input-{{ $post->id }}"
-                                   wire:keydown.enter="if(canComment) { $wire.saveGlobalComment() } else { $dispatch('vibe-notif', { type: 'error', message: karmaError }) }"
+                                   x-on:keydown.enter.prevent="if(canComment) { $wire.saveGlobalComment(); } else { $dispatch('vibe-notif', { type: 'error', message: karmaError }); }"
                                    placeholder="{{ __('Example: \'The database indexing strategy on the metadata JSON field seems suboptimal for large datasets. I suspect it might lead to full table scans.\'') }}"
                                    class="bg-transparent border-none flex-1 py-3 text-sm text-on-surface focus:ring-0 placeholder:text-on-surface-variant/20 font-semibold tracking-tight">
                             @php $canComment = Auth::user()?->hasKarmaPermission('post.comment'); @endphp
@@ -680,7 +679,7 @@
                                             {{ __('Reply') }}
                                         </button>
 
-                                        @if($comment->user_id === Auth::id() || $this->isAuthor() || Auth::user()?->is_admin)
+                                        @if($comment->user_id === Auth::id() || $this->isAuthor() || Auth::user()?->is_admin || Auth::user()?->hasKarmaPermission('platform.moderation'))
                                             <button
                                                 x-on:click="$dispatch('open-modal', { name: 'confirm-comment-deletion', id: {{ $comment->id }} })"
                                                 class="text-[9px] font-black uppercase tracking-[0.3em] text-rose-500/30 hover:text-rose-500 transition-all flex items-center gap-2"
@@ -697,7 +696,7 @@
                                             <input type="text"
                                                    wire:model="replyContent"
                                                    wire:key="reply-input-{{ $comment->id }}"
-                                                   wire:keydown.enter="if(canComment) { $wire.saveGlobalComment({{ $comment->id }}) } else { $dispatch('vibe-notif', { type: 'error', message: karmaError }) }"
+                                                   x-on:keydown.enter.prevent="if(canComment) { $wire.saveGlobalComment({{ $comment->id }}); } else { $dispatch('vibe-notif', { type: 'error', message: karmaError }); }"
                                                    placeholder="{{ __('Example: \'I see your point about Big-O complexity, but given our data volume, readability is currently our priority.\'') }}"
                                                    class="bg-transparent border-none flex-1 py-3 text-sm text-on-surface focus:ring-0 placeholder:text-on-surface-variant/20 font-semibold">
                                             <button wire:click="saveGlobalComment({{ $comment->id }})" x-on:click="if($wire.replyContent.length > 0) { setTimeout(() => { replying = false; }, 200) }" class="mr-2 p-3 rounded-2xl bg-primary text-on-primary hover:scale-105 active:scale-95 transition-all">
@@ -721,15 +720,28 @@
                                                             </span>
                                                         </div>
                                                         <p class="text-sm text-on-surface-variant opacity-80 leading-relaxed">{{ $reply->content }}</p>
-                                                        <div class="flex items-center gap-4 pt-1">
-                                                            <button x-on:click="if(canLike) { $wire.toggleCommentLike({{ $reply->id }}); } else { $dispatch('vibe-notif', { type: 'error', message: karmaError }); }"
-                                                                    class="flex items-center gap-2 group/rlike transition-all active:scale-90"
-                                                                    ::class="!canLike ? 'opacity-20 cursor-not-allowed' : ''">
-                                                                <svg class="w-3.5 h-3.5 {{ $reply->reactions->where('user_id', Auth::id())->count() > 0 ? 'text-emerald-400 fill-emerald-400 scale-110' : 'text-on-surface-variant/20 group-hover/rlike:text-emerald-400' }} transition-all" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" stroke-width="3"/></svg>
-                                                                <span class="text-[10px] font-black {{ $reply->reactions->count() > 0 ? 'text-on-surface/60' : 'text-on-surface-variant/10' }}">{{ $reply->reactions->count() }}</span>
-                                                            </button>
+                                                            <div class="flex items-center gap-4 pt-1"
+                                                                 x-data="{
+                                                                    likes: {{ $reply->reactions->count() }},
+                                                                    isLiked: {{ $reply->reactions->where('user_id', Auth::id())->count() > 0 ? 'true' : 'false' }},
+                                                                    toggle() {
+                                                                        if (!canLike) {
+                                                                            $dispatch('vibe-notif', { type: 'error', message: karmaError });
+                                                                            return;
+                                                                        }
+                                                                        this.isLiked = !this.isLiked;
+                                                                        this.likes = this.isLiked ? this.likes + 1 : this.likes - 1;
+                                                                        $wire.toggleCommentLike({{ $reply->id }});
+                                                                    }
+                                                                 }">
+                                                                <button x-on:click="toggle()"
+                                                                        class="flex items-center gap-2 group/rlike transition-all active:scale-90"
+                                                                        ::class="!canLike ? 'opacity-20 cursor-not-allowed' : ''">
+                                                                    <svg class="w-3.5 h-3.5 transition-all duration-300" :class="isLiked ? 'text-emerald-400 fill-emerald-400 scale-110' : 'text-on-surface-variant/20 group-hover/rlike:text-emerald-400'" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" stroke-width="3"/></svg>
+                                                                    <span class="text-[10px] font-black transition-colors" :class="likes > 0 ? 'text-on-surface/60' : 'text-on-surface-variant/10'" x-text="likes"></span>
+                                                                </button>
 
-                                                            @if($reply->user_id === Auth::id() || $this->isAuthor() || Auth::user()?->is_admin)
+                                                            @if($reply->user_id === Auth::id() || $this->isAuthor() || Auth::user()?->is_admin || Auth::user()?->hasKarmaPermission('platform.moderation'))
                                                                 <button
                                                                     x-on:click="$dispatch('open-modal', { name: 'confirm-comment-deletion', id: {{ $reply->id }} })"
                                                                     class="text-[8px] font-black uppercase tracking-widest text-rose-500/20 hover:text-rose-500 transition-all flex items-center gap-2 px-2"
@@ -838,24 +850,28 @@
 @endif
     </div>
 
-    <x-ui.confirm-modal 
-        name="delete-post-modal" 
-        title="{{ __('Critical Action: Delete Post') }}" 
-        content="{{ __('This action is irreversible. The source code, activity feed, and associated reviews will be permanently purged from the system.') }}"
-        confirmText="{{ __('Purge Post') }}"
-        variant="danger"
-        wire:click="deletePost"
-        x-on:click="show = false"
-    />
-
-    <div x-data="{ commentIdToDelete: null }" x-on:open-modal.window="if($event.detail.name === 'confirm-comment-deletion') commentIdToDelete = $event.detail.id">
+    <template x-teleport="body">
         <x-ui.confirm-modal 
-            name="confirm-comment-deletion" 
-            title="{{ __('Confirm Deletion') }}" 
-            content="{{ __('Are you sure you want to remove this comment?') }}"
-            confirmText="{{ __('Delete') }}"
+            name="delete-post-modal" 
+            title="{{ __('Critical Action: Delete Post') }}" 
+            content="{{ __('This action is irreversible. The source code, activity feed, and associated reviews will be permanently purged from the system.') }}"
+            confirmText="{{ __('Purge Post') }}"
             variant="danger"
-            x-on:confirm="$wire.deleteComment(commentIdToDelete); show = false"
+            wire:click="deletePost"
+            x-on:click="show = false"
         />
-    </div>
+    </template>
+
+    <template x-teleport="body">
+        <div x-data="{ commentIdToDelete: null }" x-on:open-modal.window="if($event.detail.name === 'confirm-comment-deletion') commentIdToDelete = $event.detail.id">
+            <x-ui.confirm-modal 
+                name="confirm-comment-deletion" 
+                title="{{ __('Confirm Deletion') }}" 
+                content="{{ __('Are you sure you want to remove this comment?') }}"
+                confirmText="{{ __('Delete') }}"
+                variant="danger"
+                x-on:click="$wire.deleteComment(commentIdToDelete); show = false"
+            />
+        </div>
+    </template>
 </div>

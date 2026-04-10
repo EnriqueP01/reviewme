@@ -11,6 +11,7 @@ use App\Models\Reaction;
 use App\Models\Review;
 use App\Models\Snippet;
 use App\Models\User;
+use App\Models\UserContribution;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\DB;
 
@@ -94,6 +95,9 @@ final class ToggleReactionAction
             if ($author) {
                 $this->updateReputation->execute($author, $type, 'add', null, $reactable);
             }
+
+            // Enregistre l'activité de celui qui réagit
+            UserContribution::record($user->id);
 
             return $reaction;
         });

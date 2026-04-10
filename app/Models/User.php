@@ -134,6 +134,11 @@ class User extends Authenticatable
         return $this->hasMany(UserSkill::class);
     }
 
+    public function contributions(): HasMany
+    {
+        return $this->hasMany(UserContribution::class);
+    }
+
     /**
      * Obtient les détails du niveau actuel de l'utilisateur.
      */
@@ -180,9 +185,9 @@ class User extends Authenticatable
 
         // 1. Karma des Posts (Upvotes/Downvotes)
         $this->posts()->withCount(['reactions as upvotes' => function ($q) {
-            $q->where('type', 'upvote');
+            $q->where('type', 'mindblown');
         }, 'reactions as downvotes' => function ($q) {
-            $q->where('type', 'downvote');
+            $q->where('type', 'optimisable');
         }])->get()->each(function ($post) use (&$score, $rewards) {
             $score += $post->upvotes * ($rewards['post_upvote'] ?? 10);
             $score += $post->downvotes * ($rewards['post_downvote'] ?? -2);
@@ -190,9 +195,9 @@ class User extends Authenticatable
 
         // 2. Karma des Full Reviews
         $this->fullReviews()->withCount(['reactions as upvotes' => function ($q) {
-            $q->where('type', 'upvote');
+            $q->where('type', 'up');
         }, 'reactions as downvotes' => function ($q) {
-            $q->where('type', 'downvote');
+            $q->where('type', 'down');
         }])->get()->each(function ($review) use (&$score, $rewards) {
             $score += $review->upvotes * ($rewards['review_upvote'] ?? 15);
             $score += $review->downvotes * ($rewards['post_downvote'] ?? -2);
@@ -203,9 +208,6 @@ class User extends Authenticatable
     }
     public function recordContribution(): void
     {
-        UserContribution::updateOrCreate(
-            ['user_id' => $this->id, 'date' => now()->toDateString()],
-            ['count' => DB::raw('count + 1')]
-        );
+        UserContribution::record($this->id);
     }
 }
