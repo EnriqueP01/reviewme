@@ -22,7 +22,7 @@ class MasterTestSeeder extends Seeder
 {
     public function run(): void
     {
-        // --- 1. NETTOYAGE RADICAL (ordre inverse des FK, SQLite safe) ---
+        // --- 1. NETTOYAGE (préserve le vrai compte GitHub, supprime uniquement les personas fictifs) ---
         DB::statement('PRAGMA foreign_keys = OFF;');
         DB::table('inline_suggestions')->delete();
         DB::table('full_review_snippets')->delete();
@@ -36,21 +36,24 @@ class MasterTestSeeder extends Seeder
         DB::table('groups')->delete();
         DB::table('user_contributions')->delete();
         DB::table('user_skills')->delete();
-        DB::table('users')->delete();
+        // Supprime UNIQUEMENT les personas de test, pas le vrai compte GitHub
+        $fakeEmails = ['enrique@reviewme.io', 'thomas@reviewme.io', 'julie@reviewme.io', 'kevin@reviewme.io', 'sophie@reviewme.io', 'lucas@reviewme.io'];
+        DB::table('users')->whereIn('email', $fakeEmails)->delete();
         DB::statement('PRAGMA foreign_keys = ON;');
 
         // --- 2. PERSONAS ---
 
-        $me = User::create([
-            'name'             => 'Enrique P.',
-            'handle'           => 'enriquep01',
-            'email'            => 'enrique@reviewme.io',
-            'password'         => Hash::make('password'),
-            'bio'              => 'Fullstack Developer & Platform Owner. Passionné par Laravel, Livewire et l\'architecture propre.',
-            'reputation_score' => 5000,
-            'github_id'        => 'enriquep01_gh',
-            'avatar'           => 'https://api.dicebear.com/7.x/avataaars/svg?seed=enrique&backgroundColor=1a1b26',
-        ]);
+        // updateOrCreate sur l'email réel GitHub pour éviter les doublons entre runs
+        $me = User::updateOrCreate(
+            ['email' => 'enriquepuertopro0101@gmail.com'],
+            [
+                'name'             => 'Enrique P.',
+                'handle'           => 'enriquep01',
+                'bio'              => 'Fullstack Developer & Platform Owner. Passionné par Laravel, Livewire et l\'architecture propre.',
+                'reputation_score' => 5000,
+                'avatar'           => 'https://api.dicebear.com/7.x/avataaars/svg?seed=enrique&backgroundColor=1a1b26',
+            ]
+        );
 
         $thomas = User::create([
             'name'             => 'Thomas Architect',
@@ -998,7 +1001,109 @@ PHP,
             'created_at' => now()->subHours(8),
         ]);
 
-        // --- 9. RÉACTIONS RÉALISTES ---
+        // --- 9. INLINE SUGGESTIONS (quick reviews sur des parties de code précises) ---
+
+        // Sur OrderController V1 de Lucas — ligne 8 : Order::create sans validation
+        InlineSuggestion::create([
+            'user_id'          => $thomas->id,
+            'snippet_id'       => $snipLucas1->id,
+            'line_number'      => 8,
+            'end_line_number'  => 8,
+            'original_content' => "\$order = Order::create(\$request->all());",
+            'suggested_content' => "\$order = Order::create(\$request->validated());",
+            'description'      => 'Ne jamais passer `$request->all()` directement au modèle. Utilise `$request->validated()` après déclaration des règles dans un FormRequest pour éviter la mass-assignment.',
+        ]);
+
+        // Sur OrderController V1 — boucle de stock sans transaction (lignes 10-14)
+        InlineSuggestion::create([
+            'user_id'          => $sophie->id,
+            'snippet_id'       => $snipLucas1->id,
+            'line_number'      => 10,
+            'end_line_number'  => 14,
+            'original_content' => "foreach(\$request->items as \$item) {\n    \$product = Product::find(\$item['id']);\n    \$product->stock -= \$item['qty'];\n    \$product->save();\n}",
+            'suggested_content' => "DB::transaction(function () use (\$request, \$order) {\n    foreach (\$request->validated('items') as \$item) {\n        Product::lockForUpdate()->findOrFail(\$item['id'])->decrement('stock', \$item['qty']);\n    }\n});",
+            'description'      => 'Cette boucle n\'est pas atomique. Si `save()` réussit pour le produit A mais échoue pour le produit B, le stock A est décompté sans commande valide. Enveloppe dans `DB::transaction()` et utilise `lockForUpdate()` pour éviter les race conditions.',
+        ]);
+
+        // Sur StoreOrderRequest — rules() vide (ligne 14)
+        InlineSuggestion::create([
+            'user_id'          => $julie->id,
+            'snippet_id'       => $snipLucas2->id,
+            'line_number'      => 14,
+            'end_line_number'  => 17,
+            'original_content' => "// TODO: ajouter les règles de validation\n    public function rules(): array\n    {\n        return [];\n    }",
+            'suggested_content' => "public function rules(): array\n    {\n        return [\n            'items'           => ['required', 'array', 'min:1'],\n            'items.*.id'      => ['required', 'integer', 'exists:products,id'],\n            'items.*.qty'     => ['required', 'integer', 'min:1', 'max:999'],\n            'email'           => ['required', 'email'],\n        ];\n    }",
+            'description'      => 'Un FormRequest avec un tableau de rules vide ne valide rien. Chaque champ attendu doit être déclaré. La règle `exists:products,id` évite les injections d\'IDs fantômes qui feraient planter `findOrFail` silencieusement.',
+        ]);
+
+        // Sur mpmc_queue.rs — Ordering::Relaxed sur le load (ligne 31)
+        $snipRust = Snippet::where('post_id', $postSophie->id)->where('filename', 'mpmc_queue.rs')->first();
+        if ($snipRust) {
+            InlineSuggestion::create([
+                'user_id'          => $julie->id,
+                'snippet_id'       => $snipRust->id,
+                'line_number'      => 31,
+                'end_line_number'  => 31,
+                'original_content' => "let seq = slot.sequence.load(Ordering::Acquire);",
+                'suggested_content' => "let seq = slot.sequence.load(Ordering::Acquire); // Acquire correct ici",
+                'description'      => 'Ordering::Acquire sur le load de sequence est correct pour synchroniser avec le Release côté writer. Si tu passes à Relaxed ici, la valeur lue peut être périmée sur ARM — tu lirais une séquence ancienne et entrerais dans la branche diff == 0 à tort, corrompant la position.',
+            ]);
+
+            // Sur mpmc_queue.rs — compare_exchange_weak sans retry loop (ligne 33-38)
+            InlineSuggestion::create([
+                'user_id'          => $thomas->id,
+                'snippet_id'       => $snipRust->id,
+                'line_number'      => 33,
+                'end_line_number'  => 38,
+                'original_content' => "match self.tail.compare_exchange_weak(tail, tail + 1, Ordering::Relaxed, Ordering::Relaxed) {",
+                'suggested_content' => "match self.tail.compare_exchange_weak(tail, tail + 1, Ordering::SeqCst, Ordering::Relaxed) {",
+                'description'      => '`compare_exchange_weak` avec `Relaxed` success ordering ne garantit pas que l\'incrément de tail est visible avant l\'écriture dans le slot. Utilise `SeqCst` ou au minimum `AcqRel` pour le success ordering afin d\'ordonner correctement l\'accès au slot par rapport à d\'autres threads.',
+            ]);
+        }
+
+        // Sur InvoiceController vulnérable — find sans autorisation (lignes 13-15)
+        $snipInvoiceVuln = Snippet::where('post_id', $postJulie->id)->where('version_number', 1)->first();
+        if ($snipInvoiceVuln) {
+            InlineSuggestion::create([
+                'user_id'          => $kevin->id,
+                'snippet_id'       => $snipInvoiceVuln->id,
+                'line_number'      => 13,
+                'end_line_number'  => 15,
+                'original_content' => "public function download(\$id)\n    {\n        \$invoice = Invoice::findOrFail(\$id);\n        return Storage::download(\$invoice->path);\n    }",
+                'suggested_content' => "public function download(Request \$request, Invoice \$invoice): BinaryFileResponse\n    {\n        abort_unless(\$request->user()->can('download', \$invoice), 403);\n        return Storage::download(\$invoice->path);\n    }",
+                'description'      => 'L\'IDOR est trivial ici : n\'importe quel utilisateur authentifié peut bruteforcer les IDs entiers pour télécharger toutes les factures. La correction minimale est `abort_unless` ou mieux : Route Model Binding + Policy comme le montre la version 2.',
+            ]);
+        }
+
+        // Sur animations.css V1 — mauvaise transition sur margin (lignes 5-9)
+        $snipCss = Snippet::where('post_id', $postKevin->id)->where('version_number', 1)->first();
+        if ($snipCss) {
+            InlineSuggestion::create([
+                'user_id'          => $sophie->id,
+                'snippet_id'       => $snipCss->id,
+                'line_number'      => 5,
+                'end_line_number'  => 9,
+                'original_content' => ".card {\n    margin-top: 0;\n    opacity: 1;\n    transition: margin-top 0.3s ease, opacity 0.3s ease;\n}",
+                'suggested_content' => ".card {\n    transform: translateY(0);\n    opacity: 1;\n    will-change: transform, opacity;\n    transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1), opacity 0.2s ease;\n}",
+                'description'      => '`margin-top` en transition force un **reflow** complet à chaque frame : le navigateur doit recalculer le layout de tous les éléments siblings. `transform: translateY()` est composé exclusivement par le GPU — zéro reflow, 60fps stable.',
+            ]);
+        }
+
+        // Sur Profile.php V1 — cache TTL trop long (ligne 3)
+        $snipProfile = Snippet::where('post_id', $postMe->id)->where('version_number', 1)->first();
+        if ($snipProfile) {
+            InlineSuggestion::create([
+                'user_id'          => $thomas->id,
+                'snippet_id'       => $snipProfile->id,
+                'line_number'      => 3,
+                'end_line_number'  => 3,
+                'original_content' => "return Cache::remember(\"user_stats_{\$this->user->id}\", 600, function () {",
+                'suggested_content' => "return Cache::remember(\"user_stats_{\$this->user->id}\", 10, function () {",
+                'description'      => 'TTL de 600 secondes est beaucoup trop long pour des stats affichées en temps réel. Réduire à 10s et coupler à une invalidation explicite via `Cache::forget()` dans `UserContribution::record()` est le compromis optimal.',
+            ]);
+        }
+
+        // --- 10. RÉACTIONS RÉALISTES ---
         $reactionTypes = ['mindblown', 'optimisable'];
         $allPosts = Post::all();
 

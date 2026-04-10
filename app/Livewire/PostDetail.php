@@ -85,6 +85,8 @@ class PostDetail extends Component
         }
     }
 
+
+
     public function loadData(): void
     {
         $this->refreshPost();
@@ -138,6 +140,7 @@ class PostDetail extends Component
         $this->vibeAction(function() use ($postId, $direction, $toggleReaction) {
             $this->authorizeAction($direction === 'up' ? 'post.vote_up' : ($direction === 'down' ? 'post.vote_down' : null));
             $post = Post::findOrFail($postId);
+
 
             if ($direction === 'none') {
                 Reaction::where([
@@ -367,9 +370,7 @@ class PostDetail extends Component
 
     public function render()
     {
-        if ($this->readyToLoad) {
-            $this->refreshPost();
-        }
+
 
         $snippets = $this->post->snippets->where('version_number', (int) $this->selectedVersion);
 

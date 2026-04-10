@@ -17,5 +17,11 @@ class UserContribution extends Model
             ['user_id' => $userId, 'date' => now()->toDateString()],
             ['count' => \DB::raw('count + 1')]
         );
+
+        // Invalide les caches pour forcer la mise à jour immédiate sur le profil
+        \Illuminate\Support\Facades\Cache::forget("user_activity_heatmap_{$userId}_week");
+        \Illuminate\Support\Facades\Cache::forget("user_activity_heatmap_{$userId}_month");
+        \Illuminate\Support\Facades\Cache::forget("user_activity_heatmap_{$userId}_year");
+        \Illuminate\Support\Facades\Cache::forget("user_stats_{$userId}");
     }
 }

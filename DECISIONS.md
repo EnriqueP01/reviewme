@@ -879,3 +879,4 @@ The initial "Monolith & The Lens" implementation was too spacious, creating layo
     4. **Correction UI (Vue Profil)** : Calcul du score net des publications (`Up - Down`) dans la liste des contenus du profil.
 - **Impact** : Plateforme vivante où chaque action est valorisée et visible immédiatement, renforçant l'engagement utilisateur.
 $decision
+$content
