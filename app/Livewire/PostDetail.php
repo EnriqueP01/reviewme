@@ -107,33 +107,34 @@ class PostDetail extends Component
 
     public function saveGlobalComment(?int $parentId = null, ?int $fullReviewId = null): void
     {
-        $this->authorizeAction();
-        Log::info("Saving global comment. Parent: {$parentId}, Review: {$fullReviewId}");
+        $this->vibeAction(function() use ($parentId, $fullReviewId) {
+            $this->authorizeAction('post.comment');
+            Log::info("Saving global comment. Parent: {$parentId}, Review: {$fullReviewId}");
 
-        $content = $parentId ? $this->replyContent : ($fullReviewId ? $this->reviewCommentContent : $this->globalCommentContent);
+            $content = $parentId ? $this->replyContent : ($fullReviewId ? $this->reviewCommentContent : $this->globalCommentContent);
 
-        if (empty(trim($content))) {
-            return;
-        }
+            if (empty(trim($content))) {
+                return;
+            }
 
-        app(StorePostCommentAction::class)->execute(
-            user: Auth::user(),
-            postId: $this->post->id,
-            content: $content,
-            parentId: $parentId,
-            fullReviewId: $fullReviewId
-        );
+            app(StorePostCommentAction::class)->execute(
+                user: Auth::user(),
+                postId: $this->post->id,
+                content: $content,
+                parentId: $parentId,
+                fullReviewId: $fullReviewId
+            );
 
-        $this->notifySuccess(__('Commentaire publié !'));
-        $this->reset(['globalCommentContent', 'replyContent', 'reviewCommentContent', 'replyToId']);
-        $this->refreshPost();
+            $this->reset(['globalCommentContent', 'replyContent', 'reviewCommentContent', 'replyToId']);
+            $this->refreshPost();
+        }, __('Commentaire publié !'));
     }
 
     #[Renderless]
     public function vote(int $postId, string $direction, ToggleReactionAction $toggleReaction): void
     {
         $this->vibeAction(function() use ($postId, $direction, $toggleReaction) {
-            $this->authorizeAction();
+            $this->authorizeAction($direction === 'up' ? 'post.vote_up' : ($direction === 'down' ? 'post.vote_down' : null));
             $post = Post::findOrFail($postId);
 
             if ($direction === 'none') {
@@ -155,7 +156,7 @@ class PostDetail extends Component
     public function toggleCommentLike(int $commentId, ToggleReactionAction $toggleReaction): void
     {
         $this->vibeAction(function() use ($commentId, $toggleReaction) {
-            $this->authorizeAction();
+            $this->authorizeAction('comment.like');
             $comment = PostComment::findOrFail($commentId);
             $toggleReaction->execute(Auth::user(), $comment, 'clean');
             $this->refreshPost();
@@ -166,7 +167,7 @@ class PostDetail extends Component
     public function voteReview(int $reviewId, string $direction, ToggleReactionAction $toggleReaction): void
     {
         $this->vibeAction(function() use ($reviewId, $direction, $toggleReaction) {
-            $this->authorizeAction();
+            $this->authorizeAction($direction === 'up' ? 'review.vote_up' : ($direction === 'down' ? 'review.vote_down' : null));
             $review = FullReview::findOrFail($reviewId);
 
             if ($direction === 'none') {
@@ -199,7 +200,7 @@ class PostDetail extends Component
     public function saveInlineSuggestion(): void
     {
         $this->vibeAction(function() {
-            $this->authorizeAction();
+            $this->authorizeAction('suggestion.inline');
 
             if ($this->isAuthor()) {
                 throw new \Exception(__('You cannot suggest changes on your own post.'));
@@ -253,7 +254,7 @@ class PostDetail extends Component
     public function saveFullReview(): void
     {
         $this->vibeAction(function() {
-            $this->authorizeAction();
+            $this->authorizeAction('review.publish');
 
             if ($this->isAuthor()) {
                 throw new \Exception(__('You cannot publish reviews on your own post.'));
@@ -381,11 +382,15 @@ class PostDetail extends Component
         ]);
     }
 
-    protected function authorizeAction(): void
+    protected function authorizeAction(?string $permission = null): void
     {
         if (! Auth::check()) {
             $this->redirect(route('login'));
-            throw new \Exception(__('Unauthorized'));
+            throw new \Exception(__('Vous devez être connecté.'));
+        }
+
+        if ($permission && ! Auth::user()->hasKarmaPermission($permission)) {
+            throw new \Exception(__('Karma insuffisant pour cette action.'));
         }
     }
 

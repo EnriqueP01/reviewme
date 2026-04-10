@@ -67,15 +67,25 @@ final class GrantKarmaAction
         });
 
         // NOTIFICATION UI (Livewire Event)
-        // Utilisation d'un check sécurisé pour éviter de casser les tests hors-contexte Livewire
         if ($points > 0 && class_exists(Livewire::class)) {
             try {
+                // Persistent notification
+                $user->notify(new \App\Notifications\GeneralNotification(
+                    title: __('Reputation Gain'),
+                    message: __("You earned :points points for :type", ['points' => $points, 'type' => __($type)]),
+                    type: 'karma_gain',
+                    actionUrl: route('profile')
+                ));
+
                 /** @phpstan-ignore-next-line */
                 Livewire::dispatch('karma-updated', [
                     'points' => $points,
                     'total' => $user->fresh()->reputation_score,
                     'type' => $type,
                 ]);
+
+                /** @phpstan-ignore-next-line */
+                Livewire::dispatch('fx-play', type: 'karma_gain');
             } catch (\Throwable $e) {
                 // Ignore errors in non-livewire contexts (tests, console)
             }

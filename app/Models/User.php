@@ -9,6 +9,8 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\Pivot;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
+use Illuminate\Support\Facades\DB;
+use App\Models\UserContribution;
 
 /**
  * @property int $reputation_score
@@ -198,5 +200,12 @@ class User extends Authenticatable
         });
 
         $this->update(['reputation_score' => max(0, $score)]);
+    }
+    public function recordContribution(): void
+    {
+        UserContribution::updateOrCreate(
+            ['user_id' => $this->id, 'date' => now()->toDateString()],
+            ['count' => DB::raw('count + 1')]
+        );
     }
 }

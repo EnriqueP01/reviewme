@@ -66,6 +66,8 @@ final class CreatePostAction
                 ]);
             }
 
+            $user->recordContribution();
+
             return $post;
         });
     }

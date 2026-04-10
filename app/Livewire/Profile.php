@@ -98,29 +98,14 @@ class Profile extends Component
             $days = $daysMap[$this->period] ?? 365;
             $since = now()->subDays($days);
 
-            // Requête groupée performante
-            $activity = \DB::table('posts')
-                ->selectRaw('DATE(created_at) as date, count(*) as count')
+            // Requête groupée haute performance via la table de stats
+            $activity = \DB::table('user_contributions')
+                ->select(['date', 'count'])
                 ->where('user_id', $this->user->id)
-                ->where('created_at', '>=', $since)
-                ->groupBy('date')
-                ->unionAll(
-                    \DB::table('full_reviews')
-                        ->selectRaw('DATE(created_at) as date, count(*) as count')
-                        ->where('user_id', $this->user->id)
-                        ->where('created_at', '>=', $since)
-                        ->groupBy('date')
-                )
-                ->unionAll(
-                    \DB::table('post_comments')
-                        ->selectRaw('DATE(created_at) as date, count(*) as count')
-                        ->where('user_id', $this->user->id)
-                        ->where('created_at', '>=', $since)
-                        ->groupBy('date')
-                )
+                ->where('date', '>=', $since->toDateString())
                 ->get();
 
-            return $activity->groupBy('date')->map->sum('count')->toArray();
+            return $activity->pluck('count', 'date')->toArray();
         });
     }
 

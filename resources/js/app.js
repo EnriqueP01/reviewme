@@ -91,6 +91,21 @@ window.fx = {
                     duration = 0.3;
                     volume = 0.06;
                     break;
+                case 'open_drawer':
+                    freq = 400;
+                    osc.frequency.linearRampToValueAtTime(800, this.ctx.currentTime + 0.3);
+                    duration = 0.3;
+                    volume = 0.02;
+                    break;
+                case 'karma_gain':
+                    // Arpeggio sound
+                    freq = 440; // A4
+                    osc.frequency.setValueAtTime(440, this.ctx.currentTime);
+                    osc.frequency.setValueAtTime(659.25, this.ctx.currentTime + 0.05); // E5
+                    osc.frequency.setValueAtTime(880, this.ctx.currentTime + 0.1); // A5
+                    duration = 0.3;
+                    volume = 0.03;
+                    break;
                 default:
                     freq = 1400;
                     duration = 0.05;

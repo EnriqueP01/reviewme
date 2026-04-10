@@ -65,9 +65,16 @@
                         window.fx.play(event.type);
                     }
                 });
+
+                Livewire.on('fx-play', (event) => {
+                    if (window.fx) {
+                        window.fx.play(event.type);
+                    }
+                });
             });
         </script>
 
         <x-ui.toast />
+        @livewire('notification-drawer')
     </body>
 </html>
