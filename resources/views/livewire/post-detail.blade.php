@@ -438,11 +438,11 @@
 
                                                          vote(dir) {
                                                              if (dir === 'up' && !this.canUp) {
-                                                                 $dispatch('vibe-notif', { type: 'error', message: '{{ __('Niveau de karma insuffisant') }}' });
+                                                                 window.dispatchEvent(new CustomEvent('vibe-notif', { detail: { type: 'error', message: '{{ __('Niveau de karma insuffisant') }}' } }));
                                                                  return;
                                                              }
                                                              if (dir === 'down' && !this.canDown) {
-                                                                 $dispatch('vibe-notif', { type: 'error', message: '{{ __('Niveau de karma insuffisant') }}' });
+                                                                 window.dispatchEvent(new CustomEvent('vibe-notif', { detail: { type: 'error', message: '{{ __('Niveau de karma insuffisant') }}' } }));
                                                                  return;
                                                              }
 

@@ -7,6 +7,7 @@ use App\Livewire\Documentation;
 use App\Livewire\Feed;
 use App\Livewire\Groups\GroupManager;
 use App\Livewire\Leaderboard;
+use App\Livewire\KarmaGuidePage;
 use App\Livewire\Legal;
 use App\Livewire\PostDetail;
 use App\Livewire\Profile;
@@ -70,6 +71,7 @@ Route::get('/auth/github/callback', [GithubAuthController::class, 'callback']);
 
 // Support & Info (Public)
 Route::get('/leaderboard', Leaderboard::class)->name('leaderboard');
+Route::get('/karma', KarmaGuidePage::class)->name('karma');
 Route::get('/docs', Documentation::class)->name('docs');
 Route::get('/changelog', Changelog::class)->name('changelog');
 Route::get('/status', Status::class)->name('status');

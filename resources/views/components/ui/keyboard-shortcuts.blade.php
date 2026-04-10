@@ -15,13 +15,14 @@
         }
 
         // Navigation shortcuts (G + key)
-        if (this.pressedG && ['h', 'p', 'l', 'g', 'c'].includes(key)) {
+        if (this.pressedG && ['h', 'p', 'l', 'g', 'c', 'k'].includes(key)) {
             const routes = {
                 'h': '{{ route('dashboard') }}',
                 'p': '{{ route('publish') }}',
                 'l': '{{ route('leaderboard') }}',
                 'g': '{{ route('groups') }}',
-                'c': '{{ route('changelog') }}'
+                'c': '{{ route('changelog') }}',
+                'k': '{{ route('karma') }}'
             };
             window.location.href = routes[key];
             this.pressedG = false;
@@ -80,6 +81,13 @@
                             <div class="flex items-center gap-1">
                                 <kbd class="px-2 py-1 rounded bg-white/5 border border-white/10 font-mono text-[10px] text-primary font-black">G</kbd>
                                 <kbd class="px-2 py-1 rounded bg-white/5 border border-white/10 font-mono text-[10px] text-white">L</kbd>
+                            </div>
+                        </div>
+                        <div class="flex items-center justify-between group">
+                            <span class="text-xs font-bold text-on-surface-variant group-hover:text-white transition-colors">{{ __('Karma Guide') }}</span>
+                            <div class="flex items-center gap-1">
+                                <kbd class="px-2 py-1 rounded bg-white/5 border border-white/10 font-mono text-[10px] text-primary font-black">G</kbd>
+                                <kbd class="px-2 py-1 rounded bg-white/5 border border-white/10 font-mono text-[10px] text-white">K</kbd>
                             </div>
                         </div>
                     </div>

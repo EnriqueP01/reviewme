@@ -30,6 +30,7 @@
             <div class="space-y-6">
                 <h4 class="text-[10px] font-black uppercase tracking-[0.3em] text-secondary">{{ __('Resources') }}</h4>
                 <ul class="space-y-4">
+                    <li><a href="{{ route('karma') }}" class="text-xs font-bold text-on-surface-variant hover:text-white transition-colors flex items-center gap-2 group"><span class="w-1 h-1 rounded-full bg-white/10 group-hover:bg-secondary transition-colors"></span> {{ __('Karma Guide') }}</a></li>
                     <li><a href="{{ route('docs') }}" class="text-xs font-bold text-on-surface-variant hover:text-white transition-colors flex items-center gap-2 group"><span class="w-1 h-1 rounded-full bg-white/10 group-hover:bg-secondary transition-colors"></span> {{ __('Documentation') }}</a></li>
                     <li><a href="{{ route('status') }}" class="text-xs font-bold text-on-surface-variant hover:text-white transition-colors flex items-center gap-2 group"><span class="w-1 h-1 rounded-full bg-white/10 group-hover:bg-secondary transition-colors"></span> {{ __('API Status') }}</a></li>
                     <li><a href="{{ route('changelog') }}" class="text-xs font-bold text-on-surface-variant hover:text-white transition-colors flex items-center gap-2 group"><span class="w-1 h-1 rounded-full bg-white/10 group-hover:bg-secondary transition-colors"></span> {{ __('Changelog') }}</a></li>

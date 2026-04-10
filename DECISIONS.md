@@ -838,3 +838,21 @@ The initial "Monolith & The Lens" implementation was too spacious, creating layo
     2. **Refactoring Global** : Migration de l'intégralité des méthodes d'interaction de `PostDetail.php` (7+ méthodes) vers ce nouveau pattern.
     3. **Standardisation du Feedback** : Unification du traitement des exceptions et des notifications de succès/erreur au sein du trait, facilitant la maintenance et l'évolution du système de notifications.
 - **Impact** : Réduction drastique de la taille du code (~50 lignes supprimées), amélioration de la lisibilité et garantie d'un comportement cohérent sur toutes les actions sécurisées.
+# [083] 2026-04-10 : Correction de Synchronisation des Modales Alpine/Livewire
+- **Auteur** : Antigravity
+- **Statut** : ✅ Implémenté
+- **Contexte** : Fermer une modale en cliquant à l'extérieur (overlay) désynchronisait l'état `open` entre Alpine.js et Livewire, empêchant sa réouverture sans un rechargement de page.
+- **Décisions** :
+    1. **Suppression du Modificateur .stop** : Retrait de `.stop` sur l'événement `close` dans `components/modal.blade.php` pour permettre la propagation de l'événement vers le composant parent.
+    2. **Synchronisation d'État** : Ajout d'un dispatch explicite de l'événement `close` vers Livewire pour assurer que la propriété `$open` retombe à `false` côté serveur.
+- **Impact** : Expérience utilisateur fluide, les modales peuvent désormais être ouvertes et fermées à l'infini sans blocage d'état.
+
+# [084] 2026-04-10 : Implémentation du Monitoring Système Temps Réel (/status)
+- **Auteur** : Antigravity
+- **Statut** : ✅ Implémenté
+- **Contexte** : La page de statut affichait des données simulées, ne reflétant pas l'état réel de l'infrastructure de ReviewMe.
+- **Décisions** :
+    1. **Métriques Dynamiques Backend** : Refonte de `App\Livewire\Status` pour calculer en temps réel l'usage mémoire PHP, la latence de connexion PDO (ms), et l'état de la configuration GitHub.
+    2. **Télémétrie Eloquent** : Intégration de compteurs réels pour les utilisateurs actifs et le volume total de posts.
+    3. **UI Réactive** : Mise à jour de la vue `status.blade.php` pour injecter ces variables, offrant une vue transparente sur la santé de la plateforme.
+- **Impact** : Transparence totale pour les utilisateurs et outils de diagnostic rapide pour les administrateurs.
