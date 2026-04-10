@@ -6,6 +6,7 @@ namespace App\Actions\Posts;
 
 use App\Models\Post;
 use App\Models\Snippet;
+use App\Models\UserContribution;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Validation\ValidationException;
@@ -44,6 +45,9 @@ final class AddPostVersionAction
                     'sort_order' => $index,
                 ]);
             }
+
+            // Record activity
+            UserContribution::record($post->user_id);
         });
     }
 }
