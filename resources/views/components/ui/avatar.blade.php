@@ -15,7 +15,7 @@
     
     if ($isUser) {
         $imagePath = $model->profile_photo_path;
-        $href = route('profile.show', $model->handle);
+        $href = ($model->handle) ? route('profile.show', $model->handle) : '#';
         if (!$imagePath && !empty($model->avatar)) {
             if (filter_var($model->avatar, FILTER_VALIDATE_URL)) {
                 $imagePath = $model->avatar;

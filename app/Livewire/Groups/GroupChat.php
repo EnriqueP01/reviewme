@@ -41,6 +41,8 @@ final class GroupChat extends Component
 
         broadcast(new GroupMessageSent($message))->toOthers();
 
+        \App\Models\UserContribution::record(Auth::id());
+
         $this->reset('newMessage');
 
         // Dispatch event for local UI scroll behavior

@@ -76,6 +76,8 @@ final class GroupManager extends Component
         // Add owner as moderator in pivot
         $group->members()->attach(Auth::id(), ['role' => 'moderator']);
 
+        \App\Models\UserContribution::record(Auth::id());
+
         $this->reset(['name', 'description', 'isCreating']);
         $this->notifySuccess(__('Le groupe a été forgé avec succès !'));
     }
@@ -194,7 +196,10 @@ final class GroupManager extends Component
 
         $selectedGroup = null;
         if ($this->selectedGroupId) {
-            $selectedGroup = Group::with('members')->withCount(['members', 'posts'])->findOrFail($this->selectedGroupId);
+            // Optimisation : Limitation à 30 membres pour l'affichage initial et le panneau latéral
+            $selectedGroup = Group::with(['members' => fn($q) => $q->take(30)])
+                ->withCount(['members', 'posts'])
+                ->findOrFail($this->selectedGroupId);
             $this->authorize('view', $selectedGroup);
         }
 
