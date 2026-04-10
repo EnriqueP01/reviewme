@@ -5,20 +5,20 @@
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <meta name="csrf-token" content="{{ csrf_token() }}">
 
-        <title>{{ config('app.name', 'ReviewMe') }} — Code Review Platform</title>
+        <title>{{ config('app.name', 'ReviewMe') }} — {{ __('Code Review Platform') }}</title>
         <link rel="icon" type="image/png" href="{{ asset('images/logo.png') }}">
         <meta name="description" content="{{ __('Professional code architecture insights and collaborative reviews.') }}">
         
         <!-- Open Graph / Social -->
         <meta property="og:type" content="website">
-        <meta property="og:title" content="ReviewMe — Code Review Platform">
+        <meta property="og:title" content="ReviewMe — {{ __('Code Review Platform') }}">
         <meta property="og:description" content="{{ __('Improve your code through collaborative reviews.') }}">
         <meta property="og:image" content="{{ asset('images/og-cover.png') }}">
         <meta name="theme-color" content="#bec2ff">
 
         <!-- Twitter Card -->
         <meta name="twitter:card" content="summary_large_image">
-        <meta name="twitter:title" content="ReviewMe — Code Review Platform">
+        <meta name="twitter:title" content="ReviewMe — {{ __('Code Review Platform') }}">
         <meta name="twitter:description" content="{{ __('Improve your code through collaborative reviews.') }}">
         <meta name="twitter:image" content="{{ asset('images/og-cover.png') }}">
 

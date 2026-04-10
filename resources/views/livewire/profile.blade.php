@@ -43,7 +43,7 @@
                     @foreach($stats as $label => $value)
                         @if($label !== 'level')
                             <div class="bg-solid-container-blur border border-primary/10 px-8 py-4 rounded-2xl shadow-xl group/stat hover:border-primary/30 transition-all">
-                                <span class="block text-[9px] uppercase tracking-[0.3em] text-on-surface-variant font-black mb-2 opacity-50">{{ $label }}</span>
+                                <span class="block text-[9px] uppercase tracking-[0.3em] text-on-surface-variant font-black mb-2 opacity-50">{{ __($label) }}</span>
                                 <span class="block font-display font-black text-2xl text-on-surface group-hover:text-primary transition-colors">
                                     {{ is_numeric($value) ? number_format($value) : $value }}
                                 </span>
