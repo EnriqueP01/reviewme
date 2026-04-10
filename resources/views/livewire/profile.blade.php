@@ -1,11 +1,22 @@
-<div class="max-w-7xl mx-auto px-6 py-16" x-data="{ 
+<div class="w-full max-w-none px-12 py-10" 
+    x-data="{ 
     copied: false,
     share() {
         navigator.clipboard.writeText(window.location.href);
         this.copied = true;
         setTimeout(() => this.copied = false, 3000);
     }
-}">
+}" wire:init="loadData"
+    x-init="$watch('$wire.readyToLoad', value => {
+        if(value && {{ Auth::id() === $user->id ? 'true' : 'false' }}) {
+            confetti({
+                particleCount: 150,
+                spread: 70,
+                origin: { y: 0.6 },
+                colors: ['#bec2ff', '#10b981', '#ffffff']
+            });
+        }
+    })">
     <!-- Profile Hero -->
     <div class="relative mb-12">
         <div class="mb-8">
@@ -113,45 +124,59 @@
         <!-- Main Column: Activity -->
         <div class="lg:col-span-2 space-y-12">
             <!-- Contribution Heatmap (ReviewMe centric) -->
-            <div class="glass-panel p-10 rounded-[2.5rem] border-subtle overflow-hidden">
+            <div class="glass-panel p-10 rounded-[2.5rem] border-subtle overflow-hidden relative">
+                <!-- Loading Overlay -->
+                <div wire:loading wire:target="setPeriod" class="absolute inset-x-10 inset-y-12 z-50 bg-surface/80 backdrop-blur-sm flex items-center justify-center rounded-2xl">
+                    <div class="flex gap-1.5 flex-wrap justify-center max-w-md">
+                        @foreach(range(1, 28) as $i)
+                            <x-ui.skeleton type="block" class="w-3.5 h-3.5 opacity-40" />
+                        @endforeach
+                    </div>
+                </div>
+
                 <div class="flex items-center justify-between mb-8">
-                    <h3 class="font-display font-bold text-xl text-on-surface italic">{{ __('ReviewMe Activity') }}</h3>
+                    <div class="space-y-1">
+                        <h3 class="font-display font-bold text-xl text-on-surface italic">{{ __('ReviewMe Activity') }}</h3>
+                        <div class="flex gap-2">
+                            @foreach(['week' => '7D', 'month' => '30D', 'year' => '1Y'] as $key => $label)
+                                <button 
+                                    wire:click="setPeriod('{{ $key }}')"
+                                    class="text-[9px] font-black uppercase tracking-widest px-2 py-1 rounded-md transition-all {{ $period === $key ? 'bg-primary text-on-primary' : 'bg-surface-highest text-on-surface-variant opacity-40 hover:opacity-100' }}"
+                                >
+                                    {{ $label }}
+                                </button>
+                            @endforeach
+                        </div>
+                    </div>
                     <div class="flex items-center gap-2">
                         <span class="text-[9px] text-on-surface-variant uppercase tracking-widest opacity-40">{{ __('Less') }}</span>
                         <div class="flex gap-1">
                             <div class="w-2.5 h-2.5 rounded-sm bg-surface-highest"></div>
-                            <div class="w-2.5 h-2.5 rounded-sm bg-primary/30"></div>
-                            <div class="w-2.5 h-2.5 rounded-sm bg-primary/60"></div>
-                            <div class="w-2.5 h-2.5 rounded-sm bg-primary"></div>
+                            <div class="w-2.5 h-2.5 rounded-sm bg-emerald-500/20"></div>
+                            <div class="w-2.5 h-2.5 rounded-sm bg-emerald-500/50"></div>
+                            <div class="w-2.5 h-2.5 rounded-sm bg-emerald-500"></div>
                         </div>
                         <span class="text-[9px] text-on-surface-variant uppercase tracking-widest opacity-40">{{ __('More') }}</span>
                     </div>
                 </div>
 
-                <div class="flex flex-wrap gap-1.5" x-data="{
-                    days: Array.from({length: 365}, (_, i) => {
-                        const d = new Date();
-                        d.setDate(d.getDate() - (364 - i));
-                        const dateStr = d.toISOString().split('T')[0];
-                        return {
-                            date: dateStr,
-                            count: {{ json_encode($contributions) }}[dateStr] || 0
-                        };
-                    })
-                }">
-                    <template x-for="day in days" :key="day.date">
-                        <div 
-                            :title="day.date + ': ' + day.count + ' contributions'"
-                            class="w-3 h-3 rounded-sm transition-all duration-500 hover:scale-150 hover:z-20 cursor-crosshair"
-                            :class="{
-                                'bg-surface-highest': day.count === 0,
-                                'bg-primary/30': day.count === 1,
-                                'bg-primary/60': day.count === 2,
-                                'bg-primary': day.count >= 3,
-                                'shadow-[0_0_8px_rgba(190,194,255,0.4)]': day.count >= 3
-                            }"
-                        ></div>
-                    </template>
+                <div class="flex flex-wrap gap-1.5 min-h-[3.5rem]">
+                    @if(!$readyToLoad)
+                        @foreach(range(1, 40) as $i)
+                            <x-ui.skeleton type="block" class="w-3.5 h-3.5 opacity-20" />
+                        @endforeach
+                    @else
+                        @foreach($this->activityGrid as $day)
+                            <div 
+                                title="{{ $day['date'] }}: {{ $day['count'] }} {{ __('contributions') }}"
+                                class="w-3.5 h-3.5 rounded-sm transition-all duration-300 hover:scale-150 hover:z-20 cursor-crosshair
+                                    {{ $day['count'] === 0 ? 'bg-surface-highest' : '' }}
+                                    {{ $day['count'] === 1 ? 'bg-emerald-500/20' : '' }}
+                                    {{ $day['count'] === 2 ? 'bg-emerald-500/50' : '' }}
+                                    {{ $day['count'] >= 3 ? 'bg-emerald-500 shadow-[0_0_12px_rgba(16,185,129,0.4)]' : '' }}"
+                            ></div>
+                        @endforeach
+                    @endif
                 </div>
                 <p class="mt-6 text-[10px] text-on-surface-variant font-mono opacity-40 uppercase tracking-widest">
                     {{ array_sum($contributions) }} {{ __('contributions in the last year') }}
@@ -160,32 +185,65 @@
 
             <h3 class="font-display font-bold text-2xl text-on-surface">{{ __('Posts') }}</h3>
             
-            <div class="space-y-6">
-                @forelse($posts as $post)
-                    <a href="{{ route('posts.detail', $post->id) }}" wire:navigate class="block">
-                        <x-ui.card tonal="low" class="group hover:bg-surface-high/50 transition-all border-none">
-                            <div class="flex items-center justify-between">
-                                <div class="flex items-center gap-6">
-                                    <div class="w-3 h-3 rounded-full bg-primary shadow-[0_0_10px_rgba(190,194,255,0.4)]"></div>
-                                    <div>
-                                        <h4 class="font-display font-bold text-on-surface group-hover:text-primary transition-colors text-lg">{{ $post->title }}</h4>
-                                        <p class="text-on-surface-variant text-[10px] uppercase tracking-widest mt-1 font-black opacity-40">{{ $post->created_at->diffForHumans() }}</p>
-                                    </div>
-                                </div>
-                                <div class="flex items-center gap-4">
-                                     <div class="text-on-surface-variant font-mono text-sm group-hover:text-primary transition-colors">
-                                        {{ number_format($post->reactions_count) }} <span class="text-[10px] uppercase tracking-tighter opacity-40 ml-1">{{ __('Karma') }}</span>
-                                     </div>
-                                     <svg class="w-5 h-5 text-on-surface-variant/20 group-hover:text-primary group-hover:translate-x-1 transition-all" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
+            <div class="space-y-6 relative">
+                <!-- Posts Loading State -->
+                <div wire:loading.delay.longest wire:target="loadMore,setPeriod" class="space-y-6">
+                    @foreach(range(1, 3) as $i)
+                        <div class="p-8 bg-surface-container/50 rounded-3xl border border-white/5 flex items-center justify-between">
+                            <div class="flex items-center gap-6">
+                                <x-ui.skeleton type="circle" class="w-3 h-3" />
+                                <div class="space-y-3">
+                                    <x-ui.skeleton class="w-48" />
+                                    <x-ui.skeleton class="w-24 opacity-50" />
                                 </div>
                             </div>
-                        </x-ui.card>
-                    </a>
-                @empty
-                    <div class="py-20 text-center border-2 border-dashed border-outline-variant/10 rounded-3xl">
-                        <p class="text-on-surface-variant text-sm font-display italic">{{ __('No posts yet.') }}</p>
-                    </div>
-                @endforelse
+                            <x-ui.skeleton class="w-16" />
+                        </div>
+                    @endforeach
+                </div>
+
+                <div wire:loading.remove wire:target="loadMore,setPeriod" class="space-y-6 animate-in fade-in duration-700">
+                    @if(!$readyToLoad)
+                        @foreach(range(1, 3) as $i)
+                            <div class="p-8 bg-surface-container/50 rounded-3xl border border-white/5 flex items-center justify-between">
+                                <div class="flex items-center gap-6">
+                                    <x-ui.skeleton type="circle" class="w-3 h-3" />
+                                    <div class="space-y-3">
+                                        <x-ui.skeleton class="w-48" />
+                                        <x-ui.skeleton class="w-24 opacity-50" />
+                                    </div>
+                                </div>
+                                <x-ui.skeleton class="w-16" />
+                            </div>
+                        @endforeach
+                    @else
+                        @forelse($posts as $post)
+                            <a href="{{ route('posts.detail', $post->id) }}" wire:navigate class="block">
+                                <x-ui.card tonal="low" class="group hover:bg-surface-high/50 transition-all border-none">
+                                    <div class="flex items-center justify-between">
+                                        <div class="flex items-center gap-6">
+                                            <div class="w-3 h-3 rounded-full bg-primary shadow-[0_0_10px_rgba(190,194,255,0.4)]"></div>
+                                            <div>
+                                                <h4 class="font-display font-bold text-on-surface group-hover:text-primary transition-colors text-lg">{{ $post->title }}</h4>
+                                                <p class="text-on-surface-variant text-[10px] uppercase tracking-widest mt-1 font-black opacity-40">{{ $post->created_at->diffForHumans() }}</p>
+                                            </div>
+                                        </div>
+                                        <div class="flex items-center gap-4">
+                                            <div class="text-on-surface-variant font-mono text-sm group-hover:text-primary transition-colors">
+                                                {{ number_format($post->reactions_count) }} <span class="text-[10px] uppercase tracking-tighter opacity-40 ml-1">{{ __('Karma') }}</span>
+                                            </div>
+                                            <svg class="w-5 h-5 text-on-surface-variant/20 group-hover:text-primary group-hover:translate-x-1 transition-all" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
+                                        </div>
+                                    </div>
+                                </x-ui.card>
+                            </a>
+                        @empty
+                            <div class="py-20 text-center border-2 border-dashed border-outline-variant/10 rounded-3xl">
+                                <p class="text-on-surface-variant text-sm font-display italic">{{ __('No posts yet.') }}</p>
+                            </div>
+                        @endforelse
+                    @endif
+                </div>
             </div>
             
             @if($user->posts()->count() > $perPage)
@@ -196,4 +254,5 @@
             @endif
         </div>
     </div>
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
 </div>

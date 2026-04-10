@@ -25,41 +25,44 @@ final class HandleGithubCallbackAction
 
         $baseHandle = $githubUser->getNickname() ? Str::slug($githubUser->getNickname(), '') : Str::slug($githubUser->getName(), '');
 
-        $data = [
-            'github_id' => $githubUser->getId(),
-            'name' => $githubUser->getNickname() ?? $githubUser->getName(),
-            'avatar' => $githubUser->getAvatar(),
-            'bio' => $githubUser->user['bio'] ?? null,
-            'email_verified_at' => $user?->email_verified_at ?? now(),
-        ];
-
         if (! $user) {
-            $data['email'] = $githubUser->getEmail();
-            $data['password'] = bcrypt(Str::random(24));
-
-            // Génération d'un handle unique en cas de collision
+            // 3. Création d'un nouvel utilisateur avec handle unique
             $handle = $baseHandle;
             $counter = 1;
             while (User::where('handle', $handle)->exists()) {
                 $handle = $baseHandle.$counter++;
             }
-            $data['handle'] = $handle;
 
-            return User::create($data);
+            return User::create([
+                'github_id' => $githubUser->getId(),
+                'name' => $githubUser->getNickname() ?? $githubUser->getName(),
+                'handle' => $handle,
+                'email' => $githubUser->getEmail(),
+                'avatar' => $githubUser->getAvatar(),
+                'bio' => $githubUser->user['bio'] ?? null,
+                'password' => bcrypt(Str::random(24)),
+                'email_verified_at' => now(),
+            ]);
         }
 
-        // Si l'utilisateur existe mais n'a pas de handle (cas rare)
+        // 4. Mise à jour de l'utilisateur existant
+        $updateData = [
+            'github_id' => $githubUser->getId(),
+            'avatar' => $githubUser->getAvatar(),
+            'bio' => $githubUser->user['bio'] ?? $user->bio,
+        ];
+
+        // Sécurité : si l'utilisateur n'a pas de handle on lui en génère un
         if (! $user->handle) {
             $handle = $baseHandle;
             $counter = 1;
             while (User::where('handle', $handle)->where('id', '!=', $user->id)->exists()) {
                 $handle = $baseHandle.$counter++;
             }
-            $data['handle'] = $handle;
+            $updateData['handle'] = $handle;
         }
 
-        $user->update($data);
-
+        $user->update($updateData);
         return $user;
     }
 }

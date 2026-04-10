@@ -1,3 +1,13 @@
+## 2026-04-10-71 : Sécurisation Totale par Karma & Consolidation Alpine/Livewire
+- **Auteur** : Antigravity
+- **Statut** : ✅ Implémenté
+- **Contexte** : Nécessite de verrouiller les interactions UI pour les utilisateurs n'ayant pas assez de Karma, tout en évitant les erreurs de syntaxe Alpine causées par des `wire:click` vides dans Livewire 3.
+- **Décision** :
+    1. **Consolidation Voting UI** : Migration de la logique de vote de Livewire vers Alpine.js dans `post-card.blade.php`. Utilisation d'appels `$wire.vote` différés pour plus de réactivité.
+    2. **Feedback Karma Interactif** : Remplacement des états "disabled" statiques par des notifications Toast (`vibe-notif`) "Niveau de karma insuffisant" sur toutes les actions protégées (votes, commentaires, likes, suggestions inline).
+    3. **Sécurisation Multi-couches** : Ajout de vérifications de permissions Karma systématiques côté PHP et JavaScript.
+- **Impact** : Expérience utilisateur "premium" sans erreurs JS, protection de l'intégrité des données et gamification renforcée via la réputation.
+
 ## 2026-04-10-70 : Durcissement de la CI/CD & Activation de la Quality Gate SonarQube (US32)
 - **Auteur** : Antigravity
 - **Statut** : ✅ Implémenté

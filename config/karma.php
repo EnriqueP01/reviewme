@@ -19,6 +19,8 @@ return [
             'permissions' => [
                 'post.view',
                 'post.vote_up',
+                'review.vote_up',
+                'comment.like',
             ],
         ],
         'contributor' => [
@@ -28,6 +30,7 @@ return [
             'permissions' => [
                 'post.comment',
                 'post.vote_down',
+                'review.vote_down',
                 'review.publish',
             ],
         ],

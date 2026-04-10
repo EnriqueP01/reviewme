@@ -13,12 +13,14 @@ use App\Models\Snippet;
 use App\Models\User;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\DB;
 
 class MasterTestSeeder extends Seeder
 {
     public function run(): void
     {
-        // 1. CLEAR TABLES TO ENSURE CLEAN STATE
+        // 1. NETTOYAGE RADICAL (Compatibilité SQLite)
+        DB::statement('PRAGMA foreign_keys = OFF;');
         User::query()->delete();
         Group::query()->delete();
         Post::query()->delete();
@@ -27,247 +29,265 @@ class MasterTestSeeder extends Seeder
         FullReview::query()->delete();
         Reaction::query()->delete();
         GroupMessage::query()->delete();
+        DB::table('group_user')->delete();
+        DB::statement('PRAGMA foreign_keys = ON;');
 
-        // 2. CREATE ELITE USERS (NO SPACES IN IDENTIFIERS)
-        $celestin = User::create([
-            'name' => 'celestin_dev',
-            'handle' => 'celestin_dev',
-            'email' => 'celestin@reviewme.io',
+        // 2. CRÉATION DES PERSONAS (SOCIÉTÉ DE DÉVELOPPEURS)
+        // Ajout de ton profil personnel pour éviter les 404
+        $me = User::updateOrCreate(
+            ['handle' => 'enriquep01'],
+            [
+                'name' => 'Enrique P.',
+                'email' => 'enrique@reviewme.io',
+                'password' => Hash::make('password'),
+                'bio' => 'Fullstack Developer & Platform Owner.',
+                'reputation_score' => 5000,
+                'github_id' => 'dummy_github_id'
+            ]
+        );
+
+        $thomas = User::create([
+            'name' => 'Thomas Architect',
+            'handle' => 'thomas_arch',
+            'email' => 'thomas@reviewme.io',
             'password' => Hash::make('password'),
-            'reputation_score' => 7500,
-            'bio' => 'Lead Fullstack Engineer & Architect. Passionate about Laravel internals, React performance, and building high-fidelity developer tools.',
-            'avatar' => 'https://api.dicebear.com/7.x/avataaars/svg?seed=celestin&backgroundColor=1a1b26',
+            'reputation_score' => 8450,
+            'bio' => 'Lead Architect. Je vis pour le Clean Code et le Domain Driven Design. Si ton constructeur a 12 paramètres, on va avoir un problème.',
+            'avatar' => 'https://api.dicebear.com/7.x/avataaars/svg?seed=thomas&backgroundColor=1a1b26',
         ]);
 
-        $sarah = User::create([
-            'name' => 'sarah_arch',
-            'handle' => 'sarah_arch',
-            'email' => 'sarah@reviewme.io',
+        $julie = User::create([
+            'name' => 'Julie Security',
+            'handle' => 'julie_sec',
+            'email' => 'julie@reviewme.io',
             'password' => Hash::make('password'),
-            'reputation_score' => 9200,
-            'bio' => 'Senior Infrastructure Architect specializing in Go, K8s, and high-available distributed systems. I live for clean abstractions.',
-            'avatar' => 'https://api.dicebear.com/7.x/avataaars/svg?seed=sarah&backgroundColor=24283b',
+            'reputation_score' => 7200,
+            'bio' => 'Security Researcher. Je ne cherche pas des bugs, je cherche des portes ouvertes. Rappel : ne faites JAMAIS confiance à l\'input utilisateur.',
+            'avatar' => 'https://api.dicebear.com/7.x/avataaars/svg?seed=julie&backgroundColor=f7768e',
         ]);
 
-        $marcus = User::create([
-            'name' => 'marcus_sec',
-            'handle' => 'marcus_sec',
-            'email' => 'marcus@reviewme.io',
+        $kevin = User::create([
+            'name' => 'Kevin Front',
+            'handle' => 'kevin_pixel',
+            'email' => 'kevin@reviewme.io',
             'password' => Hash::make('password'),
-            'reputation_score' => 4500,
-            'bio' => 'Security Researcher & Penetration Tester. My goal is to find the one line of code that breaks everything.',
-            'avatar' => 'https://api.dicebear.com/7.x/avataaars/svg?seed=marcus&backgroundColor=1a1b26',
+            'reputation_score' => 5100,
+            'bio' => 'Senior Frontend dev. Expert Tailwind & Framer Motion. Mon but ? Que ton UI soit aussi fluide que du beurre et accessible à tous.',
+            'avatar' => 'https://api.dicebear.com/7.x/avataaars/svg?seed=kevin&backgroundColor=7aa2f7',
         ]);
 
-        $lea = User::create([
-            'name' => 'lea_pixel',
-            'handle' => 'lea_pixel',
-            'email' => 'lea@pixel.io',
+        $sophie = User::create([
+            'name' => 'Sophie Performance',
+            'handle' => 'sophie_perf',
+            'email' => 'sophie@reviewme.io',
             'password' => Hash::make('password'),
-            'reputation_score' => 3800,
-            'bio' => 'Lead Frontend Engineer. Obsessed with CSS performance, motion design, and semantic HTML5.',
-            'avatar' => 'https://api.dicebear.com/7.x/avataaars/svg?seed=lea&backgroundColor=f5c2e7',
+            'reputation_score' => 9100,
+            'bio' => 'Performance Engineer. Rust & low-level PHP. Si ton script met plus de 50ms à répondre, c\'est qu\'il est mal écrit.',
+            'avatar' => 'https://api.dicebear.com/7.x/avataaars/svg?seed=sophie&backgroundColor=9ece6a',
         ]);
 
-        $david = User::create([
-            'name' => 'david_optim',
-            'handle' => 'david_optim',
-            'email' => 'david@performance.com',
+        $lucas = User::create([
+            'name' => 'Lucas Junior',
+            'handle' => 'lucas_dev',
+            'email' => 'lucas@reviewme.io',
             'password' => Hash::make('password'),
-            'reputation_score' => 8100,
-            'bio' => 'Performance Engineer. HFM background. I measure execution time in microseconds. C++, Rust, and low-level PHP optimization.',
-            'avatar' => 'https://api.dicebear.com/7.x/avataaars/svg?seed=david&backgroundColor=a6adc8',
+            'reputation_score' => 1200,
+            'bio' => 'Apprenti développeur passionné par Laravel. Toujours en soif d\'apprendre et de recevoir des critiques constructives.',
+            'avatar' => 'https://api.dicebear.com/7.x/avataaars/svg?seed=lucas&backgroundColor=e0af68',
         ]);
 
-        $users = collect([$celestin, $sarah, $marcus, $lea, $david]);
+        $users = collect([$thomas, $julie, $kevin, $sophie, $lucas]);
 
-        // 3. CREATE SPECIALIZED GROUPS
+        // Scenario 4: Thomas publie un manifeste
+        Post::create([
+            'user_id' => $thomas->id,
+            'title' => 'Manifeste : Pourquoi le DDD va sauver votre projet',
+            'short_description' => 'Retour d\'expérience sur 10 ans d\'architecture monolithique.',
+            'description' => 'Le Domain Driven Design n\'est pas qu\'une mode. C\'est une nécessité quand la complexité métier dépasse la capacité cognitive de l\'équipe.',
+            'visibility' => 'public',
+            'lens' => 'logic',
+            'created_at' => now()->subDays(15),
+        ]);
+
+        // 3. GROUPES THÉMATIQUES
         $groups = collect([
             Group::create([
-                'name' => 'Core_Architecture',
-                'slug' => 'core-architecture',
-                'description' => 'Discussions on design patterns, scalability, and structural integrity of large-scale applications.',
-                'owner_id' => $sarah->id,
+                'name' => 'Forge_Architecture',
+                'slug' => 'forge-architecture',
+                'description' => 'Discussions sur les patterns complexes, le découplage et la scalabilité des applications Laravel.',
+                'owner_id' => $thomas->id,
             ]),
             Group::create([
-                'name' => 'Sec_Audit_Lab',
-                'slug' => 'sec-audit-lab',
-                'description' => 'A workshop for peer-reviewing security-sensitive endpoints and looking for vulnerabilities.',
-                'owner_id' => $marcus->id,
+                'name' => 'Security_Lab',
+                'slug' => 'security-lab',
+                'description' => 'Audit de code, traque de vulnérabilités et partage de bonnes pratiques de sécurisation.',
+                'owner_id' => $julie->id,
             ]),
             Group::create([
-                'name' => 'Optimization_Forge',
-                'slug' => 'optimization-forge',
-                'description' => 'The place where we shave off every unnecessary millisecond from our payloads.',
-                'owner_id' => $david->id,
+                'name' => 'Performance_Hacking',
+                'slug' => 'performance-hacking',
+                'description' => 'Shaving off milliseconds. SQL optimization, Caching & Engine internals.',
+                'owner_id' => $sophie->id,
             ]),
         ]);
 
-        // Join users to groups
+        // Adhésions
         foreach ($groups as $group) {
             foreach ($users as $user) {
                 $group->members()->attach($user->id, ['role' => ($user->id === $group->owner_id) ? 'admin' : 'member']);
             }
         }
 
-        // 4. REAL WORLD POSTS & CODE SNIPPETS
+        // 4. SCÉNARIOS RÉALISTES
 
-        // Scenario 1: Rust Mutex Safety (David)
-        $post1 = Post::create([
-            'user_id' => $david->id,
-            'group_id' => $groups[2]->id,
-            'title' => 'Preventing Data Race in Concurrent Shared State',
-            'short_description' => 'Implementing Arc<Mutex<T>> for a shared inventory counter in Rust.',
-            'description' => "I'm working on a high-concurrency shared state for a marketplace inventory. I used Arc and Mutex but the performance in high contention is lower than expected. Any tips for reducing lock holding time?",
-            'review_goals' => 'Review the locking strategy and suggest lock-free alternatives if applicable.',
-            'improvement_goals' => 'Improve throughput while maintaining absolute thread safety.',
-            'context' => 'Part of the new Real-time Bidding Engine.',
-            'visibility' => 'public',
-            'lens' => 'performance',
-        ]);
-
-        Snippet::create([
-            'post_id' => $post1->id,
-            'version_number' => 1,
-            'filename' => 'inventory.rs',
-            'language' => 'rust',
-            'code_content' => "use std::sync::{Arc, Mutex};\nuse std::thread;\n\nstruct Inventory {\n    items: u32,\n}\n\nfn main() {\n    let inventory = Arc::new(Mutex::new(Inventory { items: 1000 }));\n    let mut handles = vec![];\n\n    for _ in 0..10 {\n        let inv = Arc::clone(&inventory);\n        let handle = thread::spawn(move || {\n            // CONTENTION POINT: Locking the whole struct for increment\n            let mut data = inv.lock().unwrap();\n            data.items += 1;\n        });\n        handles.push(handle);\n    }\n\n    for handle in handles {\n        handle.join().unwrap();\n    }\n}",
-            'sort_order' => 1,
-        ]);
-
-        // Scenario 2: PHP Early Return & DTO (Celestin)
-        $post2 = Post::create([
-            'user_id' => $celestin->id,
-            'group_id' => $groups[0]->id,
-            'title' => 'Refactoring Business Logic into DTOs and Services',
-            'short_description' => 'Moving from massive controllers to specialized data objects.',
-            'description' => 'Just finished refactoring our invitation system. I moved all validation logic into a DTO and the registration into a dedicated Service. Looking for feedback on the abstraction level.',
-            'review_goals' => 'Is the DTO too verbose? Should I use PHP 8.2 readonly classes on everything?',
+        // Scenario 1: Lucas pose une question de débutant sur les contrôleurs (LOGIC)
+        $postLucas = Post::create([
+            'user_id' => $lucas->id,
+            'title' => 'Besoin d\'aide : Mon contrôleur est-il trop gros ?',
+            'short_description' => 'J\'ai mis toute ma logique de création de commande dans le contrôleur.',
+            'description' => 'Salut les experts ! J\'ai ce code qui gère la création de commande, l\'envoi de mail et la mise à jour des stocks. Ça marche mais j\'ai l\'impression que c\'est "sale". Comment je pourrais mieux structurer ça ?',
+            'review_goals' => 'Comment extraire la logique métier du contrôleur ? Utilisation de Services ou de Jobs ?',
             'visibility' => 'public',
             'lens' => 'logic',
+            'created_at' => now()->subDays(rand(5, 10)),
         ]);
 
         Snippet::create([
-            'post_id' => $post2->id,
+            'post_id' => $postLucas->id,
             'version_number' => 1,
-            'filename' => 'UserInviteDTO.php',
+            'filename' => 'OrderController.php',
             'language' => 'php',
-            'code_content' => "<?php\n\nnamespace App\\DTOs;\n\nreadonly class UserInviteDTO\n{\n    public function __construct(\n        public string \$email,\n        public array \$roles = ['member'],\n        public ?int \$groupId = null,\n    ) {}\n\n    public static function fromRequest(array \$data): self\n    {\n        return new self(\n            email: \$data['email'],\n            roles: \$data['roles'] ?? ['member'],\n            groupId: \$data['group_id'] ?? null\n        );\n    }\n}",
-            'sort_order' => 1,
+            'code_content' => "public function store(Request \$request)\n{\n    \$order = Order::create(\$request->all());\n    \n    foreach(\$request->items as \$item) {\n        \$product = Product::find(\$item['id']);\n        \$product->stock -= \$item['qty'];\n        \$product->save();\n    }\n\n    Mail::to(\$request->user())->send(new OrderConfirmed(\$order));\n    \n    return response()->json(\$order);\n}",
+            'sort_order' => 1
         ]);
 
-        // Scenario 3: SQL Recursive CTE (Sarah)
-        $post3 = Post::create([
-            'user_id' => $sarah->id,
-            'group_id' => $groups[0]->id,
-            'title' => 'Querying Hierarchical Comment Threads',
-            'short_description' => 'Using Recursive CTE to fetch unlimited levels of nested comments.',
-            'description' => "Our comment system is getting slow with multi-level nesting. I'm testing a recursive Common Table Expression (CTE) to fetch the entire tree in a single query. Is there a depth-limit I should worry about in Postgres?",
-            'review_goals' => 'Check the recursion logic and the performance impact of the sorting field.',
-            'visibility' => 'public',
-            'lens' => 'performance',
-        ]);
-
-        Snippet::create([
-            'post_id' => $post3->id,
-            'version_number' => 1,
-            'filename' => 'comments_tree.sql',
-            'language' => 'sql',
-            'code_content' => "WITH RECURSIVE comment_tree AS (\n    -- Base case: Top level comments\n    SELECT id, parent_id, content, 0 as depth, ARRAY[id] as path\n    FROM post_comments\n    WHERE parent_id IS NULL AND post_id = :post_id\n\n    UNION ALL\n\n    -- Recursive case\n    SELECT c.id, c.parent_id, c.content, ct.depth + 1, ct.path || c.id\n    FROM post_comments c\n    JOIN comment_tree ct ON c.parent_id = ct.id\n)\nSELECT * FROM comment_tree ORDER BY path;",
-            'sort_order' => 1,
-        ]);
-
-        // Scenario 4: Security - Middleware Validation (Marcus)
-        $post4 = Post::create([
-            'user_id' => $marcus->id,
-            'group_id' => $groups[1]->id,
-            'title' => 'Preventing IDOR on Sensitive API Endpoints',
-            'short_description' => 'Custom Middleware to verify resource ownership before processing.',
-            'description' => 'Found a potential IDOR vulnerability yesterday. I wrote this Middleware to force ownership checks on all private resources. Does this look robust enough to you?',
-            'review_goals' => 'Can this be bypassed if multiple resources are requested in the same payload?',
-            'visibility' => 'public',
-            'lens' => 'security',
-        ]);
-
-        Snippet::create([
-            'post_id' => $post4->id,
-            'version_number' => 1,
-            'filename' => 'VerifyOwnership.php',
-            'language' => 'php',
-            'code_content' => "<?php\n\nnamespace App\\Http\\Middleware;\n\nclass VerifyOwnership\n{\n    public function handle(\$request, \$next, \$model)\n    {\n        \$resourceId = \$request->route(\$model);\n        \$userId = auth()->id();\n\n        // VULNERABILITY CHECK: Verifying if current user owns the resource\n        if (!DB::table(\$model)->where('id', \$resourceId)->where('user_id', \$userId)->exists()) {\n            abort(403, 'Unauthorized access attempt.');\n        }\n\n        return \$next(\$request);\n    }\n}",
-            'sort_order' => 1,
-        ]);
-
-        // 5. REVIEWS & COMMENTS (REAL CONTENT)
-
-        // David reviews Celestin's DTO
-        $rev1 = FullReview::create([
-            'user_id' => $david->id,
-            'post_id' => $post2->id,
-            'description' => 'Excellent move towards DTOs. PHP 8.2 readonly classes are perfect here. One optimization: using `public readonly` on the constructor params is enough, no need for the extra class flag if using the constructor promotion pattern.',
-            'score' => 10,
+        // Feedback de Thomas (Review de pro)
+        $revThomas = FullReview::create([
+            'user_id' => $thomas->id,
+            'post_id' => $postLucas->id,
+            'description' => "Salut Lucas ! Effectivement, on est face à ce qu'on appelle un 'Fat Controller'. Tu devrais déléguer ces responsabilités à une Action ou un Service, et utiliser des transactions DB pour garantir que si le mail échoue, le stock ne soit pas décompté pour rien.",
+            'score' => 20,
+            'created_at' => now()->subDays(rand(1, 5)),
         ]);
 
         FullReviewSnippet::create([
-            'full_review_id' => $rev1->id,
-            'snippet_id' => $post2->snippets->first()->id,
-            'modified_content' => "<?php\n\nnamespace App\\DTOs;\n\nclass UserInviteDTO\n{\n    public function __construct(\n        public readonly string \$email,\n        public readonly array \$roles = ['member'],\n        public readonly ?int \$groupId = null,\n    ) {}\n}",
-            'description' => 'Constructor property promotion is cleaner and as effective.',
+            'full_review_id' => $revThomas->id,
+            'snippet_id' => $postLucas->snippets->first()->id,
+            'modified_content' => "public function store(StoreOrderRequest \$request, CreateOrderAction \$action)\n{\n    \$order = \$action->execute(\$request->validated());\n    return new OrderResource(\$order);\n}",
+            'description' => "Utilisation d'une Action atomique et de FormRequests pour la validation."
         ]);
 
-        // Marcus reviews Sarah's SQL
-        $rev2 = FullReview::create([
-            'user_id' => $marcus->id,
-            'post_id' => $post3->id,
-            'description' => 'Recursive CTEs are great. SEC TIP: Make sure `:post_id` is properly cast to an integer in the driver layer, Postgres is strict and it prevents type-juggling injection attempts.',
-            'score' => 5,
+        // Scenario 2: Sophie optimise un système de lock Rust (PERFORMANCE)
+        $postSophie = Post::create([
+            'user_id' => $sophie->id,
+            'group_id' => $groups[2]->id,
+            'title' => 'Lock-free Queue implementation en Rust',
+            'short_description' => 'Test d\'une queue MPMC sans Mutex pour haute performance.',
+            'description' => 'J\'essaie d\'implémenter une queue très rapide pour notre gestionnaire de logs. Actuellement, le `Mutex` global crée un goulot d\'étranglement sous forte charge (1M+ msg/sec).',
+            'review_goals' => 'Vérifier la gestion de la mémoire `Unsafe` et les barrières atomiques.',
+            'visibility' => 'public',
+            'lens' => 'performance',
+            'created_at' => now()->subDays(rand(1, 4)),
         ]);
 
-        // Global Comments
+        Snippet::create([
+            'post_id' => $postSophie->id,
+            'version_number' => 1,
+            'filename' => 'mpmc_queue.rs',
+            'language' => 'rust',
+            'code_content' => "use std::sync::atomic::{AtomicUsize, Ordering};\n\nstruct Queue<T> {\n    buffer: Vec<Slot<T>>,\n    head: AtomicUsize,\n    tail: AtomicUsize,\n}\n\nimpl<T> Queue<T> {\n    pub fn push(&self, value: T) {\n        let pos = self.tail.fetch_add(1, Ordering::Relaxed);\n        // unsafe implementation here...\n    }\n}",
+            'sort_order' => 1
+        ]);
+
+        // Commentaire de Julie sur la sécurité
         PostComment::create([
-            'user_id' => $lea->id,
-            'post_id' => $post2->id,
-            'content' => 'Love this refactor! Are you planning to add a `ValidationRequest` as well to separate the HTTP layer from the data object?',
+            'user_id' => $julie->id,
+            'post_id' => $postSophie->id,
+            'content' => "Sophie, attention à l'Ordering::Relaxed ici. Si tu accèdes à la data juste après, tu pourrais avoir des surprises de visibilité CPU. Je passerai sur du Acquire/Release pour être safe."
         ]);
 
-        // Interactions with celestin
+        // Scenario 3: Julie trouve une faille IDOR (SECURITY)
+        $postJulie = Post::create([
+            'user_id' => $julie->id,
+            'group_id' => $groups[1]->id,
+            'title' => 'Pourquoi ce middleware de téléchargement est dangereux ?',
+            'short_description' => 'Analyse d\'une vulnérabilité IDOR classique.',
+            'description' => 'J\'ai trouvé ça dans un vieux repo. Saurez-vous identifier comment un utilisateur peut télécharger les factures de n\'importe qui ?',
+            'visibility' => 'public',
+            'lens' => 'security',
+            'created_at' => now()->subDays(rand(12, 20)),
+        ]);
+
+        Snippet::create([
+            'post_id' => $postJulie->id,
+            'filename' => 'DownloadController.php',
+            'language' => 'php',
+            'code_content' => "public function download(\$id)\n{\n    \$invoice = Invoice::find(\$id);\n    return Storage::download(\$invoice->path);\n}",
+            'sort_order' => 1
+        ]);
+
+        // Lucas essaie de répondre
         PostComment::create([
-            'user_id' => $celestin->id,
-            'post_id' => $post1->id,
-            'content' => 'Hey David, if contention is the issue, check out `dashmap` crate for Rust. It uses sharding to avoid global locks. Also, is your `items` counter an `AtomicU32`? That would be much faster than a Mutex for just an increment.',
+            'user_id' => $lucas->id,
+            'post_id' => $postJulie->id,
+            'content' => "Il manque un `if(\$invoice->user_id !== auth()->id())` avant le download, non ?"
         ]);
 
-        // 7. CHAT MESSAGES (REAL CHAT)
-        $archGroup = $groups[0];
-        $chatData = [
-            ['u' => $sarah->id, 'm' => 'Welcome to Core Architecture. Let\'s keep the discussion focused on structural integrity.'],
-            ['u' => $celestin->id, 'm' => 'Thanks Sarah. Just posted the DTO refactor. Interested to see if we can generalize it for the whole API layer.'],
-            ['u' => $sarah->id, 'm' => 'I just reviewed it. Check the point about property promotion. It simplifies the payload signature significantly.'],
-            ['u' => $david->id, 'm' => 'Sarah, what about the Recursive CTE depth? I\'m worried it might blow up on deep threads.'],
-            ['u' => $sarah->id, 'm' => 'David, Postgres default max recursion is 1000. We\'ll never hit it with our current metadata limit, but I\'ll add a guard clause in the CTE base case anyway.'],
+        // 5. CHAT DE GROUPE RÉALISTE (Forge_Architecture)
+        $gp = $groups[0];
+        $chat = [
+            [$thomas->id, "Bienvenue dans la Forge. On est là pour casser du monolithe."],
+            [$lucas->id, "Est-ce que vous conseillez Livewire pour des dashboards complexes ?"],
+            [$kevin->id, "L'UI de ReviewMe prouve que oui. Le secret c'est le 'wire:navigate' et d'abuser de Alpine.js pour tout ce qui est immédiat."],
+            [$thomas->id, "Exactement. Et n'oubliez pas de garder vos composants Livewire 'lean'. La logique métier va dans les Actions."],
         ];
 
-        foreach ($chatData as $data) {
+        foreach ($chat as $i => $data) {
             GroupMessage::create([
-                'group_id' => $archGroup->id,
-                'user_id' => $data['u'],
-                'content' => $data['m'],
-                'created_at' => now()->subMinutes(60 - (count($chatData) * 5)),
+                'group_id' => $gp->id,
+                'user_id' => $data[0],
+                'content' => $data[1],
+                'created_at' => now()->subMinutes(120 - ($i * 10))
             ]);
         }
 
-        // 8. REACTIONS (Post & Reviews)
-        foreach (Post::all() as $post) {
-            foreach ($users->random(rand(2, 4)) as $reactor) {
-                if ($reactor->id !== $post->user_id) {
-                    Reaction::create([
-                        'user_id' => $reactor->id,
-                        'reactable_id' => $post->id,
-                        'reactable_type' => Post::class,
-                        'type' => collect(['up', 'mindblown', 'clean'])->random(),
-                    ]);
+        // 6. RÉACTIONS, COMMENTAIRES MASSIFS ET ACTIVITÉ PASSÉE
+        foreach ($users as $user) {
+            // Chaque utilisateur crée entre 3 et 8 commentaires/réactions aléatoires le mois passé
+            for ($i = 0; $i < rand(3, 8); $i++) {
+                $randomPost = Post::all()->random();
+                $randomDate = now()->subDays(rand(0, 30));
+
+                PostComment::create([
+                    'user_id' => $user->id,
+                    'post_id' => $randomPost->id,
+                    'content' => collect([
+                        "Super intéressant comme approche !",
+                        "J'aurais fait ça différemment, mais ça se tient.",
+                        "Merci pour le partage @{$randomPost->user->handle} !",
+                        "Tu as pensé aux performances sur ce bloc ?",
+                        "Le clean code est au rendez-vous, bravo."
+                    ])->random(),
+                    'created_at' => $randomDate
+                ]);
+
+                if ($user->id !== $randomPost->user_id) {
+                    Reaction::updateOrCreate(
+                        [
+                            'user_id' => $user->id,
+                            'reactable_id' => $randomPost->id,
+                            'reactable_type' => Post::class,
+                        ],
+                        [
+                            'type' => collect(['up', 'mindblown', 'clean', 'opti'])->random(),
+                            'created_at' => $randomDate
+                        ]
+                    );
                 }
             }
         }
+
+        // Simulation de karma pour Lucas (il a reçu une bonne review)
+        $lucas->increment('reputation_score', 150);
     }
 }

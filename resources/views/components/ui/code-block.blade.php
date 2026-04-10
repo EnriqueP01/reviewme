@@ -122,12 +122,13 @@
     },
     
     copy() {
+        if (!this.snippets[this.activeTab]) return;
         navigator.clipboard.writeText(this.snippets[this.activeTab].raw);
         this.copied = true;
         if (window.fx) window.fx.play('success');
         setTimeout(() => this.copied = false, 2000);
     }
-}" wire:ignore.self x-init="console.log('CodeBlock initialized with', snippets.length, 'snippets')" class="relative group/lens w-full">
+}" wire:ignore.self class="relative group/lens w-full">
     
     <!-- Info Overlay (Slide Down & Reveal) -->
     <div 
@@ -157,7 +158,7 @@
                     <div class="text-[9px] font-black uppercase tracking-widest text-on-surface-variant/40 mb-2">{{ __('Selected_Module') }}</div>
                     <div class="text-xs font-mono font-bold text-primary flex items-center gap-2">
                         <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M7 21h10a2 2 0 002-2V9.414a1 1 0 00-.293-.707l-5.414-5.414A1 1 0 0012.586 3H7a2 2 0 00-2 2v14a2 2 0 002 2z" stroke-width="2.5"/></svg>
-                        <span x-text="snippets[activeTab].name"></span>
+                        <span x-text="snippets[activeTab]?.name || '...'"></span>
                     </div>
                 </div>
                 
@@ -178,10 +179,10 @@
                     <p class="text-sm text-on-surface-variant font-medium leading-relaxed opacity-80 border-l-2 border-secondary/10 pl-4">{{ $context }}</p>
                     
                     <!-- Dynamic Fragment Description -->
-                    <template x-if="snippets[activeTab].description">
+                    <template x-if="snippets[activeTab] && snippets[activeTab].description">
                         <div class="mt-6 pt-6 border-t border-secondary/10">
                              <h4 class="text-[9px] font-black uppercase tracking-[0.2em] text-secondary/40 mb-2">{{ __('Curation Context') }}</h4>
-                             <p class="text-xs text-on-surface-variant leading-relaxed italic opacity-70" x-text="snippets[activeTab].description"></p>
+                             <p class="text-xs text-on-surface-variant leading-relaxed italic opacity-70" x-text="snippets[activeTab]?.description"></p>
                         </div>
                     </template>
                 </div>

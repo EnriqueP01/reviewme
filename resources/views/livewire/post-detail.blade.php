@@ -1,23 +1,24 @@
-<div class="w-full max-w-none px-12 py-6" 
-     x-data="{ 
+<div class="w-full max-w-none px-12 py-6"
+     x-data="{
         isReviewing: @entangle('isReviewing'),
         suggestingLine: @entangle('suggestingLine'),
         suggestingEndLine: @entangle('suggestingEndLine'),
         selectionPopup: { show: false, x: 0, y: 0, text: '', snippetId: null, start: null, end: null, original: '' },
         replyTo: @entangle('replyToId'),
-        
+
         handleMouseUp(e) {
             if (@js($this->isAuthor())) return;
+            if (!@js(Auth::user()?->hasKarmaPermission('suggestion.inline'))) return;
             if (e.target.closest('button') || e.target.closest('a') || e.target.closest('textarea')) return;
             const selection = window.getSelection();
             const text = selection.toString();
-            
+
             if (text.trim().length > 0) {
                 const range = selection.getRangeAt(0);
                 const rect = range.getBoundingClientRect();
                 const lineEl = selection.anchorNode.parentElement.closest('.group\\/line');
                 const endLineEl = selection.focusNode.parentElement.closest('.group\\/line');
-                
+
                 if (lineEl && endLineEl) {
                     this.selectionPopup = {
                         show: true,
@@ -41,6 +42,7 @@
         }
      }"
      class="w-full space-y-8"
+     wire:init="loadData"
 >
     <!-- Status Messages -->
     <div class="fixed top-24 left-1/2 transform -translate-x-1/2 z-[100] space-y-2 w-full max-w-sm pointer-events-none">
@@ -74,8 +76,63 @@
         <div class="mb-4">
             <x-ui.back-button fallback="{{ route('dashboard') }}" />
         </div>
-        
-        <!-- Header Monolith -->
+
+        @if(!$readyToLoad)
+            <!-- SKELETON STATE -->
+            <div class="space-y-8 animate-pulse">
+                <!-- Header Skeleton -->
+                <div class="bg-surface-container-low/40 border border-white/5 rounded-[2.5rem] p-8 flex items-center justify-between gap-6">
+                    <div class="flex items-center gap-6">
+                        <x-ui.skeleton class="w-14 h-14 rounded-2xl" />
+                        <div class="space-y-3">
+                            <div class="flex items-center gap-3">
+                                <x-ui.skeleton class="w-32 h-5" />
+                                <x-ui.skeleton class="w-20 h-4" />
+                            </div>
+                            <x-ui.skeleton class="w-48 h-8" />
+                        </div>
+                    </div>
+                    <div class="flex items-center gap-6">
+                        <x-ui.skeleton class="w-32 h-10 rounded-2xl" />
+                        <x-ui.skeleton class="w-40 h-10 rounded-2xl" />
+                    </div>
+                </div>
+
+                <!-- Code Block Skeleton -->
+                <div class="glass-panel rounded-[2.5rem] border border-white/5 h-[600px] flex flex-col overflow-hidden">
+                    <div class="h-16 bg-white/[0.04] border-b border-white/5 px-8 flex items-center justify-between">
+                        <x-ui.skeleton class="w-48 h-6" />
+                        <x-ui.skeleton class="w-64 h-8" />
+                        <x-ui.skeleton class="w-32 h-6" />
+                    </div>
+                    <div class="flex-1 p-8 space-y-4">
+                        @for($i=0; $i<15; $i++)
+                            <div class="flex gap-4">
+                                <x-ui.skeleton class="w-8 h-4 opacity-20" />
+                                <x-ui.skeleton class="w-full h-4 opacity-10" />
+                            </div>
+                        @endfor
+                    </div>
+                </div>
+
+                <!-- Discussion Skeleton -->
+                <div class="space-y-6 pt-12">
+                    <x-ui.skeleton class="w-40 h-4 opacity-20" />
+                    <div class="bg-[#1a1b26] rounded-[2.5rem] p-8 border border-white/5 space-y-8">
+                        @for($i=0; $i<2; $i++)
+                            <div class="flex gap-6">
+                                <x-ui.skeleton class="w-12 h-12 rounded-2xl shrink-0" />
+                                <div class="flex-1 space-y-3">
+                                    <x-ui.skeleton class="w-48 h-4" />
+                                    <x-ui.skeleton class="w-full h-16" />
+                                </div>
+                            </div>
+                        @endfor
+                    </div>
+                </div>
+            </div>
+        @else
+            <!-- REAL CONTENT -->
         <div class="bg-surface-container-low/40 backdrop-blur-2xl border border-white/5 rounded-[2.5rem] p-8 flex items-center justify-between gap-6 shadow-2xl relative overflow-hidden group/header">
             <div class="absolute inset-0 bg-gradient-to-r from-primary/5 to-transparent opacity-0 group-hover/header:opacity-100 transition-opacity pointer-events-none"></div>
             <div class="flex items-center gap-6 relative">
@@ -88,7 +145,7 @@
                     <div class="flex items-center gap-3 mt-1 overflow-x-auto no-scrollbar">
                         @foreach(explode(',', $post->lens ?? 'Logic') as $l)
                             @php $lKey = strtolower(trim($l)); @endphp
-                            <span 
+                            <span
                                 class="px-3 py-1 rounded-xl text-[9px] font-black uppercase tracking-[0.2em] transition-all cursor-default border flex-shrink-0"
                                 style="color: var(--lens-{{ $lKey }}); background-color: rgba(var(--lens-{{ $lKey }}-rgb), 0.1); border-color: rgba(var(--lens-{{ $lKey }}-rgb), 0.3);"
                             >#{{ strtoupper(trim($l)) }}</span>
@@ -101,20 +158,33 @@
                     <h1 class="text-2xl font-black text-on-surface tracking-tighter mt-2 truncate">{{ $post->title }}</h1>
                 </div>
             </div>
-            
+
             <div class="flex items-center gap-10 relative">
-                <!-- Post Karma HUD (NEW) -->
+                <!-- Post Karma HUD (Secured) -->
                 @php
+                    $canUpvote = Auth::user()?->hasKarmaPermission('post.vote_up');
+                    $canDownvote = Auth::user()?->hasKarmaPermission('post.vote_down');
                     $myPostReaction = $post->reactions->where('user_id', Auth::id())->first()?->type;
                     $postVotedState = $myPostReaction === 'mindblown' ? 'up' : ($myPostReaction === 'optimisable' ? 'down' : '');
                 @endphp
                 <div class="flex items-center gap-3 bg-black/20 p-2 px-4 rounded-[2rem] border border-white/5"
-                     x-data="{ 
+                     x-data="{
                          score: parseInt('{{ $post->up_count - $post->down_count }}'),
                          voted: '{{ $postVotedState }}',
                          originalVoted: '{{ $postVotedState }}',
+                         canUp: {{ $canUpvote ? 'true' : 'false' }},
+                         canDown: {{ $canDownvote ? 'true' : 'false' }},
                          timer: null,
                          vote(dir) {
+                             if (dir === 'up' && !this.canUp) {
+                                 $dispatch('vibe-notif', { type: 'error', message: '{{ __('Niveau de karma insuffisant') }}' });
+                                 return;
+                             }
+                             if (dir === 'down' && !this.canDown) {
+                                 $dispatch('vibe-notif', { type: 'error', message: '{{ __('Niveau de karma insuffisant') }}' });
+                                 return;
+                             }
+
                              clearTimeout(this.timer);
                              let newVoted = (this.voted === dir) ? '' : dir;
                              let diff = 0;
@@ -133,14 +203,28 @@
                          }
                      }"
                 >
-                    <button @click="vote('up')" 
-                            class="p-2 rounded-xl transition-all active:scale-75" :class="voted === 'up' ? 'text-emerald-400 bg-emerald-500/10' : 'text-on-surface-variant hover:text-emerald-400'">
-                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M5 15l7-7 7 7" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                    <button @click="vote('up')"
+                            class="p-2 rounded-xl transition-all active:scale-75 group/btn"
+                            :class="!canUp ? 'opacity-20 cursor-not-allowed' : (voted === 'up' ? 'text-emerald-400 bg-emerald-500/10' : 'text-on-surface-variant hover:text-emerald-400')">
+                        <template x-if="!canUp">
+                            <svg class="w-4 h-4 opacity-50" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                        </template>
+                        <template x-if="canUp">
+                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M5 15l7-7 7 7" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                        </template>
                     </button>
+
                     <span class="text-sm font-black italic w-6 text-center" :class="score > 0 ? 'text-emerald-400' : (score < 0 ? 'text-red-400' : 'opacity-20')" x-text="score"></span>
-                    <button @click="vote('down')" 
-                            class="p-2 rounded-xl transition-all active:scale-75" :class="voted === 'down' ? 'text-red-400 bg-red-500/10' : 'text-on-surface-variant hover:text-red-400'">
-                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M19 9l-7 7-7-7" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/></svg>
+
+                    <button @click="vote('down')"
+                            class="p-2 rounded-xl transition-all active:scale-75 group/btn"
+                            :class="!canDown ? 'opacity-20 cursor-not-allowed' : (voted === 'down' ? 'text-red-400 bg-red-500/10' : 'text-on-surface-variant hover:text-red-400')">
+                        <template x-if="!canDown">
+                            <svg class="w-4 h-4 opacity-50" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                        </template>
+                        <template x-if="canDown">
+                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M19 9l-7 7-7-7" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                        </template>
                     </button>
                 </div>
 
@@ -193,9 +277,9 @@
                             <!-- Global Eval -->
                             <div class="space-y-3">
                                 <label class="px-1 text-[9px] font-black uppercase tracking-[0.4em] text-primary/60">{{ __('Summary') }}</label>
-                                <textarea wire:model="reviewDescription" 
+                                <textarea wire:model="reviewDescription"
                                           wire:key="full-review-desc-{{ $post->id }}"
-                                          placeholder="{{ __('Example: \'The O(n^2) nested loop in the auth middleware is causing significant overhead. I recommend refactoring to a Set-based lookup for O(1) complexity. Also, consider moving the heavy disk I/O to a background worker to prevent blocking the main request cycle.\'') }}" 
+                                          placeholder="{{ __('Example: \'The O(n^2) nested loop in the auth middleware is causing significant overhead. I recommend refactoring to a Set-based lookup for O(1) complexity. Also, consider moving the heavy disk I/O to a background worker to prevent blocking the main request cycle.\'') }}"
                                           class="w-full bg-black/20 border border-white/5 rounded-2xl p-6 text-sm text-on-surface focus:border-primary/20 min-h-[120px] outline-none transition-all shadow-inner custom-scrollbar resize-none font-medium italic"></textarea>
                             </div>
 
@@ -219,7 +303,7 @@
                                                     @endfor
                                                 </div>
                                                 <!-- Editor -->
-                                                <textarea 
+                                                <textarea
                                                     wire:model.live="reviewFilesData.{{ $snippet->id }}.content"
                                                     class="flex-1 bg-transparent border-none p-6 font-mono text-[11px] text-on-surface focus:ring-0 leading-relaxed custom-scrollbar resize-none selection:bg-primary/20"
                                                     spellcheck="false"
@@ -252,7 +336,7 @@
 
         <!-- Code Block : Monolith HUD -->
         <div class="rounded-[2.5rem] overflow-hidden border border-white/5 shadow-2xl relative" wire:key="code-block-v{{ $selectedVersion }}" @mouseup="handleMouseUp($event)">
-            <x-ui.code-block 
+            <x-ui.code-block
                 :snippets="$currentSnippets"
                 :title="$post->title"
                 :suggestions="$post->inlineSuggestions"
@@ -262,7 +346,7 @@
 
         <!-- Activity Feed (Reviews + Discussion) -->
         <div class="grid grid-cols-1 gap-16 pt-16">
-            
+
             <!-- FULL REVIEWS SECTION -->
             @if($post->fullReviews->count() > 0)
                 <div class="space-y-12">
@@ -273,20 +357,20 @@
                         </h2>
                     </div>
 
-                    <div class="relative group/carousel overflow-hidden pb-12" 
-                         x-data="{ 
-                            current: @entangle('activeReviewIndex'), 
+                    <div class="relative group/carousel overflow-hidden pb-12"
+                         x-data="{
+                            current: @entangle('activeReviewIndex'),
                             total: {{ $post->fullReviews->count() }},
                             next() { this.current = (this.current + 1) % this.total },
                             prev() { this.current = (this.current - 1 + this.total) % this.total }
                          }">
-                        
+
                         <!-- Discrete Top Navigation Tabs -->
                         @if($post->fullReviews->count() > 1)
                             <div class="flex items-center justify-center gap-3 mb-6 z-[100] py-2">
                                 @foreach($post->fullReviews as $frIndex => $fr)
-                                    <button type="button" 
-                                            @click="current = {{ $frIndex }}" 
+                                    <button type="button"
+                                            @click="current = {{ $frIndex }}"
                                             class="px-4 py-1.5 rounded-xl transition-all duration-300 relative flex flex-col items-center gap-0.5 group/tab"
                                             :class="current === {{ $frIndex }} ? 'bg-primary/10 border border-primary/20' : 'border border-transparent hover:bg-white/5'">
                                         <span class="text-[9px] font-bold uppercase tracking-[0.15em]" :class="current === {{ $frIndex }} ? 'text-primary' : 'text-on-surface-variant/30 group-hover/tab:text-on-surface-variant'">{{ __('Ref') }} #{{ $frIndex + 1 }}</span>
@@ -295,7 +379,7 @@
                                 @endforeach
                             </div>
                         @endif
-                        
+
                         <!-- Permanent Sticky Side Navigation Paddles -->
                         @if($post->fullReviews->count() > 1)
                             <div @click="prev()" class="absolute top-0 bottom-0 left-0 w-24 z-50 cursor-pointer group/nav-left flex items-start justify-center">
@@ -312,13 +396,13 @@
 
                         <div class="relative w-full overflow-hidden px-8">
                             <!-- Translation Slider Container -->
-                            <div class="flex transition-transform duration-700 ease-in-out will-change-transform" 
+                            <div class="flex transition-transform duration-700 ease-in-out will-change-transform"
                                  :style="'transform: translateX(-' + (current * 100) + '%)'">
-                                
+
                                 @foreach($post->fullReviews as $frIndex => $fr)
                                     <div wire:key="fr-view-v10-{{ $fr->id }}" class="w-full shrink-0 px-4">
                                         <div class="max-w-6xl mx-auto bg-surface-container-low rounded-[2.5rem] p-10 border border-white/5 shadow-2xl relative overflow-hidden flex flex-col gap-8">
-                                            
+
                                             <!-- Review Header -->
                                             <div class="flex items-start justify-between gap-8">
                                                 <div class="flex items-start gap-6">
@@ -336,25 +420,40 @@
                                                     </div>
                                                 </div>
 
-                                                <!-- Vote Engine (Radical) -->
+                                                <!-- Vote Engine (Secured) -->
+                                                @php
+                                                    $canUpvoteReview = Auth::user()?->hasKarmaPermission('review.vote_up');
+                                                    $canDownvoteReview = Auth::user()?->hasKarmaPermission('review.vote_down');
+                                                @endphp
                                                 <div class="flex items-center gap-3"
-                                                     x-data="{ 
+                                                     x-data="{
                                                          score: parseInt('{{ $fr->up_count - $fr->down_count }}'),
                                                          voted: '{{ $fr->reactions->where('user_id', Auth::id())->first()?->type }}',
                                                          originalVoted: '{{ $fr->reactions->where('user_id', Auth::id())->first()?->type }}',
+                                                         canUp: {{ $canUpvoteReview ? 'true' : 'false' }},
+                                                         canDown: {{ $canDownvoteReview ? 'true' : 'false' }},
                                                          timer: null,
-                                                          
+
                                                          vote(dir) {
+                                                             if (dir === 'up' && !this.canUp) {
+                                                                 $dispatch('vibe-notif', { type: 'error', message: '{{ __('Niveau de karma insuffisant') }}' });
+                                                                 return;
+                                                             }
+                                                             if (dir === 'down' && !this.canDown) {
+                                                                 $dispatch('vibe-notif', { type: 'error', message: '{{ __('Niveau de karma insuffisant') }}' });
+                                                                 return;
+                                                             }
+
                                                              clearTimeout(this.timer);
                                                              window.haptic.play(dir);
-                                                              
+
                                                              let newVoted = (this.voted === dir) ? '' : dir;
                                                              let diff = 0;
                                                              if (this.voted === 'up') diff -= 1;
                                                              if (this.voted === 'down') diff += 1;
                                                              if (newVoted === 'up') diff += 1;
                                                              if (newVoted === 'down') diff -= 1;
-                                                             
+
                                                              this.score += diff;
                                                              this.voted = newVoted;
 
@@ -369,14 +468,26 @@
                                                      }"
                                                 >
                                                      <div class="flex items-center gap-2 p-2 bg-[#0d0e12]/60 rounded-[1.5rem] border border-white/5 shadow-inner">
-                                                         <button @click.stop="vote('up')" 
-                                                                 class="p-3.5 rounded-2xl transition-all active:scale-75" :class="voted === 'up' ? 'text-emerald-400 bg-emerald-500/10 shadow-[0_0_30px_rgba(52,211,153,0.15)]' : 'text-on-surface-variant hover:text-emerald-400 hover:bg-emerald-500/5'">
-                                                             <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M5 15l7-7 7 7" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                                                         <button @click.stop="vote('up')"
+                                                                 class="p-3.5 rounded-2xl transition-all active:scale-75 group/btn"
+                                                                 :class="!canUp ? 'opacity-20 cursor-not-allowed' : (voted === 'up' ? 'text-emerald-400 bg-emerald-500/10 shadow-[0_0_30px_rgba(52,211,153,0.15)]' : 'text-on-surface-variant hover:text-emerald-400 hover:bg-emerald-500/5')">
+                                                             <template x-if="!canUp">
+                                                                <svg class="w-5 h-5 opacity-50" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                                                             </template>
+                                                             <template x-if="canUp">
+                                                                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M5 15l7-7 7 7" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                                                             </template>
                                                          </button>
                                                          <span class="text-sm font-black tracking-tighter w-8 text-center" :class="score > 0 ? 'text-emerald-400' : (score < 0 ? 'text-red-400' : 'text-on-surface-variant/40')" x-text="score"></span>
-                                                         <button @click.stop="vote('down')" 
-                                                                 class="p-3.5 rounded-2xl transition-all active:scale-75" :class="voted === 'down' ? 'text-red-400 bg-red-500/10 shadow-[0_0_30px_rgba(248,113,113,0.15)]' : 'text-on-surface-variant hover:text-red-400 hover:bg-red-500/5'">
-                                                             <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M19 9l-7 7-7-7" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                                                         <button @click.stop="vote('down')"
+                                                                 class="p-3.5 rounded-2xl transition-all active:scale-75 group/btn"
+                                                                 :class="!canDown ? 'opacity-20 cursor-not-allowed' : (voted === 'down' ? 'text-red-400 bg-red-500/10 shadow-[0_0_30px_rgba(248,113,113,0.15)]' : 'text-on-surface-variant hover:text-red-400 hover:bg-red-500/5')">
+                                                             <template x-if="!canDown">
+                                                                <svg class="w-5 h-5 opacity-50" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                                                             </template>
+                                                             <template x-if="canDown">
+                                                                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M19 9l-7 7-7-7" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                                                             </template>
                                                          </button>
                                                      </div>
                                                 </div>
@@ -424,11 +535,11 @@
                                                     <!-- Reply Input -->
                                                     <div class="flex items-center gap-4 bg-black/40 rounded-[2rem] p-3 border border-primary/20 shadow-inner">
                                                         <img src="{{ auth()->user()->avatar }}" class="w-10 h-10 rounded-2xl border border-white/10 object-cover">
-                                                        <input type="text" 
-                                                               wire:model="reviewCommentContent" 
+                                                        <input type="text"
+                                                               wire:model="reviewCommentContent"
                                                                wire:key="fr-comment-input-{{ $fr->id }}"
-                                                               wire:keydown.enter="saveGlobalComment(null, {{ $fr->id }})" 
-                                                               placeholder="{{ __('Example: \'How does this refactoring impact the hydration cost? Can we ensure the Reactive Store handles this asynchronously?\'') }}" 
+                                                               wire:keydown.enter="saveGlobalComment(null, {{ $fr->id }})"
+                                                               placeholder="{{ __('Example: \'How does this refactoring impact the hydration cost? Can we ensure the Reactive Store handles this asynchronously?\'') }}"
                                                                class="bg-transparent border-none flex-1 py-3 text-sm text-on-surface focus:ring-0 placeholder:text-on-surface-variant/20 font-semibold italic">
                                                         <button type="button" wire:click="saveGlobalComment(null, {{ $fr->id }})" class="p-3 rounded-2xl bg-primary text-on-primary hover:scale-105 active:scale-95 transition-all">
                                                             <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M13 5l7 7m0 0l-7 7m7-7H3" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/></svg>
@@ -460,7 +571,7 @@
                         <!-- Bottom Navigation Traits -->
                         <div class="flex items-center justify-center gap-6 mt-4">
                             @foreach($post->fullReviews as $frIndex => $fr)
-                                <button type="button" @click="current = {{ $frIndex }}" 
+                                <button type="button" @click="current = {{ $frIndex }}"
                                         class="w-32 h-1 rounded-full relative overflow-hidden transition-all duration-500"
                                         :class="current === {{ $frIndex }} ? 'h-2 bg-primary/20 ring-1 ring-primary/30' : 'bg-white/5 hover:bg-white/10'">
                                     <div class="absolute inset-0 bg-primary transition-transform duration-500 origin-left"
@@ -484,14 +595,27 @@
                     <div class="relative pt-4">
                         <div class="flex items-center gap-4 bg-black/40 rounded-[2rem] p-3 border border-primary/20 focus-within:border-primary/60 transition-all shadow-[0_0_40px_rgba(190,194,255,0.02)]">
                             <img src="{{ Auth::user()->avatar }}" class="w-10 h-10 rounded-2xl ml-2 shadow-2xl border border-white/10 shrink-0">
-                            <input type="text" 
+                            <input type="text"
                                    wire:model="globalCommentContent"
                                    wire:key="global-comment-input-{{ $post->id }}"
                                    wire:keydown.enter="saveGlobalComment"
-                                   placeholder="{{ __('Example: \'The database indexing strategy on the metadata JSON field seems suboptimal for large datasets. I suspect it might lead to full table scans.\'') }}" 
+                                   placeholder="{{ __('Example: \'The database indexing strategy on the metadata JSON field seems suboptimal for large datasets. I suspect it might lead to full table scans.\'') }}"
                                    class="bg-transparent border-none flex-1 py-3 text-sm text-on-surface focus:ring-0 placeholder:text-on-surface-variant/20 font-semibold tracking-tight">
-                            <x-ui.button wire:click="saveGlobalComment" variant="primary" size="sm" class="!px-4 !py-4 shadow-[0_0_20px_rgba(190,194,255,0.25)]">
-                                <svg wire:loading.remove class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="4" d="M13 5l7 7m0 0l-7 7m7-7H3"></path></svg>
+                            @php $canComment = Auth::user()?->hasKarmaPermission('post.comment'); @endphp
+                            <x-ui.button
+                                wire:click="{{ $canComment ? 'saveGlobalComment' : '' }}"
+                                @click="if(!@js($canComment)) $dispatch('vibe-notif', { type: 'error', message: '{{ __('Niveau de karma insuffisant') }}' })"
+                                variant="primary"
+                                size="sm"
+                                class="!px-4 !py-4 shadow-[0_0_20px_rgba(190,194,255,0.25)] group/comment-btn"
+                                :class="!@js($canComment) ? 'opacity-20 cursor-not-allowed' : ''"
+                            >
+                                <template x-if="!@js($canComment)">
+                                    <svg class="w-5 h-5 opacity-50" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                                </template>
+                                <template x-if="@js($canComment)">
+                                    <svg wire:loading.remove class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="4" d="M13 5l7 7m0 0l-7 7m7-7H3"></path></svg>
+                                </template>
                             </x-ui.button>
                         </div>
                     </div>
@@ -512,25 +636,46 @@
                                         </span>
                                     </div>
                                     <p class="text-sm text-on-surface-variant leading-relaxed opacity-80">{{ $comment->content }}</p>
-                                    
-                                    <div class="flex items-center gap-8 pt-2" 
-                                         x-data="{ 
-                                            likes: {{ $comment->reactions->count() }}, 
+
+                                    <div class="flex items-center gap-8 pt-2"
+                                         x-data="{
+                                            likes: {{ $comment->reactions->count() }},
                                             isLiked: {{ $comment->reactions->where('user_id', Auth::id())->count() > 0 ? 'true' : 'false' }},
+                                            canLike: {{ Auth::user()?->hasKarmaPermission('comment.like') ? 'true' : 'false' }},
                                             toggle() {
+                                                if (!this.canLike) {
+                                                    $dispatch('vibe-notif', { type: 'error', message: '{{ __('Niveau de karma insuffisant') }}' });
+                                                    return;
+                                                }
                                                 this.isLiked = !this.isLiked;
                                                 this.likes = this.isLiked ? this.likes + 1 : this.likes - 1;
                                                 $wire.toggleCommentLike({{ $comment->id }});
                                             }
                                          }">
-                                        <button @click="toggle()" class="flex items-center gap-2.5 group/like transition-all active:scale-90">
+                                        <button @click="toggle()"
+                                                class="flex items-center gap-2.5 group/like transition-all active:scale-90"
+                                                :class="!canLike ? 'opacity-20 cursor-not-allowed' : ''">
                                             <div class="p-2 px-3 rounded-xl bg-white/5 flex items-center gap-2 group-hover/like:bg-emerald-500/10 transition-all border border-transparent group-hover/like:border-emerald-500/20">
-                                                <svg class="w-4 h-4 transition-all duration-300" :class="isLiked ? 'text-emerald-400 fill-emerald-400 scale-110' : 'text-on-surface-variant group-hover/like:text-emerald-400'" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" stroke-width="3"/></svg>
+                                                <template x-if="!canLike">
+                                                    <svg class="w-3.5 h-3.5 opacity-50" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                                                </template>
+                                                <template x-if="canLike">
+                                                    <svg class="w-4 h-4 transition-all duration-300" :class="isLiked ? 'text-emerald-400 fill-emerald-400 scale-110' : 'text-on-surface-variant group-hover/like:text-emerald-400'" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" stroke-width="3"/></svg>
+                                                </template>
                                                 <span class="text-[11px] font-black transition-colors" :class="likes > 0 ? 'text-on-surface' : 'text-on-surface-variant opacity-30'" x-text="likes"></span>
                                             </div>
                                         </button>
-                                        <button @click="replying = !replying; if(replying) { $nextTick(() => $el.closest('.group\\/comment').querySelector('input')?.focus()); $wire.replyToId = {{ $comment->id }}; }" class="text-[10px] font-black uppercase tracking-[0.3em] text-on-surface-variant/40 hover:text-primary transition-all flex items-center gap-3 group/reply-btn">
-                                            <svg class="w-3 h-3 group-hover/reply-btn:translate-x-0.5 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M3 10h10a8 8 0 018 8v2M3 10l6 6m-6-6l6-6" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                                        <button
+                                            @click="if(@js($canComment)) { replying = !replying; if(replying) { $nextTick(() => $el.closest('.group\\/comment').querySelector('input')?.focus()); $wire.replyToId = {{ $comment->id }}; } } else { $dispatch('vibe-notif', { type: 'error', message: '{{ __('Niveau de karma insuffisant') }}' }); }"
+                                            class="text-[10px] font-black uppercase tracking-[0.3em] transition-all flex items-center gap-3 group/reply-btn"
+                                            :class="!@js($canComment) ? 'text-on-surface-variant/10 cursor-not-allowed opacity-20' : 'text-on-surface-variant/40 hover:text-primary'"
+                                        >
+                                            <template x-if="!@js($canComment)">
+                                                <svg class="w-3.5 h-3.5 opacity-50" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                                            </template>
+                                            <template x-if="@js($canComment)">
+                                                <svg class="w-3 h-3 group-hover/reply-btn:translate-x-0.5 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M3 10h10a8 8 0 018 8v2M3 10l6 6m-6-6l6-6" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                                            </template>
                                             {{ __('Reply') }}
                                         </button>
                                     </div>
@@ -538,11 +683,11 @@
                                     <div x-show="replying" x-collapse x-cloak class="pt-6">
                                         <div class="flex items-center gap-4 bg-black/40 rounded-[2rem] p-3 border border-primary/10 transition-all shadow-inner">
                                             <img src="{{ Auth::user()->avatar }}" class="w-10 h-10 rounded-2xl ml-2 shadow-2xl border border-white/10 shrink-0">
-                                            <input type="text" 
-                                                   wire:model="replyContent" 
+                                            <input type="text"
+                                                   wire:model="replyContent"
                                                    wire:key="reply-input-{{ $comment->id }}"
-                                                   wire:keydown.enter="saveGlobalComment({{ $comment->id }})" 
-                                                   placeholder="{{ __('Example: \'I see your point about Big-O complexity, but given our data volume, readability is currently our priority.\'') }}" 
+                                                   wire:keydown.enter="saveGlobalComment({{ $comment->id }})"
+                                                   placeholder="{{ __('Example: \'I see your point about Big-O complexity, but given our data volume, readability is currently our priority.\'') }}"
                                                    class="bg-transparent border-none flex-1 py-3 text-sm text-on-surface focus:ring-0 placeholder:text-on-surface-variant/20 font-semibold">
                                             <button wire:click="saveGlobalComment({{ $comment->id }})" @click="if($wire.replyContent.length > 0) { setTimeout(() => { replying = false; }, 200) }" class="mr-2 p-3 rounded-2xl bg-primary text-on-primary hover:scale-105 active:scale-95 transition-all">
                                                 <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M13 5l7 7m0 0l-7 7m7-7H3" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/></svg>
@@ -566,7 +711,9 @@
                                                         </div>
                                                         <p class="text-sm text-on-surface-variant opacity-80 leading-relaxed">{{ $reply->content }}</p>
                                                         <div class="flex items-center gap-4 pt-1">
-                                                            <button wire:click="toggleCommentLike({{ $reply->id }})" class="flex items-center gap-2 group/rlike transition-all active:scale-90">
+                                                            <button @click="if(@js($canLike)) { $wire.toggleCommentLike({{ $reply->id }}); } else { $dispatch('vibe-notif', { type: 'error', message: '{{ __('Niveau de karma insuffisant') }}' }); }"
+                                                                    class="flex items-center gap-2 group/rlike transition-all active:scale-90"
+                                                                    :class="!@js($canLike) ? 'opacity-20 cursor-not-allowed' : ''">
                                                                 <svg class="w-3.5 h-3.5 {{ $reply->reactions->where('user_id', Auth::id())->count() > 0 ? 'text-emerald-400 fill-emerald-400 scale-110' : 'text-on-surface-variant/20 group-hover/rlike:text-emerald-400' }} transition-all" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" stroke-width="3"/></svg>
                                                                 <span class="text-[10px] font-black {{ $reply->reactions->count() > 0 ? 'text-on-surface/60' : 'text-on-surface-variant/10' }}">{{ $reply->reactions->count() }}</span>
                                                             </button>
@@ -625,7 +772,7 @@
                                     <x-ui.syntax-highlighter :code="$originalContent" :lang="$snippetLang" :startLine="$suggestingLine" class="text-[12px] h-full" />
                                 </div>
                             </div>
-                            
+
                             <!-- Suggested change -->
                             <div class="flex flex-col space-y-4">
                                 <div class="flex items-center gap-3 px-1">
@@ -637,7 +784,7 @@
                                     <div class="w-12 bg-emerald-500/5 border-r border-emerald-500/10 flex flex-col pt-6 items-center select-none shrink-0">
                                         <span class="text-[10px] font-black text-emerald-500/30">+</span>
                                     </div>
-                                    <textarea wire:model="suggestedContent" 
+                                    <textarea wire:model="suggestedContent"
                                               class="flex-1 bg-transparent p-6 font-mono text-[12px] text-emerald-400 outline-none resize-none custom-scrollbar leading-relaxed selection:bg-emerald-500/30 font-medium h-full"
                                               spellcheck="false"></textarea>
                                 </div>
@@ -648,9 +795,9 @@
                         <!-- Rationale -->
                         <div class="space-y-3">
                             <label class="px-1 text-[9px] font-black uppercase tracking-[0.4em] text-on-surface-variant/40">{{ __('Technical Rationale & Benchmarks') }}</label>
-                            <textarea wire:model="suggestionDescription" 
+                            <textarea wire:model="suggestionDescription"
                                       wire:key="suggestion-desc-{{ $post->id }}"
-                                      placeholder="{{ __('Example: \'This refactoring targets the memory leaks in the stream handler. By ensuring the file pointers are closed in a Finally block, we prevent resource exhaustion under heavy load.\'') }}" 
+                                      placeholder="{{ __('Example: \'This refactoring targets the memory leaks in the stream handler. By ensuring the file pointers are closed in a Finally block, we prevent resource exhaustion under heavy load.\'') }}"
                                       class="w-full bg-black/20 border border-white/5 rounded-2xl p-6 text-sm text-on-surface min-h-[120px] outline-none focus:border-primary/20 transition-all shadow-inner italic font-medium @error('suggestionDescription') border-red-500/50 @enderror"></textarea>
                             @error('suggestionDescription') <span class="text-[10px] text-red-400 font-bold uppercase ml-2 tracking-widest italic">{{ $message }}</span> @enderror
                         </div>
@@ -668,5 +815,6 @@
             </div>
         </template>
     @endif
+@endif
     </div>
 </div>

@@ -16,7 +16,13 @@ class GithubAuthController extends Controller
      */
     public function redirect()
     {
-        return Socialite::driver('github')->redirect();
+        $driver = Socialite::driver('github');
+
+        if (app()->environment('local')) {
+            $driver->setHttpClient(new \GuzzleHttp\Client(['verify' => false]));
+        }
+
+        return $driver->redirect();
     }
 
     /**
@@ -25,8 +31,14 @@ class GithubAuthController extends Controller
     public function callback(HandleGithubCallbackAction $handleGithubCallback)
     {
         try {
+            $driver = Socialite::driver('github');
+
+            if (app()->environment('local')) {
+                $driver->setHttpClient(new \GuzzleHttp\Client(['verify' => false]));
+            }
+
             /** @var User $githubUser */
-            $githubUser = Socialite::driver('github')->user();
+            $githubUser = $driver->user();
 
             $user = $handleGithubCallback->execute($githubUser);
 
@@ -39,7 +51,7 @@ class GithubAuthController extends Controller
                 'trace' => $e->getTraceAsString(),
             ]);
 
-            return redirect('/login')->with('error', __('Authentication failed. Please try again or contact support.'));
+            return redirect('/login')->with('error', 'GitHub Error: ' . $e->getMessage());
         }
     }
 }

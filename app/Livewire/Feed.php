@@ -19,8 +19,13 @@ class Feed extends Component
     use WithPagination;
 
     public string $sort = 'recent';
-
     public string $search = '';
+    public bool $readyToLoad = false;
+
+    public function loadData(): void
+    {
+        $this->readyToLoad = true;
+    }
 
     protected $queryString = [
         'search' => ['except' => ''],
@@ -64,8 +69,9 @@ class Feed extends Component
     #[Layout('layouts.app')]
     public function render(SearchPostsAction $searchPosts)
     {
-        $posts = $searchPosts->execute($this->search, $this->sort)
-            ->paginate(30);
+        $posts = $this->readyToLoad 
+            ? $searchPosts->execute($this->search, $this->sort)->paginate(15)
+            : new \Illuminate\Pagination\LengthAwarePaginator([], 0, 15);
 
         return view('livewire.feed', [
             'posts' => $posts,

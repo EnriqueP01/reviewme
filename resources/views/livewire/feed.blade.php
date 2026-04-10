@@ -1,4 +1,4 @@
-<div class="w-full max-w-none px-12 py-10">
+<div class="w-full max-w-none px-12 py-10" wire:init="loadData">
     <!-- Feed Header -->
     <div class="flex items-end justify-between mb-24 relative">
         <div class="space-y-4">
@@ -38,13 +38,36 @@
 
     <!-- Feed Content -->
     <div class="relative min-h-[400px]">
-        <x-ui.loader-overlay target="search, sortBy, gotoPage, nextPage, previousPage" />
-        
-        <div class="space-y-24">
-        @foreach($posts as $post)
-            <x-ui.post-card :post="$post" />
-        @endforeach
-        </div>
+        @if(!$readyToLoad)
+            <div class="space-y-24 animate-pulse">
+                @foreach(range(1, 3) as $i)
+                    <div class="w-full bg-surface-container-low/40 rounded-[2.5rem] p-12 border border-white/5 space-y-8">
+                        <div class="flex items-center justify-between">
+                            <div class="flex items-center gap-6">
+                                <x-ui.skeleton class="w-16 h-16 rounded-[1.5rem]" />
+                                <div class="space-y-3">
+                                    <x-ui.skeleton class="w-64 h-8" />
+                                    <x-ui.skeleton class="w-32 h-4 opacity-40" />
+                                </div>
+                            </div>
+                            <x-ui.skeleton class="w-24 h-10 rounded-xl" />
+                        </div>
+                        <div class="space-y-4">
+                            <x-ui.skeleton class="w-full h-4 opacity-20" />
+                            <x-ui.skeleton class="w-3/4 h-4 opacity-20" />
+                        </div>
+                    </div>
+                @endforeach
+            </div>
+        @else
+            <x-ui.loader-overlay target="search, sortBy, gotoPage, nextPage, previousPage" />
+            
+            <div class="space-y-24">
+            @foreach($posts as $post)
+                <x-ui.post-card :post="$post" />
+            @endforeach
+            </div>
+        @endif
     </div>
 
     <!-- Unified Pagination -->

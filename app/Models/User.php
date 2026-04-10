@@ -156,4 +156,37 @@ class User extends Authenticatable
 
         return in_array($permission, $allPermissions);
     }
+
+    /**
+     * Recalcule intégralement le score de réputation de l'utilisateur.
+     * Basé sur les interactions reçues sur ses contenus.
+     */
+    public function recalculateReputationScore(): void
+    {
+        $rewards = config('karma.rewards');
+        $score = 0;
+
+        // 1. Karma des Posts (Upvotes/Downvotes)
+        $this->posts()->withCount(['reactions as upvotes' => function($q) {
+            $q->where('type', 'upvote');
+        }, 'reactions as downvotes' => function($q) {
+            $q->where('type', 'downvote');
+        }])->get()->each(function ($post) use (&$score, $rewards) {
+            $score += $post->upvotes * ($rewards['post_upvote'] ?? 10);
+            $score += $post->downvotes * ($rewards['post_downvote'] ?? -2);
+        });
+
+        // 2. Karma des Full Reviews
+        $this->fullReviews()->withCount(['reactions as upvotes' => function($q) {
+            $q->where('type', 'upvote');
+        }, 'reactions as downvotes' => function($q) {
+            $q->where('type', 'downvote');
+        }])->get()->each(function ($review) use (&$score, $rewards) {
+            $score += $review->upvotes * ($rewards['review_upvote'] ?? 15);
+            $score += $review->downvotes * ($rewards['post_downvote'] ?? -2);
+            $score += $rewards['review_bonus'] ?? 5; // Bonus fixe par review publiée
+        });
+
+        $this->update(['reputation_score' => max(0, $score)]);
+    }
 }
