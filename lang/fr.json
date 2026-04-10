@@ -292,7 +292,7 @@
     "Versioning": "Versioning",
     "Karma System": "Système de Karma",
     "Platform Overview": "Présentation de la Plateforme",
-    "ReviewMe is more than a code sharing tool; it's a dedicated environment for architectural validation. Designed for developer teams and educational institutions, it focuses on the \"Why\" and \"How\" rather than just the \"What\".": "ReviewMe est plus qu'un outil de partage de code ; c'est un environnement dédié à la validation architecturale. Conçu pour les équipes de développeurs et les institutions éducatives, il se concentre sur le \"Pourquoi\" et le \"Comment\" plutôt que sur le \"Quoi\".",
+    "ReviewMe is more than a code sharing tool; it's a dedicated environment for architectural validation. Designed for developer teams and educational institutions, it focuses on the \"Why\" and \"How\" rather than just the \"What\".": "ReviewMe est plus qu'un outil de partage de code ; c'est un environnement dédié à la validation architecturale. Conçu pour les équipes de développeurs et les institutions éducatives, it se concentre sur le \"Pourquoi\" et le \"Comment\" plutôt que sur le \"Quoi\".",
     "Secure Audits": "Audits Sécurisés",
     "Private Labs ensure your experimental logic stays within your team.": "Les Labs Privés garantissent que votre logique expérimentale reste au sein de votre équipe.",
     "Rapid Feedback": "Feedback Rapide",
@@ -347,5 +347,6 @@
     "v1.1.5 - Labs Optimization": "v1.1.5 - Optimisation des Labs",
     "Resolved race condition in snippet voting.": "Résolution de la condition de course dans le vote des snippets.",
     "Implemented Reverb real-time pulse for Labs.": "Implémentation du pouls Reverb en temps réel pour les Labs.",
-    "Groups": "Groupes"
+    "Groups": "Groupes",
+    "Group": "Groupe"
 }
