@@ -6,7 +6,8 @@
     'containerClass' => '',
 ])
 
-<div class="relative group/search-ui {{ $containerClass }} bg-black/20 backdrop-blur-3xl rounded-[1.25rem] border border-white/5 shadow-2xl focus-within:border-primary/40 focus-within:shadow-[0_0_30px_rgba(190,194,255,0.05)] transition-all duration-500 flex items-center px-6">
+<div class="relative group/search-ui {{ $containerClass }} bg-black/20 backdrop-blur-3xl rounded-[1.25rem] border border-white/5 shadow-2xl hover:border-primary/30 hover:bg-[#1a1b26]/50 hover:shadow-[0_0_20px_rgba(190,194,255,0.05)] hover:-translate-y-0.5 focus-within:border-primary/40 focus-within:shadow-[0_0_30px_rgba(190,194,255,0.08)] focus-within:bg-[#1a1b26]/80 focus-within:-translate-y-0.5 transition-all duration-500 flex items-center px-6 cursor-text"
+     onclick="this.querySelector('input').focus()">
     <!-- Texture Layer (Monolith Style) -->
     <div class="absolute inset-0 opacity-10 pointer-events-none rounded-[inherit]" 
          style="background-image: url('data:image/svg+xml,%3Csvg viewBox=\'0 0 256 256\' xmlns=\'http://www.w3.org/2000/svg\'%3E%3Cfilter id=\'noiseFilter\'%3E%3CfeTurbulence type=\'fractalNoise\' baseFrequency=\'0.65\' numOctaves=\'3\' stitchTiles=\'stitch\'/%3E%3C/filter%3E%3Crect width=\'100%25\' height=\'100%25\' filter=\'url(%23noiseFilter)\'/%3E%3C/svg%3E'); background-blend-mode: soft-light;"></div>
@@ -22,8 +23,9 @@
                 'type' => 'text',
                 'wire:model.live.debounce.' . $debounce => $model,
                 'placeholder' => $placeholder,
-                'class' => 'w-full bg-transparent border-none py-4 px-4 text-xs text-on-surface placeholder:text-on-surface-variant/20 focus:ring-0 transition-all duration-500 font-bold tracking-tight outline-none ' . $class
+                'class' => 'w-full bg-transparent border-none py-4 px-4 text-xs text-on-surface placeholder:text-on-surface-variant/20 hover:!border-transparent hover:!shadow-none focus:!ring-0 focus:!border-transparent focus:!shadow-none focus-visible:!outline-none transition-all duration-500 font-bold tracking-tight' . ' ' . $class
             ]) }}
+            style="box-shadow: none !important; border-color: transparent !important;"
         >
     </div>
 </div>

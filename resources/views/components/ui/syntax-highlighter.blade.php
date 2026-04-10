@@ -2,6 +2,7 @@
     'code' => '',
     'lang' => 'php',
     'showLineNumbers' => true,
+    'startLine' => 1,
     'maxHeight' => 'max-h-[500px]'
 ])
 
@@ -60,7 +61,7 @@
             @foreach($highlightedLines as $index => $line)
                 <div class="flex gap-6 group/highlight-line hover:bg-white/[0.03] transition-colors -mx-6 px-6">
                     @if($showLineNumbers)
-                        <span class="w-8 shrink-0 text-right text-on-surface-variant/20 select-none group-hover/highlight-line:text-primary transition-colors font-bold">{{ $index + 1 }}</span>
+                        <span class="w-8 shrink-0 text-right text-on-surface-variant/20 select-none group-hover/highlight-line:text-primary transition-colors font-bold">{{ $startLine + $index }}</span>
                     @endif
                     <pre class="flex-1 whitespace-pre m-0 text-on-surface/90 font-medium tracking-wide group-hover/highlight-line:text-white transition-colors">{!! $line ?: '&nbsp;' !!}</pre>
                 </div>

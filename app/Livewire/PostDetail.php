@@ -178,7 +178,7 @@ class PostDetail extends Component
         $this->authorizeAction();
 
         if ($this->isAuthor()) {
-            $this->dispatch('post-action', type: 'error', message: __('Vous ne pouvez pas suggérer de modifications sur votre propre post.'));
+            session()->flash('error', __('You cannot suggest changes on your own post.'));
 
             return;
         }
@@ -239,7 +239,7 @@ class PostDetail extends Component
         $this->authorizeAction();
 
         if ($this->isAuthor()) {
-            $this->dispatch('post-action', type: 'error', message: __('Vous ne pouvez pas publier de review sur votre propre post.'));
+            session()->flash('error', __('You cannot publish reviews on your own post.'));
 
             return;
         }

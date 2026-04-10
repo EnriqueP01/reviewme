@@ -24,19 +24,14 @@
                 'flex items-start gap-5 group/msg transition-all duration-500 animate-in fade-in slide-in-from-bottom-4',
                 'flex-row-reverse' => $message->user_id === auth()->id()
             ])>
-                <div class="relative shrink-0">
-                    <img src="{{ $message->user->profile_photo_url }}" class="w-10 h-10 rounded-xl border border-white/10 shadow-2xl object-cover hover:scale-110 transition-transform">
-                    @if($message->user_id === auth()->id())
-                        <div class="absolute -bottom-1 -right-1 w-3 h-3 bg-primary border-2 border-[#0d0e12] rounded-full shadow-lg"></div>
-                    @endif
-                </div>
+                <x-ui.avatar :model="$message->user" size="md" />
                 
                 <div @class([
                     'flex flex-col space-y-2 max-w-[75%]',
                     'items-end font-mono' => $message->user_id === auth()->id()
                 ])>
                     <div class="flex items-center gap-3 opacity-30 group-hover/msg:opacity-60 transition-opacity">
-                        <span class="text-[9px] font-black uppercase tracking-widest text-on-surface">{{ $message->user->name }}</span>
+                        <a href="{{ route('profile.show', $message->user->handle) }}" wire:navigate class="text-[9px] font-black uppercase tracking-widest text-on-surface hover:text-primary transition-colors">{{ $message->user->name }}</a>
                         <span class="text-[8px] font-mono font-bold">{{ $message->created_at->format('H:i') }}</span>
                     </div>
                     
