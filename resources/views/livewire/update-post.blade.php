@@ -1,4 +1,9 @@
 <div class="max-w-4xl mx-auto px-6 py-12">
+    {{-- Bouton retour --}}
+    <div class="mb-8">
+        <x-ui.back-button fallback="{{ route('dashboard') }}" />
+    </div>
+
     <div class="mb-8 space-y-2">
         <h1 class="text-3xl font-black font-display text-on-surface">{{ __('Update Post Code') }}</h1>
         <p class="text-on-surface-variant italic">{{ __('Submit new snippets to create a new version of your post: ') }} <span class="font-bold text-primary">{{ $post->title }}</span></p>
