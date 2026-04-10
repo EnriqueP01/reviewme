@@ -3,6 +3,7 @@
 namespace App\Livewire;
 
 use App\Actions\Posts\CreatePostAction;
+use App\Livewire\Traits\HasVibeNotifications;
 use Illuminate\Support\Facades\Auth;
 use Livewire\Attributes\Computed;
 use Livewire\Attributes\Layout;
@@ -10,6 +11,8 @@ use Livewire\Component;
 
 class PublishWorkflow extends Component
 {
+    use HasVibeNotifications;
+
     public int $step = 1;
 
     // Step 1: Post Details
@@ -433,7 +436,7 @@ class PublishWorkflow extends Component
         ]);
 
         session()->forget('publish_workflow_state');
-        session()->flash('success', __('Post published successfully!'));
+        session()->flash('success', __('Publication réussie ! Votre code est maintenant sous la loupe de la communauté.'));
 
         return redirect()->to(route('dashboard'));
     }

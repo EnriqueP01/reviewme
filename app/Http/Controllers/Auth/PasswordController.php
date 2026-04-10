@@ -24,6 +24,6 @@ class PasswordController extends Controller
 
         $updateUserPassword->execute($request->user(), $validated['password']);
 
-        return back()->with('status', 'password-updated');
+        return back()->with('success', __('Mot de passe mis à jour avec succès !'));
     }
 }

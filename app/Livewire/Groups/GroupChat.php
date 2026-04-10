@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Livewire\Groups;
 
 use App\Events\GroupMessageSent;
+use App\Livewire\Traits\HasVibeNotifications;
 use App\Models\Group;
 use App\Models\GroupMessage;
 use Illuminate\Support\Facades\Auth;
@@ -12,6 +13,8 @@ use Livewire\Component;
 
 final class GroupChat extends Component
 {
+    use HasVibeNotifications;
+
     public Group $group;
 
     public string $newMessage = '';
@@ -51,6 +54,7 @@ final class GroupChat extends Component
         // Auth check: Admin of group or author of message
         if ($this->group->owner_id === Auth::id() || $msg->user_id === Auth::id()) {
             $msg->delete();
+            $this->notifySuccess(__('Message supprimé.'));
         }
     }
 

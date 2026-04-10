@@ -1,3 +1,41 @@
+## 2026-04-10-79 : Standardisation du Feedback UX & Actions Critiques (Purge & Exit)
+- **Auteur** : Antigravity
+- **Statut** : ✅ Implémenté
+- **Contexte** : Manque de standardisation dans les boucles de feedback pour les actions destructives (suppression de post/commentaire) et les sorties de groupe. Nécessité de sécuriser ces actions par des confirmations explicites.
+- **Décision** :
+    1. **Migration vers le Toast System** : Remplacement systématique des redirections avec messages flash par des notifications standardisées via le système `vibe-notif`, incluant des retours sonores et visuels premium.
+    2. **Workflow de Purge Sécurisé** : Implémentation de la suppression de posts et de commentaires dans `PostDetail` avec double confirmation via `x-ui.confirm-modal`.
+    3. **Gestion Transparente des Groupes** : Ajout de la fonctionnalité de sortie de groupe (`leaveGroup`) pour les membres non-propriétaires, avec feedback instantané.
+    4. **Localisation Étendue** : Internationalisation complète (FR/EN) de l'intégralité des nouveaux messages et libellés de boutons liés à ces actions critiques.
+- **Impact** : Expérience utilisateur plus sécurisante et professionnelle, alignée sur les standards de gestion de contenu haut de gamme, sans rupture de contexte.
+
+## 2026-04-10-78 : Raffinement de l'Expérience Notification (UX Noise Reduction)
+- **Auteur** : Antigravity
+- **Statut** : ✅ Implémenté
+- **Contexte** : Saturation de l'interface par des notifications répétitives pour des actions de routine (votes, commentaires simples, suppressions de messages), polluant le HUD de l'utilisateur.
+- **Décision** :
+    1. **Filtrage des Actions de Routine** : Suppression systématique des notifications de type "Succès" pour les interactions à haute fréquence (Upvote, Downvote, Publication de commentaire, Suppression de message de chat).
+    2. **Priorisation Critique** : Conservation et renforcement des notifications pour les actions à fort impact :
+        - Échecs de permission (manque de Karma).
+        - Erreurs système.
+        - Publication d'artéfacts de curation.
+        - Modifications structurelles (Profil, Groupes).
+    3. **Standardisation Audio/Visuelle** : Alignement de tous les messages restants sur le système `vibe-notif` pour garantir une distinction nette entre Information (Bleu/Neutre), Succès (Vert/Positif) et Erreur (Rouge/Négatif).
+- **Impact** : Interface plus calme et professionnelle, réduction de la charge cognitive et valorisation des alertes réellement importantes.
+
+## 2026-04-10-77 : Centralisation & Modernisation du Système de Notification (Vibe Notif)
+- **Auteur** : Antigravity
+- **Statut** : ✅ Implémenté
+- **Contexte** : Manque de cohérence et de "vibe" dans les retours utilisateurs. Les alertes étaient disparates (session flash natives, simples dispatchs) et manquaient de feedback sonore et visuel premium.
+- **Décision** :
+    1. **Architecture "Vibe Trait"** : Création du trait `HasVibeNotifications` pour centraliser l'émission de notifications typées (success, error, info) avec support natif des traductions.
+    2. **Toast HUD 2.0 (Glassmorphism)** : Refonte intégrale du composant Toast. Il écoute désormais les événements globaux ET les flash sessions Laravel lors de l'initialisation, garantissant la persistance des messages même après une redirection.
+    3. **Expérience Sensorielle** : 
+        - Intégration de sons procéduraux distincts par type de notification (via `window.fx`).
+        - Ajout de barres de progression temporelles et d'animations de type "Spring" sur l'entrée des toasts.
+    4. **Sécurisation du Karma** : Les erreurs de permission (ex: vote interdit sans karma) sont désormais capturées par `try/catch` dans les composants et transformées en alertes "Vibe" rouges avec feedback sonore d'erreur.
+- **Impact** : Expérience utilisateur immersive et cohérente, perception de qualité "Premium" renforcée et unification totale des boucles de feedback.
+
 ## 2026-04-10-76 : Correction d'Overflow Header & Responsivité PostDetail
 - **Auteur** : Antigravity
 - **Statut** : ✅ Implémenté
