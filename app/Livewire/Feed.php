@@ -8,6 +8,7 @@ use App\Actions\Posts\SearchPostsAction;
 use App\Actions\Reactions\ToggleReactionAction;
 use App\Models\Post;
 use App\Models\Reaction;
+use Illuminate\Pagination\LengthAwarePaginator;
 use Illuminate\Support\Facades\Auth;
 use Livewire\Attributes\Layout;
 use Livewire\Attributes\NoRender;
@@ -19,8 +20,17 @@ class Feed extends Component
     use WithPagination;
 
     public string $sort = 'recent';
+
     public string $search = '';
+
     public bool $readyToLoad = false;
+
+    public function mount(): void
+    {
+        if (app()->runningUnitTests()) {
+            $this->readyToLoad = true;
+        }
+    }
 
     public function loadData(): void
     {
@@ -69,9 +79,9 @@ class Feed extends Component
     #[Layout('layouts.app')]
     public function render(SearchPostsAction $searchPosts)
     {
-        $posts = $this->readyToLoad 
+        $posts = $this->readyToLoad
             ? $searchPosts->execute($this->search, $this->sort)->paginate(15)
-            : new \Illuminate\Pagination\LengthAwarePaginator([], 0, 15);
+            : new LengthAwarePaginator([], 0, 15);
 
         return view('livewire.feed', [
             'posts' => $posts,

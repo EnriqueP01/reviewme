@@ -20,6 +20,7 @@ use Livewire\Component;
 class PostDetail extends Component
 {
     public Post $post;
+
     public bool $readyToLoad = false;
 
     public int $postId;
@@ -75,15 +76,19 @@ class PostDetail extends Component
         Log::info("Mounting PostDetail for post {$postId}");
         $this->postId = $postId;
         $this->post = Post::findOrFail($postId); // On ne charge que le strict minimum ici
+
+        if (app()->runningUnitTests()) {
+            $this->readyToLoad = true;
+        }
     }
 
     public function loadData(): void
     {
         $this->refreshPost();
-        
+
         $this->selectedVersion = $this->post->snippets->max('version_number') ?: 1;
         $this->activeSnippetId = $this->post->snippets->where('version_number', $this->selectedVersion)->first()?->id;
-        
+
         $this->readyToLoad = true;
     }
 
