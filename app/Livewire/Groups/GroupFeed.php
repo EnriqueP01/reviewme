@@ -6,6 +6,7 @@ namespace App\Livewire\Groups;
 
 use App\Actions\Posts\SearchPostsAction;
 use App\Actions\Reactions\ToggleReactionAction;
+use App\Livewire\Traits\HasVibeNotifications;
 use App\Models\Group;
 use App\Models\Post;
 use App\Models\Reaction;
@@ -17,9 +18,11 @@ use Livewire\WithPagination;
 
 final class GroupFeed extends Component
 {
-    use WithPagination;
+    use HasVibeNotifications, WithPagination;
 
     public Group $group;
+
+    public string $search = '';
 
     public string $sort = 'recent';
 
@@ -48,20 +51,24 @@ final class GroupFeed extends Component
             return redirect()->route('login');
         }
 
-        $post = Post::findOrFail($postId);
+        try {
+            $post = Post::findOrFail($postId);
 
-        if ($direction === 'none') {
-            Reaction::where([
-                'user_id' => Auth::id(),
-                'reactable_id' => $post->id,
-                'reactable_type' => $post->getMorphClass(),
-            ])->delete();
+            if ($direction === 'none') {
+                Reaction::where([
+                    'user_id' => Auth::id(),
+                    'reactable_id' => $post->id,
+                    'reactable_type' => $post->getMorphClass(),
+                ])->delete();
 
-            return;
+                return;
+            }
+
+            $type = $direction === 'up' ? 'mindblown' : 'optimisable';
+            $toggleReaction->execute(Auth::user(), $post, $type);
+        } catch (\Exception $e) {
+            $this->notifyError($e->getMessage());
         }
-
-        $type = $direction === 'up' ? 'mindblown' : 'optimisable';
-        $toggleReaction->execute(Auth::user(), $post, $type);
     }
 
     public function render(SearchPostsAction $searchPosts)

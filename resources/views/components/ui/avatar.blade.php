@@ -23,7 +23,7 @@
         }
     } elseif ($isGroup) {
         $imagePath = $model->logo_path;
-        $href = route('groups.show', $model->slug);
+        $href = route('groups', ['slug' => $model->slug]);
     }
 
     $initials = strtoupper(substr($name, 0, 1));

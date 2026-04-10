@@ -6,6 +6,7 @@ namespace App\Livewire;
 
 use App\Actions\Comments\StorePostCommentAction;
 use App\Actions\Reactions\ToggleReactionAction;
+use App\Livewire\Traits\HasVibeNotifications;
 use App\Models\FullReview;
 use App\Models\InlineSuggestion;
 use App\Models\Post;
@@ -19,6 +20,8 @@ use Livewire\Component;
 
 class PostDetail extends Component
 {
+    use HasVibeNotifications;
+
     public Post $post;
 
     public bool $readyToLoad = false;
@@ -121,29 +124,33 @@ class PostDetail extends Component
             fullReviewId: $fullReviewId
         );
 
+        $this->notifySuccess(__('Commentaire publié !'));
         $this->reset(['globalCommentContent', 'replyContent', 'reviewCommentContent', 'replyToId']);
         $this->refreshPost();
-        $this->dispatch('post-action', type: 'success');
     }
 
     #[Renderless]
     public function vote(int $postId, string $direction, ToggleReactionAction $toggleReaction): void
     {
-        $this->authorizeAction();
-        $post = Post::findOrFail($postId);
+        try {
+            $this->authorizeAction();
+            $post = Post::findOrFail($postId);
 
-        if ($direction === 'none') {
-            Reaction::where([
-                'user_id' => Auth::id(),
-                'reactable_id' => $post->id,
-                'reactable_type' => $post->getMorphClass(),
-            ])->delete();
+            if ($direction === 'none') {
+                Reaction::where([
+                    'user_id' => Auth::id(),
+                    'reactable_id' => $post->id,
+                    'reactable_type' => $post->getMorphClass(),
+                ])->delete();
 
-            return;
+                return;
+            }
+
+            $type = $direction === 'up' ? 'mindblown' : 'optimisable';
+            $toggleReaction->execute(Auth::user(), $post, $type);
+        } catch (\Exception $e) {
+            $this->notifyError($e->getMessage());
         }
-
-        $type = $direction === 'up' ? 'mindblown' : 'optimisable';
-        $toggleReaction->execute(Auth::user(), $post, $type);
     }
 
     #[Renderless]
@@ -219,15 +226,14 @@ class PostDetail extends Component
             ]);
 
             Log::info('Inline suggestion saved successfully.');
-            session()->flash('success', __('Suggestion enregistrée.'));
+            $this->notifySuccess(__('Suggestion de refactoring enregistrée !'));
         } catch (\Exception $e) {
             Log::error('Error saving inline suggestion: '.$e->getMessage());
-            session()->flash('error', __('Erreur lors de l\'enregistrement.'));
+            $this->notifyError(__('Erreur lors de l\'enregistrement.'));
         }
 
         $this->reset(['suggestingLine', 'suggestingEndLine', 'suggestionDescription', 'suggestedContent', 'originalContent']);
         $this->refreshPost();
-        $this->dispatch('post-action', type: 'success');
     }
 
     // --- FULL REVIEW ---
@@ -286,15 +292,14 @@ class PostDetail extends Component
             });
 
             Log::info('Full review saved successfully.');
-            session()->flash('success', __('Revue complète publiée.'));
+            $this->notifySuccess(__('Revue complète publiée avec succès !'));
         } catch (\Exception $e) {
             Log::error('Error saving full review: '.$e->getMessage());
-            session()->flash('error', __('Erreur lors de la publication.'));
+            $this->notifyError(__('Échec de la publication de la revue.'));
         }
 
         $this->reset(['isReviewing', 'reviewDescription', 'reviewFilesData']);
         $this->refreshPost();
-        $this->dispatch('post-action', type: 'success');
     }
 
     public function deleteReview(int $reviewId): void
@@ -304,7 +309,38 @@ class PostDetail extends Component
         if (Auth::id() === $review->user_id) {
             $review->delete();
             Log::info("Review {$reviewId} deleted by owner.");
+            $this->notifySuccess(__('Revue supprimée avec succès.'));
         }
+        $this->refreshPost();
+    }
+
+    public function deletePost(): void
+    {
+        $this->authorizeAction();
+        if (! $this->isAuthor() && ! Auth::user()->is_admin) {
+            $this->notifyError(__('Action non autorisée.'));
+
+            return;
+        }
+
+        $this->post->delete();
+        session()->flash('success', __('Publication supprimée du système.'));
+        $this->redirect(route('feed'));
+    }
+
+    public function deleteComment(int $commentId): void
+    {
+        $this->authorizeAction();
+        $comment = PostComment::findOrFail($commentId);
+
+        if (Auth::id() !== $comment->user_id && ! $this->isAuthor() && ! Auth::user()->is_admin) {
+            $this->notifyError(__('Action non autorisée.'));
+
+            return;
+        }
+
+        $comment->delete();
+        $this->notifySuccess(__('Commentaire retiré.'));
         $this->refreshPost();
     }
 

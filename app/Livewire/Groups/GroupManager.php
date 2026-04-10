@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Livewire\Groups;
 
+use App\Livewire\Traits\HasVibeNotifications;
 use App\Models\Group;
 use App\Models\User;
 use Illuminate\Support\Facades\Auth;
@@ -14,7 +15,7 @@ use Livewire\WithFileUploads;
 
 final class GroupManager extends Component
 {
-    use WithFileUploads;
+    use HasVibeNotifications, WithFileUploads;
 
     public string $name = '';
 
@@ -33,6 +34,16 @@ final class GroupManager extends Component
 
     public $logo;
 
+    public function mount(?string $slug = null)
+    {
+        if ($slug) {
+            $group = Group::where('slug', $slug)->first();
+            if ($group) {
+                $this->selectedGroupId = $group->id;
+            }
+        }
+    }
+
     protected $rules = [
         'name' => 'required|min:3|max:255|unique:groups,name',
         'description' => 'nullable|string',
@@ -40,6 +51,12 @@ final class GroupManager extends Component
 
     public function createGroup()
     {
+        if (! Auth::user()->hasKarmaPermission('group.create')) {
+            $this->notifyError(__('Niveau de karma insuffisant pour créer un groupe.'));
+
+            return;
+        }
+
         $this->validate();
 
         $group = Group::create([
@@ -52,7 +69,7 @@ final class GroupManager extends Component
         $group->members()->attach(Auth::id(), ['role' => 'moderator']);
 
         $this->reset(['name', 'description', 'isCreating']);
-        session()->flash('success', __('Group created successfully !'));
+        $this->notifySuccess(__('Le groupe a été forgé avec succès !'));
     }
 
     public function deleteGroup(int $id)
@@ -64,7 +81,7 @@ final class GroupManager extends Component
         $this->selectedGroupId = null;
         $this->isCreating = false;
 
-        session()->flash('success', __('Group deleted.'));
+        $this->notifySuccess(__('Groupe supprimé du système.'));
     }
 
     public function selectGroup(int $id)
@@ -101,6 +118,7 @@ final class GroupManager extends Component
         }
 
         $this->reset('userSearch', 'searchResults');
+        $this->notifySuccess(__('Nouveau contributeur ajouté au groupe !'));
     }
 
     public function removeMember(int $userId)
@@ -115,6 +133,21 @@ final class GroupManager extends Component
         $this->authorize('removeMember', [$group, $memberToRemove]);
 
         $group->members()->detach($userId);
+        $this->notifySuccess(__('Contributeur retiré du groupe.'));
+    }
+
+    public function leaveGroup(int $groupId)
+    {
+        $group = Group::findOrFail($groupId);
+        if ($group->owner_id === Auth::id()) {
+            $this->notifyError(__('Le propriétaire ne peut pas quitter le groupe.'));
+
+            return;
+        }
+
+        $group->members()->detach(Auth::id());
+        $this->selectedGroupId = null;
+        $this->notifySuccess(__('Vous avez quitté le groupe.'));
     }
 
     public function updatedLogo()
@@ -139,7 +172,7 @@ final class GroupManager extends Component
         $group->update(['logo_path' => $path]);
 
         $this->reset('logo');
-        session()->flash('success', __('Logo updated successfully !'));
+        $this->notifySuccess(__('Identité visuelle mise à jour.'));
     }
 
     #[Layout('layouts.app')]

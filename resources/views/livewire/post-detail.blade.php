@@ -49,21 +49,6 @@
      class="w-full space-y-8"
      wire:init="loadData"
 >
-    <!-- Status Messages -->
-    <div class="fixed top-24 left-1/2 transform -translate-x-1/2 z-[100] space-y-2 w-full max-w-sm pointer-events-none">
-        @if (session()->has('success'))
-            <div class="bg-emerald-500/90 backdrop-blur-md text-white px-6 py-4 rounded-2xl shadow-2xl border border-emerald-400/50 flex items-center justify-between pointer-events-auto animate-fade-in">
-                <span class="text-xs font-black uppercase tracking-widest">{{ session('success') }}</span>
-                <button x-on:click="$el.closest('div').remove()" class="ml-4 opacity-50 hover:opacity-100 italic text-[10px]">{{ __('Close') }}</button>
-            </div>
-        @endif
-        @if (session()->has('error'))
-            <div class="bg-red-500/90 backdrop-blur-md text-white px-6 py-4 rounded-2xl shadow-2xl border border-red-400/50 flex items-center justify-between pointer-events-auto animate-fade-in">
-                <span class="text-xs font-black uppercase tracking-widest">{{ session('error') }}</span>
-                <button x-on:click="$el.closest('div').remove()" class="ml-4 opacity-50 hover:opacity-100 italic text-[10px]">{{ __('Close') }}</button>
-            </div>
-        @endif
-    </div>
 
     <!-- Inline Selection Popup -->
     <div x-show="selectionPopup.show" x-cloak x-transition
@@ -167,6 +152,15 @@
             </div>
 
             <div class="flex flex-wrap items-center gap-6 xl:gap-10 relative shrink-0">
+                @if($this->isAuthor() || Auth::user()?->is_admin)
+                    <button 
+                        x-on:click="$dispatch('open-modal', 'delete-post-modal')"
+                        class="p-4 rounded-2xl bg-rose-500/5 hover:bg-rose-500/10 border border-rose-500/10 text-rose-500 transition-all group/delete"
+                    >
+                        <svg class="w-5 h-5 group-hover/delete:scale-110 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" /></svg>
+                    </button>
+                    <div class="h-8 w-px bg-white/5 hidden md:block"></div>
+                @endif
                 <!-- Post Karma HUD (Secured) -->
                 @php
                     $canUpvote = Auth::user()?->hasKarmaPermission('post.vote_up');
@@ -685,6 +679,16 @@
                                             </template>
                                             {{ __('Reply') }}
                                         </button>
+
+                                        @if($comment->user_id === Auth::id() || $this->isAuthor() || Auth::user()?->is_admin)
+                                            <button
+                                                x-on:click="$dispatch('open-modal', { name: 'confirm-comment-deletion', id: {{ $comment->id }} })"
+                                                class="text-[9px] font-black uppercase tracking-[0.3em] text-rose-500/30 hover:text-rose-500 transition-all flex items-center gap-2"
+                                            >
+                                                <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" /></svg>
+                                                {{ __('Delete') }}
+                                            </button>
+                                        @endif
                                     </div>
 
                                     <div x-show="replying" x-collapse x-cloak class="pt-6">
@@ -724,6 +728,15 @@
                                                                 <svg class="w-3.5 h-3.5 {{ $reply->reactions->where('user_id', Auth::id())->count() > 0 ? 'text-emerald-400 fill-emerald-400 scale-110' : 'text-on-surface-variant/20 group-hover/rlike:text-emerald-400' }} transition-all" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" stroke-width="3"/></svg>
                                                                 <span class="text-[10px] font-black {{ $reply->reactions->count() > 0 ? 'text-on-surface/60' : 'text-on-surface-variant/10' }}">{{ $reply->reactions->count() }}</span>
                                                             </button>
+
+                                                            @if($reply->user_id === Auth::id() || $this->isAuthor() || Auth::user()?->is_admin)
+                                                                <button
+                                                                    x-on:click="$dispatch('open-modal', { name: 'confirm-comment-deletion', id: {{ $reply->id }} })"
+                                                                    class="text-[8px] font-black uppercase tracking-widest text-rose-500/20 hover:text-rose-500 transition-all flex items-center gap-2 px-2"
+                                                                >
+                                                                    {{ __('Delete') }}
+                                                                </button>
+                                                            @endif
                                                         </div>
                                                     </div>
                                                 </div>
@@ -823,5 +836,26 @@
         </template>
     @endif
 @endif
+    </div>
+
+    <x-ui.confirm-modal 
+        name="delete-post-modal" 
+        title="{{ __('Critical Action: Delete Post') }}" 
+        content="{{ __('This action is irreversible. The source code, activity feed, and associated reviews will be permanently purged from the system.') }}"
+        confirmText="{{ __('Purge Post') }}"
+        variant="danger"
+        wire:click="deletePost"
+        x-on:click="show = false"
+    />
+
+    <div x-data="{ commentIdToDelete: null }" x-on:open-modal.window="if($event.detail.name === 'confirm-comment-deletion') commentIdToDelete = $event.detail.id">
+        <x-ui.confirm-modal 
+            name="confirm-comment-deletion" 
+            title="{{ __('Confirm Deletion') }}" 
+            content="{{ __('Are you sure you want to remove this comment?') }}"
+            confirmText="{{ __('Delete') }}"
+            variant="danger"
+            x-on:confirm="$wire.deleteComment(commentIdToDelete); show = false"
+        />
     </div>
 </div>
