@@ -29,6 +29,22 @@
     --lens-beauty-rgb: 96, 165, 250;
     --lens-opti: #34D399;         /* Green/Emerald 400 */
     --lens-opti-rgb: 52, 211, 153;
+    --lens-security: #f87171;    /* Red 400 */
+    --lens-security-rgb: 248, 113, 113;
+    --lens-architecture: #38bdf8; /* Sky 400 */
+    --lens-architecture-rgb: 56, 189, 248;
+    --lens-ux: #f472b6;           /* Pink 400 */
+    --lens-ux-rgb: 244, 114, 182;
+    --lens-test: #818cf8;         /* Indigo 400 */
+    --lens-test-rgb: 129, 140, 248;
+    --lens-clean: #34d399;        /* Emerald 400 */
+    --lens-clean-rgb: 52, 211, 153;
+    --lens-mindblown: #a78bfa;    /* Violet 400 */
+    --lens-mindblown-rgb: 167, 139, 250;
+    --lens-infrastructure: #94a3b8; /* Slate 400 */
+    --lens-infrastructure-rgb: 148, 163, 184;
+    --lens-readability: #fb923c;   /* Orange 400 */
+    --lens-readability-rgb: 251, 146, 60;
     
     --on-surface: #e3e1ed;
     --on-surface-variant: #ababcf;

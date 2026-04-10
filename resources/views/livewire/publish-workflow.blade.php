@@ -1,4 +1,15 @@
-<div class="max-w-4xl mx-auto px-6 py-12">
+<div 
+    class="max-w-4xl mx-auto px-6 py-12"
+    x-data="{ 
+        step: @entangle('step'),
+        init() {
+            this.$watch('step', () => {
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+            });
+        }
+    }"
+>
+    <style>[x-cloak] { display: none !important; }</style>
     <!-- Stepper Navigation -->
     <div class="mb-16 relative mx-auto max-w-2xl">
         <div class="absolute top-5 left-[20px] right-[20px] h-0.5 bg-surface-highest z-0">
@@ -29,9 +40,17 @@
 
 
 
-    <form wire:submit.prevent="submit">
-        @if($step == 1)
-            <!-- Step 1: Introspection -->
+    <form wire:submit.prevent="submit" class="relative">
+        <!-- Step 1: Introspection -->
+        <div 
+            x-show="step == 1"
+            x-transition:enter="transition ease-out duration-500 delay-200"
+            x-transition:enter-start="opacity-0 translate-y-8"
+            x-transition:enter-end="opacity-100 translate-y-0"
+            x-transition:leave="transition ease-in duration-300 absolute inset-x-0"
+            x-transition:leave-start="opacity-100 translate-y-0"
+            x-transition:leave-end="opacity-0 -translate-y-8"
+        >
             <div class="space-y-4 animate-in fade-in slide-in-from-bottom-4 duration-500">
                 <div class="space-y-2">
                     <h2 class="font-display text-3xl font-bold text-on-surface tracking-tight">{{ __('Post Details') }} <span class="text-red-500">*</span></h2>
@@ -73,8 +92,19 @@
                     </div>
                 </div>
             </div>
-        @elseif($step == 2)
-            <!-- Step 2: Artifacts (The Digital Logic) -->
+        </div>
+
+        <!-- Step 2: Artifacts (The Digital Logic) -->
+        <div 
+            x-show="step == 2"
+            x-transition:enter="transition ease-out duration-500 delay-200"
+            x-transition:enter-start="opacity-0 translate-y-8"
+            x-transition:enter-end="opacity-100 translate-y-0"
+            x-transition:leave="transition ease-in duration-300 absolute inset-x-0"
+            x-transition:leave-start="opacity-100 translate-y-0"
+            x-transition:leave-end="opacity-0 -translate-y-8"
+            x-cloak
+        >
             <div class="space-y-12 animate-in fade-in slide-in-from-bottom-8 duration-700">
                 <div class="sticky top-24 z-40 flex flex-col md:flex-row justify-between items-start md:items-end gap-6 bg-surface-lowest/95 backdrop-blur-2xl p-6 -mx-6 rounded-b-round-4 border-b border-outline-variant/20 shadow-[0_20px_50px_-10px_rgba(0,0,0,0.5)] transition-all duration-500">
 
@@ -318,123 +348,189 @@
                     @endforelse
                 </div>
             </div>
-        @elseif($step == 3)
-            <!-- Step 3: Distribution & Focus -->
+        </div>
+
+        <!-- Step 3: Distribution & Focus -->
+        <div 
+            x-show="step == 3"
+            x-transition:enter="transition ease-out duration-500 delay-200"
+            x-transition:enter-start="opacity-0 translate-y-8"
+            x-transition:enter-end="opacity-100 translate-y-0"
+            x-transition:leave="transition ease-in duration-300 absolute inset-x-0"
+            x-transition:leave-start="opacity-100 translate-y-0"
+            x-transition:leave-end="opacity-0 -translate-y-8"
+            x-cloak
+        >
             <div class="space-y-8 animate-in fade-in slide-in-from-bottom-4 duration-500">
-                <div class="space-y-2">
-                    <h2 class="font-display text-3xl font-bold text-on-surface tracking-tight">{{ __('Focus Areas') }}</h2>
-                    <p class="text-on-surface-variant italic">{{ __('Select the main areas you want the community to focus on.') }}</p>
-                </div>
-
-                <div class="grid grid-cols-1 md:grid-cols-3 gap-6 animate-in fade-in slide-in-from-bottom-12 duration-1000 fill-mode-both">
-                    @foreach([
-                        'logic' => ['label' => __('Logic & Core'), 'color' => 'logic'], 
-                        'beauty' => ['label' => __('Visual Beauty'), 'color' => 'beauty'], 
-                        'opti' => ['label' => __('Optimization'), 'color' => 'opti']
-                    ] as $key => $meta)
-                        <div 
-                            wire:click="toggleLens('{{ $key }}')"
-                            @class([
-                                "cursor-pointer group flex flex-col h-full relative border-2 p-8 rounded-round-4 transition-all duration-500 overflow-hidden",
-                                "bg-surface-low border-outline-variant/10 hover:bg-surface-high" => !in_array($key, $selectedLens)
-                            ])
-                            style="{{ in_array($key, $selectedLens) ? 'background-color: rgba(var(--lens-'.$meta['color'].'-rgb), 0.1); border-color: var(--lens-'.$meta['color'].'); box-shadow: 0 0 30px rgba(var(--lens-'.$meta['color'].'-rgb), 0.1);' : '' }}"
-                        >
-                            <!-- Checkmark Overlay -->
-                            <div 
-                                @class([
-                                    "absolute top-4 right-4 w-6 h-6 rounded-full border flex items-center justify-center transition-all duration-500",
-                                    "border-transparent scale-110" => in_array($key, $selectedLens),
-                                    "border-outline-variant/20" => !in_array($key, $selectedLens)
-                                ])
-                                style="{{ in_array($key, $selectedLens) ? 'background-color: var(--lens-'.$meta['color'].');' : '' }}"
-                            >
-                                <svg @class(["w-4 h-4 text-black transition-opacity", "opacity-100" => in_array($key, $selectedLens), "opacity-0" => !in_array($key, $selectedLens)]) fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="4" d="M5 13l4 4L19 7"/></svg>
-                            </div>
-
-                            <div 
-                                @class([
-                                    "w-12 h-12 rounded-round-4 flex items-center justify-center mb-6 font-display font-black text-xl transition-all duration-500",
-                                    "bg-surface-highest/20 text-on-surface-variant group-hover:bg-primary/20 group-hover:text-primary" => !in_array($key, $selectedLens)
-                                ])
-                                style="{{ in_array($key, $selectedLens) ? 'background-color: var(--lens-'.$meta['color'].'); color: black;' : '' }}"
-                            >
-                                {{ strtoupper(substr($key, 0, 1)) }}
-                            </div>
-                            
-                            <h4 @class([
-                                "font-display font-black text-lg mb-2 transition-colors",
-                                "text-on-surface" => !in_array($key, $selectedLens)
-                            ])
-                            style="{{ in_array($key, $selectedLens) ? 'color: var(--lens-'.$meta['color'].');' : '' }}"
-                            >{{ $meta['label'] }}</h4>
-                            <p class="text-on-surface-variant text-sm opacity-60 flex-grow leading-relaxed">{{ __('Activate these focus areas for your code.') }}</p>
+                <div class="space-y-4">
+                    <div class="flex items-center justify-between">
+                        <div class="space-y-2">
+                            <h2 class="font-display text-3xl font-bold text-on-surface tracking-tight">{{ __('Focus Areas') }}</h2>
+                            <p class="text-on-surface-variant italic">{{ __('Select the main areas you want the community to focus on.') }}</p>
                         </div>
-                    @endforeach
+                        <div class="flex flex-col items-end">
+                            <span class="text-[10px] font-black uppercase tracking-[0.3em] text-primary">{{ __('Limit: 3 Maximum') }}</span>
+                            <div class="w-12 h-0.5 bg-primary/20 mt-1"></div>
+                        </div>
+                    </div>
+
+                    <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6 animate-in fade-in slide-in-from-bottom-12 duration-1000 fill-mode-both">
+                        @foreach([
+                            'logic' => ['label' => __('Logic & Core'), 'color' => 'logic', 'desc' => __('Deep dive into algorithms and program flow.')], 
+                            'beauty' => ['label' => __('Visual Beauty'), 'color' => 'beauty', 'desc' => __('Refine the UI/UX and stylistic precision.')], 
+                            'opti' => ['label' => __('Performance'), 'color' => 'opti', 'desc' => __('Hunt for O(n^2) and memory leaks.')],
+                            'security' => ['label' => __('Security Audit'), 'color' => 'security', 'desc' => __('Scan for CVEs, XSS and injection risks.')],
+                            'architecture' => ['label' => __('Architecture'), 'color' => 'architecture', 'desc' => __('Patterns, modularity and scalability.')],
+                            'infrastructure' => ['label' => __('Infrastructure'), 'color' => 'infrastructure', 'desc' => __('DevOps, Docker and Deployment logic.')]
+                        ] as $key => $meta)
+                            <div 
+                                wire:click="toggleLens('{{ $key }}')"
+                                @class([
+                                    "cursor-pointer group flex flex-col h-full relative border-2 p-8 rounded-round-4 transition-all duration-500 overflow-hidden",
+                                    "bg-surface-low border-outline-variant/10 hover:bg-surface-high hover:scale-105" => !in_array($key, $selectedLens)
+                                ])
+                                style="{{ in_array($key, $selectedLens) ? 'background-color: rgba(var(--lens-'.$meta['color'].'-rgb), 0.1); border-color: var(--lens-'.$meta['color'].'); box-shadow: 0 0 30px rgba(var(--lens-'.$meta['color'].'-rgb), 0.1); transform: scale(1.05);' : '' }}"
+                            >
+                                <!-- Checkmark Overlay -->
+                                <div 
+                                    @class([
+                                        "absolute top-4 right-4 w-6 h-6 rounded-full border flex items-center justify-center transition-all duration-500",
+                                        "border-transparent scale-110" => in_array($key, $selectedLens),
+                                        "border-outline-variant/20" => !in_array($key, $selectedLens)
+                                    ])
+                                    style="{{ in_array($key, $selectedLens) ? 'background-color: var(--lens-'.$meta['color'].');' : '' }}"
+                                >
+                                    <svg @class(["w-4 h-4 text-black transition-opacity", "opacity-100" => in_array($key, $selectedLens), "opacity-0" => !in_array($key, $selectedLens)]) fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="4" d="M5 13l4 4L19 7"/></svg>
+                                </div>
+
+                                <div 
+                                    @class([
+                                        "w-12 h-12 rounded-round-4 flex items-center justify-center mb-6 font-display font-black text-xl transition-all duration-500",
+                                        "bg-surface-highest/20 text-on-surface-variant group-hover:bg-primary/20 group-hover:text-primary" => !in_array($key, $selectedLens)
+                                    ])
+                                    style="{{ in_array($key, $selectedLens) ? 'background-color: var(--lens-'.$meta['color'].'); color: black;' : '' }}"
+                                >
+                                    {{ strtoupper(substr($key, 0, 1)) }}
+                                </div>
+                                
+                                <h4 @class([
+                                    "font-display font-black text-lg mb-2 transition-colors",
+                                    "text-on-surface" => !in_array($key, $selectedLens)
+                                ])
+                                style="{{ in_array($key, $selectedLens) ? 'color: var(--lens-'.$meta['color'].');' : '' }}"
+                                >{{ $meta['label'] }}</h4>
+                                <p class="text-on-surface-variant text-sm opacity-60 flex-grow leading-relaxed">{{ $meta['desc'] }}</p>
+                            </div>
+                        @endforeach
+                    </div>
                 </div>
                 <x-input-error :messages="$errors->get('selectedLens')" class="mt-4" />
 
 
 
-
-                <div class="pt-8 border-t border-outline-variant/10 space-y-6">
-                    <div>
-                        <x-input-label :value="__('Visibility Settings')" />
-                        <div class="flex gap-8 mt-4">
-                            <label class="flex items-center gap-3 cursor-pointer group">
-                                <input type="checkbox" wire:model.live="is_public" class="w-5 h-5 rounded bg-surface-high border-outline-variant/20 text-primary focus:ring-primary/50">
-                                <span @class(['text-sm font-medium transition-colors', 'text-primary' => $is_public, 'text-on-surface-variant group-hover:text-on-surface' => !$is_public])>
-                                    {{ __('Public') }}
-                                </span>
-                            </label>
-
-                            <label class="flex items-center gap-3 cursor-pointer group">
-                                <input type="checkbox" wire:model.live="is_private" class="w-5 h-5 rounded bg-surface-high border-outline-variant/20 text-primary focus:ring-primary/50">
-                                <span @class(['text-sm font-medium transition-colors', 'text-primary' => $is_private, 'text-on-surface-variant group-hover:text-on-surface' => !$is_private])>
-                                    {{ __('Private Group') }}
-                                </span>
-                            </label>
+                <div class="pt-12 border-t border-outline-variant/10 space-y-16">
+                    <!-- Streamlined Visibility Slider (Feed Style) -->
+                    <div class="flex flex-col items-center gap-6">
+                        <span class="text-[10px] font-black uppercase tracking-[0.4em] text-on-surface-variant/40">{{ __('Distribution Mode') }}</span>
+                        
+                        <div class="flex items-center gap-2 bg-black/20 backdrop-blur-3xl rounded-[1.5rem] p-1.5 border border-white/5 shadow-2xl">
+                            <button 
+                                type="button"
+                                wire:click="setVisibility('public')"
+                                @class([
+                                    'px-8 py-3 rounded-2xl text-[9px] font-black uppercase tracking-[0.2em] transition-all duration-500', 
+                                    'bg-primary text-on-primary shadow-[0_0_30px_rgba(190,194,255,0.3)] scale-105' => $is_public, 
+                                    'text-on-surface-variant/40 hover:text-white hover:bg-white/5' => !$is_public
+                                ])
+                            >
+                                {{ __('Public Feed') }}
+                            </button>
+                            <button 
+                                type="button"
+                                wire:click="setVisibility('group')"
+                                @class([
+                                    'px-8 py-3 rounded-2xl text-[9px] font-black uppercase tracking-[0.2em] transition-all duration-500', 
+                                    'bg-primary text-on-primary shadow-[0_0_30px_rgba(190,194,255,0.3)] scale-105' => $is_private, 
+                                    'text-on-surface-variant/40 hover:text-white hover:bg-white/5' => !$is_private
+                                ])
+                            >
+                                {{ __('Private Group') }}
+                            </button>
                         </div>
                     </div>
 
 
                     @if($is_private)
-
-                        <div class="space-y-4 animate-in fade-in slide-in-from-top-4 duration-500">
-                            <x-input-label :value="__('Select Target Group Member')" />
-                            <div class="relative">
+                        <div class="space-y-10 animate-in fade-in slide-in-from-bottom-8 duration-700">
+                            <div class="flex items-end justify-between border-b border-outline-variant/10 pb-6">
+                                <div class="space-y-2">
+                                    <h3 class="font-display text-3xl font-black text-on-surface tracking-tight">{{ __('Select Target Group') }}</h3>
+                                    <p class="text-on-surface-variant text-sm italic">{{ __('Your review will be exclusively visible to the selected cluster.') }}</p>
+                                </div>
                                 <x-ui.search-input 
                                     model="groupSearch" 
-                                    placeholder="{{ __('Example: \'Frontend Security\' or \'Backend Performance\'. Search for a group to share this review with...') }}" 
+                                    placeholder="{{ __('Lookup technical modules...') }}" 
+                                    class="!w-[280px]"
                                 />
                             </div>
                             
-                            <div class="grid grid-cols-1 md:grid-cols-2 gap-3 max-h-48 overflow-y-auto pr-2 custom-scrollbar">
+                            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
                                 @forelse($this->groups as $group)
-                                    <label class="cursor-pointer group">
-                                        <input type="radio" wire:model="groupId" value="{{ $group->id }}" class="hidden peer">
-                                        <div class="flex items-center gap-4 p-4 rounded-round-4 bg-surface-high border border-outline-variant/10 transition-all peer-checked:bg-primary/10 peer-checked:border-primary hover:bg-surface-highest">
-                                            <div class="w-10 h-10 rounded-full bg-primary/20 flex items-center justify-center text-primary font-bold">
-                                                {{ substr($group->name, 0, 1) }}
-                                            </div>
-                                            <div>
-                                                <div class="text-sm font-bold text-on-surface">{{ $group->name }}</div>
-                                                <div class="text-[10px] text-on-surface-variant uppercase tracking-tighter">{{ trans_choice('{1} 1 Member|[2,*] :count Members', $group->members_count ?? $group->members()->count()) }}</div>
-                                            </div>
+                                    <div 
+                                        wire:click="$set('groupId', {{ $group->id }})"
+                                        @class([
+                                            "cursor-pointer group flex flex-col h-full relative border-2 p-8 rounded-round-4 transition-all duration-500 overflow-hidden",
+                                            "bg-surface-low border-outline-variant/10 hover:bg-surface-high hover:scale-105" => $groupId != $group->id
+                                        ])
+                                        style="{{ $groupId == $group->id ? 'background-color: rgba(var(--primary-rgb), 0.1); border-color: var(--primary); box-shadow: 0 0 30px rgba(var(--primary-rgb), 0.1); transform: scale(1.05);' : '' }}"
+                                    >
+                                        <!-- Selection Indicator -->
+                                        <div 
+                                            @class([
+                                                "absolute top-4 right-4 w-6 h-6 rounded-full border flex items-center justify-center transition-all duration-500",
+                                                "bg-primary border-transparent scale-110" => $groupId == $group->id,
+                                                "border-outline-variant/20" => $groupId != $group->id
+                                            ])
+                                        >
+                                            <svg @class(["w-4 h-4 text-black transition-opacity", "opacity-100" => $groupId == $group->id, "opacity-0" => $groupId != $group->id]) fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="4" d="M5 13l4 4L19 7"/></svg>
                                         </div>
-                                    </label>
+
+                                        <div 
+                                            @class([
+                                                "w-14 h-14 rounded-2xl flex items-center justify-center mb-6 font-display font-black text-2xl transition-all duration-500 shadow-inner overflow-hidden",
+                                                "bg-white/5 text-on-surface-variant group-hover:bg-primary/20 group-hover:text-primary" => $groupId != $group->id,
+                                                "bg-primary text-black border-2 border-primary" => $groupId == $group->id
+                                            ])
+                                        >
+                                            @if($group->logo_path)
+                                                <img src="{{ Storage::url($group->logo_path) }}" class="w-full h-full object-cover" alt="{{ $group->name }}">
+                                            @else
+                                                {{ strtoupper(substr($group->name, 0, 1)) }}
+                                            @endif
+                                        </div>
+                                        
+                                        <h4 @class([
+                                            "font-display font-black text-xl mb-1 transition-colors uppercase tracking-tight",
+                                            "text-on-surface" => $groupId != $group->id,
+                                            "text-primary" => $groupId == $group->id
+                                        ])>{{ $group->name }}</h4>
+                                        <div class="text-[10px] text-on-surface-variant font-mono uppercase tracking-widest opacity-60">
+                                            {{ trans_choice('{1} 1 Member|[2,*] :count Members', $group->members_count ?? $group->members()->count()) }}
+                                        </div>
+                                    </div>
                                 @empty
-                                    <div class="col-span-2 py-4 text-center text-on-surface-variant italic text-sm">
-                                        {{ __('No groups found for your account.') }}
+                                    <div class="col-span-full py-16 text-center rounded-round-4 border border-dashed border-white/5 bg-white/[0.01]">
+                                        <div class="text-on-surface-variant italic text-sm font-editorial opacity-60">{{ __('No technical clusters found for this identity.') }}</div>
                                     </div>
                                 @endforelse
-                            @error('groupId') <span class="text-xs text-secondary font-bold font-mono">{{ $message }}</span> @enderror
+                            </div>
+                            @error('groupId') <span class="text-xs text-secondary font-black font-mono uppercase tracking-widest text-center block mt-6">{{ $message }}</span> @enderror
                         </div>
                     @endif
 
                 </div>
             </div>
-        @endif
+        </div>
 
         <!-- Footer Actions -->
         <div class="mt-16 pt-8 border-t border-outline-variant/10 flex justify-between items-center">
