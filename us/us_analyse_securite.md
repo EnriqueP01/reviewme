@@ -37,6 +37,11 @@
 - **Problème** : Tentatives d'intrusion silencieuses.
 - **Action** : Logging des tentatives d'accès refusées (`Log::warning`) avec contexte (User ID, IP, Ressource).
 
+### 4. Audit de Sécurité des Dépendances (US33)
+- **Diagnostic** : Détection d'une vulnérabilité critique sur `axios` (<1.15.0) via `npm audit`.
+- **Action** : Mise à jour immédiate vers la version stable la plus récente. État final : **0 vulnérabilité (Composer & NPM)**.
+- **Maintenance** : Intégration de `composer audit` et `npm audit` dans le workflow de sync (`/sync`) et de commit (`/push`).
+
 ---
 
 ## ⚠️ Limites Connues & Hors-Périmètre

@@ -29,6 +29,7 @@ ReviewMe suit trois règles d'or pour la pérennité du code :
 | **Larastan** | Level 5 | Analyse statique pour détecter les bugs potentiels de typage. |
 | **ESLint / Prettier** | Standard JS | Formatage et qualité du code AlpineJS. |
 | **Tailwind CSS** | Design Tokens | Utilisation exclusive des classes utilitaires (pas de CSS "magic numbers"). |
+| **Audit Sécurité** | Composer/NPM | Vérification systématique des vulnérabilités (Score actuel: 0 faille). |
 
 ### 3. Stratégie de Commentaires
 
