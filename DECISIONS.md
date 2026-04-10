@@ -796,3 +796,14 @@ The initial "Monolith & The Lens" implementation was too spacious, creating layo
     2. **Correction des Appels Alpine** : Mise à jour des vues Blade (`group-manager`, `post-detail`) pour utiliser des appels de méthodes explicites `$wire.method()`.
     3. **Restauration Sécurité Karma** : Ré-application du middleware `karma:group.create` sur la route `/groups` dans `routes/web.php`.
 - **Impact** : Élimination des erreurs runtime silencieuses, interactions Alpine/Livewire robustes et conformité totale avec la suite de tests Karma.
+
+# [081] 2026-04-10 : Standardisation du Feedback d'Erreur et Internationalisation (PostDetail)
+- **Auteur** : Antigravity
+- **Statut** : ✅ Implémenté
+- **Contexte** : Manque de feedback visuel (Toasts) dans la vue détaillée des posts lors de tentatives d'actions non autorisées ou bloquées par le Karma. Usage de chaînes en français en dur.
+- **Décisions** :
+    1. **Robustesse des Interactions** : Wrap systématique des méthodes Livewire (`PostDetail`) dans des blocs `try-catch`. Capture des exceptions et dispatch immédiat via `notifyError()`.
+    2. **Généralisation du système de Toast** : Remplacement des `session()->flash('error', ...)` par `notifyError()` pour une réactivité instantanée via Alpine.js sans rechargement nécessaire.
+    3. **Standard i18n Laravel** : Migration de tous les labels d'erreur/succès vers des clés anglaises traduisibles. Mise à jour des dictionnaires `fr.json` et `en.json`.
+    4. **Mise à jour des Tests** : Synchronisation des assertions de messages d'exception dans `KarmaSystemTest` pour utiliser les nouvelles clés de traduction.
+- **Impact** : Expérience utilisateur premium avec feedback immédiat quel que soit le niveau de permission, et conformité totale avec les directives d'architecture et d'internationalisation.

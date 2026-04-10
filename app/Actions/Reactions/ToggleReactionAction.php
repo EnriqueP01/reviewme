@@ -32,7 +32,7 @@ final class ToggleReactionAction
     {
         // PROTECTION KARMA : Seuls les "Contributeurs" peuvent voter DOWN
         if (in_array($type, ['optimisable', 'down']) && ! $user->hasKarmaPermission('post.vote_down')) {
-            throw new \Exception(__('Niveau insuffisant pour voter DOWN. (Requis: Contributeur)'));
+            throw new \Exception(__('Insufficient reputation to vote DOWN. (Required: Contributor)'));
         }
 
         // On récupère l'auteur de la ressource pour mettre à jour sa réputation

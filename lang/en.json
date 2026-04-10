@@ -344,5 +344,10 @@
     "Critical Action: Delete Post": "Critical Action: Delete Post",
     "This action is irreversible. The source code, activity feed, and associated reviews will be permanently purged from the system.": "This action is irreversible. The source code, activity feed, and associated reviews will be permanently purged from the system.",
     "Purge Post": "Purge Post",
-    "Leave Group": "Leave Group"
+    "Leave Group": "Leave Group",
+    "Review deleted successfully.": "Review deleted successfully.",
+    "Unauthorized action.": "Unauthorized action.",
+    "Comment removed.": "Comment removed.",
+    "Unauthorized": "Unauthorized",
+    "Insufficient reputation to vote DOWN. (Required: Contributor)": "Insufficient reputation to vote DOWN. (Required: Contributor)"
 }
