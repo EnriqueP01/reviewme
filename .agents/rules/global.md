@@ -54,7 +54,8 @@ trigger: always_on
 * Toute régression (texte en dur) sera considérée comme un bug bloquant.
 
 ## Nomenclature & Terminologie (STRICT)
-* **Zéro Roleplay** : Interdiction ABSOLUE d'utiliser des termes "fantaisistes", "futuristes" ou "roleplay" (ex: "Intelligence Unit", "Tactical Node", "Encrypted Pulse", "Uplink", "Initialize Cluster", "Mission Brief").
-* **Standard Technique** : Utilise uniquement des termes techniques standards, sobres et directs (ex: "Group", "Member", "Message", "Create Group", "Connected", "Feed", "Description").
-* **Cohérence** : Aligne-toi sur le langage déjà utilisé dans le reste de l'application (Laravel standard). Toute déviation vers du jargon original ou complexe est une erreur.
+* **Zéro Roleplay** : Interdiction RADICALE d'utiliser des termes "fantaisistes", "futuristes" ou "roleplay". Ceci inclut mais ne se limite pas aux termes : "Forge", "Gateway", "Identity", "Identifier", "Access Key", "Restoration sequence", "Neural encryption", "Handshake", "Intelligence Unit", "Tactical Node", "Encrypted Pulse", "Uplink", "Initialize Cluster", "Mission Brief".
+* **Standard Technique** : Utilise EXCLUSIVEMENT des termes techniques standards du web et de Laravel. Un bouton pour se connecter s'appelle "Login" ou "S'identifier" (pas "Authenticate"), un bouton pour s'inscrire s'appelle "Register" ou "S'inscrire" (pas "Initialize Account"), un champ d'email s'appelle "Email" (pas "Target Identifier").
+* **Lisibilité & Accès** : La clarté fonctionnelle est la priorité absolue. L'utilisateur doit comprendre instantanément l'action requise sans avoir à "décoder" une thématique.
+* **Conséquence** : Toute mention de terme roleplay dans un label UI ou un bouton sera considérée comme un bug bloquant nécessitant une correction immédiate.
 

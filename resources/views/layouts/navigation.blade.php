@@ -135,8 +135,8 @@
                     </div>
                 @else
                     <div class="flex items-center gap-6">
-                        <a href="{{ route('login') }}" class="text-[10px] font-black uppercase tracking-widest text-on-surface-variant hover:text-white transition-colors">{{ __('Sign In') }}</a>
-                        <x-ui.button variant="primary" size="sm" href="{{ route('register') }}">
+                        <a href="{{ route('login', ['mode' => 'login']) }}" class="text-[10px] font-black uppercase tracking-widest text-on-surface-variant hover:text-white transition-colors">{{ __('Sign In') }}</a>
+                        <x-ui.button variant="primary" size="sm" href="{{ route('register', ['mode' => 'register']) }}">
                             {{ __('Get Started') }}
                         </x-ui.button>
                     </div>

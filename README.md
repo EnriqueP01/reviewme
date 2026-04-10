@@ -90,12 +90,14 @@ ReviewMe utilise un système de réputation basé sur l'expertise réelle. Le Ka
 
 ---
 
-## 👤 Profils Publics & Identité
-ReviewMe propose un système d'identité robuste pour valoriser votre expertise :
-- **Handle Unique** : Chaque utilisateur possède un identifiant `@username` unique utilisé pour son URL de profil (`/profile/{handle}`).
-- **Biographie Technique** : Présentez vos spécialités, votre stack et votre expérience.
-- **Native Activity Heatmap** : Visualisez votre engagement réel sur ReviewMe (Posts, Reviews, Commentaires, Suggestions) via une heatmap interactive intégrée synchronisée en temps réel.
-- **Routage Dynamique** : Partagez votre profil expert directement via une URL simple et élégante.
+## 👤 Navigation Sociale & Identité
+ReviewMe propose un système d'identité robuste et socialement connecté :
+- **Authentification Unifiée** : Un portail unique haute densité pour la connexion et l'inscription, avec transition fluide (Slider Alpine.js).
+- **Social Connect** : Connexion rapide via GitHub OAuth intégrée nativement.
+- **Profils Améliorés** : Système d'avatars interactif (`x-ui.avatar`) standardisé sur toute la plateforme avec navigation contextuelle intégrée.
+- **Handle Unique** : Accès direct via `@username` (URL : `/profile/{handle}`).
+- **Contribution Heatmap** : Visualisation calendaire de l'activité réelle (Posts, Reviews, Discussions).
+- **Navigation Transversale** : Accès au profil public depuis n'importe quel point de contact (Feed, Leaders, Chat, Commentaires).
 
 ---
 
