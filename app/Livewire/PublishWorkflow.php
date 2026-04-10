@@ -355,9 +355,9 @@ class PublishWorkflow extends Component
                 $rules["files.$index.name"] = 'required|string|max:255';
                 $rules["files.$index.content"] = 'required|string|min:5|max:524288';
 
-                $messages["files.$index.name.required"] = __('Le nom du fichier est obligatoire (#:index)', ['index' => $index + 1]);
-                $messages["files.$index.content.required"] = __('Le code source est manquant pour :filename', ['filename' => $fileName]);
-                $messages["files.$index.content.min"] = __('Le code source pour :filename est trop court (min 5 caractères)', ['filename' => $fileName]);
+                $messages["files.$index.name.required"] = __('The file name is required (#:index)', ['index' => $index + 1]);
+                $messages["files.$index.content.required"] = __('The source code is missing for :filename', ['filename' => $fileName]);
+                $messages["files.$index.content.min"] = __('The source code for :filename is too short (min 5 characters)', ['filename' => $fileName]);
             }
 
             $this->validate($rules, $messages);
