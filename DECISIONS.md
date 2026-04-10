@@ -828,3 +828,13 @@ The initial "Monolith & The Lens" implementation was too spacious, creating layo
     3. **Standard i18n Laravel** : Migration de tous les labels d'erreur/succès vers des clés anglaises traduisibles. Mise à jour des dictionnaires `fr.json` et `en.json`.
     4. **Mise à jour des Tests** : Synchronisation des assertions de messages d'exception dans `KarmaSystemTest` pour utiliser les nouvelles clés de traduction.
 - **Impact** : Expérience utilisateur premium avec feedback immédiat quel que soit le niveau de permission, et conformité totale avec les directives d'architecture et d'internationalisation.
+
+# [082] 2026-04-10 : Refactorisation DRY et Centralisation de la Gestion d'Actions (vibeAction)
+- **Auteur** : Antigravity
+- **Statut** : ✅ Implémenté
+- **Contexte** : Duplication excessive des blocs `try-catch` dans les composants Livewire et mélange de la logique métier avec le feedback utilisateur.
+- **Décisions** :
+    1. **Abstraction Technique** : Introduction de la méthode `vibeAction(callable $callback, ?string $successMessage)` dans le trait `HasVibeNotifications`.
+    2. **Refactoring Global** : Migration de l'intégralité des méthodes d'interaction de `PostDetail.php` (7+ méthodes) vers ce nouveau pattern.
+    3. **Standardisation du Feedback** : Unification du traitement des exceptions et des notifications de succès/erreur au sein du trait, facilitant la maintenance et l'évolution du système de notifications.
+- **Impact** : Réduction drastique de la taille du code (~50 lignes supprimées), amélioration de la lisibilité et garantie d'un comportement cohérent sur toutes les actions sécurisées.

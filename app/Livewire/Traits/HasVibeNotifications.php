@@ -30,4 +30,19 @@ trait HasVibeNotifications
     {
         $this->notify($message, 'info', $title);
     }
+
+    /**
+     * Exécute une action de manière sécurisée avec notification automatique en cas d'erreur.
+     */
+    protected function vibeAction(callable $callback, ?string $successMessage = null): void
+    {
+        try {
+            $callback();
+            if ($successMessage) {
+                $this->notifySuccess($successMessage);
+            }
+        } catch (\Exception $e) {
+            $this->notifyError($e->getMessage());
+        }
+    }
 }
