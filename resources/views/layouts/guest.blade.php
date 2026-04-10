@@ -18,7 +18,7 @@
         <x-ui.interactive-grid />
 
         <div class="relative min-h-screen flex flex-col z-10 w-full">
-            <!-- Global Identity Bar -->
+            <!-- Header -->
             <div class="w-full flex justify-between items-center px-12 py-6 animate-fade-in-up">
                 <a href="/" class="flex items-center gap-4 group">
                     <x-ui.logo size="w-10 h-10" font="text-xl" />
@@ -42,8 +42,8 @@
                         <a href="{{ url('/dashboard') }}" class="text-xs font-black uppercase tracking-[0.2em] text-on-surface hover:text-primary transition-colors">{{ __('Access') }}</a>
                     @else
                         <div class="flex items-center gap-6">
-                            <a href="{{ route('login') }}" class="text-xs font-black uppercase tracking-[0.2em] text-on-surface-variant hover:text-white transition-colors">{{ __('Sign In') }}</a>
-                            <x-ui.button variant="primary" size="sm" href="{{ route('register') }}">
+                            <a href="{{ route('login', ['mode' => 'login']) }}" class="text-xs font-black uppercase tracking-[0.2em] text-on-surface-variant hover:text-white transition-colors">{{ __('Sign In') }}</a>
+                            <x-ui.button variant="primary" size="sm" href="{{ route('register', ['mode' => 'register']) }}">
                                 {{ __('Join') }}
                             </x-ui.button>
                         </div>
