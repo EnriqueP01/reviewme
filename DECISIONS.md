@@ -775,3 +775,24 @@ The initial "Monolith & The Lens" implementation was too spacious, creating layo
         - RÃ©solution des collisions SQLSTATE[23000] sur le `handle` lors des connexions GitHub via un systÃ¨me de suffixe numÃ©rique.
         - Nettoyage des variables Reverb dans le `.env` pour supprimer les erreurs de driver broadcast.
 - **Impact** : PremiÃ¨re impression "Wow" conforme au design Monolith, tunnel de conversion fluidifiÃ© et suppression des bugs d'onboarding majeurs.
+
+
+## 2026-04-10-71 : Stabilisation du Workflow de Publication post-intégration
+- **Auteur** : Antigravity
+- **Statut** : ? Implémenté
+- **Contexte** : Lors de la synchronisation (pull) des optimisations de performance (TTFB), une régression a été identifiée dans le hook de mise à jour des fichiers.
+- **Décision** :
+    1. **Harcèlement de la Clé Livewire** : Ajout d'une validation stricte sur la clé $key dans updatedFiles pour éviter l'accès à un index négatif lors de mises à jour globales de l'état (ex: imports massifs).
+    2. **Intégrité Post-Pull** : Exécution systématique de la suite de tests (72 tests validés) et des migrations.
+- **Impact** : Élimination des plantages Undefined array key -1 lors du processus de publication multi-fichiers.
+
+
+# [080] 2026-04-10 : Audit & Correction des Interactions Livewire/Alpine (Toggle Assistants)
+- **Auteur** : Antigravity
+- **Statut** : âœ… ImplÃ©mentÃ©
+- **Contexte** : Utilisation invalide de l'assistant `$wire.toggle('property')` provoquant des erreurs d'exÃ©cution (Livewire 3 ne supportant pas cette propriÃ©tÃ© magique pour les membres publics). RÃ©gression de sÃ©curitÃ© sur la route `/groups` identifiÃ©e par les tests.
+- **DÃ©cisions** :
+    1. **Standardisation des Toggles** : Remplacement des assistants `$wire.toggle()` par des mÃ©thodes explicites dans les composants PHP (`App\Livewire\Groups\GroupManager::toggleCreating()`).
+    2. **Correction des Appels Alpine** : Mise Ã  jour des vues Blade (`group-manager`, `post-detail`) pour utiliser des appels de mÃ©thodes explicites `$wire.method()`.
+    3. **Restauration SÃ©curitÃ© Karma** : RÃ©-application du middleware `karma:group.create` sur la route `/groups` dans `routes/web.php`.
+- **Impact** : Ã‰limination des erreurs runtime silencieuses, interactions Alpine/Livewire robustes et conformitÃ© totale avec la suite de tests Karma.

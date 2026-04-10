@@ -258,7 +258,7 @@
         @if($isReviewing)
             <!-- Make Full Review (Antigravity HUD) -->
             <template x-teleport="body">
-                <div class="fixed inset-0 z-[2000] flex items-center justify-center bg-black/80 backdrop-blur-2xl px-4 py-8 overflow-hidden" x-on:click.self="toggleReviewMode">
+                <div class="fixed inset-0 z-[2000] flex items-center justify-center bg-black/80 backdrop-blur-2xl px-4 py-8 overflow-hidden" x-on:click.self="$wire.toggleReviewMode()">
                     <div class="bg-surface-container-highest border border-white/10 w-full max-w-5xl rounded-[2.5rem] shadow-[0_0_120px_rgba(0,0,0,1)] flex flex-col max-h-[90vh] overflow-hidden relative animate-in zoom-in-95 duration-300">
                         <!-- Header -->
                         <div class="px-8 py-5 border-b border-white/5 flex items-center justify-between shrink-0 bg-white/[0.02]">
