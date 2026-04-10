@@ -3,7 +3,7 @@
   "specVersion": "1.4",
   "version": 1,
   "metadata": {
-    "timestamp": "2026-04-09T10:22:06Z",
+    "timestamp": "2026-04-10T01:49:35Z",
     "project": {
       "name": "ReviewMe",
       "version": "1.0.0"
@@ -24,10 +24,19 @@
     {"name": "@tailwindcss/forms", "version": "^0.5.2", "purl": "pkg:npm/@tailwindcss/forms@^0.5.2"},
     {"name": "alpinejs", "version": "^3.4.2", "purl": "pkg:npm/alpinejs@^3.4.2"},
     {"name": "autoprefixer", "version": "^10.4.2", "purl": "pkg:npm/autoprefixer@^10.4.2"},
-    {"name": "axios", "version": ">=1.11.0 <=1.14.0", "purl": "pkg:npm/axios@>=1.11.0 <=1.14.0"},
+    {"name": "axios", "version": "^1.15.0", "purl": "pkg:npm/axios@^1.15.0"},
     {"name": "concurrently", "version": "^9.0.1", "purl": "pkg:npm/concurrently@^9.0.1"},
+    {"name": "eslint", "version": "^9.39.4", "purl": "pkg:npm/eslint@^9.39.4"},
+    {"name": "eslint-config-prettier", "version": "^10.1.8", "purl": "pkg:npm/eslint-config-prettier@^10.1.8"},
+    {"name": "eslint-plugin-import", "version": "^2.32.0", "purl": "pkg:npm/eslint-plugin-import@^2.32.0"},
+    {"name": "eslint-plugin-n", "version": "^17.24.0", "purl": "pkg:npm/eslint-plugin-n@^17.24.0"},
+    {"name": "eslint-plugin-node", "version": "^11.1.0", "purl": "pkg:npm/eslint-plugin-node@^11.1.0"},
+    {"name": "eslint-plugin-promise", "version": "^7.2.1", "purl": "pkg:npm/eslint-plugin-promise@^7.2.1"},
+    {"name": "laravel-echo", "version": "^2.3.4", "purl": "pkg:npm/laravel-echo@^2.3.4"},
     {"name": "laravel-vite-plugin", "version": "^3.0.0", "purl": "pkg:npm/laravel-vite-plugin@^3.0.0"},
     {"name": "postcss", "version": "^8.4.31", "purl": "pkg:npm/postcss@^8.4.31"},
+    {"name": "prettier", "version": "^3.8.1", "purl": "pkg:npm/prettier@^3.8.1"},
+    {"name": "pusher-js", "version": "^8.5.0", "purl": "pkg:npm/pusher-js@^8.5.0"},
     {"name": "tailwindcss", "version": "^3.1.0", "purl": "pkg:npm/tailwindcss@^3.1.0"},
     {"name": "vite", "version": "^8.0.0", "purl": "pkg:npm/vite@^8.0.0"},
     {"name": "@alpinejs/collapse", "version": "^3.15.11", "purl": "pkg:npm/@alpinejs/collapse@^3.15.11"}
