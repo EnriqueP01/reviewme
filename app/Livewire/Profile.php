@@ -157,7 +157,11 @@ class Profile extends Component
         }
 
         return $this->user->posts()
-            ->withCount('reactions')
+            ->with(['user', 'latestSnippet', 'snippets'])
+            ->withCount([
+                'reactions as up_count' => fn ($q) => $q->where('type', 'mindblown'),
+                'reactions as down_count' => fn ($q) => $q->where('type', 'optimisable'),
+            ])
             ->latest()
             ->take($this->perPage)
             ->get();
@@ -166,10 +170,23 @@ class Profile extends Component
     #[Layout('layouts.app')]
     public function render()
     {
+        $posts = collect();
+        $stats = [
+            'karma' => 0,
+            'posts' => 0,
+            'joined' => '...',
+            'level' => ['label' => '...', 'color' => 'gray'],
+        ];
+
+        if ($this->readyToLoad) {
+            $stats = Cache::remember("user_stats_{$this->user->id}", 3600, fn () => $this->stats);
+            $posts = $this->recentActivity;
+        }
+
         return view('livewire.profile', [
-            'stats' => $this->stats,
-            'posts' => $this->recentActivity,
-            'contributions' => $this->contributions,
+            'stats' => $stats,
+            'posts' => $posts,
+            'contributions' => $this->readyToLoad ? $this->contributions : [],
         ]);
     }
 }

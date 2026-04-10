@@ -7,6 +7,7 @@ namespace App\Actions\Posts;
 use App\Models\Post;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 
 final class SearchPostsAction
 {
@@ -18,7 +19,10 @@ final class SearchPostsAction
         $userId = Auth::id();
         $group_ids = $userId ? Auth::user()->groups()->pluck('groups.id') : collect();
 
-        $query = Post::with(['user', 'snippets', 'latestSnippet'])
+        $query = Post::with(['user', 'latestSnippet', 'snippets' => function ($q) {
+            $q->whereColumn('version_number', DB::raw('(select max(version_number) from snippets s2 where s2.post_id = snippets.post_id)'))
+                ->orderBy('sort_order', 'asc');
+        }])
             ->withCount([
                 'reactions as up_count' => fn ($q) => $q->where('type', 'mindblown'),
                 'reactions as down_count' => fn ($q) => $q->where('type', 'optimisable'),
