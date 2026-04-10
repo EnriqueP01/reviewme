@@ -46,6 +46,8 @@ Route::get('/dashboard', Feed::class)
     ->middleware(['auth', 'verified'])
     ->name('dashboard');
 
+Route::redirect('/feed', '/dashboard');
+
 Route::middleware('auth')->group(function () {
     Route::get('/profile', function () {
         if (! auth()->user()->handle) {
