@@ -45,7 +45,7 @@ class PublishWorkflow extends Component
 
     public function updated($propertyName)
     {
-        $this->saveStateToSession();
+        // On ne sauvegarde plus en session à chaque touche (trop lent avec de gros fichiers)
     }
 
     protected function saveStateToSession()
@@ -162,11 +162,16 @@ class PublishWorkflow extends Component
 
     public function updatedFiles($value, $key)
     {
+        $parts = explode('.', $key);
+        $index = (int) $parts[count($parts) - 2];
+
         if (str_ends_with($key, '.name')) {
-            $parts = explode('.', $key);
-            $index = $parts[count($parts) - 2];
             $this->detectLanguage($index);
         }
+
+        // Force recalculation of metadata
+        $this->updateFileMetadata($index);
+        $this->checkDuplicates();
     }
 
     protected function detectLanguage($index)
@@ -245,11 +250,13 @@ class PublishWorkflow extends Component
         return $this->extensionMap[$extension] ?? 'none';
     }
 
-    public function getFileStats($index)
+    public array $fileMetadata = [];
+
+    protected function updateFileMetadata($index)
     {
         $file = $this->files[$index] ?? null;
         if (! $file) {
-            return ['lines' => 0, 'size' => '0 B', 'is_duplicate' => false];
+            return;
         }
 
         $content = $file['content'] ?? '';
@@ -257,7 +264,7 @@ class PublishWorkflow extends Component
         $bytes = strlen($content);
         $kb = round($bytes / 1024, 1);
 
-        return [
+        $this->fileMetadata[$index] = [
             'lines' => $lines,
             'size' => $kb > 0 ? $kb.' KB' : $bytes.' B',
             'is_duplicate' => $file['is_duplicate'] ?? false,
@@ -266,20 +273,30 @@ class PublishWorkflow extends Component
         ];
     }
 
+    public function getFileStats($index)
+    {
+        if (! isset($this->fileMetadata[$index])) {
+            $this->updateFileMetadata($index);
+        }
+
+        return $this->fileMetadata[$index];
+    }
+
     protected function calculateComplexity($content)
     {
         if (empty($content)) {
             return 0;
         }
-        // Simple heuristic for UI visualization: count of keywords / lines
+        // Optimized heuristic: fewer iterations
         $keywords = ['if', 'else', 'for', 'while', 'foreach', 'switch', 'case', 'function', 'class', 'public', 'private', 'protected'];
         $count = 0;
+        $contentLower = strtolower($content);
         foreach ($keywords as $kw) {
-            $count += substr_count($content, $kw);
+            $count += substr_count($contentLower, $kw);
         }
         $lines = count(explode("\n", $content));
 
-        return min(100, round(($count / max(1, $lines)) * 100));
+        return (int) min(100, round(($count / max(1, $lines)) * 100));
     }
 
     public function addFile()

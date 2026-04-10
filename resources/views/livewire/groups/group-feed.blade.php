@@ -1,4 +1,4 @@
-<div class="space-y-16">
+<div class="space-y-16" wire:init="loadData">
     <!-- Search & Filters -->
     <div class="flex flex-col md:flex-row md:items-center justify-between gap-8 py-8 border-b border-white/5 relative group/controls">
         <div class="absolute inset-0 bg-gradient-to-r from-primary/5 to-transparent opacity-0 group-hover/controls:opacity-100 transition-opacity"></div>
@@ -29,7 +29,13 @@
     <div class="relative min-h-[400px]">
         <x-ui.loader-overlay target="search, sortBy, gotoPage, nextPage, previousPage" />
 
-        @if($posts->isEmpty())
+        @if(!$readyToLoad)
+            <div class="space-y-12 animate-pulse">
+                @foreach(range(1, 2) as $i)
+                    <div class="w-full h-64 bg-white/[0.02] border border-white/5 rounded-[2.5rem]"></div>
+                @endforeach
+            </div>
+        @elseif($posts->isEmpty())
             <div class="flex flex-col items-center justify-center py-24 text-center space-y-8 animate-fade-in">
                 <div class="w-32 h-32 rounded-[2.5rem] bg-white/[0.02] border border-white/5 flex items-center justify-center relative overflow-hidden group/empty">
                     <div class="absolute inset-0 bg-primary/5 opacity-0 group-hover/empty:opacity-100 transition-opacity blur-2xl"></div>

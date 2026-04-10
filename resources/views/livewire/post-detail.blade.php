@@ -138,33 +138,35 @@
             </div>
         @else
             <!-- REAL CONTENT -->
-        <div class="bg-surface-container-low/40 backdrop-blur-2xl border border-white/5 rounded-[2.5rem] p-8 flex items-center justify-between gap-6 shadow-2xl relative overflow-hidden group/header">
+        <div class="bg-surface-container-low/40 backdrop-blur-2xl border border-white/5 rounded-[2.5rem] p-8 flex flex-col xl:flex-row xl:items-center justify-between gap-8 shadow-2xl relative overflow-hidden group/header">
             <div class="absolute inset-0 bg-gradient-to-r from-primary/5 to-transparent opacity-0 group-hover/header:opacity-100 transition-opacity pointer-events-none"></div>
-            <div class="flex items-center gap-6 relative">
-                <x-ui.avatar :model="$post->user" size="lg" class="shadow-2xl border-primary/20" />
+            <div class="flex items-start md:items-center gap-6 relative min-w-0">
+                <x-ui.avatar :model="$post->user" size="lg" class="shadow-2xl border-primary/20 shrink-0" />
                 <div class="flex flex-col min-w-0">
                     <div class="flex items-center gap-3">
                         <a href="{{ route('profile.show', $post->user->handle) }}" wire:navigate class="text-lg font-black text-on-surface tracking-tight hover:text-primary transition-colors">{{ $post->user->name }}</a>
                         <span class="text-xs font-mono font-bold text-primary tracking-wider font-black opacity-40">@<span>{{ $post->user->handle }}</span></span>
                     </div>
-                    <div class="flex items-center gap-3 mt-1 overflow-x-auto no-scrollbar">
+                    <div class="flex flex-wrap items-center gap-3 mt-2">
                         @foreach(explode(',', $post->lens ?? 'Logic') as $l)
                             @php $lKey = strtolower(trim($l)); @endphp
                             <span
-                                class="px-3 py-1 rounded-xl text-[9px] font-black uppercase tracking-[0.2em] transition-all cursor-default border flex-shrink-0"
+                                class="px-3 py-1 rounded-xl text-[9px] font-black uppercase tracking-[0.2em] transition-all cursor-default border shrink-0"
                                 style="color: var(--lens-{{ $lKey }}); background-color: rgba(var(--lens-{{ $lKey }}-rgb), 0.1); border-color: rgba(var(--lens-{{ $lKey }}-rgb), 0.3);"
                             >#{{ strtoupper(trim($l)) }}</span>
                         @endforeach
-                        <span class="text-[10px] uppercase tracking-[0.2em] text-on-surface-variant font-black opacity-40 flex items-center gap-2 flex-shrink-0">
+                        <div class="h-4 w-px bg-white/5 mx-1 hidden md:block"></div>
+                        <span class="text-[10px] uppercase tracking-[0.2em] text-on-surface-variant font-black opacity-40 flex items-center gap-2 shrink-0">
                             {{ $post->created_at->diffForHumans() }}
                         </span>
-                        <span class="text-on-surface-variant/40 text-[10px] font-black uppercase tracking-[0.2em] font-mono flex-shrink-0">/ {{ $post->snippets->count() }} {{ __('FILES') }}</span>
+                        <div class="h-4 w-px bg-white/5 mx-1 hidden md:block"></div>
+                        <span class="text-on-surface-variant/40 text-[10px] font-black uppercase tracking-[0.2em] font-mono shrink-0">/ {{ $post->snippets->count() }} {{ __('FILES') }}</span>
                     </div>
                     <h1 class="text-2xl font-black text-on-surface tracking-tighter mt-2 truncate">{{ $post->title }}</h1>
                 </div>
             </div>
 
-            <div class="flex items-center gap-10 relative">
+            <div class="flex flex-wrap items-center gap-6 xl:gap-10 relative shrink-0">
                 <!-- Post Karma HUD (Secured) -->
                 @php
                     $canUpvote = Auth::user()?->hasKarmaPermission('post.vote_up');
@@ -349,7 +351,7 @@
             />
         </div>
 
-        {{-- 
+
         <!-- Activity Feed (Reviews + Discussion) -->
         <div class="grid grid-cols-1 gap-16 pt-16">
 

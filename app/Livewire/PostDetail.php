@@ -342,7 +342,9 @@ class PostDetail extends Component
 
     public function render()
     {
-        $this->refreshPost();
+        if ($this->readyToLoad) {
+            $this->refreshPost();
+        }
 
         $snippets = $this->post->snippets->where('version_number', (int) $this->selectedVersion);
 
