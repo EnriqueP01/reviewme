@@ -25,6 +25,7 @@ class Profile extends Component
     public $period = 'year'; // week, month, year
 
     public $readyToLoad = false;
+    public $showKarmaGuide = false;
 
     public function loadData()
     {

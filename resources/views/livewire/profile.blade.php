@@ -48,10 +48,22 @@
                     @endif
 
                     <div class="inline-flex flex-wrap items-center gap-3 mt-6">
-                        <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-surface-container border border-white/5 shadow-sm">
+                        <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-surface-container border border-white/5 shadow-sm group/rank relative cursor-help"
+                             wire:click="$set('showKarmaGuide', true)">
                             <div class="w-2 h-2 rounded-full {{ str_replace('text-', 'bg-', $stats['level']['color']) }} animate-pulse"></div>
                             <span class="{{ $stats['level']['color'] }} text-xs font-black uppercase tracking-widest">{{ __($stats['level']['label']) }}</span>
+                            
+                            <!-- Information Trigger (Modal) -->
+                            <div class="ml-2 p-1 rounded-full bg-white/5 opacity-0 group-hover/rank:opacity-100 transition-opacity">
+                                <svg class="w-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
+                            </div>
                         </div>
+
+                        <!-- Dedicated Karma Page Link -->
+                        <a href="{{ route('karma') }}" wire:navigate class="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-primary/5 hover:bg-primary/10 border border-primary/20 transition-all text-[9px] font-black uppercase tracking-widest text-primary shrink-0 group/klink">
+                            {{ __('How to earn XP?') }}
+                            <svg class="w-3 h-3 group-hover/klink:translate-x-0.5 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M13 7l5 5m0 0l-5 5m5-5H6" /></svg>
+                        </a>
 
                         <!-- GitHub Connection Indicator -->
                         <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-surface-container border border-white/5 shadow-sm cursor-help transition-colors hover:bg-white/5" 
@@ -255,4 +267,7 @@
         </div>
     </div>
     <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+
+    <!-- Karma Education Modal -->
+    <x-ui.reputation-guide wire:model="showKarmaGuide" />
 </div>
