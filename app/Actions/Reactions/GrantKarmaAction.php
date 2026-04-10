@@ -56,6 +56,7 @@ final class GrantKarmaAction
             $user->increment('reputation_score', $points);
 
             // 3. Mettre à jour le score de compétence si applicable
+            // Utilise firstOrCreate + increment pour compatibilité SQLite (tests)
             if ($lens) {
                 $skill = UserSkill::firstOrCreate(
                     ['user_id' => $user->id, 'lens' => $lens],

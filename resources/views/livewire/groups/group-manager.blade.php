@@ -1,4 +1,9 @@
 <div class="w-full max-w-none px-12 py-10">
+    <!-- Back Button -->
+    <div class="mb-8 hover-trigger">
+        <x-ui.back-button fallback="{{ route('dashboard') }}" />
+    </div>
+
     <!-- Groups Header -->
     <div class="flex items-end justify-between mb-24 relative">
         <div class="space-y-4">

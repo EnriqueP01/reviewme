@@ -21,7 +21,7 @@ class UpdatePostTest extends TestCase
         $post = Post::factory()->create(['user_id' => $user->id]);
         Snippet::factory()->create(['post_id' => $post->id, 'version_number' => 1]);
 
-        $response = $this->actingAs($user)->get(route('posts.update-code', $post->id));
+        $response = $this->actingAs($user)->get(route('posts.update', $post->id));
 
         $response->assertStatus(200);
         $response->assertSeeLivewire(UpdatePost::class);
@@ -34,7 +34,7 @@ class UpdatePostTest extends TestCase
         $post = Post::factory()->create(['user_id' => $otherUser->id]);
         Snippet::factory()->create(['post_id' => $post->id, 'version_number' => 1]);
 
-        $response = $this->actingAs($user)->get(route('posts.update-code', $post->id));
+        $response = $this->actingAs($user)->get(route('posts.update', $post->id));
 
         $response->assertStatus(403);
     }

@@ -43,15 +43,19 @@ class PostDetailTest extends TestCase
 
         Livewire::actingAs($user)
             ->test(PostDetail::class, ['postId' => $post->id])
-            ->set('commentContent', 'Ceci est une superbe review')
-            ->set('activeLine', $snippet->id.'-5')
-            ->call('saveComment')
+            ->set('activeSnippetId', $snippet->id)
+            ->set('suggestingLine', 5)
+            ->set('suggestingEndLine', 5)
+            ->set('originalContent', 'old')
+            ->set('suggestedContent', 'new')
+            ->set('suggestionDescription', 'Ceci est une superbe review')
+            ->call('saveInlineSuggestion')
             ->assertHasNoErrors();
 
-        $this->assertDatabaseHas('reviews', [
+        $this->assertDatabaseHas('inline_suggestions', [
             'snippet_id' => $snippet->id,
             'user_id' => $user->id,
-            'content' => 'Ceci est une superbe review',
+            'description' => 'Ceci est une superbe review',
             'line_number' => 5,
         ]);
     }
@@ -67,7 +71,7 @@ class PostDetailTest extends TestCase
 
         Livewire::actingAs($user)
             ->test(PostDetail::class, ['postId' => $post->id])
-            ->call('react', 'mindblown');
+            ->call('vote', $post->id, 'up');
 
         $this->assertDatabaseHas('reactions', [
             'reactable_id' => $post->id,

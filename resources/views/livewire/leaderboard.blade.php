@@ -1,4 +1,9 @@
 <div class="max-w-7xl mx-auto px-6 py-12">
+    <!-- Back Button -->
+    <div class="mb-8 hover-trigger">
+        <x-ui.back-button fallback="{{ route('dashboard') }}" />
+    </div>
+
     <!-- Header Section -->
     <div class="mb-16 space-y-4 animate-in fade-in slide-in-from-top-8 duration-1000">
         <div class="flex items-center gap-4 text-primary">

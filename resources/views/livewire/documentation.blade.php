@@ -1,4 +1,9 @@
 <div class="max-w-7xl mx-auto px-6 py-12">
+    <!-- Back Button -->
+    <div class="mb-8 hover-trigger">
+        <x-ui.back-button fallback="{{ route('dashboard') }}" />
+    </div>
+
     <div class="grid grid-cols-1 lg:grid-cols-12 gap-12">
         <!-- Sidebar Navigation -->
         <aside class="lg:col-span-3 space-y-8 animate-in fade-in slide-in-from-left-8 duration-1000">
