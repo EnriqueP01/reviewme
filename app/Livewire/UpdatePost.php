@@ -3,6 +3,7 @@
 namespace App\Livewire;
 
 use App\Actions\Posts\AddPostVersionAction;
+use App\Livewire\Traits\HasVibeNotifications;
 use App\Models\Post;
 use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 use Livewire\Attributes\Layout;
@@ -10,7 +11,7 @@ use Livewire\Component;
 
 class UpdatePost extends Component
 {
-    use AuthorizesRequests;
+    use AuthorizesRequests, HasVibeNotifications;
 
     public Post $post;
 
@@ -115,7 +116,7 @@ class UpdatePost extends Component
 
         $addVersion->execute($this->post, ['files' => $payloadFiles]);
 
-        session()->flash('success', __('New code version created and deployed!'));
+        session()->flash('success', __('Nouvelle version du code déployée avec succès !'));
 
         return redirect()->to(route('posts.detail', $this->post->id));
     }

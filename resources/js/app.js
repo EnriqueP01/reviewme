@@ -27,8 +27,10 @@ window.fx = {
 
         // Haptique (Mobile)
         if ('vibrate' in navigator) {
-            const pattern =
-                type === 'up' ? [15] : type === 'down' ? [40, 30] : [5];
+            const pattern = 
+                type === 'up' ? [15] : 
+                type === 'down' ? [40, 30] : 
+                type === 'error' ? [50, 50, 50] : [5];
             navigator.vibrate(pattern);
         }
 
@@ -46,31 +48,30 @@ window.fx = {
             switch (type) {
                 case 'up':
                     freq = 1800;
-                    osc.frequency.exponentialRampToValueAtTime(
-                        2400,
-                        this.ctx.currentTime + 0.1
-                    );
+                    osc.frequency.exponentialRampToValueAtTime(2400, this.ctx.currentTime + 0.1);
                     duration = 0.15;
                     volume = 0.04;
                     break;
                 case 'down':
                     freq = 600;
-                    osc.frequency.exponentialRampToValueAtTime(
-                        400,
-                        this.ctx.currentTime + 0.2
-                    );
+                    osc.frequency.exponentialRampToValueAtTime(400, this.ctx.currentTime + 0.2);
                     duration = 0.2;
                     volume = 0.06;
                     break;
                 case 'success':
                     freq = 880; // A5
                     osc.frequency.setValueAtTime(880, this.ctx.currentTime);
-                    osc.frequency.exponentialRampToValueAtTime(
-                        1760,
-                        this.ctx.currentTime + 0.1
-                    );
-                    duration = 0.3;
-                    volume = 0.03;
+                    osc.frequency.exponentialRampToValueAtTime(1760, this.ctx.currentTime + 0.05);
+                    osc.frequency.exponentialRampToValueAtTime(2600, this.ctx.currentTime + 0.1);
+                    duration = 0.4;
+                    volume = 0.025;
+                    break;
+                case 'info':
+                    freq = 1200;
+                    osc.frequency.setValueAtTime(1200, this.ctx.currentTime);
+                    osc.frequency.linearRampToValueAtTime(1300, this.ctx.currentTime + 0.05);
+                    duration = 0.2;
+                    volume = 0.02;
                     break;
                 case 'hover':
                     freq = 1200;
@@ -79,21 +80,16 @@ window.fx = {
                     break;
                 case 'scan':
                     freq = 200;
-                    osc.frequency.exponentialRampToValueAtTime(
-                        1200,
-                        this.ctx.currentTime + 0.3
-                    );
+                    osc.frequency.exponentialRampToValueAtTime(1200, this.ctx.currentTime + 0.3);
                     duration = 0.4;
                     volume = 0.02;
                     break;
                 case 'error':
-                    freq = 200;
-                    osc.frequency.linearRampToValueAtTime(
-                        100,
-                        this.ctx.currentTime + 0.3
-                    );
-                    duration = 0.4;
-                    volume = 0.08;
+                    freq = 120;
+                    osc.type = 'sawtooth';
+                    osc.frequency.linearRampToValueAtTime(80, this.ctx.currentTime + 0.2);
+                    duration = 0.3;
+                    volume = 0.06;
                     break;
                 default:
                     freq = 1400;
@@ -102,12 +98,10 @@ window.fx = {
 
             osc.frequency.setValueAtTime(freq, this.ctx.currentTime);
             gain.gain.setValueAtTime(volume, this.ctx.currentTime);
-            gain.gain.exponentialRampToValueAtTime(
-                0.001,
-                this.ctx.currentTime + duration
-            );
+            gain.gain.exponentialRampToValueAtTime(0.001, this.ctx.currentTime + duration);
 
-            osc.type = type === 'error' ? 'sawtooth' : 'sine';
+            if (type !== 'error') osc.type = 'sine';
+            
             osc.start();
             osc.stop(this.ctx.currentTime + duration);
         } catch (e) {
