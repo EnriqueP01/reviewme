@@ -46,8 +46,8 @@ $maxWidth = [
             $dispatch('close');
         }
     })"
-    x-on:open-modal.window="$event.detail == '{{ $name }}' ? show = true : null"
-    x-on:close-modal.window="$event.detail == '{{ $name }}' ? show = false : null"
+    x-on:open-modal.window="($event.detail == '{{ $name }}' || $event.detail.name == '{{ $name }}') ? show = true : null"
+    x-on:close-modal.window="($event.detail == '{{ $name }}' || $event.detail.name == '{{ $name }}') ? show = false : null"
     x-on:close="show = false"
     x-on:keydown.escape.window="show = false"
     x-on:keydown.tab.prevent="$event.shiftKey || nextFocusable().focus()"

@@ -93,7 +93,7 @@ class Profile extends Component
             return [];
         }
 
-        return Cache::remember("user_activity_heatmap_{$this->user->id}_{$this->period}", 600, function () {
+        return Cache::remember("user_activity_heatmap_{$this->user->id}_{$this->period}", 10, function () {
             $daysMap = ['week' => 7, 'month' => 30, 'year' => 365];
             $days = $daysMap[$this->period] ?? 365;
             $since = now()->subDays($days);

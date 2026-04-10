@@ -3,6 +3,7 @@
 namespace App\Livewire;
 
 use App\Actions\Posts\CreatePostAction;
+use App\Models\UserContribution;
 use App\Livewire\Traits\HasVibeNotifications;
 use Illuminate\Support\Facades\Auth;
 use Livewire\Attributes\Computed;
@@ -441,6 +442,8 @@ class PublishWorkflow extends Component
             'lens' => implode(',', $this->selectedLens),
             'files' => $this->files,
         ]);
+
+        UserContribution::record(Auth::id());
 
         session()->forget('publish_workflow_state');
         session()->flash('success', __('Publication réussie ! Votre code est maintenant sous la loupe de la communauté.'));

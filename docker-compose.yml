@@ -18,11 +18,11 @@ services:
       - DB_CONNECTION=sqlite
       - DB_DATABASE=/var/www/html/database/database.sqlite
       - APP_ENV=local
-      - APP_DEBUG=false
+      - APP_DEBUG=true
       - SESSION_DRIVER=file
       - CACHE_STORE=file
-    depends_on:
-      - mysql
+    # Le service MySQL est présent pour les besoins futurs de production/MVP
+    # mais n'est pas requis pour la version SQLite par défaut.
 
   # Serveur Web (Nginx)
   web:
