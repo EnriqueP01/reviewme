@@ -151,7 +151,7 @@
             </div>
 
             <div class="flex flex-wrap items-center gap-6 xl:gap-10 relative shrink-0">
-                @if($this->isAuthor() || Auth::user()?->is_admin || Auth::user()?->hasKarmaPermission('platform.moderation'))
+                @if($this->isAuthor() || Auth::user()?->is_admin)
                     <button 
                         x-on:click="$dispatch('open-modal', 'delete-post-modal')"
                         class="p-4 rounded-2xl bg-rose-500/5 hover:bg-rose-500/10 border border-rose-500/10 text-rose-500 transition-all group/delete"
@@ -679,7 +679,7 @@
                                             {{ __('Reply') }}
                                         </button>
 
-                                        @if($comment->user_id === Auth::id() || $this->isAuthor() || Auth::user()?->is_admin || Auth::user()?->hasKarmaPermission('platform.moderation'))
+                                        @if($comment->user_id === Auth::id() || $this->isAuthor() || Auth::user()?->is_admin)
                                             <button
                                                 x-on:click="$dispatch('open-modal', { name: 'confirm-comment-deletion', id: {{ $comment->id }} })"
                                                 class="text-[9px] font-black uppercase tracking-[0.3em] text-rose-500/30 hover:text-rose-500 transition-all flex items-center gap-2"
@@ -741,7 +741,7 @@
                                                                     <span class="text-[10px] font-black transition-colors" :class="likes > 0 ? 'text-on-surface/60' : 'text-on-surface-variant/10'" x-text="likes"></span>
                                                                 </button>
 
-                                                            @if($reply->user_id === Auth::id() || $this->isAuthor() || Auth::user()?->is_admin || Auth::user()?->hasKarmaPermission('platform.moderation'))
+                                                            @if($reply->user_id === Auth::id() || $this->isAuthor() || Auth::user()?->is_admin)
                                                                 <button
                                                                     x-on:click="$dispatch('open-modal', { name: 'confirm-comment-deletion', id: {{ $reply->id }} })"
                                                                     class="text-[8px] font-black uppercase tracking-widest text-rose-500/20 hover:text-rose-500 transition-all flex items-center gap-2 px-2"
@@ -874,4 +874,5 @@
             />
         </div>
     </template>
+</div>
 </div>

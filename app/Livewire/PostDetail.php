@@ -97,7 +97,8 @@ class PostDetail extends Component
 
     public function updatedSelectedVersion($value): void
     {
-        $this->activeSnippetId = $this->post->snippets->where('version_number', (int) $value)->first()?->id;
+        $this->selectedVersion = (int) $value;
+        $this->activeSnippetId = $this->post->snippets->where('version_number', $this->selectedVersion)->first()?->id;
     }
 
     public function toggleInlineViewMode(): void
@@ -294,7 +295,7 @@ class PostDetail extends Component
         $this->vibeAction(function() use ($reviewId) {
             $this->authorizeAction();
             $review = FullReview::findOrFail($reviewId);
-            if (Auth::id() === $review->user_id || Auth::user()->is_admin || Auth::user()->hasKarmaPermission('platform.moderation')) {
+            if (Auth::id() === $review->user_id || Auth::user()->is_admin) {
                 $review->delete();
                 $this->refreshPost();
             } else {
@@ -307,7 +308,7 @@ class PostDetail extends Component
     {
         $this->vibeAction(function() {
             $this->authorizeAction();
-            if (! $this->isAuthor() && ! Auth::user()->is_admin && ! Auth::user()->hasKarmaPermission('platform.moderation')) {
+            if (! $this->isAuthor() && ! Auth::user()->is_admin) {
                 throw new \Exception(__('Unauthorized action.'));
             }
 
@@ -323,7 +324,7 @@ class PostDetail extends Component
             $this->authorizeAction();
             $comment = PostComment::findOrFail($commentId);
 
-            if (Auth::id() !== $comment->user_id && ! $this->isAuthor() && ! Auth::user()->is_admin && ! Auth::user()->hasKarmaPermission('platform.moderation')) {
+            if (Auth::id() !== $comment->user_id && ! $this->isAuthor() && ! Auth::user()->is_admin) {
                 throw new \Exception(__('Unauthorized action.'));
             }
 
@@ -359,7 +360,7 @@ class PostDetail extends Component
         $this->post = $query->findOrFail($this->postId);
 
         // Rafraîchir les extraits pour la version sélectionnée
-        $this->currentSnippets = $this->post->snippets->where('version_number', $this->selectedVersion);
+        $this->currentSnippets = $this->post->snippets->where('version_number', (int) ($this->selectedVersion ?? 1));
     }
 
     public $currentSnippets;
