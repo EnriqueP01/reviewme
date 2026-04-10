@@ -12,6 +12,7 @@ use Illuminate\Notifications\Notifiable;
 
 /**
  * @property int $reputation_score
+ * @property bool $is_admin
  * @property-read array $karma_level
  * @property-read string $avatar
  * @property-read Pivot $pivot
@@ -36,6 +37,7 @@ class User extends Authenticatable
         'avatar',
         'profile_photo_path',
         'reputation_score',
+        'is_admin',
         'bio',
     ];
 
@@ -77,6 +79,7 @@ class User extends Authenticatable
         return [
             'email_verified_at' => 'datetime',
             'password' => 'hashed',
+            'is_admin' => 'boolean',
         ];
     }
 
