@@ -3,6 +3,7 @@
 namespace App\Livewire;
 
 use App\Models\User;
+use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Cache;
 use Livewire\Attributes\Layout;
@@ -11,7 +12,7 @@ use Livewire\Component;
 /**
  * @property-read array $stats
  * @property-read array $contributions
- * @property-read \Illuminate\Support\Collection $recentActivity
+ * @property-read Collection $recentActivity
  */
 class Profile extends Component
 {

@@ -2,8 +2,6 @@
 
 namespace App\Listeners;
 
-use Illuminate\Database\Events\Models\ModelCreated;
-
 class UpdateUserKarma
 {
     /**

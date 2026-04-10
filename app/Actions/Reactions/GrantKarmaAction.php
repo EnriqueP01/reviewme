@@ -68,10 +68,10 @@ final class GrantKarmaAction
 
         // NOTIFICATION UI (Livewire Event)
         // Utilisation d'un check sécurisé pour éviter de casser les tests hors-contexte Livewire
-        if ($points > 0 && class_exists(\Livewire\Livewire::class)) {
+        if ($points > 0 && class_exists(Livewire::class)) {
             try {
                 /** @phpstan-ignore-next-line */
-                \Livewire\Livewire::dispatch('karma-updated', [
+                Livewire::dispatch('karma-updated', [
                     'points' => $points,
                     'total' => $user->fresh()->reputation_score,
                     'type' => $type,

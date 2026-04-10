@@ -8,6 +8,7 @@ use GuzzleHttp\Client;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Log;
 use Laravel\Socialite\Facades\Socialite;
+use Laravel\Socialite\Two\AbstractProvider;
 use Laravel\Socialite\Two\User;
 
 class GithubAuthController extends Controller
@@ -17,7 +18,7 @@ class GithubAuthController extends Controller
      */
     public function redirect()
     {
-        /** @var \Laravel\Socialite\Two\AbstractProvider $driver */
+        /** @var AbstractProvider $driver */
         $driver = Socialite::driver('github');
 
         if (app()->environment('local')) {
@@ -33,7 +34,7 @@ class GithubAuthController extends Controller
     public function callback(HandleGithubCallbackAction $handleGithubCallback)
     {
         try {
-            /** @var \Laravel\Socialite\Two\AbstractProvider $driver */
+            /** @var AbstractProvider $driver */
             $driver = Socialite::driver('github');
 
             if (app()->environment('local')) {

@@ -6,6 +6,7 @@ use Database\Factories\UserFactory;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\Pivot;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 
@@ -13,7 +14,7 @@ use Illuminate\Notifications\Notifiable;
  * @property int $reputation_score
  * @property-read array $karma_level
  * @property-read string $avatar
- * @property-read \Illuminate\Database\Eloquent\Relations\Pivot $pivot
+ * @property-read Pivot $pivot
  */
 class User extends Authenticatable
 {

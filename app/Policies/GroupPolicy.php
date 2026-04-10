@@ -6,6 +6,7 @@ namespace App\Policies;
 
 use App\Models\Group;
 use App\Models\User;
+use Illuminate\Database\Eloquent\Relations\Pivot;
 
 final class GroupPolicy
 {
@@ -43,8 +44,8 @@ final class GroupPolicy
             ->where('user_id', $user->id)
             ->first();
 
-        /** @var \App\Models\User|null $member */
-        /** @var \Illuminate\Database\Eloquent\Relations\Pivot|null $pivot */
+        /** @var User|null $member */
+        /** @var Pivot|null $pivot */
         $pivot = $member?->pivot;
 
         // On vérifie le rôle sur le pivot
