@@ -149,8 +149,8 @@
                         <div class="relative flex flex-col md:flex-row justify-between items-start gap-12">
                             <div class="space-y-6 flex-1">
                                 <div class="flex items-center gap-6">
-                                    <div class="relative group/logo shrink-0">
-                                        <x-ui.avatar :model="$selectedGroup" size="2xl" class="rounded-[2.5rem] shadow-2xl transition-transform group-hover/logo:scale-105 duration-500" />
+                                    <div class="relative group/logo shrink-0 w-32 h-32">
+                                        <x-ui.avatar :model="$selectedGroup" size="xl" class="!w-32 !h-32 !rounded-[2.5rem] shadow-2xl transition-transform group-hover/logo:scale-105 duration-500" />
                                         @if($selectedGroup->owner_id === auth()->id())
                                             <label class="absolute inset-0 flex items-center justify-center bg-black/60 opacity-0 group-hover/logo:opacity-100 transition-opacity cursor-pointer rounded-[2.5rem] backdrop-blur-sm">
                                                 <div class="flex flex-col items-center gap-2">

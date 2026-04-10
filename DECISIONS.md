@@ -1,3 +1,14 @@
+## 2026-04-10-80 : Stabilisation du Workflow & Modernisation de la Suite de Tests
+- **Auteur** : Antigravity
+- **Statut** : ✅ Implémenté
+- **Contexte** : Présence d'erreurs d'indexation dans `PublishWorkflow`, incohérence des tests de permission du Karma et accumulation d'avertissements de dépréciation PHPUnit 12.
+- **Décision** :
+    1. **Robustesse du Workflow** : Correction de l'erreur `Undefined array key -1` dans `PublishWorkflow::updatedFiles` par l'ajout d'une garde sur le pattern de clé Livewire.
+    2. **Harmonisation des Permissions** : Mise à jour du hub de groupes pour être accessible (200 OK) à tous les utilisateurs authentifiés, tout en conservant les barrières de Karma pour la création.
+    3. **Migration vers les Attributs (PHPUnit 12)** : Refonte intégrale de la suite de tests (`tests/Unit` et `tests/Feature`) pour remplacer les annotations de commentaires (`@test`, `@dataProvider`) par les attributs PHP 8 natifs (`#[Test]`, `#[DataProvider]`).
+    4. **Raffinement UI Groupes** : Harmonisation visuelle des logos de groupes (taille standardisée `w-32`, rayon `2.5rem`) pour une cohérence totale avec le reste de l'interface.
+- **Impact** : Suite de tests 100% verte et sans avertissements, crashs de publication éliminés et interface plus robuste.
+
 ## 2026-04-10-79 : Standardisation du Feedback UX & Actions Critiques (Purge & Exit)
 - **Auteur** : Antigravity
 - **Statut** : ✅ Implémenté

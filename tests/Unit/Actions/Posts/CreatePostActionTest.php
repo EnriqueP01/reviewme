@@ -8,6 +8,7 @@ use App\Actions\Posts\CreatePostAction;
 use App\Models\Post;
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use PHPUnit\Framework\Attributes\Test;
 use Tests\TestCase;
 
 class CreatePostActionTest extends TestCase
@@ -22,9 +23,7 @@ class CreatePostActionTest extends TestCase
         $this->action = new CreatePostAction;
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function it_creates_a_post_with_snippets(): void
     {
         /** @var User $user */
