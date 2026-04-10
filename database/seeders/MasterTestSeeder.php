@@ -12,8 +12,8 @@ use App\Models\Reaction;
 use App\Models\Snippet;
 use App\Models\User;
 use Illuminate\Database\Seeder;
-use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Hash;
 
 class MasterTestSeeder extends Seeder
 {
@@ -42,7 +42,7 @@ class MasterTestSeeder extends Seeder
                 'password' => Hash::make('password'),
                 'bio' => 'Fullstack Developer & Platform Owner.',
                 'reputation_score' => 5000,
-                'github_id' => 'dummy_github_id'
+                'github_id' => 'dummy_github_id',
             ]
         );
 
@@ -158,7 +158,7 @@ class MasterTestSeeder extends Seeder
             'filename' => 'OrderController.php',
             'language' => 'php',
             'code_content' => "public function store(Request \$request)\n{\n    \$order = Order::create(\$request->all());\n    \n    foreach(\$request->items as \$item) {\n        \$product = Product::find(\$item['id']);\n        \$product->stock -= \$item['qty'];\n        \$product->save();\n    }\n\n    Mail::to(\$request->user())->send(new OrderConfirmed(\$order));\n    \n    return response()->json(\$order);\n}",
-            'sort_order' => 1
+            'sort_order' => 1,
         ]);
 
         // Feedback de Thomas (Review de pro)
@@ -174,7 +174,7 @@ class MasterTestSeeder extends Seeder
             'full_review_id' => $revThomas->id,
             'snippet_id' => $postLucas->snippets->first()->id,
             'modified_content' => "public function store(StoreOrderRequest \$request, CreateOrderAction \$action)\n{\n    \$order = \$action->execute(\$request->validated());\n    return new OrderResource(\$order);\n}",
-            'description' => "Utilisation d'une Action atomique et de FormRequests pour la validation."
+            'description' => "Utilisation d'une Action atomique et de FormRequests pour la validation.",
         ]);
 
         // Scenario 2: Sophie optimise un système de lock Rust (PERFORMANCE)
@@ -196,14 +196,14 @@ class MasterTestSeeder extends Seeder
             'filename' => 'mpmc_queue.rs',
             'language' => 'rust',
             'code_content' => "use std::sync::atomic::{AtomicUsize, Ordering};\n\nstruct Queue<T> {\n    buffer: Vec<Slot<T>>,\n    head: AtomicUsize,\n    tail: AtomicUsize,\n}\n\nimpl<T> Queue<T> {\n    pub fn push(&self, value: T) {\n        let pos = self.tail.fetch_add(1, Ordering::Relaxed);\n        // unsafe implementation here...\n    }\n}",
-            'sort_order' => 1
+            'sort_order' => 1,
         ]);
 
         // Commentaire de Julie sur la sécurité
         PostComment::create([
             'user_id' => $julie->id,
             'post_id' => $postSophie->id,
-            'content' => "Sophie, attention à l'Ordering::Relaxed ici. Si tu accèdes à la data juste après, tu pourrais avoir des surprises de visibilité CPU. Je passerai sur du Acquire/Release pour être safe."
+            'content' => "Sophie, attention à l'Ordering::Relaxed ici. Si tu accèdes à la data juste après, tu pourrais avoir des surprises de visibilité CPU. Je passerai sur du Acquire/Release pour être safe.",
         ]);
 
         // Scenario 3: Julie trouve une faille IDOR (SECURITY)
@@ -223,21 +223,21 @@ class MasterTestSeeder extends Seeder
             'filename' => 'DownloadController.php',
             'language' => 'php',
             'code_content' => "public function download(\$id)\n{\n    \$invoice = Invoice::find(\$id);\n    return Storage::download(\$invoice->path);\n}",
-            'sort_order' => 1
+            'sort_order' => 1,
         ]);
 
         // Lucas essaie de répondre
         PostComment::create([
             'user_id' => $lucas->id,
             'post_id' => $postJulie->id,
-            'content' => "Il manque un `if(\$invoice->user_id !== auth()->id())` avant le download, non ?"
+            'content' => 'Il manque un `if($invoice->user_id !== auth()->id())` avant le download, non ?',
         ]);
 
         // 5. CHAT DE GROUPE RÉALISTE (Forge_Architecture)
         $gp = $groups[0];
         $chat = [
-            [$thomas->id, "Bienvenue dans la Forge. On est là pour casser du monolithe."],
-            [$lucas->id, "Est-ce que vous conseillez Livewire pour des dashboards complexes ?"],
+            [$thomas->id, 'Bienvenue dans la Forge. On est là pour casser du monolithe.'],
+            [$lucas->id, 'Est-ce que vous conseillez Livewire pour des dashboards complexes ?'],
             [$kevin->id, "L'UI de ReviewMe prouve que oui. Le secret c'est le 'wire:navigate' et d'abuser de Alpine.js pour tout ce qui est immédiat."],
             [$thomas->id, "Exactement. Et n'oubliez pas de garder vos composants Livewire 'lean'. La logique métier va dans les Actions."],
         ];
@@ -247,7 +247,7 @@ class MasterTestSeeder extends Seeder
                 'group_id' => $gp->id,
                 'user_id' => $data[0],
                 'content' => $data[1],
-                'created_at' => now()->subMinutes(120 - ($i * 10))
+                'created_at' => now()->subMinutes(120 - ($i * 10)),
             ]);
         }
 
@@ -262,13 +262,13 @@ class MasterTestSeeder extends Seeder
                     'user_id' => $user->id,
                     'post_id' => $randomPost->id,
                     'content' => collect([
-                        "Super intéressant comme approche !",
+                        'Super intéressant comme approche !',
                         "J'aurais fait ça différemment, mais ça se tient.",
                         "Merci pour le partage @{$randomPost->user->handle} !",
-                        "Tu as pensé aux performances sur ce bloc ?",
-                        "Le clean code est au rendez-vous, bravo."
+                        'Tu as pensé aux performances sur ce bloc ?',
+                        'Le clean code est au rendez-vous, bravo.',
                     ])->random(),
-                    'created_at' => $randomDate
+                    'created_at' => $randomDate,
                 ]);
 
                 if ($user->id !== $randomPost->user_id) {
@@ -280,7 +280,7 @@ class MasterTestSeeder extends Seeder
                         ],
                         [
                             'type' => collect(['up', 'mindblown', 'clean', 'opti'])->random(),
-                            'created_at' => $randomDate
+                            'created_at' => $randomDate,
                         ]
                     );
                 }

@@ -167,9 +167,9 @@ class User extends Authenticatable
         $score = 0;
 
         // 1. Karma des Posts (Upvotes/Downvotes)
-        $this->posts()->withCount(['reactions as upvotes' => function($q) {
+        $this->posts()->withCount(['reactions as upvotes' => function ($q) {
             $q->where('type', 'upvote');
-        }, 'reactions as downvotes' => function($q) {
+        }, 'reactions as downvotes' => function ($q) {
             $q->where('type', 'downvote');
         }])->get()->each(function ($post) use (&$score, $rewards) {
             $score += $post->upvotes * ($rewards['post_upvote'] ?? 10);
@@ -177,9 +177,9 @@ class User extends Authenticatable
         });
 
         // 2. Karma des Full Reviews
-        $this->fullReviews()->withCount(['reactions as upvotes' => function($q) {
+        $this->fullReviews()->withCount(['reactions as upvotes' => function ($q) {
             $q->where('type', 'upvote');
-        }, 'reactions as downvotes' => function($q) {
+        }, 'reactions as downvotes' => function ($q) {
             $q->where('type', 'downvote');
         }])->get()->each(function ($review) use (&$score, $rewards) {
             $score += $review->upvotes * ($rewards['review_upvote'] ?? 15);

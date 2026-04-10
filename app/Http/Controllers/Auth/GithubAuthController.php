@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Auth;
 
 use App\Actions\Auth\HandleGithubCallbackAction;
 use App\Http\Controllers\Controller;
+use GuzzleHttp\Client;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Log;
 use Laravel\Socialite\Facades\Socialite;
@@ -19,7 +20,7 @@ class GithubAuthController extends Controller
         $driver = Socialite::driver('github');
 
         if (app()->environment('local')) {
-            $driver->setHttpClient(new \GuzzleHttp\Client(['verify' => false]));
+            $driver->setHttpClient(new Client(['verify' => false]));
         }
 
         return $driver->redirect();
@@ -34,7 +35,7 @@ class GithubAuthController extends Controller
             $driver = Socialite::driver('github');
 
             if (app()->environment('local')) {
-                $driver->setHttpClient(new \GuzzleHttp\Client(['verify' => false]));
+                $driver->setHttpClient(new Client(['verify' => false]));
             }
 
             /** @var User $githubUser */
@@ -51,7 +52,7 @@ class GithubAuthController extends Controller
                 'trace' => $e->getTraceAsString(),
             ]);
 
-            return redirect('/login')->with('error', 'GitHub Error: ' . $e->getMessage());
+            return redirect('/login')->with('error', 'GitHub Error: '.$e->getMessage());
         }
     }
 }

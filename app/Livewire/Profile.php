@@ -2,10 +2,6 @@
 
 namespace App\Livewire;
 
-use App\Models\FullReview;
-use App\Models\InlineSuggestion;
-use App\Models\Post;
-use App\Models\PostComment;
 use App\Models\User;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Cache;
@@ -21,6 +17,7 @@ class Profile extends Component
     public $perPage = 3;
 
     public $period = 'year'; // week, month, year
+
     public $readyToLoad = false;
 
     public function loadData()
@@ -85,7 +82,9 @@ class Profile extends Component
 
     public function getContributionsProperty()
     {
-        if (!$this->readyToLoad) return [];
+        if (! $this->readyToLoad) {
+            return [];
+        }
 
         return Cache::remember("user_activity_heatmap_{$this->user->id}_{$this->period}", 600, function () {
             $daysMap = ['week' => 7, 'month' => 30, 'year' => 365];
@@ -120,7 +119,9 @@ class Profile extends Component
 
     public function getActivityGridProperty()
     {
-        if (!$this->readyToLoad) return [];
+        if (! $this->readyToLoad) {
+            return [];
+        }
 
         $daysMap = [
             'week' => 7,
@@ -145,7 +146,9 @@ class Profile extends Component
 
     public function getRecentActivityProperty()
     {
-        if (!$this->readyToLoad) return collect();
+        if (! $this->readyToLoad) {
+            return collect();
+        }
 
         return $this->user->posts()
             ->withCount('reactions')

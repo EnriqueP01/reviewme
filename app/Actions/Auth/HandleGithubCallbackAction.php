@@ -63,6 +63,7 @@ final class HandleGithubCallbackAction
         }
 
         $user->update($updateData);
+
         return $user;
     }
 }
