@@ -28,9 +28,42 @@ class PublishWorkflow extends Component
 
     public function mount()
     {
-        $this->files = [
-            ['id' => (string) str()->uuid(), 'name' => '', 'content' => '', 'language' => 'none', 'description' => '', 'is_duplicate' => false, 'is_content_duplicate' => false],
-        ];
+        // Restore from session if exists
+        if (session()->has('publish_workflow_state')) {
+            $state = session('publish_workflow_state');
+            foreach ($state as $key => $value) {
+                if (property_exists($this, $key)) {
+                    $this->{$key} = $value;
+                }
+            }
+        } else {
+            $this->files = [
+                ['id' => (string) str()->uuid(), 'name' => '', 'content' => '', 'language' => 'none', 'description' => '', 'is_duplicate' => false, 'is_content_duplicate' => false],
+            ];
+        }
+    }
+
+    public function updated($propertyName)
+    {
+        $this->saveStateToSession();
+    }
+
+    protected function saveStateToSession()
+    {
+        session()->put('publish_workflow_state', [
+            'step' => $this->step,
+            'title' => $this->title,
+            'short_description' => $this->short_description,
+            'review_goals' => $this->review_goals,
+            'improvement_goals' => $this->improvement_goals,
+            'description' => $this->description,
+            'files' => $this->files,
+            'selectedLens' => $this->selectedLens,
+            'is_public' => $this->is_public,
+            'is_private' => $this->is_private,
+            'visibility' => $this->visibility,
+            'groupId' => $this->groupId,
+        ]);
     }
 
     protected array $extensionMap = [
@@ -81,14 +114,16 @@ class PublishWorkflow extends Component
 
     public string $visibility = 'public';
 
-    public function updatedVisibility($value)
+    public function setVisibility(string $mode): void
     {
-        if ($value === 'public') {
+        if ($mode === 'public') {
             $this->is_public = true;
             $this->is_private = false;
-        } elseif ($value === 'group' || $value === 'private') {
+            $this->visibility = 'public';
+        } else {
             $this->is_public = false;
             $this->is_private = true;
+            $this->visibility = 'group';
         }
     }
 
@@ -333,6 +368,7 @@ class PublishWorkflow extends Component
         }
 
         $this->step++;
+        $this->saveStateToSession();
     }
 
     public function updatedIsPublic($value)
@@ -354,6 +390,7 @@ class PublishWorkflow extends Component
     public function prevStep()
     {
         $this->step--;
+        $this->saveStateToSession();
     }
 
     public function submit(CreatePostAction $createPost)
@@ -378,6 +415,7 @@ class PublishWorkflow extends Component
             'files' => $this->files,
         ]);
 
+        session()->forget('publish_workflow_state');
         session()->flash('success', __('Post published successfully!'));
 
         return redirect()->to(route('dashboard'));

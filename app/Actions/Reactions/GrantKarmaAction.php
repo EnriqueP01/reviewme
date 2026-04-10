@@ -57,10 +57,11 @@ final class GrantKarmaAction
 
             // 3. Mettre à jour le score de compétence si applicable
             if ($lens) {
-                UserSkill::updateOrCreate(
+                $skill = UserSkill::firstOrCreate(
                     ['user_id' => $user->id, 'lens' => $lens],
-                    ['score' => DB::raw("score + $points")]
+                    ['score' => 0]
                 );
+                $skill->increment('score', $points);
             }
         });
 

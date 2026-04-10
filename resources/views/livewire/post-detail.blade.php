@@ -156,13 +156,13 @@
 
                 @if($this->isAuthor())
                     <!-- Author Actions -->
-                    <a href="{{ route('posts.update', $post->id) }}" class="whitespace-nowrap rounded-2xl px-8 py-4 font-black uppercase text-xs tracking-widest shadow-2xl bg-primary text-on-primary hover:scale-105 active:scale-95 transition-all flex items-center gap-3">
+                    <x-ui.button href="{{ route('posts.update', $post->id) }}" variant="primary" class="whitespace-nowrap rounded-2xl px-8 py-4 font-black uppercase text-[10px] tracking-widest shadow-2xl flex items-center gap-3">
                         <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg>
                         {{ __('Update Code') }}
-                    </a>
+                    </x-ui.button>
                 @else
                     <!-- Reviewer Actions -->
-                    <x-ui.button wire:click="toggleReviewMode" variant="{{ $isReviewing ? 'primary' : 'ghost' }}" class="whitespace-nowrap rounded-2xl px-8 py-4 font-black uppercase text-xs tracking-widest shadow-2xl">
+                    <x-ui.button wire:click="toggleReviewMode" variant="{{ $isReviewing ? 'primary' : 'ghost' }}" class="whitespace-nowrap rounded-2xl px-8 py-4 font-black uppercase text-[10px] tracking-widest shadow-2xl">
                         {{ $isReviewing ? __('Cancel') : __('Make Full Review') }}
                     </x-ui.button>
                 @endif

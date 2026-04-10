@@ -62,10 +62,11 @@ class RebuildKarmaCommand extends Command
                         $user->increment('reputation_score', $tx->points);
 
                         if ($tx->metadata && isset($tx->metadata['lens'])) {
-                            UserSkill::updateOrCreate(
+                            $skill = UserSkill::firstOrCreate(
                                 ['user_id' => $tx->user_id, 'lens' => $tx->metadata['lens']],
-                                ['score' => DB::raw("score + {$tx->points}")]
+                                ['score' => 0]
                             );
+                            $skill->increment('score', $tx->points);
                         }
                     }
                     $bar->advance();

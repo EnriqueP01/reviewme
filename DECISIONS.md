@@ -1,3 +1,14 @@
+## 2026-04-10-60 : Publish Workflow HUD & Cinematic Navigation (V7)
+- **Auteur** : Antigravity
+- **Statut** : ✅ Implémenté
+- **Contexte** : Workflow de publication instable, sans persistance et visuellement décalé par rapport au design system "Monolith" du Feed.
+- **Décision** :
+    1. **HUD-Style Distribution** : Remplacement des contrôles standards par un slider premium (Public Feed / Private Group) et une grille de Lenses technique color-codée.
+    2. **State Persistence** : Implémentation d'une sauvegarde automatique en session pour prévenir la perte de données (Titres, Code, Lenses) lors des recharges de page.
+    3. **Cinematic Alpine Navigation** : Migration vers une navigation asynchrone client-side (`x-show` + `x-transition`). Intégration d'un moteur de défilement automatique (`smooth scroll-to-top`) à chaque changement d'étape.
+    4. **SQL Integrity** : Correction des erreurs de scoring SQL (SQLite) via le pattern `firstOrCreate` / `increment` pour garantir la stabilité des transactions de Karma.
+- **Impact** : Expérience de publication fluide, suppression des frictions de navigation et harmonisation totale du design system.
+
 ## 2026-04-09-57 : Moteur de Réputation "Expert-Driven" & Système de Karma
 - **Auteur** : Antigravity
 - **Statut** : ✅ Implémenté
