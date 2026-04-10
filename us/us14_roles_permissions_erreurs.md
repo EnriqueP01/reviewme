@@ -42,7 +42,9 @@ ReviewMe utilise un système d'autorisations granulaires (Laravel Policies) pour
 ### 2.1 Hiérarchie des Erreurs
 
 1.  **Validation (422)** : Gérée par les `FormRequests`. Feedback visuel immédiat via Toast HUD (Ambre).
-2.  **Autorisation (403)** : Interceptée par les `Policies`. Redirection vers page 403 stylisée ("Accréditation insuffisante").
+2.  **Autorisation (403)** : 
+    *   **Statique** : Interceptée par les `Policies`. Redirection vers page 403 stylisée ("Accréditation insuffisante").
+    *   **Réactive (Karma)** : Pour les interactions rapides (Like, Vote, Suggestion), feedback immédiat via **Toast (Rouge)** pour notifier le manque de Karma sans casser le flux de navigation.
 3.  **Logique (409/400)** : Exceptions métier (ex: Doublon de contenu MD5). Feedback par Toast (Rouge).
 4.  **Système (500)** : Fail-safe global. Rollback de transaction (`DB::transaction`) et log critique. Masquage total de la stack trace en production.
 

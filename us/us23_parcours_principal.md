@@ -49,6 +49,7 @@ La création d'un post et de ses fragments (Snippets) est gérée par `CreatePos
 ### 2.2 Rétroaction Utilisateur (HUD)
 - **Succès** : Notification via le composant `toast-hud` déclenchée par l'événement `post-action`.
 - **Chargement** : Barre de progression progressive au sommet du viewport via `global-loader`.
+- **Interactions multisensorielles** : Implémentation du retour haptique et audio (SFX) lors des votes et réactions pour renforcer le sentiment de satisfaction et de réactivité de la plateforme.
 
 ---
 
