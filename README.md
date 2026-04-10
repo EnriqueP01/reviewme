@@ -6,7 +6,17 @@ ReviewMe est un écosystème de revue de code de haut niveau axé sur la collabo
 
 ---
 
-## 📚 Centre de Connaissance
+## 🎯 Vision & Périmètre
+
+ReviewMe est né d'un besoin de **professionaliser la revue de code** pour les équipes distribuées. 
+
+### Objectifs du MVP :
+- **Isolation** : Création d'espaces de travail sécurisés (Groupes).
+- **Gamification Sécurisée** : Système de Karma limitant le spam et récompensant l'expertise.
+- **HUD Haute-Densité** : Interface interactive permettant l'annotation fine ligne à ligne.
+- **Traçabilité** : SBOM et audits de sécurité intégrés nativement.
+
+---
 
 Pour comprendre, installer et maintenir le projet, consultez les guides dédiés :
 

@@ -88,8 +88,31 @@ sequenceDiagram
 
 ## 🛠️ API & Routes
 
-L'application utilise principalement des routes Web dynamiques via Livewire :
-- `/dashboard` : Hub principal (Feed).
-- `/publish` : Workflow de création de post.
-- `/posts/{id}` : Vue détaillée et annotations.
-- `/groups` : Gestion des Groupes.
+L'application utilise principalement des routes Web dynamiques via Livewire, offrant un contrat d'interface réactif :
+
+- **Auth** : `/login`, `/register`, `/auth/github` (Socialite).
+- **Core** : 
+    - `/dashboard` : Feed global ordonné par karma.
+    - `/publish` : Workflow multi-étapes de publication.
+    - `/groups` : Gestion des cercles de confiance.
+- **HUD** : `/posts/{id}` : Visionneuse haute densité avec annotations.
+
+---
+
+## 🚚 Déploiement & Livraison
+
+### CI/CD (GitHub Actions)
+Chaque push sur la branche `dev` déclenche :
+1.  **Linters** : Laravel Pint & ESLint.
+2.  **Analyse Statique** : Larastan (Niveau 5).
+3.  **Tests** : Suite Pest/PHPUnit.
+4.  **Qualité** : Analyse SonarQube Cloud.
+
+### Livraison Production
+La branche `main` représente l'état stable de production. La livraison se fait par merge de `dev` vers `main` après validation manuelle du staging (Docker).
+Pre-requis production :
+```bash
+npm run build
+php artisan config:cache
+php artisan route:cache
+```

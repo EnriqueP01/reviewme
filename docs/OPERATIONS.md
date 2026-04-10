@@ -62,6 +62,26 @@ php artisan cache:clear
 
 ---
 
+## ⚠️ Limites Connues (MVP)
+
+- **Authentification** : Dépendante de GitHub (pas de 2FA local).
+- **Audit Logs** : Limités aux tentatives d'accès refusées (pas d'audit de modification complet).
+- **Stockage** : SQLite par défaut (non recommandé pour > 100 utilisateurs simultanés).
+- **Notifications** : Uniquement via WebSocket (pas d'Email/Push).
+
+---
+
+## 📦 Traçabilité & SBOM
+
+Pour garantir la conformité, ReviewMe génère une nomenclature logicielle (SBOM) :
+```bash
+# Régénérer le fichier sbom.json
+bash scripts/generate-sbom.sh
+```
+Le fichier résultant (`sbom.json`) doit être archivé avec chaque release.
+
+---
+
 ## 🚨 Dépannage (Troubleshooting)
 
 ### "Vite manifest not found"

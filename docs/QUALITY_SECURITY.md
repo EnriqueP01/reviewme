@@ -53,6 +53,25 @@ Conformément aux standards de l'industrie, ReviewMe produit une **Software Bill
 
 ---
 
+## 🔍 Analyse Statique & Linting
+
+Le projet impose des barrières de qualité strictes pour éviter la dette technique :
+- **Larastan** : Niveau **5** obligatoire. Toutes les propriétés dynamiques Eloquent sont documentées via PHPDoc.
+- **Laravel Pint** : Standard **Laravel** (PSR-12 amélioré) imposé sur tous les fichiers PHP.
+- **ESLint/Prettier** : Formatage automatique du JS et détection de bugs dans Alpine.js.
+
+---
+
+## 🛡️ Audit de Sécurité (US33)
+
+Un audit complet a été réalisé, aboutissant aux mesures suivantes :
+1.  **Anti-IDOR** : Chaque action (Review, Post, Group) est protégée par une `Policy` Laravel vérifiant les droits du porteur de token.
+2.  **Anti-XSS** : Échappement systématique des snippets de code et filtrage des entrées via le validateur Laravel.
+3.  **Audit des Dépendances** : Patch de sécurité appliqué sur `axios` (v1.15.0) suite à la détection d'une faille SSRF.
+4.  **RBAC par Karma** : Les permissions sensibles (ex: downvote, création de groupes) sont liées dynamiquement au score de réputation de l'utilisateur.
+
+---
+
 ## 🔓 Sécurité des Données
 
 1.  **Chiffrement** : Les mots de passe (si utilisés hors OAuth) sont hachés via Argon2ID.
