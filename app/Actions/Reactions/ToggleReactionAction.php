@@ -95,6 +95,16 @@ final class ToggleReactionAction
             if ($author) {
                 $this->updateReputation->execute($author, $type, 'add', null, $reactable);
                 
+                // Determine precision URL
+                $actionUrl = match(true) {
+                    $reactable instanceof Post => route('posts.detail', $reactable->id),
+                    $reactable instanceof Snippet => route('posts.detail', $reactable->post_id),
+                    $reactable instanceof PostComment => route('posts.detail', $reactable->post_id) . '#comment-' . $reactable->id,
+                    $reactable instanceof Review => route('posts.detail', $reactable->snippet->post_id),
+                    $reactable instanceof FullReview => route('posts.detail', $reactable->post_id),
+                    default => route('dashboard'),
+                };
+
                 // Notify author
                 $author->notify(new \App\Notifications\GeneralNotification(
                     title: __('New Reaction'),
@@ -102,7 +112,8 @@ final class ToggleReactionAction
                         'name' => $user->name,
                         'type' => ucfirst($type)
                     ]),
-                    type: 'reaction'
+                    type: 'reaction',
+                    actionUrl: $actionUrl
                 ));
             }
 

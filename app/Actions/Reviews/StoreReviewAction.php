@@ -28,7 +28,7 @@ final class StoreReviewAction
                 title: __('New Comment'),
                 message: __(':name commented on your code.', ['name' => $user->name]),
                 type: 'review',
-                actionUrl: route('posts.show', $snippet->post_id)
+                actionUrl: route('posts.detail', $snippet->post_id)
             ));
         }
 

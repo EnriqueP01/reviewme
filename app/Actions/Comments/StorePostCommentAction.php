@@ -24,6 +24,31 @@ final class StorePostCommentAction
 
         $user->recordContribution();
 
+        // NOTIFICATION LOGIC
+        $post = \App\Models\Post::find($postId);
+        $actionUrl = route('posts.detail', $postId) . '#comment-' . $comment->id;
+
+        if ($parentId) {
+            // It's a reply: notify parent author
+            $parent = PostComment::find($parentId);
+            if ($parent && $parent->user_id !== $user->id) {
+                $parent->user->notify(new \App\Notifications\GeneralNotification(
+                    title: __('New Reply'),
+                    message: __(':name replied to your comment.', ['name' => $user->name]),
+                    type: 'comment',
+                    actionUrl: $actionUrl
+                ));
+            }
+        } elseif ($post && $post->user_id !== $user->id) {
+            // It's a direct comment: notify post author
+            $post->user->notify(new \App\Notifications\GeneralNotification(
+                title: __('New Comment'),
+                message: __(':name commented on your post.', ['name' => $user->name]),
+                type: 'comment',
+                actionUrl: $actionUrl
+            ));
+        }
+
         return $comment;
     }
 }

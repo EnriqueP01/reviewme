@@ -41,7 +41,7 @@ final class StoreFullReviewAction
                     title: __('New Expert Review'),
                     message: __(':name has just posted a full architectural review on your post.', ['name' => $user->name]),
                     type: 'review',
-                    actionUrl: route('posts.show', $post->id)
+                    actionUrl: route('posts.detail', $post->id)
                 ));
             }
 
