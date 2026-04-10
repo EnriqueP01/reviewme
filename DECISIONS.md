@@ -1,3 +1,23 @@
+## 2026-04-10-73 : Synchronisation de l'Analyse Sécurité (Modèle Élite)
+- **Auteur** : Antigravity
+- **Statut** : ✅ Implémenté
+- **Contexte** : L'analyse de sécurité initiale ne reflétait plus le niveau de protection réel après l'ajout du Karma, de SonarQube et des Audit Logs.
+- **Décision** :
+    1. **Mise à jour Intégrale** : Refonte du document `us_analyse_securite.md` pour inclure le contrôle d'accès basé sur la réputation (Karma-RBAC) et la surveillance statique (SonarQube).
+    2. **Gestion d'Erreurs OAuth** : Masquage des exceptions système lors de l'Auth GitHub pour prévenir les fuites d'informations.
+    3. **Standardisation** : Suppression de toute nomenclature chiffrée (ex US38) sur ce document spécifique pour respecter la demande utilisateur.
+- **Impact** : Documentation 100% fidèle aux capacités de sécurité du produit Final.
+
+## 2026-04-10-72 : Correction de Sécurité Critique (Axios) & SBOM V2
+- **Auteur** : Antigravity
+- **Statut** : ✅ Implémenté
+- **Contexte** : Détection d'une vulnérabilité critique SSRF dans Axios lors de l'audit de nomenclature.
+- **Décision** :
+    1. **Patch d'Urgence** : Migration forcée d'Axios vers `v1.15.0` via `npm install`.
+    2. **Mise à jour SBOM** : Régénération intégrale de `sbom.json` pour inclure les nouveaux composants temps-réel (Echo, Pusher) et la version patchée d'Axios.
+    3. **Standardisation Documentaire** : Refonte de `us_nomenclature_logicielle.md` avec suppression de la nomenclature chiffrée (ex US33) et ajout des utilitaires métiers.
+- **Impact** : Risque de sécurité SSRF éliminé, traçabilité de la supply chain 100% à jour.
+
 ## 2026-04-10-71 : Sécurisation Totale par Karma & Consolidation Alpine/Livewire
 - **Auteur** : Antigravity
 - **Statut** : ✅ Implémenté
