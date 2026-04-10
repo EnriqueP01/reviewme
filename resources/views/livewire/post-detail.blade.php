@@ -540,7 +540,7 @@
                                                         <input type="text"
                                                                wire:model="reviewCommentContent"
                                                                wire:key="fr-comment-input-{{ $fr->id }}"
-                                                               wire:keydown.enter="saveGlobalComment(null, {{ $fr->id }})"
+                                                               wire:keydown.enter="if(canComment) { $wire.saveGlobalComment(null, {{ $fr->id }}) } else { $dispatch('vibe-notif', { type: 'error', message: karmaError }) }"
                                                                placeholder="{{ __('Example: \'How does this refactoring impact the hydration cost? Can we ensure the Reactive Store handles this asynchronously?\'') }}"
                                                                class="bg-transparent border-none flex-1 py-3 text-sm text-on-surface focus:ring-0 placeholder:text-on-surface-variant/20 font-semibold italic">
                                                         <button type="button" wire:click="saveGlobalComment(null, {{ $fr->id }})" class="p-3 rounded-2xl bg-primary text-on-primary hover:scale-105 active:scale-95 transition-all">
@@ -600,7 +600,7 @@
                             <input type="text"
                                    wire:model="globalCommentContent"
                                    wire:key="global-comment-input-{{ $post->id }}"
-                                   wire:keydown.enter="saveGlobalComment"
+                                   wire:keydown.enter="if(canComment) { $wire.saveGlobalComment() } else { $dispatch('vibe-notif', { type: 'error', message: karmaError }) }"
                                    placeholder="{{ __('Example: \'The database indexing strategy on the metadata JSON field seems suboptimal for large datasets. I suspect it might lead to full table scans.\'') }}"
                                    class="bg-transparent border-none flex-1 py-3 text-sm text-on-surface focus:ring-0 placeholder:text-on-surface-variant/20 font-semibold tracking-tight">
                             @php $canComment = Auth::user()?->hasKarmaPermission('post.comment'); @endphp
@@ -697,7 +697,7 @@
                                             <input type="text"
                                                    wire:model="replyContent"
                                                    wire:key="reply-input-{{ $comment->id }}"
-                                                   wire:keydown.enter="saveGlobalComment({{ $comment->id }})"
+                                                   wire:keydown.enter="if(canComment) { $wire.saveGlobalComment({{ $comment->id }}) } else { $dispatch('vibe-notif', { type: 'error', message: karmaError }) }"
                                                    placeholder="{{ __('Example: \'I see your point about Big-O complexity, but given our data volume, readability is currently our priority.\'') }}"
                                                    class="bg-transparent border-none flex-1 py-3 text-sm text-on-surface focus:ring-0 placeholder:text-on-surface-variant/20 font-semibold">
                                             <button wire:click="saveGlobalComment({{ $comment->id }})" x-on:click="if($wire.replyContent.length > 0) { setTimeout(() => { replying = false; }, 200) }" class="mr-2 p-3 rounded-2xl bg-primary text-on-primary hover:scale-105 active:scale-95 transition-all">

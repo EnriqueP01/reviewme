@@ -61,6 +61,14 @@ class Feed extends Component
             return redirect()->route('login');
         }
 
+        // Karma Check
+        $permission = $direction === 'up' ? 'post.vote_up' : ($direction === 'down' ? 'post.vote_down' : null);
+        if ($permission && ! Auth::user()->hasKarmaPermission($permission)) {
+            $this->notifyError(__('Karma insuffisant pour cette action.'));
+
+            return;
+        }
+
         try {
             $post = Post::findOrFail($postId);
 

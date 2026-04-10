@@ -32,6 +32,8 @@ final class StoreFullReviewAction
                 ]);
             }
 
+            $user->recordContribution();
+
             return $fullReview;
         });
     }

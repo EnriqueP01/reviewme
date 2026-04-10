@@ -21,7 +21,7 @@ final class StoreInlineSuggestionAction
         string $suggestedContent,
         string $description
     ): InlineSuggestion {
-        return InlineSuggestion::create([
+        $suggestion = InlineSuggestion::create([
             'user_id' => $user->id,
             'snippet_id' => $snippetId,
             'line_number' => $startLine,
@@ -30,5 +30,9 @@ final class StoreInlineSuggestionAction
             'suggested_content' => $suggestedContent,
             'description' => $description,
         ]);
+
+        $user->recordContribution();
+
+        return $suggestion;
     }
 }

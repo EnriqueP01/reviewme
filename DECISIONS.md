@@ -856,3 +856,14 @@ The initial "Monolith & The Lens" implementation was too spacious, creating layo
     2. **TÃ©lÃ©mÃ©trie Eloquent** : IntÃ©gration de compteurs rÃ©els pour les utilisateurs actifs et le volume total de posts.
     3. **UI RÃ©active** : Mise Ã  jour de la vue `status.blade.php` pour injecter ces variables, offrant une vue transparente sur la santÃ© de la plateforme.
 - **Impact** : Transparence totale pour les utilisateurs et outils de diagnostic rapide pour les administrateurs.
+
+## 2026-04-10-82 : Durcissement des Protocoles de Sécurité Karma (US33)
+- **Auteur** : Antigravity
+- **Statut** : ? Implémenté
+- **Contexte** : Nécessité de verrouiller hermétiquement les interactions pour empêcher tout contournement des barrières de réputation (Karma), notamment via les raccourcis clavier (touche Entrée) et les appels API directs.
+- **Décision** :
+    1. **Sécurisation Backend Systématique** : Intégration de gardes de permission Karma (hasKarmaPermission) dans toutes les méthodes interactives de PostDetail (Commentaires, Suggestions, Reviews, Votes, Likes) et Feed (Votes).
+    2. **Neutralisation des Bypass Frontend** : Refonte des gestionnaires d'événements wire:keydown.enter dans les templates Blade avec des conditions Alpine.js pour bloquer physiquement le déclenchement des requêtes en cas de Karma insuffisant.
+    3. **Unification du Feedback (VibeAction)** : Utilisation systématique du trait HasVibeNotifications pour transformer les exceptions d'autorisation en notifications Toast 'Premium' (avec retour sonore et visuel), garantissant une expérience transparente et éducative.
+    4. **Audit d'Intégrité des Rôles** : Vérification complète de la chaîne de permissions (Unranked -> Contributor -> Reviewer -> Expert -> Elite) pour assurer la cohérence des droits de modération et de contribution.
+- **Impact** : Protection totale de l'intégrité des données, élimination des vecteurs d'attaque par simulateur de clavier et renforcement de l'aspect méritocratique de la plateforme.
