@@ -72,6 +72,17 @@
                     }
                 });
             });
+
+            // Smooth SPA Transitions
+            document.addEventListener('livewire:navigate', () => {
+                document.body.classList.add('page-transitioning');
+            });
+
+            document.addEventListener('livewire:navigated', () => {
+                document.body.classList.remove('page-transitioning');
+                // Ensure scroll to top
+                window.scrollTo(0, 0);
+            });
         </script>
 
         <x-ui.toast />

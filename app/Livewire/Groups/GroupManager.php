@@ -125,6 +125,17 @@ final class GroupManager extends Component
 
         if (! $group->members()->where('user_id', $userId)->exists()) {
             $group->members()->attach($userId, ['role' => 'member']);
+            
+            // Notify added member
+            $user = User::find($userId);
+            if ($user) {
+                $user->notify(new \App\Notifications\GeneralNotification(
+                    title: __('Group Invitation'),
+                    message: __('You have been added to the group ":name".', ['name' => $group->name]),
+                    type: 'group',
+                    actionUrl: route('groups', ['slug' => $group->slug])
+                ));
+            }
         }
 
         $this->reset('userSearch', 'searchResults');

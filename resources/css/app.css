@@ -55,3 +55,23 @@
         background: rgba(190, 194, 255, 0.3);
     }
 }
+
+/* Page Transitions (SPA Feel) */
+body.page-transitioning main {
+    opacity: 0;
+    transform: translateY(10px);
+    filter: blur(4px);
+}
+
+main {
+    transition: opacity 0.4s cubic-bezier(0.4, 0, 0.2, 1), 
+                transform 0.4s cubic-bezier(0.4, 0, 0.2, 1),
+                filter 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* Livewire Progress Bar Customization */
+.livewire-progress-bar {
+    height: 3px !important;
+    background-color: var(--primary) !important;
+    box-shadow: 0 0 15px var(--primary);
+}

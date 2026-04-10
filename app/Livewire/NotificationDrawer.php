@@ -47,15 +47,26 @@ class NotificationDrawer extends Component
 
     public function render()
     {
-        $notifications = auth()->check() 
-            ? auth()->user()->notifications()->latest()->take(20)->get() 
-            : collect();
+        $user = auth()->user();
+        $notifications = collect();
+        $unreadCount = 0;
+        $todayKarma = 0;
 
-        $unreadCount = auth()->check() ? auth()->user()->unreadNotifications()->count() : 0;
+        if (auth()->check()) {
+            $notifications = $user->notifications()->latest()->take(20)->get();
+            $unreadCount = $user->unreadNotifications()->count();
+            
+            // Calculer le Karma gagné aujourd'hui
+            $todayKarma = $user->karmaTransactions()
+                ->whereDate('created_at', now()->today())
+                ->where('points', '>', 0) // On ne compte que les gains pour le total positif
+                ->sum('points');
+        }
 
         return view('livewire.notification-drawer', [
             'notifications' => $notifications,
             'unreadCount' => $unreadCount,
+            'todayKarma' => $todayKarma,
         ]);
     }
 }

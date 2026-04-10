@@ -94,6 +94,16 @@ final class ToggleReactionAction
 
             if ($author) {
                 $this->updateReputation->execute($author, $type, 'add', null, $reactable);
+                
+                // Notify author
+                $author->notify(new \App\Notifications\GeneralNotification(
+                    title: __('New Reaction'),
+                    message: __(':name reacted to your content with ":type".', [
+                        'name' => $user->name,
+                        'type' => ucfirst($type)
+                    ]),
+                    type: 'reaction'
+                ));
             }
 
             // Enregistre l'activité de celui qui réagit

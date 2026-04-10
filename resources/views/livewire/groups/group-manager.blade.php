@@ -269,7 +269,8 @@
                         <div class="space-y-6">
                             @foreach($selectedGroup->members as $member)
                                 <div class="flex items-center justify-between p-5 rounded-[2rem] bg-black/40 border border-white/5 group/member transition-all hover:border-primary/40 hover:bg-primary/5">
-                                    <a href="{{ route('profile.show', $member->handle) }}" wire:navigate class="flex items-center gap-5 flex-1 min-w-0">
+                                    @php $memberProfileRoute = $member->handle ? route('profile.show', $member->handle) : '#'; @endphp
+                                    <a href="{{ $memberProfileRoute }}" wire:navigate class="flex items-center gap-5 flex-1 min-w-0">
                                         <div class="relative shrink-0">
                                             <x-ui.avatar :model="$member" size="md" :link="false" class="!rounded-[1.2rem] border-2 border-white/10 shadow-xl" />
                                             <div class="absolute -bottom-1 -right-1 w-4 h-4 bg-emerald-500 border-[3.5px] border-[#0d0e12] rounded-full shadow-[0_0_15px_rgba(16,185,129,0.4)]"></div>

@@ -34,6 +34,17 @@ final class StoreFullReviewAction
 
             $user->recordContribution();
 
+            // Notify post author
+            $post = \App\Models\Post::find($postId);
+            if ($post && $post->user_id !== $user->id) {
+                $post->user->notify(new \App\Notifications\GeneralNotification(
+                    title: __('New Expert Review'),
+                    message: __(':name has just posted a full architectural review on your post.', ['name' => $user->name]),
+                    type: 'review',
+                    actionUrl: route('posts.show', $post->id)
+                ));
+            }
+
             return $fullReview;
         });
     }

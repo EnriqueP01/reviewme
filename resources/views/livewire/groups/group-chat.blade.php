@@ -31,7 +31,8 @@
                     'items-end font-mono' => $message->user_id === auth()->id()
                 ])>
                     <div class="flex items-center gap-3 opacity-30 group-hover/msg:opacity-60 transition-opacity">
-                        <a href="{{ route('profile.show', $message->user->handle) }}" wire:navigate class="text-[9px] font-black uppercase tracking-widest text-on-surface hover:text-primary transition-colors">{{ $message->user->name }}</a>
+                        @php $msgUserRoute = $message->user->handle ? route('profile.show', $message->user->handle) : '#'; @endphp
+                        <a href="{{ $msgUserRoute }}" wire:navigate class="text-[9px] font-black uppercase tracking-widest text-on-surface hover:text-primary transition-colors">{{ $message->user->name }}</a>
                         <span class="text-[8px] font-mono font-bold">{{ $message->created_at->format('H:i') }}</span>
                     </div>
                     

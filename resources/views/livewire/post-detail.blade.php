@@ -128,7 +128,8 @@
                 <x-ui.avatar :model="$post->user" size="lg" class="shadow-2xl border-primary/20 shrink-0" />
                 <div class="flex flex-col min-w-0">
                     <div class="flex items-center gap-3">
-                        <a href="{{ route('profile.show', $post->user->handle) }}" wire:navigate class="text-lg font-black text-on-surface tracking-tight hover:text-primary transition-colors">{{ $post->user->name }}</a>
+                        @php $postAuthorRoute = $post->user->handle ? route('profile.show', $post->user->handle) : '#'; @endphp
+                        <a href="{{ $postAuthorRoute }}" wire:navigate class="text-lg font-black text-on-surface tracking-tight hover:text-primary transition-colors">{{ $post->user->name }}</a>
                         <span class="text-xs font-mono font-bold text-primary tracking-wider font-black opacity-40">@<span>{{ $post->user->handle }}</span></span>
                     </div>
                     <div class="flex flex-wrap items-center gap-3 mt-2">
@@ -410,7 +411,8 @@
                                                     <x-ui.avatar :model="$fr->user" size="xl" class="border-2 border-primary/20" />
                                                     <div class="space-y-4">
                                                         <div class="flex items-center gap-4">
-                                                            <a href="{{ route('profile.show', $fr->user->handle) }}" wire:navigate class="text-2xl font-black text-on-surface tracking-tighter hover:text-primary transition-colors">{{ $fr->user->name }}</a>
+                                                            @php $reviewAuthorRoute = $fr->user->handle ? route('profile.show', $fr->user->handle) : '#'; @endphp
+                                                            <a href="{{ $reviewAuthorRoute }}" wire:navigate class="text-2xl font-black text-on-surface tracking-tighter hover:text-primary transition-colors">{{ $fr->user->name }}</a>
                                                             <span class="text-xs font-mono font-bold text-primary/60 tracking-wider">@<span>{{ $fr->user->handle }}</span></span>
                                                                 <span class="px-3 py-1 rounded-full bg-primary/10 text-primary text-[10px] font-black uppercase tracking-widest border border-primary/20">{{ __('Score') }}: {{ $fr->score }}/10</span>
                                                         </div>
@@ -553,7 +555,8 @@
                                                             <x-ui.avatar :model="$comment->user" size="md" />
                                                             <div class="space-y-2 flex-1">
                                                                 <div class="flex items-center gap-4">
-                                                                    <a href="{{ route('profile.show', $comment->user->handle) }}" wire:navigate class="text-sm font-black text-on-surface hover:text-primary transition-colors">{{ $comment->user->name }}</a>
+                                                                    @php $commentUserRoute = $comment->user->handle ? route('profile.show', $comment->user->handle) : '#'; @endphp
+                                                                    <a href="{{ $commentUserRoute }}" wire:navigate class="text-sm font-black text-on-surface hover:text-primary transition-colors">{{ $comment->user->name }}</a>
                                                                     <span class="text-[10px] font-mono font-bold text-primary/40">@<span>{{ $comment->user->handle }}</span></span>
                                                                     <span class="text-[9px] font-black text-on-surface-variant/30 uppercase tracking-widest">{{ $comment->created_at->diffForHumans() }}</span>
                                                                 </div>
@@ -712,7 +715,8 @@
                                                     <x-ui.avatar :model="$reply->user" size="sm" />
                                                     <div class="flex-1 space-y-2">
                                                         <div class="flex items-center gap-3">
-                                                            <a href="{{ route('profile.show', $reply->user->handle) }}" wire:navigate class="text-[11px] font-black text-on-surface hover:text-primary transition-colors">{{ $reply->user->name }}</a>
+                                                            @php $replyUserRoute = $reply->user->handle ? route('profile.show', $reply->user->handle) : '#'; @endphp
+                                                            <a href="{{ $replyUserRoute }}" wire:navigate class="text-[11px] font-black text-on-surface hover:text-primary transition-colors">{{ $reply->user->name }}</a>
                                                             <span class="text-[10px] font-mono font-bold text-primary/40">@<span>{{ $reply->user->handle }}</span></span>
                                                             <span class="text-[9px] font-black text-on-surface-variant/20 uppercase tracking-widest flex items-center gap-2">
                                                                 <div class="w-1 h-1 rounded-full bg-primary/20"></div>

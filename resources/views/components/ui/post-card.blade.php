@@ -91,7 +91,10 @@
             <!-- Metadata Row -->
             <div class="flex items-start justify-between">
                 <div class="flex items-center gap-6">
-                    <a href="{{ route('profile.show', $post->user->handle) }}" wire:navigate class="group/author flex items-center gap-6">
+                    @php
+                        $userProfileRoute = $post->user->handle ? route('profile.show', $post->user->handle) : '#';
+                    @endphp
+                    <a href="{{ $userProfileRoute }}" wire:navigate class="group/author flex items-center gap-6">
                         <x-ui.avatar :model="$post->user" size="lg" class="group-hover/author:scale-105 transition-all duration-500 shadow-xl" />
                         
                         <div class="flex flex-col">
@@ -107,7 +110,7 @@
                 </div>
                 
                 <div class="opacity-0 group-hover:opacity-100 transition-all duration-500 transform translate-x-4 group-hover:translate-x-0 flex items-center gap-4">
-                    <x-ui.button variant="primary" size="sm" class="shadow-xl !px-6 !py-3 !rounded-xl" href="{{ route('posts.detail', $post->id) }}">
+                    <x-ui.button variant="primary" size="sm" class="shadow-xl !px-6 !py-3 !rounded-xl" href="{{ route('posts.detail', $post->id) }}" wire:navigate>
                         <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" /><path stroke-linecap="round" stroke-linejoin="round" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" /></svg>
                         <span>{{ __('View Post') }}</span>
                     </x-ui.button>
@@ -160,7 +163,7 @@
                  </div>
                  <div class="flex-grow"></div>
                   <div class="flex items-center gap-8 text-[10px] font-black uppercase tracking-[0.3em] text-on-surface-variant/30">
-                    <a href="{{ route('posts.detail', $post->id) }}" class="flex items-center gap-3 group/stat cursor-pointer hover:text-primary transition-all duration-300">
+                    <a href="{{ route('posts.detail', $post->id) }}" wire:navigate class="flex items-center gap-3 group/stat cursor-pointer hover:text-primary transition-all duration-300">
                         <div class="w-8 h-8 rounded-full bg-white/5 flex items-center justify-center group-hover/stat:bg-primary/10 transition-colors">
                             <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"/></svg>
                         </div>

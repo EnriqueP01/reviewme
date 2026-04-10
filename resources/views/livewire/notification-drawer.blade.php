@@ -1,4 +1,4 @@
-<div class="relative z-[100]">
+<div class="relative z-[100]" wire:poll.15s>
     <!-- Backdrop -->
     <div x-show="$wire.isOpen" 
          x-transition:enter="transition ease-out duration-500"
@@ -104,7 +104,7 @@
                 <div class="p-6 rounded-2xl bg-surface-container-high border border-white/5 overflow-hidden relative">
                     <div class="relative z-10">
                         <span class="text-[8px] font-black uppercase tracking-widest text-on-surface-variant opacity-40">{{ __('Session Total') }}</span>
-                        <div class="text-2xl font-display font-black text-on-surface mt-2">+24 <span class="text-primary text-xs tracking-normal">Karma</span></div>
+                        <div class="text-2xl font-display font-black text-on-surface mt-2">+{{ $todayKarma }} <span class="text-primary text-xs tracking-normal">Karma</span></div>
                     </div>
                     <div class="absolute -right-4 -bottom-4 w-16 h-16 bg-primary/10 rounded-full blur-xl"></div>
                 </div>

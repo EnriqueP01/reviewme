@@ -68,6 +68,25 @@ final class CreatePostAction
 
             $user->recordContribution();
 
+            // Notify group members
+            if ($post->group_id) {
+                $group = $post->group;
+                if ($group) {
+                    $members = $group->members()->where('users.id', '!=', $user->id)->get();
+                    foreach ($members as $member) {
+                        $member->notify(new \App\Notifications\GeneralNotification(
+                            title: __('New Lab Activity'),
+                            message: __('A new post ":title" has been published in :group.', [
+                                'title' => $post->title,
+                                'group' => $group->name
+                            ]),
+                            type: 'info',
+                            actionUrl: route('posts.show', $post->id)
+                        ));
+                    }
+                }
+            }
+
             return $post;
         });
     }

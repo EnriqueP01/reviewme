@@ -17,9 +17,21 @@ final class RegisterUserAction
      */
     public function execute(array $data): User
     {
+        $baseHandle = \Illuminate\Support\Str::slug($data['name'], '');
+        if (empty($baseHandle)) {
+            $baseHandle = 'user' . rand(1000, 9999);
+        }
+
+        $handle = $baseHandle;
+        $counter = 1;
+        while (User::where('handle', $handle)->exists()) {
+            $handle = $baseHandle . $counter++;
+        }
+
         $user = User::create([
             'name' => $data['name'],
             'email' => $data['email'],
+            'handle' => strtolower($handle),
             'password' => Hash::make($data['password']),
         ]);
 

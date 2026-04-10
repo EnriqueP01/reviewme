@@ -13,10 +13,12 @@ class UserContribution extends Model
      */
     public static function record(int $userId): void
     {
-        self::updateOrCreate(
+        $contribution = self::firstOrCreate(
             ['user_id' => $userId, 'date' => now()->toDateString()],
-            ['count' => \DB::raw('count + 1')]
+            ['count' => 0]
         );
+        
+        $contribution->increment('count');
 
         // Invalide les caches pour forcer la mise à jour immédiate sur le profil
         \Illuminate\Support\Facades\Cache::forget("user_activity_heatmap_{$userId}_week");

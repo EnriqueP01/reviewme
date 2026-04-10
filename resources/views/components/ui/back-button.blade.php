@@ -45,7 +45,7 @@
                 if (window.history.length > 1) {
                     window.history.back();
                 } else {
-                    window.location.href = '{{ $fallback ?? url('/') }}';
+                    Livewire.navigate('{{ $fallback ?? url('/') }}');
                 }
             }, 120);
         }
