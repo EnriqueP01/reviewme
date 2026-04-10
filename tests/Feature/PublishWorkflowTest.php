@@ -108,9 +108,9 @@ class PublishWorkflowTest extends TestCase
         Livewire::actingAs($user)
             ->test(PublishWorkflow::class)
             ->set('files', [
-                ['id' => 'f1', 'name' => 'A.php', 'content' => 'A', 'is_duplicate' => false],
-                ['id' => 'f2', 'name' => 'B.php', 'content' => 'B', 'is_duplicate' => false],
-                ['id' => 'f3', 'name' => 'C.php', 'content' => 'C', 'is_duplicate' => false],
+                ['id' => 'f1', 'name' => 'A.php', 'content' => 'A', 'language' => 'php', 'description' => '', 'is_duplicate' => false, 'is_content_duplicate' => false],
+                ['id' => 'f2', 'name' => 'B.php', 'content' => 'B', 'language' => 'php', 'description' => '', 'is_duplicate' => false, 'is_content_duplicate' => false],
+                ['id' => 'f3', 'name' => 'C.php', 'content' => 'C', 'language' => 'php', 'description' => '', 'is_duplicate' => false, 'is_content_duplicate' => false],
             ])
             ->call('reorderFiles', [2, 0, 1]) // C, A, B
             ->assertSet('files.0.name', 'C.php')
@@ -128,9 +128,9 @@ class PublishWorkflowTest extends TestCase
         Livewire::actingAs($user)
             ->test(PublishWorkflow::class)
             ->set('files', [
-                ['id' => 'f1', 'name' => 'A.php', 'content' => 'A', 'is_duplicate' => false],
-                ['id' => 'f2', 'name' => 'B.php', 'content' => 'B', 'is_duplicate' => false],
-                ['id' => 'f3', 'name' => 'C.php', 'content' => 'C', 'is_duplicate' => false],
+                ['id' => 'f1', 'name' => 'A.php', 'content' => 'A', 'language' => 'php', 'description' => '', 'is_duplicate' => false, 'is_content_duplicate' => false],
+                ['id' => 'f2', 'name' => 'B.php', 'content' => 'B', 'language' => 'php', 'description' => '', 'is_duplicate' => false, 'is_content_duplicate' => false],
+                ['id' => 'f3', 'name' => 'C.php', 'content' => 'C', 'language' => 'php', 'description' => '', 'is_duplicate' => false, 'is_content_duplicate' => false],
             ])
             ->call('moveUp', 1) // Moves B up to 0 -> B, A, C
             ->assertSet('files.0.name', 'B.php')
@@ -168,7 +168,7 @@ class PublishWorkflowTest extends TestCase
             ->call('nextStep')
             ->assertSet('step', 3)
             ->set('selectedLens', ['security'])
-            ->set('visibility', 'private')
+            ->set('is_private', true)
             ->set('groupId', $group->id)
             ->call('submit')
             ->assertRedirect(route('dashboard'));
