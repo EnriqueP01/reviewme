@@ -9,6 +9,16 @@
     4. **Déploiement Extendu** : Ajout du bouton sur la page `update-post`.
 - **Impact** : Navigation plus immersive et organique. Correction des tests `PublishWorkflow` impactés par les manques de clés dans les structures de données.
 
+## 2026-04-10-66 : Navigation Intelligente & Résolution des Permissions d'Assets
+- **Auteur** : Antigravity
+- **Statut** : ✅ Implémenté
+- **Contexte** : Amélioration de la navigation utilisateur via des boutons de retour stratégiques et résolution d'erreurs 403 (accès interdit aux photos de profil) et 404 (favicon manquant).
+- **Décision** : 
+    1. **Boutons de Retour** : Intégration du composant `<x-ui.back-button />` dans les vues critiques : `post-detail.blade.php`, `publish-workflow.blade.php` et `profile/edit.blade.php`.
+    2. **Correction des Permissions (Windows/Host)** : Exécution de la commande `icacls` pour accorder les permissions `(OI)(CI)F` sur les dossiers `storage` et `public/storage`, résolvant les erreurs 403 persistantes sur les architectures Docker/Windows.
+    3. **Favicon Intégrity** : Restauration/Vérification du fichier `public/images/favicon.png` pour éliminer les erreurs 404 dans les logs console.
+- **Impact** : Expérience de navigation fluide et sans erreurs techniques, interface 100% "zéro défaut".
+
 ## 2026-04-10-64 : Correction de Compatibilité SQLite dans GrantKarmaAction
 - **Auteur** : Antigravity
 - **Statut** : ✅ Implémenté
